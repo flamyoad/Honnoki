@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#344955</color>
+    <color name="colorPrimaryDark">#2A2145</color>
+    <color name="colorAccent">#F9AA33</color>
+
+    <color name="leafyGreen">#64dd17</color>
+    <color name="deepGreen">#43A047</color>
+
+    <color name="mainTextColor">#2b2b2b</color>
+    <color name="subTextColor">#959595</color>
+    <color name="subLightTextColor">#c4c4c4</color>
+    <color name="textColorWhite">@color/white</color>
+    <color name="tab_inactive_textcolor">#9b9a9a</color>
+
+    <color name="white">#FFFFFF</color>
+    <color name="navDrawerScrim">#8D000000</color>
+    <color name="maskColor">#88000000</color>
+    <color name="divider">#E4E1E1</color>
+
+</resources>
