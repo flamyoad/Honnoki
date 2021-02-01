@@ -1,5 +1,6 @@
 package com.flamyoad.honnoki.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,6 +34,7 @@ class MangaAdapter(private val onItemClick: (Manga) -> Unit) :
 
     override fun onBindViewHolder(holder: MangaViewHolder, position: Int) {
         val manga = getItem(position) ?: return
+        Log.d("debugs", "onBind called")
         holder.bind(manga)
     }
 
@@ -54,11 +56,13 @@ class MangaAdapter(private val onItemClick: (Manga) -> Unit) :
     companion object {
         private val MANGA_COMPARATOR = object : DiffUtil.ItemCallback<Manga>() {
             override fun areItemsTheSame(oldItem: Manga, newItem: Manga): Boolean {
-                return oldItem == newItem
+                val status = oldItem.id == newItem.id
+                return status
             }
 
             override fun areContentsTheSame(oldItem: Manga, newItem: Manga): Boolean {
-                return oldItem == newItem
+                val status = oldItem == newItem
+                return status
             }
 
         }

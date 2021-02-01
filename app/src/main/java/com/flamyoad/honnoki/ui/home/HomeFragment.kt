@@ -1,6 +1,7 @@
 package com.flamyoad.honnoki.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -32,14 +33,19 @@ class HomeFragment : Fragment() {
         setupViewPager()
 
         viewModel.shouldShrinkFab().observe(viewLifecycleOwner, Observer {  shouldShrink ->
+            Log.d("debugs", "shouldShrinkfab : $shouldShrink")
             when (shouldShrink) {
                 true -> binding.fab.shrink()
                 false -> binding.fab.extend()
             }
         })
+
+        binding.fab.setOnClickListener {
+
+        }
     }
 
-    fun setupViewPager() {
+    private fun setupViewPager() {
         val pagerAdapter = HomeListFragmentAdapter(tabList,this)
 
         with(binding.viewPager) {
