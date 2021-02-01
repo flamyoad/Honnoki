@@ -3,4 +3,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="manga_title">Ore no Imouto ga Konna ni Kawaii Wake ga Nai - Ayase IF Ore no Imouto ga Konna ni Kawaii Wake ga Nai - Ayase IF</string>
+    <string name="manga_latest_chap">CHAPTER 143</string>
 </resources>

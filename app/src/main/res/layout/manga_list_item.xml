@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:background="?android:selectableItemBackground"
+    android:padding="8dp">
+
+    <com.github.florent37.shapeofview.shapes.RoundRectView
+        android:id="@+id/roundRectView"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:elevation="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shape_roundRect_borderColor="@color/maskColor"
+        app:shape_roundRect_borderWidth="2dp"
+        app:shape_roundRect_bottomLeftRadius="5dp"
+        app:shape_roundRect_bottomRightRadius="5dp"
+        app:shape_roundRect_topLeftRadius="5dp"
+        app:shape_roundRect_topRightRadius="5dp">
+
+        <ImageView
+            android:id="@+id/coverImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            tools:src="@drawable/arisa_lewd" />
+
+    </com.github.florent37.shapeofview.shapes.RoundRectView>
+
+    <TextView
+        android:id="@+id/txtTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:lines="1"
+        android:layout_marginTop="8dp"
+        android:layout_marginHorizontal="4dp"
+        android:textColor="@color/mainTextColor"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="@+id/roundRectView"
+        app:layout_constraintStart_toStartOf="@+id/roundRectView"
+        app:layout_constraintTop_toBottomOf="@+id/roundRectView"
+        tools:text="@string/manga_title" />
+
+    <TextView
+        android:id="@+id/txtInformation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:lines="1"
+        android:textColor="@color/subTextColor"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="@+id/txtTitle"
+        app:layout_constraintStart_toStartOf="@+id/txtTitle"
+        app:layout_constraintTop_toBottomOf="@+id/txtTitle"
+        tools:text="@string/manga_title" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

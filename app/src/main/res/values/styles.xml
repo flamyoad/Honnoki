@@ -15,7 +15,7 @@
     </style>
 
     <style name="secondaryTabLayoutStyle" parent="Base.Widget.Design.TabLayout">
-        <item name="android:textSize">10sp</item>
+        <item name="android:textSize">8sp</item>
         <item name="android:textAllCaps">false</item>
     </style>
 
