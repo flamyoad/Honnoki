@@ -1,42 +1,37 @@
 package com.flamyoad.honnoki.ui.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
-import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.flamyoad.honnoki.R
-import com.flamyoad.honnoki.adapter.HomeListFragmentAdapter
 import com.flamyoad.honnoki.adapter.MangaAdapter
 import com.flamyoad.honnoki.databinding.FragmentHomeListBinding
 import com.flamyoad.honnoki.model.Manga
+import com.flamyoad.honnoki.model.MangaType
 import com.flamyoad.honnoki.model.TabType
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
+import kotlinx.android.synthetic.main.fragment_home_list.view.*
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.launch
 
 class HomeListFragment : Fragment() {
     private val viewModel: HomeViewModel by activityViewModels()
     private val binding by viewLifecycleLazy { FragmentHomeListBinding.bind(requireView()) }
 
-    private val adapter: MangaAdapter = MangaAdapter(this::openManga)
+    private val mangaAdapter: MangaAdapter = MangaAdapter(this::openManga)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home_list, container, false)
     }
 
@@ -45,7 +40,7 @@ class HomeListFragment : Fragment() {
         initRecyclerView()
 
         binding.swipeRefreshLayout.setOnRefreshListener {
-            adapter.refresh()
+            mangaAdapter.refresh()
         }
     }
 
@@ -53,14 +48,20 @@ class HomeListFragment : Fragment() {
         val layoutManager = GridLayoutManager(requireContext(), 2)
 
         with(binding.listManga) {
-            this.adapter = adapter
+            this.adapter = mangaAdapter
             this.layoutManager = layoutManager
         }
 
+        val tabType = MangaType.fromName(arguments?.getString(TAB_TYPE))
+
         lifecycleScope.launch {
-            viewModel.getRecentManga().collectLatest {
-//                val list = adapter.snapshot()
-                adapter.submitData(it)
+            val mangaFlow = when (tabType) {
+                MangaType.RECENTLY -> viewModel.getRecentManga()
+                MangaType.TRENDING -> viewModel.getTrendingManga()
+            }
+            mangaFlow.collectLatest {
+                mangaAdapter.submitData(it)
+                binding.swipeRefreshLayout.isRefreshing = false
             }
         }
 
@@ -77,17 +78,6 @@ class HomeListFragment : Fragment() {
                 }
             }
         })
-//
-//        adapter.addLoadStateListener { loadState ->
-//            // Disable swipe refresh progress bar on finish loading
-//            binding.swipeRefreshLayout.isRefreshing = loadState.source.refresh is LoadState.NotLoading
-//
-//            // If any error occurs, regardless of whether it came from RemoteMediator or PagingSource
-//            val errorState = loadState.source.append as? LoadState.Error
-//                ?: loadState.source.prepend as? LoadState.Error
-//                ?: loadState.append as? LoadState.Error
-//                ?: loadState.prepend as? LoadState.Error
-//        }
     }
 
     private fun openManga(manga: Manga) {
@@ -103,7 +93,7 @@ class HomeListFragment : Fragment() {
             HomeListFragment().apply {
                 arguments = bundleOf(
                     TAB_GENRE to tab.genre,
-                    TAB_TYPE to tab.type
+                    TAB_TYPE to tab.type.readableName
                 )
             }
     }

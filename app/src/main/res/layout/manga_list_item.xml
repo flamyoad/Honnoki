@@ -19,10 +19,10 @@
         app:layout_constraintTop_toTopOf="parent"
         app:shape_roundRect_borderColor="@color/maskColor"
         app:shape_roundRect_borderWidth="2dp"
-        app:shape_roundRect_bottomLeftRadius="5dp"
-        app:shape_roundRect_bottomRightRadius="5dp"
-        app:shape_roundRect_topLeftRadius="5dp"
-        app:shape_roundRect_topRightRadius="5dp">
+        app:shape_roundRect_bottomLeftRadius="2dp"
+        app:shape_roundRect_bottomRightRadius="2dp"
+        app:shape_roundRect_topLeftRadius="2dp"
+        app:shape_roundRect_topRightRadius="2dp">
 
         <ImageView
             android:id="@+id/coverImage"

@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "e4ac977e27bbb8d3df8dcf3f52f21f0e",
+    "identityHash": "160d63467514c056b6224980367da173",
     "entities": [
       {
         "tableName": "manga",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `coverImage` TEXT NOT NULL, `title` TEXT NOT NULL, `latestChapter` TEXT NOT NULL, `viewCount` INTEGER NOT NULL, `link` TEXT NOT NULL, `source` TEXT NOT NULL, `prevKey` INTEGER, `nextKey` INTEGER, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `coverImage` TEXT NOT NULL, `title` TEXT NOT NULL, `latestChapter` TEXT NOT NULL, `viewCount` INTEGER NOT NULL, `link` TEXT NOT NULL, `source` TEXT NOT NULL, `type` TEXT NOT NULL, `prevKey` INTEGER, `nextKey` INTEGER, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -51,6 +51,12 @@
             "notNull": true
           },
           {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
             "fieldPath": "prevKey",
             "columnName": "prevKey",
             "affinity": "INTEGER",
@@ -76,7 +82,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e4ac977e27bbb8d3df8dcf3f52f21f0e')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '160d63467514c056b6224980367da173')"
     ]
   }
 }

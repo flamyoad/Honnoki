@@ -1,6 +1,5 @@
 package com.flamyoad.honnoki.model
 
-import android.net.Uri
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -13,6 +12,7 @@ data class Manga(
     val viewCount: Int,
     val link: String,
     val source: Source,
+    val type: MangaType,
     val prevKey: Int? = null,
     val nextKey: Int? = null
 )

@@ -4,16 +4,19 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
+import com.flamyoad.honnoki.api.BaseApi
 import com.flamyoad.honnoki.api.MangakalotApi
 import com.flamyoad.honnoki.db.AppDatabase
 import com.flamyoad.honnoki.model.Manga
+import com.flamyoad.honnoki.model.MangaType
 import com.flamyoad.honnoki.model.Source
 import retrofit2.HttpException
 import java.io.IOException
 
-class MangakalotRemoteMediator(
-    private val api: MangakalotApi,
-    private val db: AppDatabase
+class MangaRemoteMediator(
+    private val api: BaseApi,
+    private val db: AppDatabase,
+    private val mangaType: MangaType
 ) : RemoteMediator<Int, Manga>() {
 
     override suspend fun load(loadType: LoadType, state: PagingState<Int, Manga>): MediatorResult {
@@ -31,12 +34,15 @@ class MangakalotRemoteMediator(
 
         try {
 
-            val mangas = api.searchForLatestManga(page)
+            val mangas = when (mangaType) {
+                MangaType.RECENTLY -> api.searchForLatestManga(page)
+                MangaType.TRENDING -> api.searchForTrendingManga(page)
+            }
             val endOfPaginationReached = mangas.isEmpty()
 
             db.withTransaction {
                 if (loadType == LoadType.REFRESH) {
-                    db.mangaDao().deleteFrom(currentSource)
+                    db.mangaDao().deleteFrom(currentSource, mangaType)
                 }
 
                 val prevKey = if (page == STARTING_PAGE_INDEX) null else page - 1

@@ -4,14 +4,14 @@ import okhttp3.ResponseBody
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface MangakalotService {
+interface SenMangaService {
     companion object {
-        const val baseUrl = "https://mangakakalot.com/"
+        val baseUrl = "https://raw.senmanga.com/"
     }
 
-    @GET("manga_list?type=latest&category=all&state=all")
+    @GET("directory/last_update")
     suspend fun getLatestManga(@Query("page") index: Int): ResponseBody
 
-    @GET("manga_list?type=topview&category=all&state=all")
+    @GET(".")
     suspend fun getTrendingManga(@Query("page") index: Int): ResponseBody
 }

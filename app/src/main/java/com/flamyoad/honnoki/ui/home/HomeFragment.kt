@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.adapter.HomeListFragmentAdapter
 import com.flamyoad.honnoki.databinding.FragmentHomeBinding
+import com.flamyoad.honnoki.model.MangaType
 import com.flamyoad.honnoki.model.TabType
 import com.flamyoad.honnoki.utils.DepthPageTransformer
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
@@ -20,8 +21,8 @@ class HomeFragment : Fragment() {
     private val binding by viewLifecycleLazy { FragmentHomeBinding.bind(requireView()) }
 
     private val tabList = listOf(
-        TabType("all", "Most Recent"),
-        TabType("all", "Trending")
+        TabType("all", MangaType.RECENTLY),
+        TabType("all", MangaType.TRENDING)
     )
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -54,9 +55,13 @@ class HomeFragment : Fragment() {
         }
 
         TabLayoutMediator(binding.tabLayoutSub, binding.viewPager) { tab, position->
-            tab.text = tabList[position].type
+            tab.text = tabList[position].type.readableName
             binding.viewPager.setCurrentItem(tab.position, true)
         }.attach()
+    }
+
+    private fun getTab() {
+
     }
 
     companion object {

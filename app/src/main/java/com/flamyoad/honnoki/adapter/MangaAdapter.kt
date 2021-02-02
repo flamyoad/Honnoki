@@ -7,10 +7,12 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.databinding.MangaListItemBinding
 import com.flamyoad.honnoki.model.Manga
+import com.github.ybq.android.spinkit.SpinKitView
 
 class MangaAdapter(private val onItemClick: (Manga) -> Unit) :
     PagingDataAdapter<Manga, MangaAdapter.MangaViewHolder>(MANGA_COMPARATOR) {
@@ -42,9 +44,17 @@ class MangaAdapter(private val onItemClick: (Manga) -> Unit) :
         val binding = MangaListItemBinding.bind(itemView)
 
         fun bind(manga: Manga) {
+            val loadingIndicator = CircularProgressDrawable(itemView.context).apply {
+                setColorSchemeColors(R.color.colorAccent)
+                centerRadius = 50f
+                strokeWidth = 5f
+            }
+            loadingIndicator.start()
+
             with(binding) {
                 Glide.with(itemView.context)
                     .load(manga.coverImage)
+                    .placeholder(loadingIndicator)
                     .into(coverImage)
 
                 txtTitle.text = manga.title

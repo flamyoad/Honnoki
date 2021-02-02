@@ -1,14 +1,13 @@
 package com.flamyoad.honnoki.api
 
 import com.flamyoad.honnoki.model.Manga
-import com.flamyoad.honnoki.network.MangakalotService
-import com.flamyoad.honnoki.parser.MangakalotParser
+import com.flamyoad.honnoki.network.SenMangaService
+import com.flamyoad.honnoki.parser.SenMangaParser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import retrofit2.await
 
-class MangakalotApi(private val service: MangakalotService): BaseApi {
-    private val parser = MangakalotParser()
+class SenMangaApi(private val service: SenMangaService): BaseApi {
+    private val parser = SenMangaParser()
 
     override suspend fun searchForLatestManga(index: Int): List<Manga> {
         val response = service.getLatestManga(index)
@@ -22,13 +21,6 @@ class MangakalotApi(private val service: MangakalotService): BaseApi {
     }
 
     override suspend fun searchForTrendingManga(index: Int): List<Manga> {
-        val response = service.getTrendingManga(index)
-
-        return withContext(Dispatchers.Default) {
-            val url = response.string()
-            val mangaList = parser.parseForTrendingManga(url)
-
-            return@withContext mangaList
-        }
+        return emptyList()
     }
 }

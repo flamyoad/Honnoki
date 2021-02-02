@@ -3,48 +3,44 @@ package com.flamyoad.honnoki.repository
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.flamyoad.honnoki.api.MangakalotApi
+import com.flamyoad.honnoki.api.SenMangaApi
 import com.flamyoad.honnoki.db.AppDatabase
 import com.flamyoad.honnoki.model.Manga
 import com.flamyoad.honnoki.model.MangaType
 import com.flamyoad.honnoki.model.Source
-import com.flamyoad.honnoki.network.MangakalotService
+import com.flamyoad.honnoki.network.SenMangaService
 import com.flamyoad.honnoki.paging.MangaRemoteMediator
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import retrofit2.Retrofit
 
-class MangakalotRepository(private val db: AppDatabase) : BaseMangaRepository {
-    private val service: MangakalotService
-    private val api: MangakalotApi
+class SenMangaRepository(private val db: AppDatabase): BaseMangaRepository {
+    private val service: SenMangaService
+    private val api: SenMangaApi
 
     init {
         val retrofit = Retrofit.Builder()
-            .baseUrl(MangakalotService.baseUrl)
+            .baseUrl(SenMangaService.baseUrl)
             .build()
 
-        service = retrofit.create(MangakalotService::class.java)
+        service = retrofit.create(SenMangaService::class.java)
 
-        api = MangakalotApi(service)
+        api = SenMangaApi(service)
     }
 
     override fun getRecentManga(): Flow<PagingData<Manga>> {
         return Pager(
             config = PagingConfig(pageSize = PAGINATION_SIZE, enablePlaceholders = false),
             remoteMediator = MangaRemoteMediator(api, db, MangaType.RECENTLY),
-            pagingSourceFactory = { db.mangaDao().getFrom(Source.MANGAKALOT, MangaType.RECENTLY) }
+            pagingSourceFactory = { db.mangaDao().getFrom(Source.SENMANGA, MangaType.RECENTLY) }
         ).flow
     }
 
     override fun getTrendingManga(): Flow<PagingData<Manga>> {
-        return Pager(
-            config = PagingConfig(pageSize = PAGINATION_SIZE, enablePlaceholders = false),
-            remoteMediator = MangaRemoteMediator(api, db, MangaType.TRENDING),
-            pagingSourceFactory = { db.mangaDao().getFrom(Source.MANGAKALOT, MangaType.TRENDING) }
-        ).flow
+        return emptyFlow()
     }
 
     companion object {
-        private const val PAGINATION_SIZE = 30
+        private const val PAGINATION_SIZE = 40
     }
-
 }
