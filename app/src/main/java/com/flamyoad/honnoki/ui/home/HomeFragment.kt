@@ -3,6 +3,7 @@ package com.flamyoad.honnoki.ui.home
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -10,13 +11,15 @@ import androidx.lifecycle.Observer
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.adapter.HomeListFragmentAdapter
 import com.flamyoad.honnoki.databinding.FragmentHomeBinding
+import com.flamyoad.honnoki.dialog.SourceSwitcherDialog
 import com.flamyoad.honnoki.model.MangaType
+import com.flamyoad.honnoki.model.Source
 import com.flamyoad.honnoki.model.TabType
 import com.flamyoad.honnoki.utils.DepthPageTransformer
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
 import com.google.android.material.tabs.TabLayoutMediator
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), SourceSwitcherDialog.Listener {
     private val viewModel: HomeViewModel by activityViewModels()
     private val binding by viewLifecycleLazy { FragmentHomeBinding.bind(requireView()) }
 
@@ -41,8 +44,10 @@ class HomeFragment : Fragment() {
             }
         })
 
+        binding.fab.text = viewModel.getSourceType().title
         binding.fab.setOnClickListener {
-
+            val dialog = SourceSwitcherDialog.newInstance(this@HomeFragment)
+            dialog.show(childFragmentManager, SourceSwitcherDialog.NAME)
         }
     }
 
@@ -60,12 +65,26 @@ class HomeFragment : Fragment() {
         }.attach()
     }
 
-    private fun getTab() {
+    override fun onSourceSwitch(source: Source) {
+        if (viewModel.getSourceType() == source)
+            return
 
+        binding.fab.text = source.title
+
+        viewModel.switchMangaSource(source)
+        setupViewPager()
+
+        // Dismiss the dialog
+        childFragmentManager.findFragmentByTag(SourceSwitcherDialog.NAME).let {
+            if (it is DialogFragment) {
+                it.dismiss()
+            }
+        }
     }
 
     companion object {
         @JvmStatic
         fun newInstance() = HomeFragment()
     }
+
 }

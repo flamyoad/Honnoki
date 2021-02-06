@@ -13,7 +13,7 @@ import com.flamyoad.honnoki.paging.MangaRemoteMediator
 import kotlinx.coroutines.flow.Flow
 import retrofit2.Retrofit
 
-class MangakalotRepository(private val db: AppDatabase) : BaseMangaRepository {
+class MangakalotRepository(db: AppDatabase) : BaseMangaRepository(db) {
     private val service: MangakalotService
     private val api: MangakalotApi
 
@@ -41,6 +41,10 @@ class MangakalotRepository(private val db: AppDatabase) : BaseMangaRepository {
             remoteMediator = MangaRemoteMediator(api, db, MangaType.TRENDING),
             pagingSourceFactory = { db.mangaDao().getFrom(Source.MANGAKALOT, MangaType.TRENDING) }
         ).flow
+    }
+
+    override fun getSourceType(): Source {
+        return Source.MANGAKALOT
     }
 
     companion object {

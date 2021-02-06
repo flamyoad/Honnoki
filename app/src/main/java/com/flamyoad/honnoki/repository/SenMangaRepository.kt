@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import retrofit2.Retrofit
 
-class SenMangaRepository(private val db: AppDatabase): BaseMangaRepository {
+class SenMangaRepository(db: AppDatabase): BaseMangaRepository(db) {
     private val service: SenMangaService
     private val api: SenMangaApi
 
@@ -38,6 +38,10 @@ class SenMangaRepository(private val db: AppDatabase): BaseMangaRepository {
 
     override fun getTrendingManga(): Flow<PagingData<Manga>> {
         return emptyFlow()
+    }
+
+    override fun getSourceType(): Source {
+        return Source.SENMANGA
     }
 
     companion object {

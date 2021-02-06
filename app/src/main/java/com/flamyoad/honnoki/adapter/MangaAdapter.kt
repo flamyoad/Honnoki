@@ -41,11 +41,11 @@ class MangaAdapter(private val onItemClick: (Manga) -> Unit) :
     }
 
     inner class MangaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val binding = MangaListItemBinding.bind(itemView)
+        private val binding = MangaListItemBinding.bind(itemView)
 
         fun bind(manga: Manga) {
             val loadingIndicator = CircularProgressDrawable(itemView.context).apply {
-                setColorSchemeColors(R.color.colorAccent)
+                setColorSchemeColors(R.color.white)
                 centerRadius = 50f
                 strokeWidth = 5f
             }

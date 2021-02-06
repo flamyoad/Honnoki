@@ -12,6 +12,7 @@
     <color name="subLightTextColor">#c4c4c4</color>
     <color name="textColorWhite">@color/white</color>
     <color name="tab_inactive_textcolor">#9b9a9a</color>
+    <color name="view_background">#E1DFDF</color>
 
     <color name="white">#FFFFFF</color>
     <color name="navDrawerScrim">#8D000000</color>

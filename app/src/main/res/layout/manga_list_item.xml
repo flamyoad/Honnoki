@@ -1,65 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clickable="true"
     android:focusable="true"
-    android:background="?android:selectableItemBackground"
-    android:padding="8dp">
+    android:foreground="?android:attr/selectableItemBackground"
+    android:layout_margin="4dp"
+    app:cardElevation="8dp">
 
-    <com.github.florent37.shapeofview.shapes.RoundRectView
-        android:id="@+id/roundRectView"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/content"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:elevation="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:shape_roundRect_borderColor="@color/maskColor"
-        app:shape_roundRect_borderWidth="2dp"
-        app:shape_roundRect_bottomLeftRadius="2dp"
-        app:shape_roundRect_bottomRightRadius="2dp"
-        app:shape_roundRect_topLeftRadius="2dp"
-        app:shape_roundRect_topRightRadius="2dp">
+        android:layout_height="wrap_content"
+        android:background="#B3000000">
 
         <ImageView
             android:id="@+id/coverImage"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:adjustViewBounds="true"
             android:scaleType="centerCrop"
-            tools:src="@drawable/arisa_lewd" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1.5"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:srcCompat="@drawable/arisa_lewd" />
 
-    </com.github.florent37.shapeofview.shapes.RoundRectView>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="#B3000000"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
-    <TextView
-        android:id="@+id/txtTitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:ellipsize="end"
-        android:lines="1"
-        android:layout_marginTop="8dp"
-        android:layout_marginHorizontal="4dp"
-        android:textColor="@color/mainTextColor"
-        android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="@+id/roundRectView"
-        app:layout_constraintStart_toStartOf="@+id/roundRectView"
-        app:layout_constraintTop_toBottomOf="@+id/roundRectView"
-        tools:text="@string/manga_title" />
+            <TextView
+                android:id="@+id/txtTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:maxLines="2"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:layout_marginHorizontal="4dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Capsule Hotel ni Tomattara Oni Joushi Ga Ore no Shitta Joushi Ga Ore no Shitta" />
 
-    <TextView
-        android:id="@+id/txtInformation"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:ellipsize="end"
-        android:lines="1"
-        android:textColor="@color/subTextColor"
-        android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="@+id/txtTitle"
-        app:layout_constraintStart_toStartOf="@+id/txtTitle"
-        app:layout_constraintTop_toBottomOf="@+id/txtTitle"
-        tools:text="@string/manga_title" />
+            <TextView
+                android:id="@+id/txtInformation"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:textColor="#CFCFCF"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/txtTitle"
+                app:layout_constraintTop_toBottomOf="@+id/txtTitle"
+                tools:text="120" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

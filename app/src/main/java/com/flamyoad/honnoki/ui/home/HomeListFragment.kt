@@ -1,5 +1,6 @@
 package com.flamyoad.honnoki.ui.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,9 +15,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.adapter.MangaAdapter
 import com.flamyoad.honnoki.databinding.FragmentHomeListBinding
+import com.flamyoad.honnoki.dialog.SourceSwitcherDialog
 import com.flamyoad.honnoki.model.Manga
 import com.flamyoad.honnoki.model.MangaType
+import com.flamyoad.honnoki.model.Source
 import com.flamyoad.honnoki.model.TabType
+import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
 import kotlinx.android.synthetic.main.fragment_home_list.view.*
 import kotlinx.coroutines.flow.collectLatest
@@ -81,7 +85,10 @@ class HomeListFragment : Fragment() {
     }
 
     private fun openManga(manga: Manga) {
+        val intent = Intent(requireContext(), MangaOverviewActivity::class.java).apply {
 
+        }
+        requireContext().startActivity(intent)
     }
 
     companion object {
