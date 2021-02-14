@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginEnd="8dp">
 
+    <!-- Rectangular Chip -->
     <com.google.android.material.chip.Chip
         android:id="@+id/chip"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:textColor="@color/white"
-        app:chipBackgroundColor="@color/colorAccent"
-        app:chipStrokeColor="@color/colorPrimary" />
+        app:chipBackgroundColor="@color/flower_petal_deep"
+        app:chipCornerRadius="0dp"
+        app:chipStrokeColor="@color/flower_petal_deep"
+        app:chipStrokeWidth="1dp" />
 
 </FrameLayout>

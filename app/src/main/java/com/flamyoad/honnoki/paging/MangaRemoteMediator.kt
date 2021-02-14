@@ -1,5 +1,7 @@
 package com.flamyoad.honnoki.paging
 
+import android.util.Log
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
@@ -13,6 +15,7 @@ import com.flamyoad.honnoki.model.Source
 import retrofit2.HttpException
 import java.io.IOException
 
+@ExperimentalPagingApi
 class MangaRemoteMediator(
     private val api: BaseApi,
     private val db: AppDatabase,
@@ -33,7 +36,6 @@ class MangaRemoteMediator(
         }
 
         try {
-
             val mangas = when (mangaType) {
                 MangaType.RECENTLY -> api.searchForLatestManga(page)
                 MangaType.TRENDING -> api.searchForTrendingManga(page)

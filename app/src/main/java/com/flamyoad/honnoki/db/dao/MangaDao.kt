@@ -2,7 +2,6 @@ package com.flamyoad.honnoki.db.dao
 
 import androidx.paging.PagingSource
 import androidx.room.*
-import com.flamyoad.honnoki.db.typeconverters.SourceConverter
 import com.flamyoad.honnoki.model.Manga
 import com.flamyoad.honnoki.model.MangaType
 import com.flamyoad.honnoki.model.Source
@@ -11,7 +10,7 @@ import com.flamyoad.honnoki.model.Source
 interface MangaDao {
 
     @Query("""
-        SELECT * FROM manga 
+        SELECT * FROM manga
         WHERE source = :source AND type = :type
         ORDER BY id
         """)

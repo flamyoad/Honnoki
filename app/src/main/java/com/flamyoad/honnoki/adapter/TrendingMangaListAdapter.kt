@@ -1,6 +1,6 @@
 package com.flamyoad.honnoki.adapter
 
-import android.util.Log
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,16 +10,15 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.flamyoad.honnoki.R
-import com.flamyoad.honnoki.databinding.MangaListItemBinding
+import com.flamyoad.honnoki.databinding.MangaTrendingListItemBinding
 import com.flamyoad.honnoki.model.Manga
-import com.github.ybq.android.spinkit.SpinKitView
 
-class MangaAdapter(private val onItemClick: (Manga) -> Unit) :
-    PagingDataAdapter<Manga, MangaAdapter.MangaViewHolder>(MANGA_COMPARATOR) {
+class TrendingMangaListAdapter(private val onItemClick: (Manga) -> Unit) :
+    PagingDataAdapter<Manga, TrendingMangaListAdapter.MangaViewHolder>(MANGA_COMPARATOR) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MangaViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.manga_list_item, parent, false)
+            .inflate(R.layout.manga_trending_list_item, parent, false)
 
         val holder = MangaViewHolder(view)
 
@@ -36,16 +35,15 @@ class MangaAdapter(private val onItemClick: (Manga) -> Unit) :
 
     override fun onBindViewHolder(holder: MangaViewHolder, position: Int) {
         val manga = getItem(position) ?: return
-        Log.d("debugs", "onBind called")
         holder.bind(manga)
     }
 
     inner class MangaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val binding = MangaListItemBinding.bind(itemView)
+        private val binding = MangaTrendingListItemBinding.bind(itemView)
 
         fun bind(manga: Manga) {
             val loadingIndicator = CircularProgressDrawable(itemView.context).apply {
-                setColorSchemeColors(R.color.white)
+                setColorSchemeColors(Color.WHITE)
                 centerRadius = 50f
                 strokeWidth = 5f
             }

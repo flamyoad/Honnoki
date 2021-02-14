@@ -9,28 +9,25 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.paging.LoadState
+import androidx.paging.ExperimentalPagingApi
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.flamyoad.honnoki.R
-import com.flamyoad.honnoki.adapter.MangaAdapter
+import com.flamyoad.honnoki.adapter.RecentMangaListAdapter
+import com.flamyoad.honnoki.adapter.TrendingMangaAdapter
 import com.flamyoad.honnoki.databinding.FragmentHomeListBinding
-import com.flamyoad.honnoki.dialog.SourceSwitcherDialog
 import com.flamyoad.honnoki.model.Manga
-import com.flamyoad.honnoki.model.MangaType
-import com.flamyoad.honnoki.model.Source
 import com.flamyoad.honnoki.model.TabType
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
-import kotlinx.android.synthetic.main.fragment_home_list.view.*
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+@ExperimentalPagingApi
 class HomeListFragment : Fragment() {
     private val viewModel: HomeViewModel by activityViewModels()
     private val binding by viewLifecycleLazy { FragmentHomeListBinding.bind(requireView()) }
-
-    private val mangaAdapter: MangaAdapter = MangaAdapter(this::openManga)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,36 +39,42 @@ class HomeListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
-
-        binding.swipeRefreshLayout.setOnRefreshListener {
-            mangaAdapter.refresh()
-        }
     }
 
     private fun initRecyclerView() {
+        val trendingMangaAdapter = TrendingMangaAdapter(requireContext(), this::openManga)
+        val recentMangaAdapter = RecentMangaListAdapter(this::openManga)
+
+        val concatAdapter = ConcatAdapter(trendingMangaAdapter, recentMangaAdapter)
         val layoutManager = GridLayoutManager(requireContext(), 2)
+        layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                if (position == 0)
+                    return 2
+                else
+                    return 1
+            }
+        }
 
         with(binding.listManga) {
-            this.adapter = mangaAdapter
+            this.adapter = concatAdapter
             this.layoutManager = layoutManager
         }
 
-        val tabType = MangaType.fromName(arguments?.getString(TAB_TYPE))
-
         lifecycleScope.launch {
-            val mangaFlow = when (tabType) {
-                MangaType.RECENTLY -> viewModel.getRecentManga()
-                MangaType.TRENDING -> viewModel.getTrendingManga()
-            }
-            mangaFlow.collectLatest {
-                mangaAdapter.submitData(it)
-                binding.swipeRefreshLayout.isRefreshing = false
+            viewModel.getTrendingManga().collectLatest {
+                trendingMangaAdapter.submitDataToChild(it)
             }
         }
 
+        lifecycleScope.launch {
+            viewModel.getRecentManga().collectLatest {
+                recentMangaAdapter.submitData(it)
+            }
+        }
 
         // Listener to determine whether to shrink or expand FAB (Shrink after 1st item in list is no longer visible)
-        binding.listManga.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+        binding.listManga.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val firstVisiblePosition = layoutManager.findFirstVisibleItemPosition()
@@ -82,6 +85,11 @@ class HomeListFragment : Fragment() {
                 }
             }
         })
+
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            trendingMangaAdapter.refresh()
+            recentMangaAdapter.refresh()
+        }
     }
 
     private fun openManga(manga: Manga) {

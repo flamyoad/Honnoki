@@ -17,6 +17,18 @@
     <color name="white">#FFFFFF</color>
     <color name="navDrawerScrim">#8D000000</color>
     <color name="maskColor">#88000000</color>
+    <color name="deepMaskColor">#A9000000</color>
     <color name="divider">#E4E1E1</color>
+
+    <!-- Flower color palette-->
+    <color name="flower_stem">#8eb9a8</color>
+    <color name="flower_ray">#fefbd0</color>
+    <color name="flower_petal_light">#fdcfb7</color>
+    <color name="flower_petal_medium">#f4828b</color>
+    <color name="flower_petal_deep">#775d6a</color>
+
+    <color name="flower_petal_sub_medium">#FF98A0</color>
+    <color name="flower_petal_dark">#532A3F</color>
+
 
 </resources>

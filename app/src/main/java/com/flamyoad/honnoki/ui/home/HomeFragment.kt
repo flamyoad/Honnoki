@@ -7,6 +7,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.paging.ExperimentalPagingApi
 
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.adapter.HomeListFragmentAdapter
@@ -19,6 +20,7 @@ import com.flamyoad.honnoki.utils.DepthPageTransformer
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
 import com.google.android.material.tabs.TabLayoutMediator
 
+@ExperimentalPagingApi
 class HomeFragment : Fragment(), SourceSwitcherDialog.Listener {
     private val viewModel: HomeViewModel by activityViewModels()
     private val binding by viewLifecycleLazy { FragmentHomeBinding.bind(requireView()) }
@@ -57,6 +59,7 @@ class HomeFragment : Fragment(), SourceSwitcherDialog.Listener {
         with(binding.viewPager) {
             adapter = pagerAdapter
             setPageTransformer(DepthPageTransformer())
+            isUserInputEnabled = false
         }
 
         TabLayoutMediator(binding.tabLayoutSub, binding.viewPager) { tab, position->

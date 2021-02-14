@@ -1,5 +1,6 @@
 package com.flamyoad.honnoki.api
 
+import android.util.Log
 import com.flamyoad.honnoki.model.Manga
 import com.flamyoad.honnoki.network.MangakalotService
 import com.flamyoad.honnoki.parser.MangakalotParser

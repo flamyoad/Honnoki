@@ -1,5 +1,6 @@
 package com.flamyoad.honnoki.repository
 
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -13,6 +14,7 @@ import com.flamyoad.honnoki.paging.MangaRemoteMediator
 import kotlinx.coroutines.flow.Flow
 import retrofit2.Retrofit
 
+@ExperimentalPagingApi
 class MangakalotRepository(db: AppDatabase) : BaseMangaRepository(db) {
     private val service: MangakalotService
     private val api: MangakalotApi

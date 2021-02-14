@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.flamyoad.honnoki.db.AppDatabase
@@ -15,9 +16,10 @@ import com.flamyoad.honnoki.repository.MangakalotRepository
 import com.flamyoad.honnoki.repository.SenMangaRepository
 import kotlinx.coroutines.flow.Flow
 
+@ExperimentalPagingApi
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val db = AppDatabase.getInstance(application)
-    private var mangaRepo: BaseMangaRepository = SenMangaRepository(db)
+    private var mangaRepo: BaseMangaRepository = MangakalotRepository(db)
 
     init {
 

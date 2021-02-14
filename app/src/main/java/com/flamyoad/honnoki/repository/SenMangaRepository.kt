@@ -1,5 +1,6 @@
 package com.flamyoad.honnoki.repository
 
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -14,6 +15,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import retrofit2.Retrofit
 
+
+@ExperimentalPagingApi
 class SenMangaRepository(db: AppDatabase): BaseMangaRepository(db) {
     private val service: SenMangaService
     private val api: SenMangaApi

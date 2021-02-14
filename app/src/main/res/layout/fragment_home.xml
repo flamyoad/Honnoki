@@ -32,13 +32,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/colorAccent"
+                android:background="@color/flower_petal_medium"
                 app:tabIndicatorColor="@color/colorPrimary"
                 app:tabIndicatorFullWidth="false"
                 app:tabIndicatorHeight="4dp"
                 app:tabMode="scrollable"
                 app:tabRippleColor="@null"
-                app:tabSelectedTextColor="@color/colorPrimary"
+                app:tabSelectedTextColor="@color/white"
                 app:tabTextColor="@color/white">
 
                 <com.google.android.material.tabs.TabItem
@@ -61,8 +61,8 @@
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:background="?android:selectableItemBackgroundBorderless"
-                android:backgroundTint="@android:color/transparent"
+                android:background="@color/flower_petal_medium"
+                android:backgroundTint="@null"
                 android:paddingHorizontal="12dp"
                 android:src="@drawable/ic_filter_list_black_24dp" />
 
@@ -75,11 +75,11 @@
             android:layout_height="wrap_content"
             android:background="@android:color/white"
             app:tabIndicator="@android:color/transparent"
-            app:tabIndicatorColor="@color/colorAccent"
+            app:tabIndicatorColor="@color/flower_petal_sub_medium"
             app:tabIndicatorHeight="4dp"
             app:tabMode="scrollable"
             app:tabRippleColor="@null"
-            app:tabSelectedTextColor="@color/colorAccent"
+            app:tabSelectedTextColor="@color/flower_petal_sub_medium"
             app:tabTextColor="@color/subTextColor">
 
         </com.google.android.material.tabs.TabLayout>
@@ -100,7 +100,7 @@
         android:layout_margin="18dp"
         android:text="MangaFox"
         android:textColor="@color/white"
-        app:backgroundTint="@color/colorAccent"
+        app:backgroundTint="@color/flower_petal_medium"
         app:icon="@drawable/ic_call_split_white_24dp"
         app:iconTint="@color/white" />
 
