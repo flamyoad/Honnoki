@@ -6,7 +6,7 @@ import retrofit2.http.Query
 
 interface SenMangaService {
     companion object {
-        val baseUrl = "https://raw.senmanga.com/"
+        const val baseUrl = "https://raw.senmanga.com/"
     }
 
     @GET("directory/last_update")

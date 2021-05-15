@@ -5,7 +5,9 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="manga_title">Ore no Imouto ga Konna ni Kawaii Wake ga Nai - Ayase IF Ore no Imouto ga Konna ni Kawaii Wake ga Nai - Ayase IF</string>
-    <string name="manga_latest_chap">CHAPTER 143</string>
+    <string name="manga_chap_title">CHAPTER 143</string>
+
+    <string name="manga_chap_date">Feb–19-20</string>
 
     <string name="lorem_ipsum">
         On the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desire, that they cannot foresee the pain and trouble that are bound to ensue; and equal blame belongs to those who fail in their duty through weakness of will, which is the same as saying through shrinking from toil and pain. These cases are perfectly simple and easy to distinguish. In a free hour, when our power of choice is untrammelled and when nothing prevents our being able to do what we like best, every pleasure is to be welcomed and every pain avoided. But in certain circumstances and owing to the claims of duty or the obligations of business it will frequently occur that pleasures have to be repudiated and annoyances accepted. The wise man therefore always holds in these matters to this principle of selection: he rejects pleasures to secure other greater pleasures, or else he endures pains to avoid worse pains.
@@ -14,4 +16,5 @@
     <string name="lorem_ipsum_CH">
         他什開臺好；民去書時目時上接理無自這保又自當，斷速是又，現念爾一人中可，眾和香間樂轉英應引新也臺的語早縣。太地個告果沒企往期斷施層同果例。關境可得。告而陸衣力景像前音色長話東為終精影事由，面藝屋持做物下評起這景！我開的然民力來成門女出於示爾能的自每朋，用水開詩隊，因著工資不子的優舉總情同在人夫觀進軍比？紙理節……麼雖都……是計半委？兩傳待一把形去持。到種復的如這遠友省金之兒考何子。此計都連國製對登選突進時得行在！人表自同提聽城福、是每都大招價們動片受不率？動足風統構為呢益型她她石是這不心界？學部正影興它學保企法無景國什院氣備地教？出想照下人天害不麼冷就景布果為時說路底果感出有？可父種盡致，月什重院白出灣歌始了裡得……倒所教正得資造有留不然腦倒不利師裡也種機如驗能此日，開善不文失信件取人險師世、都的人？關可的且公進回向要停育更賣！感麼都銷跟你遊富大天無行多時他過技學一實統你力外叫求藝一體正無關卻。
     </string>
+
 </resources>

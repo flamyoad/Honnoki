@@ -86,10 +86,9 @@ dependencies {
     implementation "com.squareup.moshi:moshi:$moshi_version"
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshi_version"
 
-    def lifecycle_version = "2.2.0"
+    def lifecycle_version = "2.3.1"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
-//    kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
 
     def room_version = "2.3.0-alpha02"
@@ -104,7 +103,9 @@ dependencies {
     kapt "com.github.bumptech.glide:compiler:$glide_version"
 
     def paging_version = "3.0.0-beta01"
-    implementation("androidx.paging:paging-runtime:$paging_version")
+    implementation("androidx.paging:paging-runtime:$paging_version") {
+        exclude group: 'org.jetbrains.kotlinx', module: 'kotlinx-coroutines-core-jvm'
+    }
     testImplementation "androidx.paging:paging-common:$paging_version"
 
     def work_version = "2.5.0"
@@ -140,4 +141,6 @@ dependencies {
     implementation 'androidx.palette:palette:1.0.0'
 
     implementation 'com.google.android:flexbox:2.0.1'
+
+    implementation  'com.github.Kennyc1012:MultiStateView:2.2.0'
 }

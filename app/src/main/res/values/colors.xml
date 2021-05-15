@@ -30,5 +30,10 @@
     <color name="flower_petal_sub_medium">#FF98A0</color>
     <color name="flower_petal_dark">#532A3F</color>
 
+    <color name="yanfei_primary_red">#991818</color>
+    <color name="yanfei_secondary_color">#f0d488</color>
+    <color name="yanfei_pink">#ecb9a6</color>
+    <color name="yanfei_green">#547f6b</color>
+
 
 </resources>

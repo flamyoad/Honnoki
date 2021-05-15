@@ -22,8 +22,8 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="?android:attr/windowBackground"
-        app:itemIconTint="@color/bottom_nav_colors"
-        app:itemTextColor="@color/bottom_nav_colors"
+        app:itemIconTint="@color/yanfei_pink"
+        app:itemTextColor="@color/yanfei_pink"
         app:menu="@menu/bottom_nav_menu">
 
     </com.google.android.material.bottomnavigation.BottomNavigationView>

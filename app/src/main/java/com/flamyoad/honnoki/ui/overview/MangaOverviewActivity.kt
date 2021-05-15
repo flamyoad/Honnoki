@@ -3,31 +3,54 @@ package com.flamyoad.honnoki.ui.overview
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.doOnLayout
+import androidx.core.view.isVisible
+import androidx.paging.ExperimentalPagingApi
+import com.bumptech.glide.Glide
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.adapter.MangaOverviewFragmentAdapter
 import com.flamyoad.honnoki.databinding.ActivityMangaOverviewBinding
+import com.flamyoad.honnoki.model.MangaOverview
+import com.flamyoad.honnoki.model.Source
+import com.flamyoad.honnoki.model.State
 import com.flamyoad.honnoki.utils.AppBarStateChangeListener
+import com.flamyoad.honnoki.utils.extensions.ViewUtils
 import com.flamyoad.honnoki.utils.extensions.toast
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.kennyc.view.MultiStateView
 
+@ExperimentalPagingApi
 class MangaOverviewActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMangaOverviewBinding
+    private var _binding: ActivityMangaOverviewBinding? = null
+    val binding get() = requireNotNull(_binding)
+
+    private val viewModel: MangaOverviewViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMangaOverviewBinding.inflate(layoutInflater)
-        setContentView(binding.root) // R.layout.activity_manga_overview
+        _binding = ActivityMangaOverviewBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         setSupportActionBar(binding.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.title = ""
 
-        setupViewPager()
+        if (savedInstanceState == null) {
+            viewModel.initMangaOverview(
+                intent.getStringExtra(MANGA_URL) ?: "",
+                intent.getStringExtra(MANGA_SOURCE) ?: "",
+            )
+        }
 
+        setupUi()
+        setupViewPager()
+    }
+
+    private fun setupUi() {
         binding.appbarLayout.addOnOffsetChangedListener(object: AppBarStateChangeListener() {
             override fun onStateChanged(appBarLayout: AppBarLayout?, state: State?) {
                 when (state) {
@@ -41,12 +64,15 @@ class MangaOverviewActivity : AppCompatActivity() {
         binding.btnRead.setOnClickListener {
             toast("clicked")
         }
-    }
 
-//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-//        menuInflater.inflate(R.menu.activity_manga_overview_menu, menu)
-//        return true
-//    }
+        viewModel.mangaOverview().observe(this) {
+            when (it) {
+                is State.Success -> { showMangaOverview(it.value) }
+//                is State.Error -> { binding.imageMangaLayout.viewState = MultiStateView.ViewState.ERROR }
+//                is State.Loading -> { binding.imageMangaLayout.viewState = MultiStateView.ViewState.LOADING }
+            }
+        }
+    }
 
     private fun setupViewPager() {
         val tabList = listOf(TAB_SUMMARY, TAB_CHAPTERS)
@@ -64,8 +90,40 @@ class MangaOverviewActivity : AppCompatActivity() {
         }.attach()
     }
 
+    private fun showMangaOverview(overview: MangaOverview) {
+        with(binding) {
+            Glide.with(this@MangaOverviewActivity)
+                .load(overview.coverImage)
+                .into(imageBackground)
+
+            Glide.with(this@MangaOverviewActivity)
+                .load(overview.coverImage)
+                .placeholder(ViewUtils.getLoadingIndicator(this@MangaOverviewActivity))
+                .error(R.drawable.ic_error_outline_black_24dp)
+                .into(imageManga)
+
+            if (overview.alternativeTitle.isBlank()) {
+                txtAlternateName.isVisible = false
+            } else {
+                txtAlternateName.text = overview.alternativeTitle
+            }
+
+            txtTitle.text = overview.mainTitle
+            txtAlternateName.text = overview.alternativeTitle
+            txtAuthor.text = overview.authors.joinToString { it.name }
+            txtStatus.text = overview.status
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
+
     companion object {
         const val TAB_SUMMARY = "Summary"
         const val TAB_CHAPTERS = "Chapters"
+        const val MANGA_URL = "Manga Url"
+        const val MANGA_SOURCE = "Manga Source"
     }
 }

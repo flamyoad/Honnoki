@@ -1,12 +1,13 @@
 package com.flamyoad.honnoki.api
 
-import android.util.Log
+import com.flamyoad.honnoki.model.Chapter
 import com.flamyoad.honnoki.model.Manga
+import com.flamyoad.honnoki.model.MangaOverview
+import com.flamyoad.honnoki.model.State
 import com.flamyoad.honnoki.network.MangakalotService
 import com.flamyoad.honnoki.parser.MangakalotParser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import retrofit2.await
 
 class MangakalotApi(private val service: MangakalotService): BaseApi {
     private val parser = MangakalotParser()
@@ -15,8 +16,8 @@ class MangakalotApi(private val service: MangakalotService): BaseApi {
         val response = service.getLatestManga(index)
 
         return withContext(Dispatchers.Default) {
-            val url = response.string()
-            val mangaList = parser.parseForRecentMangas(url)
+            val html = response.string()
+            val mangaList = parser.parseForRecentMangas(html)
 
             return@withContext mangaList
         }
@@ -26,10 +27,40 @@ class MangakalotApi(private val service: MangakalotService): BaseApi {
         val response = service.getTrendingManga(index)
 
         return withContext(Dispatchers.Default) {
-            val url = response.string()
-            val mangaList = parser.parseForTrendingManga(url)
+            val html = response.string()
+            val mangaList = parser.parseForTrendingManga(html)
 
             return@withContext mangaList
+        }
+    }
+
+    suspend fun searchForMangaOverview(link: String): State<MangaOverview> {
+        val response = try {
+            service.getMangaOverview(link)
+        } catch (e: Exception) {
+            return State.Error(e)
+        }
+
+        return withContext(Dispatchers.Default) {
+            val html = response.string()
+
+            val mangaOverview = parser.parseForMangaOverview(html, link)
+            return@withContext State.Success(mangaOverview)
+        }
+    }
+
+    suspend fun searchForChapterList(link: String): State<List<Chapter>> {
+        val response = try {
+            service.getMangaOverview(link)
+        } catch (e: Exception) {
+            return State.Error(e)
+        }
+
+        return withContext(Dispatchers.Default) {
+            val html = response.string()
+
+            val mangaOverview = parser.parseForChapterList(html)
+            return@withContext State.Success(mangaOverview)
         }
     }
 }

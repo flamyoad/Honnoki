@@ -34,8 +34,8 @@
                 android:layout_height="match_parent"
                 android:alpha="0.15"
                 android:scaleType="centerCrop"
-                android:src="@drawable/fatestaynight"
-                app:layout_collapseMode="parallax" />
+                app:layout_collapseMode="parallax"
+                tools:src="@drawable/fatestaynight" />
 
             <!-- app:layout_collapseMode="parallax" -->
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -62,16 +62,18 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/btnBack" />
 
-                <ImageView
+
+                <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/imageManga"
                     android:layout_width="130dp"
                     android:layout_height="170dp"
                     android:layout_marginStart="8dp"
                     android:scaleType="fitXY"
-                    android:src="@drawable/fatestaynight"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:shapeAppearanceOverlay="@style/roundedCorners"
+                    tools:src="@drawable/fatestaynight" />
 
                 <TextView
                     android:id="@+id/txtTitle"
@@ -79,12 +81,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
-                    android:text="Fate/Stay night Heaven's Feel"
+                    android:maxLines="3"
                     android:textColor="@color/white"
                     android:textSize="16sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/imageManga"
-                    app:layout_constraintTop_toTopOf="@+id/imageManga" />
+                    app:layout_constraintTop_toTopOf="@+id/imageManga"
+                    tools:text="@string/lorem_ipsum_CH" />
 
                 <TextView
                     android:id="@+id/txtAlternateName"
@@ -92,11 +95,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:layout_marginEnd="16dp"
-                    android:text="Fate/stay night Heaven's Feel"
+                    android:ellipsize="end"
+                    android:lines="1"
                     android:textColor="@color/subLightTextColor"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/txtTitle"
-                    app:layout_constraintTop_toBottomOf="@+id/txtTitle" />
+                    app:layout_constraintTop_toBottomOf="@+id/txtTitle"
+                    tools:text="Fate/stay night Heaven's Feel" />
 
                 <TextView
                     android:id="@+id/lblAuthor"
@@ -115,12 +120,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="16dp"
-                    android:text="Type Moon"
                     android:textColor="@color/white"
-                    app:layout_constraintBottom_toBottomOf="@+id/lblAuthor"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/lblAuthor"
-                    app:layout_constraintTop_toTopOf="@+id/lblAuthor" />
+                    app:layout_constraintTop_toTopOf="@+id/lblAuthor"
+                    tools:text="Type Moon" />
 
                 <TextView
                     android:id="@+id/lblGroup"
@@ -136,15 +140,14 @@
                 <TextView
                     android:id="@+id/txtGroup"
                     android:layout_width="0dp"
-                    android:layout_height="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="16dp"
-                    android:text="Task Ohna"
                     android:textColor="@color/white"
-                    app:layout_constraintBottom_toBottomOf="@+id/lblGroup"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/lblGroup"
-                    app:layout_constraintTop_toTopOf="@+id/lblGroup" />
+                    app:layout_constraintTop_toTopOf="@+id/lblGroup"
+                    tools:text="Task Ohna" />
 
                 <TextView
                     android:id="@+id/lblStatus"
@@ -163,12 +166,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="16dp"
-                    android:text="Ongoing"
                     android:textColor="@color/white"
                     app:layout_constraintBottom_toBottomOf="@+id/lblStatus"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/lblStatus"
-                    app:layout_constraintTop_toTopOf="@+id/lblStatus" />
+                    app:layout_constraintTop_toTopOf="@+id/lblStatus"
+                    tools:text="Ongoing" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -7,17 +7,24 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.paging.ExperimentalPagingApi
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.adapter.GenreListAdapter
 import com.flamyoad.honnoki.databinding.FragmentMangaSummaryBinding
+import com.flamyoad.honnoki.model.MangaOverview
+import com.flamyoad.honnoki.model.State
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
+import com.kennyc.view.MultiStateView
 
+@ExperimentalPagingApi
 class MangaSummaryFragment : Fragment() {
     private val viewModel: MangaOverviewViewModel by activityViewModels()
     private val binding by viewLifecycleLazy { FragmentMangaSummaryBinding.bind(requireView()) }
+
+    private var genreAdapter: GenreListAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,7 +40,7 @@ class MangaSummaryFragment : Fragment() {
     }
 
     private fun initRecyclerView() {
-        val genreAdapter = GenreListAdapter()
+        genreAdapter = GenreListAdapter()
         val flexLayoutManager = FlexboxLayoutManager(requireContext()).apply {
             flexDirection = FlexDirection.ROW
             flexWrap = FlexWrap.WRAP
@@ -44,9 +51,22 @@ class MangaSummaryFragment : Fragment() {
             layoutManager = flexLayoutManager
         }
 
-        viewModel.genreList().observe(viewLifecycleOwner, Observer {
-            genreAdapter.setList(it)
-        })
+        viewModel.mangaOverview().observe(viewLifecycleOwner) {
+            when (it) {
+                is State.Success -> { showMangaOverview(it.value) }
+                is State.Error -> { binding.multiStateView.viewState = MultiStateView.ViewState.ERROR }
+                is State.Loading -> { binding.multiStateView.viewState = MultiStateView.ViewState.LOADING }
+            }
+        }
+    }
+
+    private fun showMangaOverview(overview: MangaOverview) {
+        genreAdapter?.setList(overview.genres)
+
+        with(binding) {
+            multiStateView.viewState = MultiStateView.ViewState.CONTENT
+            expandableTextView.text = overview.summary
+        }
     }
 
     companion object {

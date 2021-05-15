@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.flamyoad.honnoki.R
+import com.flamyoad.honnoki.adapter.MangaLoadStateAdapter
 import com.flamyoad.honnoki.adapter.RecentMangaListAdapter
 import com.flamyoad.honnoki.adapter.TrendingMangaAdapter
 import com.flamyoad.honnoki.databinding.FragmentHomeListBinding
@@ -43,7 +44,10 @@ class HomeListFragment : Fragment() {
 
     private fun initRecyclerView() {
         val trendingMangaAdapter = TrendingMangaAdapter(requireContext(), this::openManga)
+
         val recentMangaAdapter = RecentMangaListAdapter(this::openManga)
+
+        recentMangaAdapter.withLoadStateFooter(MangaLoadStateAdapter { recentMangaAdapter.retry() })
 
         val concatAdapter = ConcatAdapter(trendingMangaAdapter, recentMangaAdapter)
         val layoutManager = GridLayoutManager(requireContext(), 2)
@@ -89,12 +93,14 @@ class HomeListFragment : Fragment() {
         binding.swipeRefreshLayout.setOnRefreshListener {
             trendingMangaAdapter.refresh()
             recentMangaAdapter.refresh()
+            binding.swipeRefreshLayout.isRefreshing = false
         }
     }
 
     private fun openManga(manga: Manga) {
         val intent = Intent(requireContext(), MangaOverviewActivity::class.java).apply {
-
+            putExtra(MangaOverviewActivity.MANGA_URL, manga.link)
+            putExtra(MangaOverviewActivity.MANGA_SOURCE, manga.source.toString())
         }
         requireContext().startActivity(intent)
     }

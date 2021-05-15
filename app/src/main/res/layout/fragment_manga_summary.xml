@@ -1,34 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.overview.MangaSummaryFragment"
-    android:animateLayoutChanges="true">
+    android:animateLayoutChanges="true"
+    tools:context=".ui.overview.MangaSummaryFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.kennyc.view.MultiStateView
+        android:id="@+id/multiStateView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:msv_errorView="@layout/recyclerview_error_layout"
+        app:msv_loadingView="@layout/recyclerview_loading_layout"
+        tools:context=".ui.overview.MangaSummaryFragment">
 
-        <com.flamyoad.honnoki.utils.ExpandableTextView
-            android:id="@+id/expandableTextView"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="@string/lorem_ipsum"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/listGenres"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:layout_constraintTop_toBottomOf="@id/expandableTextView"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            <com.flamyoad.honnoki.utils.ExpandableTextView
+                android:id="@+id/expandableTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="@string/lorem_ipsum"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/listGenres"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/expandableTextView" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.kennyc.view.MultiStateView>
 
 </androidx.core.widget.NestedScrollView>
+
