@@ -1,4 +1,4 @@
-package com.flamyoad.honnoki.utils.extensions
+package com.flamyoad.honnoki.utils
 
 import android.content.Context
 import android.graphics.drawable.Drawable

@@ -61,11 +61,6 @@ class HomeFragment : Fragment(), SourceSwitcherDialog.Listener {
             setPageTransformer(DepthPageTransformer())
             isUserInputEnabled = false
         }
-
-        TabLayoutMediator(binding.tabLayoutSub, binding.viewPager) { tab, position->
-            tab.text = tabList[position].type.readableName
-            binding.viewPager.setCurrentItem(tab.position, true)
-        }.attach()
     }
 
     override fun onSourceSwitch(source: Source) {

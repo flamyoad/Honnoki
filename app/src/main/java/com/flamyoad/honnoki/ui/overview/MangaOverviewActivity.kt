@@ -1,12 +1,8 @@
 package com.flamyoad.honnoki.ui.overview
 
 import android.os.Bundle
-import android.util.Log
-import android.view.Menu
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
 import androidx.paging.ExperimentalPagingApi
 import com.bumptech.glide.Glide
@@ -14,14 +10,12 @@ import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.adapter.MangaOverviewFragmentAdapter
 import com.flamyoad.honnoki.databinding.ActivityMangaOverviewBinding
 import com.flamyoad.honnoki.model.MangaOverview
-import com.flamyoad.honnoki.model.Source
 import com.flamyoad.honnoki.model.State
 import com.flamyoad.honnoki.utils.AppBarStateChangeListener
-import com.flamyoad.honnoki.utils.extensions.ViewUtils
+import com.flamyoad.honnoki.utils.ViewUtils
 import com.flamyoad.honnoki.utils.extensions.toast
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.kennyc.view.MultiStateView
 
 @ExperimentalPagingApi
 class MangaOverviewActivity : AppCompatActivity() {

@@ -2,6 +2,7 @@ package com.flamyoad.honnoki.parser
 
 import com.flamyoad.honnoki.model.*
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Element
 
 class MangakalotParser {
 
@@ -17,9 +18,9 @@ class MangakalotParser {
             val title = nameDiv.text()
             val link = nameDiv.attr("href")
 
-            val coverImage = div.selectFirst(".genres-item-img > img").attr("src")
-            val latestChapter = div.selectFirst(".genres-item-chap").text()
-            val viewCount = div.selectFirst(".genres-item-view").text()
+            val coverImage = div.selectFirst(".genres-item-img > img").attrNonNull("src")
+            val latestChapter = div.selectFirst(".genres-item-chap").textNonNull()
+            val viewCount = div.selectFirst(".genres-item-view").textNonNull()
 
             mangaList.add(
                 Manga(
@@ -46,12 +47,12 @@ class MangakalotParser {
         val mangaList = mutableListOf<Manga>()
         for (div in mangaDivs) {
             val nameDiv = div.selectFirst(".genres-item-name")
-            val title = nameDiv.text()
-            val link = nameDiv.attr("href")
+            val title = nameDiv.textNonNull()
+            val link = nameDiv.attrNonNull("href")
 
-            val coverImage = div.selectFirst(".genres-item-img > img").attr("src")
-            val latestChapter = div.selectFirst(".genres-item-chap").text()
-            val viewCount = div.selectFirst(".genres-item-view").text()
+            val coverImage = div.selectFirst(".genres-item-img > img").attrNonNull("src")
+            val latestChapter = div.selectFirst(".genres-item-chap").textNonNull()
+            val viewCount = div.selectFirst(".genres-item-view").textNonNull()
 
             mangaList.add(
                 Manga(
@@ -65,7 +66,6 @@ class MangakalotParser {
                 )
             )
         }
-
         return mangaList
     }
 
@@ -77,43 +77,40 @@ class MangakalotParser {
         val document = Jsoup.parse(html)
 
         val summary = document.selectFirst("#panel-story-info-description")
-            .ownText()
+            .ownTextNonNull()
 
         val mangaInfo = document.selectFirst("div.panel-story-info")
 
         val coverImage =
-            mangaInfo.selectFirst("div.story-info-left > span.info-image > img").attr("src")
+            mangaInfo.selectFirst("div.story-info-left > span.info-image > img").attrNonNull("src")
 
-        val mainTitle = mangaInfo.selectFirst("div.story-info-right > h1").text()
+        val mainTitle = mangaInfo.selectFirst("div.story-info-right > h1").textNonNull()
 
         // If the manga has no alternative title, the element is not present in the HTML
-        val alternativeTitle = try {
-            mangaInfo.selectFirst("i.info-alternative").parent().parent()
-                .selectFirst("td.table-value")
-                .text()
-        } catch (e: Exception) {
-            ""
-        }
+        val alternativeTitle = mangaInfo.selectFirst("i.info-alternative").parentNonNull().parentNonNull()
+            .selectFirst("td.table-value")
+            .textNonNull()
 
-        val authors = mangaInfo.selectFirst("i.info-author").parent().parent()
+
+        val authors = mangaInfo.selectFirst("i.info-author").parentNonNull().parentNonNull()
             .select("td.table-value > a")
             .map {
                 return@map Author(
-                    name = it.text(),
-                    link = it.attr("href")
+                    name = it.textNonNull(),
+                    link = it.attrNonNull("href")
                 )
             }
 
-        val status = mangaInfo.selectFirst("i.info-status").parent().parent()
+        val status = mangaInfo.selectFirst("i.info-status").parentNonNull().parentNonNull()
             .selectFirst("td.table-value")
-            .text()
+            .textNonNull()
 
-        val genres = mangaInfo.selectFirst("i.info-genres").parent().parent()
+        val genres = mangaInfo.selectFirst("i.info-genres").parentNonNull().parentNonNull()
             .select("td.table-value > a")
             .map {
                 return@map Genre(
-                    name = it.text(),
-                    link = it.attr("href")
+                    name = it.textNonNull(),
+                    link = it.attrNonNull("href")
                 )
             }
 
@@ -142,9 +139,9 @@ class MangakalotParser {
         return chapterList.map {
             val chapterLink = it.selectFirst(".chapter-name")
             Chapter(
-                title = chapterLink.text(),
-                link = chapterLink.attr("href"),
-                date = it.selectFirst(".chapter-time").text()
+                title = chapterLink.textNonNull(),
+                link = chapterLink.attrNonNull("href"),
+                date = it.selectFirst(".chapter-time").textNonNull()
             )
         }
     }
