@@ -17,13 +17,9 @@ import com.flamyoad.honnoki.repository.SenMangaRepository
 import kotlinx.coroutines.flow.Flow
 
 @ExperimentalPagingApi
-class HomeViewModel(application: Application) : AndroidViewModel(application) {
-    private val db = AppDatabase.getInstance(application)
-    private var mangaRepo: BaseMangaRepository = MangakalotRepository(db)
-
-    init {
-
-    }
+class HomeViewModel(val app: Application) : AndroidViewModel(app) {
+    private val db = AppDatabase.getInstance(app)
+    private var mangaRepo: BaseMangaRepository = MangakalotRepository(db, app.applicationContext)
 
     private val shouldShrinkFab = MutableLiveData<Boolean>(false)
     fun shouldShrinkFab(): LiveData<Boolean> = shouldShrinkFab
@@ -36,11 +32,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun switchMangaSource(source: Source) {
-        val newMangaRepo = when (source) {
-            Source.MANGAKALOT -> MangakalotRepository(db)
-            Source.SENMANGA -> SenMangaRepository(db)
-        }
-        mangaRepo = newMangaRepo
+        mangaRepo = BaseMangaRepository.get(source, db, app.applicationContext)
     }
 
     fun getSourceType(): Source = mangaRepo.getSourceType()

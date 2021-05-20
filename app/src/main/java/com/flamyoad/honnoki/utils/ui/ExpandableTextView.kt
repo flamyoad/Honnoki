@@ -1,12 +1,9 @@
-package com.flamyoad.honnoki.utils
+package com.flamyoad.honnoki.utils.ui
 
 import android.content.Context
-import android.os.Bundle
-import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.View
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.core.os.bundleOf
 import com.flamyoad.honnoki.R
 
 class ExpandableTextView : AppCompatTextView, View.OnClickListener {

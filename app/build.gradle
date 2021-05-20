@@ -142,5 +142,7 @@ dependencies {
 
     implementation 'com.google.android:flexbox:2.0.1'
 
-    implementation  'com.github.Kennyc1012:MultiStateView:2.2.0'
+    implementation 'com.github.Kennyc1012:MultiStateView:2.2.0'
+
+    implementation 'com.github.jd-alexander:LikeButton:0.2.3'
 }

@@ -11,9 +11,10 @@ import com.flamyoad.honnoki.adapter.MangaOverviewFragmentAdapter
 import com.flamyoad.honnoki.databinding.ActivityMangaOverviewBinding
 import com.flamyoad.honnoki.model.MangaOverview
 import com.flamyoad.honnoki.model.State
-import com.flamyoad.honnoki.utils.AppBarStateChangeListener
 import com.flamyoad.honnoki.utils.ViewUtils
+import com.flamyoad.honnoki.utils.ui.AppBarStateChangeListener
 import com.flamyoad.honnoki.utils.extensions.toast
+import com.flamyoad.honnoki.utils.ui.DepthPageTransformer
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -69,13 +70,13 @@ class MangaOverviewActivity : AppCompatActivity() {
     }
 
     private fun setupViewPager() {
-        val tabList = listOf(TAB_SUMMARY, TAB_CHAPTERS)
+        val tabList = listOf(TAB_NAME_SUMMARY, TAB_NAME_CHAPTERS)
 
         val pagerAdapter = MangaOverviewFragmentAdapter(tabList,this)
 
         with(binding.viewPager) {
             adapter = pagerAdapter
-            setPageTransformer(com.flamyoad.honnoki.utils.DepthPageTransformer())
+            setPageTransformer(DepthPageTransformer())
         }
 
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position->
@@ -115,9 +116,11 @@ class MangaOverviewActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val TAB_SUMMARY = "Summary"
-        const val TAB_CHAPTERS = "Chapters"
-        const val MANGA_URL = "Manga Url"
-        const val MANGA_SOURCE = "Manga Source"
+        const val TAB_NAME_SUMMARY = "Summary"
+        const val TAB_NAME_CHAPTERS = "Chapters"
+
+        const val MANGA_URL = "manga_url"
+        const val MANGA_SOURCE = "manga_source"
+        const val MANGA_TITLE = "manga_title"
     }
 }

@@ -16,8 +16,8 @@ import kotlinx.coroutines.launch
 import java.lang.IllegalArgumentException
 
 @ExperimentalPagingApi
-class MangaOverviewViewModel(application: Application) : AndroidViewModel(application) {
-    private val db = AppDatabase.getInstance(application)
+class MangaOverviewViewModel(private val app: Application) : AndroidViewModel(app) {
+    private val db = AppDatabase.getInstance(app)
 
     private lateinit var mangaRepo: BaseMangaRepository
 
@@ -34,7 +34,7 @@ class MangaOverviewViewModel(application: Application) : AndroidViewModel(applic
             return
         }
 
-        mangaRepo = BaseMangaRepository.get(source, db)
+        mangaRepo = BaseMangaRepository.get(source, db, app.applicationContext)
         viewModelScope.launch {
             val overview = mangaRepo.getMangaOverview(url)
             mangaOverview.postValue(overview)

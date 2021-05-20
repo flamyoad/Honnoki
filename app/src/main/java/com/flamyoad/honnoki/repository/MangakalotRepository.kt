@@ -1,5 +1,6 @@
 package com.flamyoad.honnoki.repository
 
+import android.content.Context
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -13,17 +14,8 @@ import kotlinx.coroutines.flow.Flow
 import retrofit2.Retrofit
 
 @ExperimentalPagingApi
-class MangakalotRepository(db: AppDatabase) : BaseMangaRepository(db) {
-    private val api: MangakalotApi
-
-    init {
-        val retrofit = Retrofit.Builder()
-            .baseUrl(MangakalotService.baseUrl)
-            .build()
-
-        val service = retrofit.create(MangakalotService::class.java)
-        api = MangakalotApi(service)
-    }
+class MangakalotRepository(db: AppDatabase, context: Context) : BaseMangaRepository(db, context) {
+    private val api: MangakalotApi = MangakalotApi(MangakalotService.create(context))
 
     override fun getRecentManga(): Flow<PagingData<Manga>> {
         return Pager(
@@ -51,6 +43,10 @@ class MangakalotRepository(db: AppDatabase) : BaseMangaRepository(db) {
 
     override suspend fun getChapterList(urlPath: String): State<List<Chapter>> {
         return api.searchForChapterList(urlPath)
+    }
+
+    override suspend fun getImages(urlPath: String): State<List<Page>> {
+        return api.searchForImageList(urlPath)
     }
 
     companion object {

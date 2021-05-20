@@ -16,9 +16,8 @@ import com.flamyoad.honnoki.dialog.SourceSwitcherDialog
 import com.flamyoad.honnoki.model.MangaType
 import com.flamyoad.honnoki.model.Source
 import com.flamyoad.honnoki.model.TabType
-import com.flamyoad.honnoki.utils.DepthPageTransformer
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
-import com.google.android.material.tabs.TabLayoutMediator
+import com.flamyoad.honnoki.utils.ui.DepthPageTransformer
 
 @ExperimentalPagingApi
 class HomeFragment : Fragment(), SourceSwitcherDialog.Listener {

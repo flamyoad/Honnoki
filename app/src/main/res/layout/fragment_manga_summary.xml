@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.flamyoad.honnoki.utils.ExpandableTextView
+            <com.flamyoad.honnoki.utils.ui.ExpandableTextView
                 android:id="@+id/expandableTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

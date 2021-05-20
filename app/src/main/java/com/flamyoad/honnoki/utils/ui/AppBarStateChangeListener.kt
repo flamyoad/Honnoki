@@ -1,4 +1,4 @@
-package com.flamyoad.honnoki.utils
+package com.flamyoad.honnoki.utils.ui
 
 import com.google.android.material.appbar.AppBarLayout
 import kotlin.math.abs

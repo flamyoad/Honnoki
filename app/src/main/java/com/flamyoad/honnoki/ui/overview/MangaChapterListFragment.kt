@@ -1,5 +1,7 @@
 package com.flamyoad.honnoki.ui.overview
 
+import android.content.Intent
+import android.content.Intent.getIntent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -14,6 +16,7 @@ import com.flamyoad.honnoki.adapter.ChapterListAdapter
 import com.flamyoad.honnoki.databinding.FragmentMangaChapterListBinding
 import com.flamyoad.honnoki.model.Chapter
 import com.flamyoad.honnoki.model.State
+import com.flamyoad.honnoki.ui.reader.ReaderActivity
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
 import com.kennyc.view.MultiStateView
 
@@ -55,7 +58,15 @@ class MangaChapterListFragment : Fragment() {
     }
 
     private fun onChapterClick(chapter: Chapter) {
+        val mangaTitle = requireActivity().intent.getStringExtra(MangaOverviewActivity.MANGA_TITLE)
 
+        val intent = Intent(requireContext(), ReaderActivity::class.java)
+        intent.apply {
+            putExtra(ReaderActivity.CHAPTER_URL, chapter.link)
+            putExtra(ReaderActivity.CHAPTER_TITLE, chapter.title)
+            putExtra(ReaderActivity.MANGA_TITLE, mangaTitle)
+        }
+        startActivity(intent)
     }
 
     companion object {

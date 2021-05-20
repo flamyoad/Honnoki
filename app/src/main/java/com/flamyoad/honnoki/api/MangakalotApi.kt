@@ -1,9 +1,6 @@
 package com.flamyoad.honnoki.api
 
-import com.flamyoad.honnoki.model.Chapter
-import com.flamyoad.honnoki.model.Manga
-import com.flamyoad.honnoki.model.MangaOverview
-import com.flamyoad.honnoki.model.State
+import com.flamyoad.honnoki.model.*
 import com.flamyoad.honnoki.network.MangakalotService
 import com.flamyoad.honnoki.parser.MangakalotParser
 import kotlinx.coroutines.Dispatchers
@@ -61,6 +58,21 @@ class MangakalotApi(private val service: MangakalotService): BaseApi {
 
             val mangaOverview = parser.parseForChapterList(html)
             return@withContext State.Success(mangaOverview)
+        }
+    }
+
+    suspend fun searchForImageList(link: String): State<List<Page>> {
+        val response = try {
+            service.getMangaOverview(link)
+        } catch (e: Exception) {
+            return State.Error(e)
+        }
+
+        return withContext(Dispatchers.Default) {
+            val html = response.string()
+
+            val imageList = parser.parseForImageList(html)
+            return@withContext State.Success(imageList)
         }
     }
 }

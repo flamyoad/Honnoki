@@ -101,6 +101,7 @@ class HomeListFragment : Fragment() {
         val intent = Intent(requireContext(), MangaOverviewActivity::class.java).apply {
             putExtra(MangaOverviewActivity.MANGA_URL, manga.link)
             putExtra(MangaOverviewActivity.MANGA_SOURCE, manga.source.toString())
+            putExtra(MangaOverviewActivity.MANGA_TITLE, manga.title)
         }
         requireContext().startActivity(intent)
     }

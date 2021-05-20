@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "manga")
 data class Manga(
-    @PrimaryKey val id: Long? = null,
+    @PrimaryKey val id: Long? = null, // Replace with identifer, duplicates occurs very often in paging
     val coverImage: String,
     val title: String,
     val latestChapter: String,

@@ -1,7 +1,6 @@
 package com.flamyoad.honnoki.repository
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import android.content.Context
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -17,13 +16,13 @@ import retrofit2.Retrofit
 
 
 @ExperimentalPagingApi
-class SenMangaRepository(db: AppDatabase): BaseMangaRepository(db) {
+class SenMangaRepository(db: AppDatabase, context: Context): BaseMangaRepository(db, context) {
     private val service: SenMangaService
     private val api: SenMangaApi
 
     init {
         val retrofit = Retrofit.Builder()
-            .baseUrl(SenMangaService.baseUrl)
+            .baseUrl(SenMangaService.BASE_URL)
             .build()
 
         service = retrofit.create(SenMangaService::class.java)

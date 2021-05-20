@@ -2,7 +2,6 @@ package com.flamyoad.honnoki.parser
 
 import com.flamyoad.honnoki.model.*
 import org.jsoup.Jsoup
-import org.jsoup.nodes.Element
 
 class MangakalotParser {
 
@@ -81,18 +80,19 @@ class MangakalotParser {
 
         val mangaInfo = document.selectFirst("div.panel-story-info")
 
-        val coverImage =
-            mangaInfo.selectFirst("div.story-info-left > span.info-image > img").attrNonNull("src")
+        val coverImage = mangaInfo.selectFirst("div.story-info-left > span.info-image > img")
+            .attrNonNull("src")
 
         val mainTitle = mangaInfo.selectFirst("div.story-info-right > h1").textNonNull()
 
         // If the manga has no alternative title, the element is not present in the HTML
-        val alternativeTitle = mangaInfo.selectFirst("i.info-alternative").parentNonNull().parentNonNull()
+        val alternativeTitle = mangaInfo.selectFirst("i.info-alternative")
+            .ancestorNonNull(2)
             .selectFirst("td.table-value")
             .textNonNull()
 
-
-        val authors = mangaInfo.selectFirst("i.info-author").parentNonNull().parentNonNull()
+        val authors = mangaInfo.selectFirst("i.info-author")
+            .ancestorNonNull(2)
             .select("td.table-value > a")
             .map {
                 return@map Author(
@@ -142,6 +142,22 @@ class MangakalotParser {
                 title = chapterLink.textNonNull(),
                 link = chapterLink.attrNonNull("href"),
                 date = it.selectFirst(".chapter-time").textNonNull()
+            )
+        }
+    }
+
+    fun parseForImageList(html: String?): List<Page> {
+        if (html.isNullOrBlank()) {
+            return emptyList()
+        }
+
+        val document = Jsoup.parse(html)
+        val imageList = document.select("div.container-chapter-reader > img")
+
+        return imageList.mapIndexed { index, element ->
+            Page(
+                link = element.attrNonNull("src"),
+                number = index + 1 // Add 1 to change the value into one-based numbering
             )
         }
     }

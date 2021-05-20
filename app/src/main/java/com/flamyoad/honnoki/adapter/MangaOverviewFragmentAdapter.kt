@@ -19,8 +19,8 @@ class MangaOverviewFragmentAdapter(private val list: List<String>, fragmentActiv
     @ExperimentalPagingApi
     override fun createFragment(position: Int): Fragment {
         return when (list[position]) {
-            MangaOverviewActivity.TAB_SUMMARY -> MangaSummaryFragment.newInstance()
-            MangaOverviewActivity.TAB_CHAPTERS -> MangaChapterListFragment.newInstance()
+            MangaOverviewActivity.TAB_NAME_SUMMARY -> MangaSummaryFragment.newInstance()
+            MangaOverviewActivity.TAB_NAME_CHAPTERS -> MangaChapterListFragment.newInstance()
             else -> throw IllegalArgumentException("Invalid tab?")
         }
     }

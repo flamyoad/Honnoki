@@ -1,4 +1,4 @@
-package com.flamyoad.honnoki.utils
+package com.flamyoad.honnoki.utils.ui
 
 import android.view.View
 import androidx.annotation.RequiresApi
