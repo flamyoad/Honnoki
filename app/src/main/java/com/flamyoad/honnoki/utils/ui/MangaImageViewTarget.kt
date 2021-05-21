@@ -14,8 +14,6 @@ class MangaImageViewTarget(val binding: ReaderImageListItemBinding)
     : CustomViewTarget<SubsamplingScaleImageView, File>(binding.imageView) {
     override fun onResourceReady(resource: File, transition: Transition<in File>?) {
         view.setImage(ImageSource.uri(Uri.fromFile(resource)))
-        binding.progressBarContainer.isVisible = false
-        binding.errorContainer.isVisible = false
     }
 
     override fun onLoadFailed(errorDrawable: Drawable?) {

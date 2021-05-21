@@ -43,6 +43,7 @@ class ReaderActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             val chapterUrl = intent.getStringExtra(CHAPTER_URL) ?: ""
             viewModel.fetchManga(chapterUrl)
+            toggleSidekickVisibility(isVisible = false)
         }
 
         binding.txtToolbarMangaTitle.text = intent.getStringExtra(ReaderActivity.MANGA_TITLE)
@@ -123,14 +124,13 @@ class ReaderActivity : AppCompatActivity() {
         val itemCount = readerAdapter.itemCount
         val currentVisiblePosition = position + 1
 
-        val pageNumber = "${currentVisiblePosition}/${itemCount}"
+        val pageNumber = "${currentVisiblePosition} / ${itemCount}"
         binding.txtSeekbarCurrentPage.text = pageNumber
         binding.txtCurrentPageMini.text = pageNumber
         binding.seekbar.progress = position
     }
 
     private fun toggleSidekickVisibility(isVisible: Boolean) {
-        TransitionManager.beginDelayedTransition(binding.bottomRightInfoView, Slide(Gravity.BOTTOM))
         TransitionManager.beginDelayedTransition(binding.appBarLayout, Slide(Gravity.TOP))
         TransitionManager.beginDelayedTransition(binding.seekbarLayout, Slide(Gravity.BOTTOM))
 

@@ -8,7 +8,7 @@
     android:layout_marginBottom="6dp">
 
     <FrameLayout
-        android:id="@+id/container"
+        android:id="@+id/statusContainer"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintDimensionRatio="1:1.4"

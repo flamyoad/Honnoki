@@ -1,18 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.overview.MangaChapterListFragment">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white"
+        app:elevation="0dp"
+        app:layout_scrollFlags="scroll|enterAlwaysCollapsed">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/txtTotalChapters"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:textColor="@color/mainTextColor"
+                android:textSize="18sp"
+                tools:text="121 Chapters" />
+
+            <ImageButton
+                android:id="@+id/btnSort"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:paddingHorizontal="12dp"
+                android:src="@drawable/ic_filter_list_black_24dp" />
+
+        </LinearLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <com.kennyc.view.MultiStateView
         android:id="@+id/multiStateView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
         app:msv_errorView="@layout/recyclerview_error_layout"
-        app:msv_loadingView="@layout/recyclerview_loading_layout"
+        app:msv_loadingView="@layout/recyclerview_loading_layout_nestedscrollview"
         tools:context=".ui.overview.MangaChapterListFragment">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -20,7 +55,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:listitem="@layout/chapter_list_item"/>
-
     </com.kennyc.view.MultiStateView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
