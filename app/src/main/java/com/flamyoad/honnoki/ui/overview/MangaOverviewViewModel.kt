@@ -12,8 +12,10 @@ import com.flamyoad.honnoki.model.MangaOverview
 import com.flamyoad.honnoki.model.Source
 import com.flamyoad.honnoki.model.State
 import com.flamyoad.honnoki.repository.BaseMangaRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.lang.IllegalArgumentException
+import kotlin.random.Random
 
 @ExperimentalPagingApi
 class MangaOverviewViewModel(private val app: Application) : AndroidViewModel(app) {
@@ -41,6 +43,26 @@ class MangaOverviewViewModel(private val app: Application) : AndroidViewModel(ap
 
             val chapters = mangaRepo.getChapterList(url)
             chapterList.postValue(chapters)
+        }
+    }
+
+    fun sortChapterList(isAscending: Boolean) {
+        if (chapterList.value !is State.Success) {
+            return
+        }
+
+        val oldChapterList = chapterList.value
+        val oldChapterListItems = (oldChapterList as State.Success).value
+
+        val x = Random.nextBoolean()
+
+        viewModelScope.launch(Dispatchers.Default) {
+            val newChapterListItems = if (x) {
+                oldChapterListItems.sortedBy { chapter -> chapter.title }
+            } else {
+                oldChapterListItems.sortedByDescending { chapter -> chapter.title }
+            }
+            chapterList.postValue(State.Success(newChapterListItems))
         }
     }
 }

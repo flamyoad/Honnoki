@@ -1,4 +1,4 @@
-package com.flamyoad.honnoki.adapter
+package com.flamyoad.honnoki.ui.overview.adapter
 
 import android.view.LayoutInflater
 import android.view.View

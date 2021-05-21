@@ -1,6 +1,7 @@
 package com.flamyoad.honnoki.ui.overview
 
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -45,6 +46,13 @@ class MangaOverviewActivity : AppCompatActivity() {
         setupViewPager()
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> finish()
+        }
+        return true
+    }
+
     private fun setupUi() {
         binding.appbarLayout.addOnOffsetChangedListener(object: AppBarStateChangeListener() {
             override fun onStateChanged(appBarLayout: AppBarLayout?, state: State?) {
@@ -70,7 +78,7 @@ class MangaOverviewActivity : AppCompatActivity() {
     }
 
     private fun setupViewPager() {
-        val tabList = listOf(TAB_NAME_SUMMARY, TAB_NAME_CHAPTERS)
+        val tabList = listOf(TAB_NAME_SUMMARY)
 
         val pagerAdapter = MangaOverviewFragmentAdapter(tabList,this)
 

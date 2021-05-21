@@ -181,13 +181,19 @@
                 android:background="@android:color/transparent"
                 app:layout_collapseMode="pin">
 
-                <com.like.LikeButton
+                <ToggleButton
                     android:id="@+id/btnFavourite"
-                    android:layout_width="50dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="50dp"
-                    android:layout_marginEnd="8dp"
-                    app:icon_size="25dp"
-                    app:icon_type="Star"
+                    android:layout_marginEnd="18dp"
+                    android:background="@android:color/transparent"
+                    android:drawableStart="@drawable/fav_button_selector"
+                    android:drawablePadding="4dp"
+                    android:textColor="@color/flower_petal_dark"
+                    android:textOff="Bookmark"
+                    android:textOn="Bookmarked"
+                    android:textSize="14dp"
+                    android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/btnRead"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -210,6 +216,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
+                android:background="@android:color/transparent"
                 app:layout_collapseMode="pin">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -220,13 +227,19 @@
                     android:background="@android:color/transparent"
                     app:layout_collapseMode="pin">
 
-                    <com.like.LikeButton
+                    <ToggleButton
                         android:id="@+id/btnFavourite2"
-                        android:layout_width="50dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="50dp"
-                        android:layout_marginEnd="8dp"
-                        app:icon_size="25dp"
-                        app:icon_type="Star"
+                        android:layout_marginEnd="18dp"
+                        android:background="@android:color/transparent"
+                        android:drawableStart="@drawable/fav_button_selector"
+                        android:drawablePadding="4dp"
+                        android:textColor="@color/flower_petal_dark"
+                        android:textOff="Bookmark"
+                        android:textOn="Bookmarked"
+                        android:textSize="14dp"
+                        android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/btnRead2"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -249,20 +262,20 @@
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
+        <!-- Made invisible-->
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
             android:background="@drawable/test_gradient"
+            android:visibility="gone"
             app:tabBackground="@drawable/test_gradient"
             app:tabGravity="fill"
             app:tabIndicatorColor="@null"
             app:tabIndicatorHeight="0dp"
             app:tabMode="fixed"
             app:tabSelectedTextColor="@color/flower_petal_deep"
-            app:tabTextColor="@color/subTextColor">
-
-        </com.google.android.material.tabs.TabLayout>
+            app:tabTextColor="@color/subTextColor" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

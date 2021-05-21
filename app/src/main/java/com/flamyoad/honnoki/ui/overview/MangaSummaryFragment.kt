@@ -1,30 +1,30 @@
 package com.flamyoad.honnoki.ui.overview
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.paging.ExperimentalPagingApi
+import androidx.recyclerview.widget.ConcatAdapter
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.flamyoad.honnoki.R
-import com.flamyoad.honnoki.adapter.GenreListAdapter
 import com.flamyoad.honnoki.databinding.FragmentMangaSummaryBinding
-import com.flamyoad.honnoki.model.MangaOverview
+import com.flamyoad.honnoki.model.Chapter
 import com.flamyoad.honnoki.model.State
+import com.flamyoad.honnoki.ui.overview.adapter.ChapterListAdapter
+import com.flamyoad.honnoki.ui.overview.adapter.ChapterListHeaderAdapter
+import com.flamyoad.honnoki.ui.overview.adapter.MainHeaderAdapter
+import com.flamyoad.honnoki.ui.overview.adapter.MangaSummaryAdapter
+import com.flamyoad.honnoki.ui.reader.ReaderActivity
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
-import com.google.android.flexbox.FlexDirection
-import com.google.android.flexbox.FlexWrap
-import com.google.android.flexbox.FlexboxLayoutManager
-import com.kennyc.view.MultiStateView
 
 @ExperimentalPagingApi
 class MangaSummaryFragment : Fragment() {
     private val viewModel: MangaOverviewViewModel by activityViewModels()
     private val binding by viewLifecycleLazy { FragmentMangaSummaryBinding.bind(requireView()) }
-
-    private var genreAdapter: GenreListAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,37 +36,49 @@ class MangaSummaryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initRecyclerView()
-    }
 
-    private fun initRecyclerView() {
-        genreAdapter = GenreListAdapter()
-        val flexLayoutManager = FlexboxLayoutManager(requireContext()).apply {
-            flexDirection = FlexDirection.ROW
-            flexWrap = FlexWrap.WRAP
-        }
+        val mainHeaderAdapter = MainHeaderAdapter()
+        val mangaSummaryAdapter = MangaSummaryAdapter()
+        val chapterListHeaderAdapter = ChapterListHeaderAdapter(viewModel::sortChapterList)
+        val chapterListAdapter = ChapterListAdapter(this::onChapterClick)
 
-        with(binding.listGenres) {
-            adapter = genreAdapter
-            layoutManager = flexLayoutManager
+        val concatAdapter =
+            ConcatAdapter(
+                mainHeaderAdapter,
+                mangaSummaryAdapter,
+                chapterListHeaderAdapter,
+                chapterListAdapter
+            )
+
+        with(binding.contentList) {
+            adapter = concatAdapter
+            layoutManager = LinearLayoutManager(this@MangaSummaryFragment.requireContext())
         }
 
         viewModel.mangaOverview().observe(viewLifecycleOwner) {
+            mangaSummaryAdapter.setItem(it)
+        }
+
+        viewModel.chapterList().observe(viewLifecycleOwner) {
+            chapterListHeaderAdapter.setItem(it)
             when (it) {
-                is State.Success -> { showMangaOverview(it.value) }
-                is State.Error -> { binding.multiStateView.viewState = MultiStateView.ViewState.ERROR }
-                is State.Loading -> { binding.multiStateView.viewState = MultiStateView.ViewState.LOADING }
+                is State.Success -> {
+                    chapterListAdapter.submitList(it.value)
+                }
             }
         }
     }
 
-    private fun showMangaOverview(overview: MangaOverview) {
-        genreAdapter?.setList(overview.genres)
+    private fun onChapterClick(chapter: Chapter) {
+        val mangaTitle = requireActivity().intent.getStringExtra(MangaOverviewActivity.MANGA_TITLE)
 
-        with(binding) {
-            multiStateView.viewState = MultiStateView.ViewState.CONTENT
-            expandableTextView.text = overview.summary
+        val intent = Intent(requireContext(), ReaderActivity::class.java)
+        intent.apply {
+            putExtra(ReaderActivity.CHAPTER_URL, chapter.link)
+            putExtra(ReaderActivity.CHAPTER_TITLE, chapter.title)
+            putExtra(ReaderActivity.MANGA_TITLE, mangaTitle)
         }
+        startActivity(intent)
     }
 
     companion object {

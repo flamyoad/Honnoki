@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.kennyc.view.MultiStateView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/multiStateView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:msv_errorView="@layout/recyclerview_error_layout"
+    app:msv_loadingView="@layout/recyclerview_loading_layout"
+    tools:context=".ui.overview.MangaSummaryFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.flamyoad.honnoki.utils.ui.ExpandableTextView
+            android:id="@+id/expandableTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="@string/lorem_ipsum"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/listGenres"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/expandableTextView" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.kennyc.view.MultiStateView>
