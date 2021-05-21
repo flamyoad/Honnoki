@@ -12,9 +12,11 @@ interface MangaDao {
     @Query("""
         SELECT * FROM manga
         WHERE source = :source AND type = :type
-        ORDER BY id
         """)
     fun getFrom(source: Source, type: MangaType): PagingSource<Int, Manga>
+
+    @Query("SELECT * FROM manga")
+    fun getAll(): List<Manga>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertAll(mangas: List<Manga>)

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "160d63467514c056b6224980367da173",
+    "identityHash": "0f80ce7f3fdf74214140f6124a273933",
     "entities": [
       {
         "tableName": "manga",
@@ -75,14 +75,25 @@
           ],
           "autoGenerate": false
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_manga_title_source_type",
+            "unique": true,
+            "columnNames": [
+              "title",
+              "source",
+              "type"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_manga_title_source_type` ON `${TABLE_NAME}` (`title`, `source`, `type`)"
+          }
+        ],
         "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '160d63467514c056b6224980367da173')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0f80ce7f3fdf74214140f6124a273933')"
     ]
   }
 }
