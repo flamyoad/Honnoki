@@ -37,6 +37,10 @@ class MangaOverviewViewModel(private val app: Application) : AndroidViewModel(ap
         }
 
         mangaRepo = BaseMangaRepository.get(source, db, app.applicationContext)
+        loadMangaOverview(url)
+    }
+
+    fun loadMangaOverview(url: String) {
         viewModelScope.launch {
             val overview = mangaRepo.getMangaOverview(url)
             mangaOverview.postValue(overview)
