@@ -3,6 +3,7 @@ package com.flamyoad.honnoki.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -33,12 +34,24 @@ class MangaLoadStateAdapter(private val retry: () -> Unit)
         }
 
         fun bind(loadState: LoadState) {
+            println(loadState)
             with(binding) {
                 progressBar.isVisible = loadState is LoadState.Loading
                 retryButton.isVisible = loadState is LoadState.Error
-                errorMsg.isVisible =
-                    !(loadState as? LoadState.Error)?.error?.message.isNullOrBlank()
+                errorMsg.isVisible = !(loadState as? LoadState.Error)?.error?.message.isNullOrBlank()
                 errorMsg.text = (loadState as? LoadState.Error)?.error?.message
+
+                if (progressBar.isVisible) {
+                    println("Progress bar visible")
+                }
+
+                if (retryButton.isVisible) {
+                    println("Retry button visisble")
+                }
+
+                if (errorMsg.isVisible) {
+                    println("error msg visible")
+                }
             }
         }
     }

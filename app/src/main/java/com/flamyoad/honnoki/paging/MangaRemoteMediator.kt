@@ -27,10 +27,8 @@ class MangaRemoteMediator(
 
         val page = when (loadType) {
             LoadType.REFRESH -> STARTING_PAGE_INDEX
-            LoadType.APPEND -> lastItem?.nextKey ?: return MediatorResult.Success(
-                endOfPaginationReached = true
-            )
-            LoadType.PREPEND -> lastItem?.prevKey ?: return MediatorResult.Success(
+            LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
+            LoadType.APPEND -> lastItem!!.nextKey ?: return MediatorResult.Success(
                 endOfPaginationReached = true
             )
         }

@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.paging.ExperimentalPagingApi
+import com.flamyoad.honnoki.BaseFragment
 
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.adapter.HomeListFragmentAdapter
@@ -20,7 +21,7 @@ import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
 import com.flamyoad.honnoki.utils.ui.DepthPageTransformer
 
 @ExperimentalPagingApi
-class HomeFragment : Fragment(), SourceSwitcherDialog.Listener {
+class HomeFragment : BaseFragment(), SourceSwitcherDialog.Listener {
     private val viewModel: HomeViewModel by activityViewModels()
     private val binding by viewLifecycleLazy { FragmentHomeBinding.bind(requireView()) }
 
@@ -35,10 +36,14 @@ class HomeFragment : Fragment(), SourceSwitcherDialog.Listener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if (savedInstanceState != null) {
+            return
+        }
+
         setupViewPager()
 
         viewModel.shouldShrinkFab().observe(viewLifecycleOwner, Observer {  shouldShrink ->
-            Log.d("debugs", "shouldShrinkfab : $shouldShrink")
             when (shouldShrink) {
                 true -> binding.fab.shrink()
                 false -> binding.fab.extend()
@@ -77,6 +82,10 @@ class HomeFragment : Fragment(), SourceSwitcherDialog.Listener {
                 it.dismiss()
             }
         }
+    }
+
+    override fun getTitle(): String {
+        return "Home"
     }
 
     companion object {

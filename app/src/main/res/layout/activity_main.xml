@@ -10,7 +10,6 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerView"
-        android:name="com.flamyoad.honnoki.ui.home.HomeFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
@@ -18,7 +17,7 @@
 <!--    app:indicatorColor="#2DFFFFFF"-->
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/navigation"
+        android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="?android:attr/windowBackground"

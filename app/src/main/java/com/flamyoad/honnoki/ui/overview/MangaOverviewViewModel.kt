@@ -29,6 +29,9 @@ class MangaOverviewViewModel(private val app: Application) : AndroidViewModel(ap
     private var chapterList = MutableLiveData<State<List<Chapter>>>(State.Loading)
     fun chapterList(): LiveData<State<List<Chapter>>> = chapterList
 
+    private var isBookmarked = MutableLiveData<Boolean>()
+    fun isBookmarked(): LiveData<Boolean> = isBookmarked
+
     fun initMangaOverview(url: String, sourceName: String) {
         val source = try {
             Source.valueOf(sourceName)
@@ -67,6 +70,15 @@ class MangaOverviewViewModel(private val app: Application) : AndroidViewModel(ap
                 oldChapterListItems.sortedByDescending { chapter -> chapter.title }
             }
             chapterList.postValue(State.Success(newChapterListItems))
+        }
+    }
+
+    fun toggleBookmarkStatus() {
+        val status = isBookmarked.value
+        isBookmarked.value = if (status == null) {
+            true
+        } else {
+            !status
         }
     }
 }

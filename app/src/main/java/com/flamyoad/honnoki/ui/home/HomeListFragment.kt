@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -46,6 +47,9 @@ class HomeListFragment : Fragment() {
         val trendingMangaAdapter = TrendingMangaAdapter(requireContext(), this::openManga)
 
         val recentMangaAdapter = RecentMangaListAdapter(this::openManga)
+
+        recentMangaAdapter.addLoadStateListener { loadStates ->
+        }
 
         recentMangaAdapter.withLoadStateFooter(MangaLoadStateAdapter { recentMangaAdapter.retry() })
 

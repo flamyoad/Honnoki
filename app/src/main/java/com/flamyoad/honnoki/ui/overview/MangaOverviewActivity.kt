@@ -17,6 +17,7 @@ import com.flamyoad.honnoki.utils.ui.AppBarStateChangeListener
 import com.flamyoad.honnoki.utils.ui.DepthPageTransformer
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlinx.android.synthetic.main.activity_manga_overview.*
 
 @ExperimentalPagingApi
 class MangaOverviewActivity : AppCompatActivity() {
@@ -93,13 +94,22 @@ class MangaOverviewActivity : AppCompatActivity() {
             }
         })
 
+        btnFavouriteExpanded.setOnClickListener {
+            viewModel.toggleBookmarkStatus()
+        }
+
+        btnFavouriteCollapsed.setOnClickListener {
+            viewModel.toggleBookmarkStatus()
+        }
+
+        viewModel.isBookmarked().observe(this) {
+            btnFavouriteCollapsed.isChecked = it
+            btnFavouriteExpanded.isChecked = it
+        }
+
         viewModel.mangaOverview().observe(this) {
             when (it) {
-                is State.Success -> {
-                    showMangaOverview(it.value)
-                }
-//                is State.Error -> { binding.imageMangaLayout.viewState = MultiStateView.ViewState.ERROR }
-//                is State.Loading -> { binding.imageMangaLayout.viewState = MultiStateView.ViewState.LOADING }
+                is State.Success -> showMangaOverview(it.value)
             }
         }
     }

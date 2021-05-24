@@ -3,11 +3,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.search.SearchFragment">
 
-    <TextView
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="download" />
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="8dp"
+            app:cardCornerRadius="8dp">
+            <!-- app:iconifiedByDefault="false" makes the searchbar expanded by default-->
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/searchView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:imeOptions="flagNoExtractUi"
+                app:iconifiedByDefault="false"
+                app:queryHint="Search title">
+
+            </androidx.appcompat.widget.SearchView>
+        </androidx.cardview.widget.CardView>
+
+    </FrameLayout>
 
 </FrameLayout>

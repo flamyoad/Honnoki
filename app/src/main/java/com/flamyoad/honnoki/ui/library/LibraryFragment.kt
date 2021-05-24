@@ -5,10 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.flamyoad.honnoki.BaseFragment
 
 import com.flamyoad.honnoki.R
 
-class LibraryFragment : Fragment() {
+class LibraryFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,6 +21,10 @@ class LibraryFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_library, container, false)
+    }
+
+    override fun getTitle(): String {
+        return "Library"
     }
 
     companion object {

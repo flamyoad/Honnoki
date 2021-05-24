@@ -31,7 +31,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="#F05A66"
+                android:background="@color/colorPrimary"
                 app:tabIndicatorColor="@color/yanfei_secondary_color"
                 app:tabIndicatorFullWidth="false"
                 app:tabIndicatorHeight="4dp"
@@ -60,7 +60,7 @@
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:background="#F05A66"
+                android:background="@color/colorPrimary"
                 android:backgroundTint="@null"
                 android:paddingHorizontal="12dp"
                 android:src="@drawable/ic_filter_list_black_24dp" />

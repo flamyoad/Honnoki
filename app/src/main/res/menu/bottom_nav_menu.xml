@@ -2,22 +2,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/homeFragment"
+        android:id="@+id/home"
         android:icon="@drawable/ic_home_white_24dp"
         android:title="Home" />
 
     <item
-        android:id="@+id/librarySearch"
+        android:id="@+id/search"
         android:icon="@drawable/ic_search_white_24dp"
         android:title="Search" />
 
     <item
-        android:id="@+id/libraryFragment"
+        android:id="@+id/library"
         android:icon="@drawable/ic_local_library_white_24dp"
         android:title="Library" />
 
     <item
-        android:id="@+id/settingsFragment"
+        android:id="@+id/settings"
         android:icon="@drawable/ic_android_white_24dp"
         android:title="Settings" />
 

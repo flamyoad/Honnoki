@@ -18,7 +18,7 @@ interface MangaDao {
     @Query("SELECT * FROM manga")
     fun getAll(): List<Manga>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(mangas: List<Manga>)
 
     @Query("DELETE FROM manga WHERE source = :source AND type = :type")
