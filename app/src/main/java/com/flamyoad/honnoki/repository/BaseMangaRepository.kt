@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.Flow
 abstract class BaseMangaRepository(val db: AppDatabase, val context: Context) {
     abstract fun getRecentManga(): Flow<PagingData<Manga>>
     abstract fun getTrendingManga(): Flow<PagingData<Manga>>
+    abstract fun getSimpleSearch(query: String): Flow<PagingData<SearchResult>>
+
     abstract fun getSourceType(): Source
     abstract suspend fun getMangaOverview(urlPath: String): State<MangaOverview>
     abstract suspend fun getChapterList(urlPath: String): State<List<Chapter>>

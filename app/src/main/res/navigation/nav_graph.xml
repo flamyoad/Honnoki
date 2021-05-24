@@ -20,7 +20,7 @@
 
     <fragment
         android:id="@+id/downloadFragment"
-        android:name="com.flamyoad.honnoki.ui.search.SearchFragment"
+        android:name="com.flamyoad.honnoki.ui.search.SimpleSearchFragment"
         android:label="fragment_download"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_simple_search" />
 </navigation>

@@ -48,9 +48,6 @@ class HomeListFragment : Fragment() {
 
         val recentMangaAdapter = RecentMangaListAdapter(this::openManga)
 
-        recentMangaAdapter.addLoadStateListener { loadStates ->
-        }
-
         recentMangaAdapter.withLoadStateFooter(MangaLoadStateAdapter { recentMangaAdapter.retry() })
 
         val concatAdapter = ConcatAdapter(trendingMangaAdapter, recentMangaAdapter)

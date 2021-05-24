@@ -73,7 +73,7 @@ dependencies {
     implementation "androidx.preference:preference-ktx:$preference_version"
 
     // Kotlin Flow
-    def flow_version = '1.3.3'
+    def flow_version = '1.5.0'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$flow_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$flow_version"
 

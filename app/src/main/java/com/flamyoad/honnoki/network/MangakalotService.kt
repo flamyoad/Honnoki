@@ -6,6 +6,7 @@ import okhttp3.ResponseBody
 import retrofit2.Retrofit
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 import retrofit2.http.Url
 
 interface MangakalotService {
@@ -33,4 +34,10 @@ interface MangakalotService {
 
     @GET
     suspend fun getMangaOverview(@Url url: String): ResponseBody
+
+    @GET("search/story/{keyword}")
+    suspend fun searchByKeyword(
+        @Path("keyword") keyword: String,
+        @Query("page") index: Int
+    ): ResponseBody
 }

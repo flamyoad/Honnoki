@@ -6,7 +6,7 @@ import com.flamyoad.honnoki.parser.SenMangaParser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class SenMangaApi(private val service: SenMangaService): BaseApi {
+class SenMangaApi(private val service: SenMangaService): BaseApi() {
     private val parser = SenMangaParser()
 
     override suspend fun searchForLatestManga(index: Int): List<Manga> {

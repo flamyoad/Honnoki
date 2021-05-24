@@ -1,15 +1,14 @@
 package com.flamyoad.honnoki.ui.home
 
 import android.os.Bundle
-import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.paging.ExperimentalPagingApi
 import com.flamyoad.honnoki.BaseFragment
-
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.adapter.HomeListFragmentAdapter
 import com.flamyoad.honnoki.databinding.FragmentHomeBinding
@@ -30,20 +29,20 @@ class HomeFragment : BaseFragment(), SourceSwitcherDialog.Listener {
         TabType("all", MangaType.TRENDING)
     )
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (savedInstanceState != null) {
-            return
-        }
-
         setupViewPager()
 
-        viewModel.shouldShrinkFab().observe(viewLifecycleOwner, Observer {  shouldShrink ->
+        viewModel.shouldShrinkFab().observe(viewLifecycleOwner, Observer { shouldShrink ->
             when (shouldShrink) {
                 true -> binding.fab.shrink()
                 false -> binding.fab.extend()
@@ -58,7 +57,7 @@ class HomeFragment : BaseFragment(), SourceSwitcherDialog.Listener {
     }
 
     private fun setupViewPager() {
-        val pagerAdapter = HomeListFragmentAdapter(tabList,this)
+        val pagerAdapter = HomeListFragmentAdapter(tabList, this)
 
         with(binding.viewPager) {
             adapter = pagerAdapter

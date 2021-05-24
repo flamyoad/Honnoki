@@ -9,7 +9,7 @@ import com.flamyoad.honnoki.api.SenMangaApi
 import com.flamyoad.honnoki.db.AppDatabase
 import com.flamyoad.honnoki.model.*
 import com.flamyoad.honnoki.network.SenMangaService
-import com.flamyoad.honnoki.paging.MangaRemoteMediator
+import com.flamyoad.honnoki.paging.MangaMediator
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import retrofit2.Retrofit
@@ -33,7 +33,7 @@ class SenMangaRepository(db: AppDatabase, context: Context): BaseMangaRepository
     override fun getRecentManga(): Flow<PagingData<Manga>> {
         return Pager(
             config = PagingConfig(pageSize = PAGINATION_SIZE, enablePlaceholders = false),
-            remoteMediator = MangaRemoteMediator(api, db, MangaType.RECENTLY),
+            remoteMediator = MangaMediator(api, db, MangaType.RECENTLY),
             pagingSourceFactory = { db.mangaDao().getFrom(Source.SENMANGA, MangaType.RECENTLY) }
         ).flow
     }
@@ -48,6 +48,10 @@ class SenMangaRepository(db: AppDatabase, context: Context): BaseMangaRepository
 
     override suspend fun getChapterList(urlPath: String): State<List<Chapter>> {
         return State.Error()
+    }
+
+    override fun getSimpleSearch(query: String): Flow<PagingData<SearchResult>> {
+        return emptyFlow()
     }
 
     companion object {

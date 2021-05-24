@@ -9,9 +9,10 @@ import com.flamyoad.honnoki.api.MangakalotApi
 import com.flamyoad.honnoki.db.AppDatabase
 import com.flamyoad.honnoki.model.*
 import com.flamyoad.honnoki.network.MangakalotService
-import com.flamyoad.honnoki.paging.MangaRemoteMediator
+import com.flamyoad.honnoki.paging.MangaMediator
+import com.flamyoad.honnoki.paging.SimpleSearchResultMediator
 import kotlinx.coroutines.flow.Flow
-import retrofit2.Retrofit
+import kotlinx.coroutines.flow.emptyFlow
 
 @ExperimentalPagingApi
 class MangakalotRepository(db: AppDatabase, context: Context) : BaseMangaRepository(db, context) {
@@ -20,16 +21,16 @@ class MangakalotRepository(db: AppDatabase, context: Context) : BaseMangaReposit
     override fun getRecentManga(): Flow<PagingData<Manga>> {
         return Pager(
             config = PagingConfig(pageSize = PAGINATION_SIZE, enablePlaceholders = false),
-            remoteMediator = MangaRemoteMediator(api, db, MangaType.RECENTLY),
-            pagingSourceFactory = { db.mangaDao().getFrom(Source.MANGAKALOT, MangaType.RECENTLY) }
+            remoteMediator = MangaMediator(api, db, MangaType.RECENTLY),
+            pagingSourceFactory = { db.mangaDao().getFrom(SOURCE, MangaType.RECENTLY) }
         ).flow
     }
 
     override fun getTrendingManga(): Flow<PagingData<Manga>> {
         return Pager(
             config = PagingConfig(pageSize = PAGINATION_SIZE, enablePlaceholders = false),
-            remoteMediator = MangaRemoteMediator(api, db, MangaType.TRENDING),
-            pagingSourceFactory = { db.mangaDao().getFrom(Source.MANGAKALOT, MangaType.TRENDING) }
+            remoteMediator = MangaMediator(api, db, MangaType.TRENDING),
+            pagingSourceFactory = { db.mangaDao().getFrom(SOURCE, MangaType.TRENDING) }
         ).flow
     }
 
@@ -49,8 +50,17 @@ class MangakalotRepository(db: AppDatabase, context: Context) : BaseMangaReposit
         return api.searchForImageList(urlPath)
     }
 
+    override fun getSimpleSearch(query: String): Flow<PagingData<SearchResult>> {
+        return Pager(
+            config = PagingConfig(pageSize = 10, enablePlaceholders = false),
+            remoteMediator = SimpleSearchResultMediator(api, db, query, SOURCE),
+            pagingSourceFactory = { db.searchResultDao().getAll() }
+        ).flow
+    }
+
     companion object {
         private const val PAGINATION_SIZE = 30
+        private val SOURCE = Source.MANGAKALOT
     }
 
 }

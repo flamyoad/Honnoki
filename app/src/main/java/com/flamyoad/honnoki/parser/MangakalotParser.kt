@@ -161,4 +161,23 @@ class MangakalotParser {
             )
         }
     }
+
+    fun parseForSearchByKeyword(html: String?): List<SearchResult> {
+        if (html.isNullOrBlank()) {
+            return emptyList()
+        }
+
+        val document = Jsoup.parse(html)
+
+        val searchResult = document.select(".search-story-item")
+        return searchResult.map {
+            SearchResult(
+                coverImage = it.selectFirst(".img-loading").attrNonNull("src"),
+                link = it.selectFirst(".item-title").attrNonNull("href"),
+                title = it.selectFirst(".item-title").textNonNull(),
+                latestChapter = it.selectFirst(".item-chapter").textNonNull(),
+                author = it.selectFirst(".item-author").textNonNull(),
+            )
+        }
+    }
 }

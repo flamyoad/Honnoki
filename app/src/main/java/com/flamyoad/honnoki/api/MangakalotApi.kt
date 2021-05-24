@@ -6,7 +6,7 @@ import com.flamyoad.honnoki.parser.MangakalotParser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class MangakalotApi(private val service: MangakalotService): BaseApi {
+class MangakalotApi(private val service: MangakalotService): BaseApi() {
     private val parser = MangakalotParser()
 
     override suspend fun searchForLatestManga(index: Int): List<Manga> {
@@ -73,6 +73,17 @@ class MangakalotApi(private val service: MangakalotService): BaseApi {
 
             val imageList = parser.parseForImageList(html)
             return@withContext State.Success(imageList)
+        }
+    }
+
+    override suspend fun searchByKeyword(keyword: String, index: Int): List<SearchResult> {
+        val response = service.searchByKeyword(keyword, index)
+
+        return withContext(Dispatchers.Default) {
+            val html = response.string()
+            val searchResultList = parser.parseForSearchByKeyword(html)
+
+            return@withContext searchResultList
         }
     }
 }
