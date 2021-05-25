@@ -38,8 +38,8 @@ class SimpleSearchResultAdapter(private val onItemClick: (SearchResult) -> Unit)
         fun bind(searchResult: SearchResult) {
             val loadingIndicator = CircularProgressDrawable(itemView.context).apply {
                 setColorSchemeColors(Color.BLACK)
-                centerRadius = 10f
-                strokeWidth = 4f
+                centerRadius = 25f
+                strokeWidth = 10f
             }
             loadingIndicator.start()
 

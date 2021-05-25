@@ -44,7 +44,8 @@
             android:layout_height="match_parent"
             app:msv_loadingView="@layout/recyclerview_loading_layout"
             app:msv_errorView="@layout/recyclerview_error_layout"
-            app:msv_emptyView="@layout/layout_empty_search_result">
+            app:msv_emptyView="@layout/layout_empty_search_result"
+            android:scrollbars="vertical">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/listSearchResult"

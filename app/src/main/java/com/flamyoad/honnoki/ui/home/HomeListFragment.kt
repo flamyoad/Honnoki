@@ -10,12 +10,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
-import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.adapter.MangaLoadStateAdapter
+import com.flamyoad.honnoki.adapter.RecentMangaHeaderAdapter
 import com.flamyoad.honnoki.adapter.RecentMangaListAdapter
 import com.flamyoad.honnoki.adapter.TrendingMangaAdapter
 import com.flamyoad.honnoki.databinding.FragmentHomeListBinding
@@ -25,6 +25,7 @@ import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.lang.IllegalArgumentException
 
 @ExperimentalPagingApi
 class HomeListFragment : Fragment() {
@@ -46,24 +47,29 @@ class HomeListFragment : Fragment() {
     private fun initRecyclerView() {
         val trendingMangaAdapter = TrendingMangaAdapter(requireContext(), this::openManga)
 
-        val recentMangaAdapter = RecentMangaListAdapter(this::openManga)
+        val recentMangaHeaderAdapter = RecentMangaHeaderAdapter({})
 
-        recentMangaAdapter.withLoadStateFooter(MangaLoadStateAdapter { recentMangaAdapter.retry() })
+        val recentMangaAdapter = RecentMangaListAdapter(this::openManga).apply {
+            withLoadStateFooter(MangaLoadStateAdapter { this.retry() })
+        }
 
-        val concatAdapter = ConcatAdapter(trendingMangaAdapter, recentMangaAdapter)
+        val concatAdapter =
+            ConcatAdapter(trendingMangaAdapter, recentMangaHeaderAdapter, recentMangaAdapter)
         val layoutManager = GridLayoutManager(requireContext(), 3)
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                if (position == 0)
-                    return 3
-                else
-                    return 1
+                return when (position) {
+                    0 -> 3
+                    1 -> 3
+                    else -> 1
+                }
             }
         }
 
         with(binding.listManga) {
             this.adapter = concatAdapter
             this.layoutManager = layoutManager
+            itemAnimator = null
         }
 
         lifecycleScope.launch {

@@ -1,5 +1,6 @@
 package com.flamyoad.honnoki.ui.overview.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -28,9 +29,7 @@ class ChapterListAdapter(private val onChapterClick: (Chapter) -> Unit) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(chapter: Chapter) {
             with(binding) {
-                txtTitle.text = chapter.title
-                txtDate.text = chapter.date
-                btnAction.setOnClickListener {  }
+                txtChapter.text = chapter.title
             }
         }
     }

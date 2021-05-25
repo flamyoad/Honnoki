@@ -12,7 +12,6 @@ import com.flamyoad.honnoki.network.MangakalotService
 import com.flamyoad.honnoki.paging.MangaMediator
 import com.flamyoad.honnoki.paging.SimpleSearchResultMediator
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
 
 @ExperimentalPagingApi
 class MangakalotRepository(db: AppDatabase, context: Context) : BaseMangaRepository(db, context) {
@@ -51,9 +50,14 @@ class MangakalotRepository(db: AppDatabase, context: Context) : BaseMangaReposit
     }
 
     override fun getSimpleSearch(query: String): Flow<PagingData<SearchResult>> {
+        // Replaces whitespaces between words with underscore. Otherwise it will become %20 which is invalid in search
+        // Example query: Gakuen    Alice
+        // Valid URL: https://manganelo.com/search/story/gakuen_alice
+        val encodedQuery = query.replace("\\s".toRegex(), "_")
+
         return Pager(
             config = PagingConfig(pageSize = PAGINATION_SIZE, enablePlaceholders = false),
-            remoteMediator = SimpleSearchResultMediator(api, db, query, SOURCE),
+            remoteMediator = SimpleSearchResultMediator(api, db, encodedQuery, SOURCE),
             pagingSourceFactory = { db.searchResultDao().getAll() }
         ).flow
     }

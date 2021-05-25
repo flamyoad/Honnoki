@@ -28,6 +28,7 @@ class SimpleSearchViewModel(val app: Application) : AndroidViewModel(app) {
             if (query.isBlank()) {
                 return@flatMapLatest emptyFlow()
             }
+//            val encodedQuery =
             return@flatMapLatest mangaRepo.getSimpleSearch(query).cachedIn(viewModelScope)
         }
 
