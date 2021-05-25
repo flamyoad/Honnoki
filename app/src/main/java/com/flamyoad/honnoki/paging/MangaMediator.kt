@@ -26,9 +26,15 @@ class MangaMediator(
         val pageNumber = when (loadType) {
             LoadType.REFRESH -> STARTING_PAGE_INDEX
             LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
-            LoadType.APPEND -> lastItem!!.nextKey ?: return MediatorResult.Success(
-                endOfPaginationReached = true
-            )
+            LoadType.APPEND -> {
+                if (lastItem == null) {
+                    return MediatorResult.Success(endOfPaginationReached = false)
+                }
+                if (lastItem.nextKey == null) {
+                    return MediatorResult.Success(endOfPaginationReached = true)
+                }
+                lastItem.nextKey
+            }
         }
 
         try {

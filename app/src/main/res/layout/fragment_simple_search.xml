@@ -33,13 +33,30 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/listSearchResult"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingVertical="2dp"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-        tools:listitem="@layout/simple_search_result_item" />
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+        <com.kennyc.view.MultiStateView
+            android:id="@+id/listSearchResultView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:msv_loadingView="@layout/recyclerview_loading_layout"
+            app:msv_errorView="@layout/recyclerview_error_layout"
+            app:msv_emptyView="@layout/layout_empty_search_result">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/listSearchResult"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingVertical="2dp"
+                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+                tools:listitem="@layout/simple_search_result_item" />
+
+        </com.kennyc.view.MultiStateView>
+
+    </FrameLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"

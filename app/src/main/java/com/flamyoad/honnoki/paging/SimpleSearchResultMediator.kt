@@ -20,15 +20,29 @@ class SimpleSearchResultMediator(
     private val source: Source
 ) : RemoteMediator<Int, SearchResult>() {
 
-    override suspend fun load(loadType: LoadType, state: PagingState<Int, SearchResult>): MediatorResult {
+    override suspend fun load(
+        loadType: LoadType,
+        state: PagingState<Int, SearchResult>
+    ): MediatorResult {
         val lastItem = state.lastItemOrNull()
 
         val pageNumber = when (loadType) {
             LoadType.REFRESH -> STARTING_PAGE_INDEX
             LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
-            LoadType.APPEND -> lastItem?.nextKey ?: return MediatorResult.Success(
-                endOfPaginationReached = true
-            )
+            LoadType.APPEND -> {
+                // If remoteKeys is null, that means the refresh result is not in the database yet.
+                // We can return Success with `endOfPaginationReached = false` because Paging
+                // will call this method again if RemoteKeys becomes non-null.
+                // If remoteKeys is NOT NULL but its nextKey is null, that means we've reached
+                // the end of pagination for append.
+                if (lastItem == null) {
+                    return MediatorResult.Success(endOfPaginationReached = false)
+                }
+                if (lastItem.nextKey == null) {
+                    return MediatorResult.Success(endOfPaginationReached = true)
+                }
+                lastItem.nextKey
+            }
         }
 
         try {
@@ -44,7 +58,8 @@ class SimpleSearchResultMediator(
                 val prevKey = if (pageNumber == STARTING_PAGE_INDEX) null else pageNumber - 1
                 val nextKey = if (endOfPaginationReached) null else pageNumber + 1
 
-                val searchedResultsWithKeys = searchedResults.map { it.copy(prevKey = prevKey, nextKey = nextKey) }
+                val searchedResultsWithKeys =
+                    searchedResults.map { it.copy(prevKey = prevKey, nextKey = nextKey) }
                 db.searchResultDao().insertAll(searchedResultsWithKeys)
             }
             return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)

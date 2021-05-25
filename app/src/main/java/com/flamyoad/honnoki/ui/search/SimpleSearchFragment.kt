@@ -8,7 +8,10 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.CombinedLoadStates
 import androidx.paging.ExperimentalPagingApi
+import androidx.paging.LoadState
+import androidx.paging.LoadStates
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.flamyoad.honnoki.BaseFragment
 
@@ -22,6 +25,7 @@ import com.flamyoad.honnoki.model.Source
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import com.flamyoad.honnoki.ui.search.result.AdvancedSearchResultActivity
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
+import com.kennyc.view.MultiStateView
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -33,8 +37,6 @@ class SimpleSearchFragment : BaseFragment() {
     private val binding by viewLifecycleLazy { FragmentSimpleSearchBinding.bind(requireView()) }
 
     private val searchResultAdapter = SimpleSearchResultAdapter(this::openManga)
-
-    private var searchJob: Job? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,19 +51,11 @@ class SimpleSearchFragment : BaseFragment() {
 
         initRecyclerView()
 
-        if (savedInstanceState != null) {
-            observeSearchResult()
-        }
-
         binding.searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                if (query.isNullOrBlank()) return true
-                viewModel.submitQuery(query)
-                observeSearchResult()
-                return true
-            }
+            override fun onQueryTextSubmit(query: String?): Boolean { return true }
 
-            override fun onQueryTextChange(newText: String?): Boolean {
+            override fun onQueryTextChange(query: String?): Boolean {
+                viewModel.submitQuery(query ?: "")
                 return true
             }
         })
@@ -74,15 +68,18 @@ class SimpleSearchFragment : BaseFragment() {
             adapter = searchResultAdapter
             layoutManager = linearLayoutManager
         }
-    }
 
-    private fun observeSearchResult() {
-        searchJob?.cancel()
+        searchResultAdapter.addLoadStateListener {
+            when (it.refresh) {
+                is LoadState.Error -> binding.listSearchResultView.viewState = MultiStateView.ViewState.ERROR
+                is LoadState.Loading -> binding.listSearchResultView.viewState = MultiStateView.ViewState.LOADING
+            }
+        }
 
-        searchJob = lifecycleScope.launch {
-            viewModel.searchResult().collectLatest {
+        lifecycleScope.launch {
+            viewModel.searchResult.collectLatest {
                 searchResultAdapter.submitData(it)
-                println("data submitted")
+                binding.listSearchResultView.viewState = MultiStateView.ViewState.CONTENT
             }
         }
     }

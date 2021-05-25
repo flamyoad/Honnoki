@@ -52,7 +52,7 @@ class MangakalotRepository(db: AppDatabase, context: Context) : BaseMangaReposit
 
     override fun getSimpleSearch(query: String): Flow<PagingData<SearchResult>> {
         return Pager(
-            config = PagingConfig(pageSize = 10, enablePlaceholders = false),
+            config = PagingConfig(pageSize = PAGINATION_SIZE, enablePlaceholders = false),
             remoteMediator = SimpleSearchResultMediator(api, db, query, SOURCE),
             pagingSourceFactory = { db.searchResultDao().getAll() }
         ).flow
