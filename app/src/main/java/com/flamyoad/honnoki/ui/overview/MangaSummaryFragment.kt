@@ -51,7 +51,7 @@ class MangaSummaryFragment : Fragment() {
                 chapterListAdapter
             )
 
-        val spanCount = 4
+        val spanCount = 3
         val gridLayoutManager =  GridLayoutManager(requireContext(), spanCount)
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {

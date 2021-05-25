@@ -55,12 +55,14 @@ class HomeListFragment : Fragment() {
 
         val concatAdapter =
             ConcatAdapter(trendingMangaAdapter, recentMangaHeaderAdapter, recentMangaAdapter)
-        val layoutManager = GridLayoutManager(requireContext(), 3)
+
+        val spanCount = 3
+        val layoutManager = GridLayoutManager(requireContext(), spanCount)
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 return when (position) {
-                    0 -> 3
-                    1 -> 3
+                    0 -> spanCount
+                    1 -> spanCount
                     else -> 1
                 }
             }

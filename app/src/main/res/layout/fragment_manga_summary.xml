@@ -9,10 +9,17 @@
     app:msv_loadingView="@layout/recyclerview_loading_layout"
     tools:context=".ui.overview.MangaSummaryFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
+    <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
         android:id="@+id/contentList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        app:fastScrollPopupBgColor="@color/colorAccent"
+        app:fastScrollPopupTextColor="@android:color/primary_text_dark"
+        app:fastScrollPopupTextSize="56sp"
+        app:fastScrollPopupBackgroundSize="88dp"
+        app:fastScrollThumbColor="@color/colorAccent"
+        app:fastScrollTrackColor="#1f000000"
+        app:fastScrollPopupPosition="adjacent" />
 
 </com.kennyc.view.MultiStateView>
 
