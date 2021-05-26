@@ -77,7 +77,7 @@
                         android:scaleType="fitXY"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/btnDownload"
-                        app:shapeAppearanceOverlay="@style/roundedCorners"
+                        app:shapeAppearanceOverlay="@style/roundedCorners12dp"
                         tools:src="@drawable/fatestaynight" />
 
                     <TextView

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="80dp"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp"
+    android:orientation="vertical">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        app:cardBackgroundColor="@android:color/transparent"
+        app:contentPadding="4dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?android:selectableItemBackgroundBorderless"
+        android:layout_gravity="center"
+        app:shapeAppearanceOverlay="@style/circle"
+        app:strokeColor="@color/subTextColor"
+        app:strokeWidth="2dp">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/coverImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/arisa_lewd"
+            app:shapeAppearance="@style/circle" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <TextView
+        android:id="@+id/txtGroupName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:ellipsize="end"
+        android:lines="1"
+        android:text="All"
+        android:gravity="center_horizontal"
+        android:textColor="@color/mainTextColor"
+        android:textSize="12sp" />
+
+</LinearLayout>

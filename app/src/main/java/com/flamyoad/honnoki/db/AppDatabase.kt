@@ -5,32 +5,48 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.flamyoad.honnoki.db.dao.BookmarkDao
+import com.flamyoad.honnoki.db.dao.BookmarkGroupDao
 import com.flamyoad.honnoki.db.dao.MangaDao
 import com.flamyoad.honnoki.db.dao.SearchResultDao
 import com.flamyoad.honnoki.db.typeconverters.MangaTypeConverter
 import com.flamyoad.honnoki.db.typeconverters.SourceConverter
-import com.flamyoad.honnoki.model.Manga
-import com.flamyoad.honnoki.model.SearchResult
+import com.flamyoad.honnoki.model.*
 
 const val DATABASE_NAME = "com.flamyoad.android.honnoki.AppDatabase"
 
-@Database(entities = [Manga::class, SearchResult::class], version = 1)
+@Database(
+    entities = [
+        Manga::class,
+        MangaOverview::class,
+        Author::class,
+        Genre::class,
+        SearchResult::class,
+        Bookmark::class,
+        BookmarkGroup::class,
+        BookmarkGroupCoverImage::class],
+    version = 1
+)
 
 @TypeConverters(SourceConverter::class, MangaTypeConverter::class)
-abstract class AppDatabase: RoomDatabase() {
+abstract class AppDatabase : RoomDatabase() {
 
     abstract fun mangaDao(): MangaDao
     abstract fun searchResultDao(): SearchResultDao
+    abstract fun bookmarkDao(): BookmarkDao
+    abstract fun bookmarkGroupDao(): BookmarkGroupDao
 
     companion object {
-        @Volatile private var INSTANCE: AppDatabase? = null
+        @Volatile
+        private var INSTANCE: AppDatabase? = null
 
         fun getInstance(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
-                    DATABASE_NAME)
+                    DATABASE_NAME
+                )
                     .fallbackToDestructiveMigration()
                     .build()
 

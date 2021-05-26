@@ -13,7 +13,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorAccent"
             android:orientation="horizontal">
 
             <com.google.android.material.tabs.TabLayout
@@ -23,13 +22,13 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@color/colorPrimary"
-                app:tabIndicatorColor="@color/yanfei_secondary_color"
+                app:tabIndicatorColor="@color/colorAccent"
                 app:tabIndicatorFullWidth="false"
                 app:tabIndicatorHeight="4dp"
                 app:tabMode="scrollable"
                 app:tabRippleColor="@null"
                 app:tabSelectedTextColor="@color/white"
-                app:tabTextColor="@color/white">
+                app:tabTextColor="@color/subLightTextColor">
 
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"

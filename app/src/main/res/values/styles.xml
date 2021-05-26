@@ -6,6 +6,12 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:statusBarColor">@color/colorPrimary</item>
+    </style>
+
+    <style name="AppTheme.Transparent" parent="AppTheme">
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
     </style>
 
     <style name="primaryTabLayoutStyle" parent="Base.Widget.Design.TabLayout">
@@ -27,7 +33,12 @@
         <item name="cornerSizeBottomLeft">16dp</item>
     </style>
 
-    <style name="roundedCorners" parent="">
+    <style name="roundedCorners4dp" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">4dp</item>
+    </style>
+
+    <style name="roundedCorners12dp" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">12dp</item>
     </style>
@@ -50,6 +61,10 @@
         <item name="cornerFamily">cut</item>
         <item name="cornerSizeTopLeft">4dp</item>
         <item name="cornerSizeBottomRight">4dp</item>
+    </style>
+
+    <style name="circle">
+        <item name="cornerSize">50%</item>
     </style>
 
     <!--To be used with Button only. This style removes all the MaterialButton ugly things like

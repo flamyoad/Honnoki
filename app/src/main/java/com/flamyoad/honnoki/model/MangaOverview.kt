@@ -1,10 +1,11 @@
 package com.flamyoad.honnoki.model
 
 import androidx.room.Entity
+import androidx.room.PrimaryKey
 
 @Entity(tableName = "manga_overview")
 data class MangaOverview(
-    val id: Long? = null,
+    @PrimaryKey val id: Long? = null,
     val coverImage: String,
     val mainTitle: String,
     val alternativeTitle: String,

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_margin="8dp"
+    android:background="?android:selectableItemBackgroundBorderless"
+    tools:background="@color/colorPrimary"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/imageLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:layout_margin="8dp"
+        android:background="?android:selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:focusable="true">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/firstImage"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@color/subLightTextColor"
+            android:scaleType="centerCrop"
+            android:src="@drawable/arisa_lewd"
+            android:translationZ="3dp"
+            app:shapeAppearanceOverlay="@style/roundedCorners4dp"
+            app:strokeColor="@color/subLightTextColor"
+            app:strokeWidth="1dp" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/secondImage"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/subLightTextColor"
+            android:scaleType="centerCrop"
+            android:src="@drawable/rinze"
+            android:translationZ="2dp"
+            app:shapeAppearanceOverlay="@style/roundedCorners4dp"
+            app:strokeColor="@color/subLightTextColor"
+            app:strokeWidth="1dp" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/thirdImage"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/subLightTextColor"
+            android:scaleType="centerCrop"
+            android:src="@drawable/aya"
+            android:translationZ="1dp"
+            app:shapeAppearanceOverlay="@style/roundedCorners4dp"
+            app:strokeColor="@color/subLightTextColor"
+            app:strokeWidth="1dp" />
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/txtGroupName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:lines="1"
+        android:text="All"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/txtTotalManga"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:lines="1"
+        android:text="(23)"
+        android:textColor="@color/subLightTextColor"
+        android:textSize="12sp" />
+
+</LinearLayout>
