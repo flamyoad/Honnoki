@@ -1,6 +1,9 @@
 package com.flamyoad.honnoki.network
 
 import android.content.Context
+import com.flamyoad.honnoki.network.interceptor.CacheInterceptor
+import com.flamyoad.honnoki.network.interceptor.RefererInterceptor
+import com.flamyoad.honnoki.network.interceptor.UserAgentInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import retrofit2.Retrofit
@@ -15,7 +18,9 @@ interface MangakalotService {
 
         fun create(context: Context): MangakalotService {
             val httpClient = OkHttpClient.Builder()
-                .addInterceptor(HttpInterceptor(BASE_URL, context))
+                .addInterceptor(UserAgentInterceptor(context))
+                .addInterceptor(RefererInterceptor(BASE_URL))
+                .addNetworkInterceptor(CacheInterceptor())
                 .build()
 
             val retrofit = Retrofit.Builder()
