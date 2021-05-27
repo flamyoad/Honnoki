@@ -1,12 +1,14 @@
 package com.flamyoad.honnoki.network
 
 import android.content.Context
+import android.util.Log
 import com.flamyoad.honnoki.network.interceptor.CacheInterceptor
 import com.flamyoad.honnoki.network.interceptor.RefererInterceptor
 import com.flamyoad.honnoki.network.interceptor.UserAgentInterceptor
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.http.*
 import java.util.concurrent.TimeUnit
@@ -23,8 +25,13 @@ interface MangakalotService {
         fun create(context: Context): MangakalotService {
             val myCache = (Cache(context.cacheDir, CACHE_SIZE))
 
+            val httpLoggingInterceptor = HttpLoggingInterceptor(HttpLoggingInterceptor.Logger.DEFAULT).apply {
+                level = HttpLoggingInterceptor.Level.BASIC
+            }
+
             val httpClient = OkHttpClient.Builder()
                 .cache(myCache)
+                .addInterceptor(httpLoggingInterceptor)
                 .addInterceptor(UserAgentInterceptor(context))
                 .addInterceptor(RefererInterceptor(BASE_URL))
                 .addNetworkInterceptor(CacheInterceptor(1, TimeUnit.MINUTES))

@@ -7,6 +7,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import com.flamyoad.honnoki.model.BookmarkGroup
 import com.flamyoad.honnoki.model.BookmarkGroupWithCoverImages
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface BookmarkGroupDao {
@@ -19,4 +20,10 @@ interface BookmarkGroupDao {
 
     @Insert
     suspend fun insert(bookmarkGroup: BookmarkGroup)
+
+    @Query("""
+        SELECT COUNT(*) >= 1 FROM bookmark 
+        WHERE bookmarkGroupId = :bookmarkGroupId AND mangaOverviewId = :overviewId
+""")
+    suspend fun hasBookmarkedItems(bookmarkGroupId: Long, overviewId: Long): Boolean
 }

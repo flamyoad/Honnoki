@@ -16,6 +16,7 @@ const val DATABASE_NAME = "com.flamyoad.android.honnoki.AppDatabase"
     entities = [
         Manga::class,
         MangaOverview::class,
+        Chapter::class,
         Author::class,
         Genre::class,
         SearchResult::class,
@@ -30,6 +31,7 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun mangaDao(): MangaDao
     abstract fun mangaOverviewDao(): MangaOverviewDao
+    abstract fun chapterDao(): ChapterDao
     abstract fun searchResultDao(): SearchResultDao
     abstract fun bookmarkDao(): BookmarkDao
     abstract fun bookmarkGroupDao(): BookmarkGroupDao

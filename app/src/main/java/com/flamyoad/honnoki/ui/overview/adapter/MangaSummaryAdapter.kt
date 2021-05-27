@@ -76,6 +76,8 @@ class MangaSummaryAdapter: RecyclerView.Adapter<MangaSummaryAdapter.SummaryViewH
             val hasCompletedLoading = mangaOverviewState is State.Success && genreListState is State.Success
             if (hasCompletedLoading) {
                 binding.multiStateView.viewState = MultiStateView.ViewState.CONTENT
+            } else {
+                binding.multiStateView.viewState = MultiStateView.ViewState.LOADING
             }
         }
     }

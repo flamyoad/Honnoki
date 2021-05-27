@@ -2,14 +2,15 @@ package com.flamyoad.honnoki.ui.overview
 
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.paging.ExperimentalPagingApi
 import com.bumptech.glide.Glide
-import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.adapter.MangaOverviewFragmentAdapter
 import com.flamyoad.honnoki.databinding.ActivityMangaOverviewBinding
+import com.flamyoad.honnoki.dialog.BookmarkDialog
 import com.flamyoad.honnoki.model.MangaOverview
 import com.flamyoad.honnoki.utils.ViewUtils
 import com.flamyoad.honnoki.utils.ui.AppBarStateChangeListener
@@ -17,6 +18,7 @@ import com.flamyoad.honnoki.utils.ui.DepthPageTransformer
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.activity_manga_overview.*
+
 
 @ExperimentalPagingApi
 class MangaOverviewActivity : AppCompatActivity() {
@@ -33,6 +35,12 @@ class MangaOverviewActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.title = ""
+
+        // Transparent status bar
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        )
 
         if (savedInstanceState == null) {
             viewModel.initializeAll(
@@ -95,14 +103,14 @@ class MangaOverviewActivity : AppCompatActivity() {
         })
 
         btnFavouriteExpanded.setOnClickListener {
-            viewModel.toggleBookmarkStatus()
+            showBookmarkGroupDialog()
         }
 
         btnFavouriteCollapsed.setOnClickListener {
-            viewModel.toggleBookmarkStatus()
+            showBookmarkGroupDialog()
         }
 
-        viewModel.isBookmarked().observe(this) {
+        viewModel.hasBeenBookmarked.observe(this) {
             btnFavouriteCollapsed.isChecked = it
             btnFavouriteExpanded.isChecked = it
         }
@@ -163,6 +171,12 @@ class MangaOverviewActivity : AppCompatActivity() {
             btnReadCollapsed.isVisible = state == ToolbarState.COLLAPSED
             btnFavouriteCollapsed.isVisible = state == ToolbarState.COLLAPSED
         }
+    }
+
+    private fun showBookmarkGroupDialog() {
+        val overviewId = viewModel.mangaOverview.value?.id ?: return
+        val dialog = BookmarkDialog.newInstance(overviewId)
+        dialog.show(supportFragmentManager, "bookmark_dialog")
     }
 
     override fun onDestroy() {

@@ -15,6 +15,9 @@ import com.flamyoad.honnoki.adapter.BookmarkAdapter
 import com.flamyoad.honnoki.adapter.BookmarkGroupAdapter
 import com.flamyoad.honnoki.databinding.FragmentBookmarkBinding
 import com.flamyoad.honnoki.model.Bookmark
+import com.flamyoad.honnoki.model.BookmarkGroup
+import com.flamyoad.honnoki.model.BookmarkWithOverview
+import kotlinx.android.synthetic.main.fragment_bookmark.*
 import java.security.PrivateKey
 
 class BookmarkFragment : Fragment() {
@@ -62,12 +65,20 @@ class BookmarkFragment : Fragment() {
             groupAdapter.submitList(it)
         }
 
-        viewModel.bookmarkItems.observe(viewLifecycleOwner) {
+        viewModel.selectedBookmarkGroup().observe(viewLifecycleOwner) {
+            header.text = it.name
+        }
 
+        viewModel.bookmarkItems.observe(viewLifecycleOwner) {
+            bookmarkAdapter.submitList(it)
         }
     }
 
-    private fun openBookmark(bookmark: Bookmark) {
+    private fun selectBookmarkGroup(bookmarkGroup: BookmarkGroup) {
+
+    }
+
+    private fun openBookmark(bookmark: BookmarkWithOverview) {
 
     }
 

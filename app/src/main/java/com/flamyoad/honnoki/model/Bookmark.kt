@@ -1,12 +1,10 @@
 package com.flamyoad.honnoki.model
 
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
+import androidx.room.*
 
 @Entity(
     tableName = "bookmark",
-    indices = [androidx.room.Index(value = ["bookmarkGroupId", "mangaOverviewId"])],
+    indices = [Index(value = ["bookmarkGroupId", "mangaOverviewId"])],
     foreignKeys = [ForeignKey(
         entity = BookmarkGroup::class,
         parentColumns = ["id"],

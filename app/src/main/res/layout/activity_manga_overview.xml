@@ -5,13 +5,13 @@
     android:id="@+id/swipeRefreshLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context=".ui.overview.MangaOverviewActivity">
+    tools:context=".ui.overview.MangaOverviewActivity"
+    android:fitsSystemWindows="false">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
+        android:fitsSystemWindows="false">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appbarLayout"
@@ -20,6 +20,7 @@
             android:background="@drawable/manga_overview_gradient_background"
             android:fitsSystemWindows="true"
             android:minHeight="@dimen/app_bar_height"
+            android:paddingTop="@dimen/status_bar_height"
             android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout

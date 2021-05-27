@@ -6,12 +6,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.databinding.ChapterListSorterItemBinding
 import com.flamyoad.honnoki.model.Chapter
-import com.flamyoad.honnoki.model.State
 
 class ChapterListHeaderAdapter(val sortList: (Boolean) -> Unit) :
     RecyclerView.Adapter<ChapterListHeaderAdapter.SorterViewHolder>() {
 
-    private var chapterListState: State<List<Chapter>> = State.Loading
+    private var chapterList: List<Chapter> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SorterViewHolder {
         val binding =
@@ -26,11 +25,11 @@ class ChapterListHeaderAdapter(val sortList: (Boolean) -> Unit) :
     }
 
     override fun onBindViewHolder(holder: SorterViewHolder, position: Int) {
-        holder.bind(chapterListState)
+        holder.bind(chapterList)
     }
 
-    fun setItem(chapterListState: State<List<Chapter>>) {
-        this.chapterListState = chapterListState
+    fun setItem(chapterList: List<Chapter>) {
+        this.chapterList = chapterList
         notifyDataSetChanged()
     }
 
@@ -38,18 +37,14 @@ class ChapterListHeaderAdapter(val sortList: (Boolean) -> Unit) :
 
     inner class SorterViewHolder(val binding: ChapterListSorterItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(chapterListState: State<List<Chapter>>) {
+        fun bind(chapterList: List<Chapter>) {
             val resources = binding.root.context.resources
-            when (chapterListState) {
-                is State.Success -> {
-                    binding.txtTotalChapters.text = resources.getString(
-                        R.string.chapter_list_total,
-                        chapterListState.value.size
-                    )
-                }
-                is State.Error -> {
-                    binding.txtTotalChapters.text = resources.getString(R.string.chapter_list_total,0)
-                }
+            if (chapterList.isEmpty()) {
+                binding.txtTotalChapters.text = resources.getString(R.string.chapter_list_total, 0)
+            } else {
+                binding.txtTotalChapters.text = resources.getString(
+                    R.string.chapter_list_total, chapterList.size
+                )
             }
         }
     }

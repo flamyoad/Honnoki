@@ -51,7 +51,7 @@ class MangaSummaryFragment : Fragment() {
             )
 
         val spanCount = 3
-        val gridLayoutManager =  GridLayoutManager(requireContext(), spanCount)
+        val gridLayoutManager = GridLayoutManager(requireContext(), spanCount)
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 return when (position) {
@@ -76,13 +76,9 @@ class MangaSummaryFragment : Fragment() {
             mangaSummaryAdapter.setGenres(State.Success(it))
         }
 
-        viewModel.chapterList().observe(viewLifecycleOwner) {
+        viewModel.chapterList.observe(viewLifecycleOwner) {
             chapterListHeaderAdapter.setItem(it)
-            when (it) {
-                is State.Success -> {
-                    chapterListAdapter.submitList(it.value)
-                }
-            }
+            chapterListAdapter.submitList(it)
         }
     }
 

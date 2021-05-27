@@ -7,7 +7,7 @@ import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 object ViewUtils {
     fun getLoadingIndicator(context: Context): Drawable {
         val circularProgressDrawable = CircularProgressDrawable(context).apply {
-            strokeWidth = 5f
+            strokeWidth = 10f
             centerRadius = 75f
         }
         circularProgressDrawable.start()

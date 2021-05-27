@@ -10,9 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlin.random.Random
 
 @ExperimentalPagingApi
 class MangaOverviewViewModel(private val app: Application) : AndroidViewModel(app) {
@@ -30,18 +28,20 @@ class MangaOverviewViewModel(private val app: Application) : AndroidViewModel(ap
         .asLiveData()
 
     val genreList: LiveData<List<Genre>> = mangaOverviewId
-        .flatMapLatest { return@flatMapLatest db.genreDao().getByOverviewId(it) }
+        .flatMapLatest { db.genreDao().getByOverviewId(it) }
         .asLiveData()
 
     val authorList: LiveData<List<Author>> = mangaOverviewId
-        .flatMapLatest { return@flatMapLatest db.authorDao().getByOverviewId(it) }
+        .flatMapLatest { db.authorDao().getByOverviewId(it) }
         .asLiveData()
 
-    private var chapterList = MutableLiveData<State<List<Chapter>>>(State.Loading)
-    fun chapterList(): LiveData<State<List<Chapter>>> = chapterList
+    val chapterList: LiveData<List<Chapter>> = mangaOverviewId
+        .flatMapLatest { db.chapterDao().getByOverviewId(it) }
+        .asLiveData()
 
-    private var isBookmarked = MutableLiveData<Boolean>()
-    fun isBookmarked(): LiveData<Boolean> = isBookmarked
+    val hasBeenBookmarked = mangaOverviewId
+        .flatMapLatest { db.mangaOverviewDao().hasBeenBookmarked(it) }
+        .asLiveData()
 
     fun initializeAll(url: String, sourceName: String) {
         val source = try {
@@ -52,23 +52,32 @@ class MangaOverviewViewModel(private val app: Application) : AndroidViewModel(ap
 
         mangaRepo = BaseMangaRepository.get(source, db, app.applicationContext)
         loadMangaOverview(url)
-        loadChapterList(url)
     }
 
     fun loadMangaOverview(url: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
+            // Load manga overview from database
+            val overviewFromDb = db.mangaOverviewDao().getByLinkBlocking(url)
+            if (overviewFromDb != null) {
+                mangaOverviewId.value = requireNotNull(overviewFromDb.id)
+                refreshChapterList(url, overviewFromDb.id)
+                return@launch
+            }
+
+            // Otherwise, load manga overview from network
             when (val overview = mangaRepo.getMangaOverview(url)) {
                 is State.Success -> {
                     val overviewId = db.mangaOverviewDao().insert(overview.value)
                     mangaOverviewId.value = overviewId
-                    loadGenres(url, overviewId)
-                    loadAuthors(url, overviewId)
+                    refreshChapterList(url, overviewId)
+                    refreshGenres(url, overviewId)
+                    refreshAuthors(url, overviewId)
                 }
             }
         }
     }
 
-    private suspend fun loadGenres(url: String, overviewId: Long) {
+    private suspend fun refreshGenres(url: String, overviewId: Long) {
         when (val genreList = mangaRepo.getGenres(url)) {
             is State.Success -> {
                 val genreListWithId = genreList.value.map {
@@ -79,7 +88,7 @@ class MangaOverviewViewModel(private val app: Application) : AndroidViewModel(ap
         }
     }
 
-    private suspend fun loadAuthors(url: String, overviewId: Long) {
+    private suspend fun refreshAuthors(url: String, overviewId: Long) {
         when (val authorList = mangaRepo.getAuthors(url)) {
             is State.Success -> {
                 val authorListWithId = authorList.value.map {
@@ -90,39 +99,34 @@ class MangaOverviewViewModel(private val app: Application) : AndroidViewModel(ap
         }
     }
 
-    fun loadChapterList(url: String) {
-        viewModelScope.launch {
-            val chapters = mangaRepo.getChapterList(url)
-            chapterList.postValue(chapters)
+    private suspend fun refreshChapterList(url: String, overviewId: Long) {
+        when (val chapterList = mangaRepo.getChapterList(url)) {
+            is State.Success -> {
+                val chapterListWithId = chapterList.value.map {
+                    it.copy(mangaOverviewId = overviewId)
+                }
+                db.chapterDao().insertAll(chapterListWithId)
+            }
         }
     }
 
     fun sortChapterList(isAscending: Boolean) {
-        if (chapterList.value !is State.Success) {
-            return
-        }
-
-        val oldChapterList = chapterList.value
-        val oldChapterListItems = (oldChapterList as State.Success).value
-
-        val x = Random.nextBoolean()
-
-        viewModelScope.launch(Dispatchers.Default) {
-            val newChapterListItems = if (x) {
-                oldChapterListItems.sortedBy { chapter -> chapter.title }
-            } else {
-                oldChapterListItems.sortedByDescending { chapter -> chapter.title }
-            }
-            chapterList.postValue(State.Success(newChapterListItems))
-        }
-    }
-
-    fun toggleBookmarkStatus() {
-        val status = isBookmarked.value
-        isBookmarked.value = if (status == null) {
-            true
-        } else {
-            !status
-        }
+//        if (chapterList.value !is State.Success) {
+//            return
+//        }
+//
+//        val oldChapterList = chapterList.value
+//        val oldChapterListItems = (oldChapterList as State.Success).value
+//
+//        val x = Random.nextBoolean()
+//
+//        viewModelScope.launch(Dispatchers.Default) {
+//            val newChapterListItems = if (x) {
+//                oldChapterListItems.sortedBy { chapter -> chapter.title }
+//            } else {
+//                oldChapterListItems.sortedByDescending { chapter -> chapter.title }
+//            }
+//            chapterList.postValue(State.Success(newChapterListItems))
+//        }
     }
 }
