@@ -91,7 +91,30 @@ class MangakalotParser {
             .selectFirst("td.table-value")
             .textNonNull()
 
-        val authors = mangaInfo.selectFirst("i.info-author")
+        val status = mangaInfo.selectFirst("i.info-status").parentNonNull().parentNonNull()
+            .selectFirst("td.table-value")
+            .textNonNull()
+
+        return MangaOverview(
+            id = null,
+            coverImage = coverImage,
+            mainTitle = mainTitle,
+            alternativeTitle = alternativeTitle,
+            summary = summary,
+            status = status,
+            source = Source.MANGAKALOT,
+            link = link
+        )
+    }
+
+    fun parseForAuthors(html: String?): List<Author> {
+        if (html.isNullOrBlank()) {
+            return emptyList()
+        }
+
+        val document = Jsoup.parse(html)
+
+        val authors = document.selectFirst("i.info-author")
             .ancestorNonNull(2)
             .select("td.table-value > a")
             .map {
@@ -101,11 +124,17 @@ class MangakalotParser {
                 )
             }
 
-        val status = mangaInfo.selectFirst("i.info-status").parentNonNull().parentNonNull()
-            .selectFirst("td.table-value")
-            .textNonNull()
+        return authors
+    }
 
-        val genres = mangaInfo.selectFirst("i.info-genres").parentNonNull().parentNonNull()
+    fun parseForGenres(html: String?): List<Genre> {
+        if (html.isNullOrBlank()) {
+            return emptyList()
+        }
+
+        val document = Jsoup.parse(html)
+        val genres = document.selectFirst("i.info-genres")
+            .ancestorNonNull(2)
             .select("td.table-value > a")
             .map {
                 return@map Genre(
@@ -114,18 +143,7 @@ class MangakalotParser {
                 )
             }
 
-        return MangaOverview(
-            id = null,
-            coverImage = coverImage,
-            mainTitle = mainTitle,
-            alternativeTitle = alternativeTitle,
-            summary = summary,
-            authors = authors,
-            status = status,
-            genres = genres,
-            source = Source.MANGAKALOT,
-            link = link
-        )
+        return genres
     }
 
     fun parseForChapterList(html: String?): List<Chapter> {

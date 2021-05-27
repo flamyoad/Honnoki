@@ -1,4 +1,4 @@
-package com.flamyoad.honnoki.network
+package com.flamyoad.honnoki.api
 
 import okhttp3.CacheControl
 import okhttp3.FormBody

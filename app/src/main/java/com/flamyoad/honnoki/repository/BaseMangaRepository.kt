@@ -16,9 +16,9 @@ abstract class BaseMangaRepository(val db: AppDatabase, val context: Context) {
     abstract suspend fun getMangaOverview(urlPath: String): State<MangaOverview>
     abstract suspend fun getChapterList(urlPath: String): State<List<Chapter>>
 
-    open suspend fun getImages(urlPath: String): State<List<Page>> {
-        return State.Error()
-    }
+    open suspend fun getAuthors(urlPath: String): State<List<Author>> { return State.Error() }
+    open suspend fun getGenres(urlPath: String): State<List<Genre>> { return State.Error() }
+    open suspend fun getImages(urlPath: String): State<List<Page>> { return State.Error() }
 
     companion object {
         @ExperimentalPagingApi

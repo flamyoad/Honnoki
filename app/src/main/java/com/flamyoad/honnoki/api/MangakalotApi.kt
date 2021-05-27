@@ -46,6 +46,36 @@ class MangakalotApi(private val service: MangakalotService): BaseApi() {
         }
     }
 
+    suspend fun searchForGenres(link: String): State<List<Genre>> {
+        val response = try {
+            service.getGenres(link)
+        } catch (e: Exception) {
+            return State.Error(e)
+        }
+
+        return withContext(Dispatchers.Default) {
+            val html = response.string()
+
+            val genres = parser.parseForGenres(html)
+            return@withContext State.Success(genres)
+        }
+    }
+
+    suspend fun searchForAuthors(link: String): State<List<Author>> {
+        val response = try {
+            service.getAuthors(link)
+        } catch (e: Exception) {
+            return State.Error(e)
+        }
+
+        return withContext(Dispatchers.Default) {
+            val html = response.string()
+
+            val genres = parser.parseForAuthors(html)
+            return@withContext State.Success(genres)
+        }
+    }
+
     suspend fun searchForChapterList(link: String): State<List<Chapter>> {
         val response = try {
             service.getMangaOverview(link)

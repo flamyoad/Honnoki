@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity(
     tableName = "bookmark_group_cover_img",
+    indices = [androidx.room.Index(value = ["bookmarkGroupId"])],
     foreignKeys = [ForeignKey(
         entity = BookmarkGroup::class,
         parentColumns = ["id"],

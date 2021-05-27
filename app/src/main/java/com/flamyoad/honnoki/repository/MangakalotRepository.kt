@@ -41,6 +41,14 @@ class MangakalotRepository(db: AppDatabase, context: Context) : BaseMangaReposit
         return api.searchForMangaOverview(urlPath)
     }
 
+    override suspend fun getAuthors(urlPath: String): State<List<Author>> {
+        return api.searchForAuthors(urlPath)
+    }
+
+    override suspend fun getGenres(urlPath: String): State<List<Genre>> {
+        return api.searchForGenres(urlPath)
+    }
+
     override suspend fun getChapterList(urlPath: String): State<List<Chapter>> {
         return api.searchForChapterList(urlPath)
     }

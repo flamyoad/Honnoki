@@ -11,7 +11,6 @@ import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.adapter.MangaOverviewFragmentAdapter
 import com.flamyoad.honnoki.databinding.ActivityMangaOverviewBinding
 import com.flamyoad.honnoki.model.MangaOverview
-import com.flamyoad.honnoki.model.State
 import com.flamyoad.honnoki.utils.ViewUtils
 import com.flamyoad.honnoki.utils.ui.AppBarStateChangeListener
 import com.flamyoad.honnoki.utils.ui.DepthPageTransformer
@@ -36,7 +35,7 @@ class MangaOverviewActivity : AppCompatActivity() {
         supportActionBar!!.title = ""
 
         if (savedInstanceState == null) {
-            viewModel.initMangaOverview(
+            viewModel.initializeAll(
                 intent.getStringExtra(MANGA_URL) ?: "",
                 intent.getStringExtra(MANGA_SOURCE) ?: "",
             )
@@ -68,7 +67,8 @@ class MangaOverviewActivity : AppCompatActivity() {
                             showToolbarArea(ToolbarState.COLLAPSED)
                             swipeRefreshLayout.isEnabled = true
                         }
-                        State.IDLE -> { }
+                        State.IDLE -> {
+                        }
                     }
                 }
             }
@@ -107,10 +107,12 @@ class MangaOverviewActivity : AppCompatActivity() {
             btnFavouriteExpanded.isChecked = it
         }
 
-        viewModel.mangaOverview().observe(this) {
-            when (it) {
-                is State.Success -> showMangaOverview(it.value)
-            }
+        viewModel.mangaOverview.observe(this) {
+            showMangaOverview(it)
+        }
+
+        viewModel.authorList.observe(this) { authors ->
+            txtAuthor.text = authors.joinToString { it.name }
         }
     }
 
@@ -139,7 +141,6 @@ class MangaOverviewActivity : AppCompatActivity() {
             Glide.with(this@MangaOverviewActivity)
                 .load(overview.coverImage)
                 .placeholder(ViewUtils.getLoadingIndicator(this@MangaOverviewActivity))
-                .error(R.drawable.ic_error_outline_black_24dp)
                 .into(imageManga)
 
             if (overview.alternativeTitle.isBlank()) {
@@ -150,7 +151,6 @@ class MangaOverviewActivity : AppCompatActivity() {
 
             txtTitle.text = overview.mainTitle
             txtAlternateName.text = overview.alternativeTitle
-            txtAuthor.text = overview.authors.joinToString { it.name }
             txtStatus.text = overview.status
         }
     }

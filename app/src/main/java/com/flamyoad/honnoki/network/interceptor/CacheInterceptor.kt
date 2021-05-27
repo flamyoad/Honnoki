@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit
 const val CACHE_CONTROL_HEADER = "Cache-Control"
 const val CACHE_CONTROL_NO_CACHE = "no-cache"
 
-class CacheInterceptor: Interceptor {
+class CacheInterceptor(val maxAge: Int, val timeUnit: TimeUnit): Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
         val originalResponse = chain.proceed(request)
@@ -22,9 +22,8 @@ class CacheInterceptor: Interceptor {
         val shouldUseCache = request.header(CACHE_CONTROL_HEADER) != CACHE_CONTROL_NO_CACHE
         if (!shouldUseCache) return originalResponse
 
-        // Only cache for 1 minute for MangaNelo
         val cacheControl = CacheControl.Builder()
-            .maxAge(1, TimeUnit.MINUTES)
+            .maxAge(maxAge, timeUnit)
             .build()
 
         // Attach "Cache-Control: max-age" to the response

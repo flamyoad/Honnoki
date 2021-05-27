@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "bfc5b05b159d24f96d038779f09740e0",
+    "identityHash": "b2d555c109c554aafd2c438545e60424",
     "entities": [
       {
         "tableName": "manga",
@@ -91,7 +91,7 @@
       },
       {
         "tableName": "manga_overview",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `coverImage` TEXT NOT NULL, `mainTitle` TEXT NOT NULL, `alternativeTitle` TEXT NOT NULL, `summary` TEXT NOT NULL, `authors` TEXT NOT NULL, `status` TEXT NOT NULL, `genres` TEXT NOT NULL, `source` TEXT, `link` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `coverImage` TEXT NOT NULL, `mainTitle` TEXT NOT NULL, `alternativeTitle` TEXT NOT NULL, `summary` TEXT NOT NULL, `status` TEXT NOT NULL, `source` TEXT, `link` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -124,20 +124,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "authors",
-            "columnName": "authors",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
             "fieldPath": "status",
             "columnName": "status",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "genres",
-            "columnName": "genres",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -160,12 +148,21 @@
           ],
           "autoGenerate": false
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_manga_overview_link",
+            "unique": true,
+            "columnNames": [
+              "link"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_manga_overview_link` ON `${TABLE_NAME}` (`link`)"
+          }
+        ],
         "foreignKeys": []
       },
       {
         "tableName": "authors",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `name` TEXT NOT NULL, `link` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `name` TEXT NOT NULL, `link` TEXT NOT NULL, `mangaOverviewId` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`mangaOverviewId`) REFERENCES `manga_overview`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -184,6 +181,12 @@
             "columnName": "link",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "mangaOverviewId",
+            "columnName": "mangaOverviewId",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -192,12 +195,33 @@
           ],
           "autoGenerate": false
         },
-        "indices": [],
-        "foreignKeys": []
+        "indices": [
+          {
+            "name": "index_authors_mangaOverviewId",
+            "unique": false,
+            "columnNames": [
+              "mangaOverviewId"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_authors_mangaOverviewId` ON `${TABLE_NAME}` (`mangaOverviewId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "manga_overview",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "mangaOverviewId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
       },
       {
         "tableName": "genres",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `name` TEXT NOT NULL, `link` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `name` TEXT NOT NULL, `link` TEXT NOT NULL, `mangaOverviewId` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`mangaOverviewId`) REFERENCES `manga_overview`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -216,6 +240,12 @@
             "columnName": "link",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "mangaOverviewId",
+            "columnName": "mangaOverviewId",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -224,8 +254,29 @@
           ],
           "autoGenerate": false
         },
-        "indices": [],
-        "foreignKeys": []
+        "indices": [
+          {
+            "name": "index_genres_mangaOverviewId",
+            "unique": false,
+            "columnNames": [
+              "mangaOverviewId"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_genres_mangaOverviewId` ON `${TABLE_NAME}` (`mangaOverviewId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "manga_overview",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "mangaOverviewId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
       },
       {
         "tableName": "searched_result",
@@ -318,7 +369,17 @@
           ],
           "autoGenerate": false
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_bookmark_bookmarkGroupId_mangaOverviewId",
+            "unique": false,
+            "columnNames": [
+              "bookmarkGroupId",
+              "mangaOverviewId"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_bookmark_bookmarkGroupId_mangaOverviewId` ON `${TABLE_NAME}` (`bookmarkGroupId`, `mangaOverviewId`)"
+          }
+        ],
         "foreignKeys": [
           {
             "table": "bookmark_group",
@@ -403,7 +464,16 @@
           ],
           "autoGenerate": false
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_bookmark_group_cover_img_bookmarkGroupId",
+            "unique": false,
+            "columnNames": [
+              "bookmarkGroupId"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_bookmark_group_cover_img_bookmarkGroupId` ON `${TABLE_NAME}` (`bookmarkGroupId`)"
+          }
+        ],
         "foreignKeys": [
           {
             "table": "bookmark_group",
@@ -422,7 +492,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'bfc5b05b159d24f96d038779f09740e0')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b2d555c109c554aafd2c438545e60424')"
     ]
   }
 }

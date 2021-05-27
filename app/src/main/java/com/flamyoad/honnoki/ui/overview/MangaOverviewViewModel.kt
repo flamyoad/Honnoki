@@ -1,20 +1,17 @@
 package com.flamyoad.honnoki.ui.overview
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import androidx.paging.ExperimentalPagingApi
 import com.flamyoad.honnoki.db.AppDatabase
-import com.flamyoad.honnoki.model.Chapter
-import com.flamyoad.honnoki.model.MangaOverview
-import com.flamyoad.honnoki.model.Source
-import com.flamyoad.honnoki.model.State
+import com.flamyoad.honnoki.model.*
 import com.flamyoad.honnoki.repository.BaseMangaRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import java.lang.IllegalArgumentException
 import kotlin.random.Random
 
 @ExperimentalPagingApi
@@ -23,8 +20,22 @@ class MangaOverviewViewModel(private val app: Application) : AndroidViewModel(ap
 
     private lateinit var mangaRepo: BaseMangaRepository
 
-    private var mangaOverview = MutableLiveData<State<MangaOverview>>(State.Loading)
-    fun mangaOverview(): LiveData<State<MangaOverview>> = mangaOverview
+    private val mangaOverviewId = MutableStateFlow(-1L)
+
+    val mangaOverview = mangaOverviewId
+        .flatMapLatest {
+            if (it == -1L) return@flatMapLatest flowOf(MangaOverview.empty())
+            return@flatMapLatest db.mangaOverviewDao().getById(it)
+        }
+        .asLiveData()
+
+    val genreList: LiveData<List<Genre>> = mangaOverviewId
+        .flatMapLatest { return@flatMapLatest db.genreDao().getByOverviewId(it) }
+        .asLiveData()
+
+    val authorList: LiveData<List<Author>> = mangaOverviewId
+        .flatMapLatest { return@flatMapLatest db.authorDao().getByOverviewId(it) }
+        .asLiveData()
 
     private var chapterList = MutableLiveData<State<List<Chapter>>>(State.Loading)
     fun chapterList(): LiveData<State<List<Chapter>>> = chapterList
@@ -32,7 +43,7 @@ class MangaOverviewViewModel(private val app: Application) : AndroidViewModel(ap
     private var isBookmarked = MutableLiveData<Boolean>()
     fun isBookmarked(): LiveData<Boolean> = isBookmarked
 
-    fun initMangaOverview(url: String, sourceName: String) {
+    fun initializeAll(url: String, sourceName: String) {
         val source = try {
             Source.valueOf(sourceName)
         } catch (e: IllegalArgumentException) {
@@ -41,13 +52,46 @@ class MangaOverviewViewModel(private val app: Application) : AndroidViewModel(ap
 
         mangaRepo = BaseMangaRepository.get(source, db, app.applicationContext)
         loadMangaOverview(url)
+        loadChapterList(url)
     }
 
     fun loadMangaOverview(url: String) {
         viewModelScope.launch {
-            val overview = mangaRepo.getMangaOverview(url)
-            mangaOverview.postValue(overview)
+            when (val overview = mangaRepo.getMangaOverview(url)) {
+                is State.Success -> {
+                    val overviewId = db.mangaOverviewDao().insert(overview.value)
+                    mangaOverviewId.value = overviewId
+                    loadGenres(url, overviewId)
+                    loadAuthors(url, overviewId)
+                }
+            }
+        }
+    }
 
+    private suspend fun loadGenres(url: String, overviewId: Long) {
+        when (val genreList = mangaRepo.getGenres(url)) {
+            is State.Success -> {
+                val genreListWithId = genreList.value.map {
+                    it.copy(mangaOverviewId = overviewId)
+                }
+                db.genreDao().insertAll(genreListWithId)
+            }
+        }
+    }
+
+    private suspend fun loadAuthors(url: String, overviewId: Long) {
+        when (val authorList = mangaRepo.getAuthors(url)) {
+            is State.Success -> {
+                val authorListWithId = authorList.value.map {
+                    it.copy(mangaOverviewId = overviewId)
+                }
+                db.authorDao().insertAll(authorListWithId)
+            }
+        }
+    }
+
+    fun loadChapterList(url: String) {
+        viewModelScope.launch {
             val chapters = mangaRepo.getChapterList(url)
             chapterList.postValue(chapters)
         }

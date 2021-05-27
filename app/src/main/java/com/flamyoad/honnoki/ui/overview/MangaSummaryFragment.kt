@@ -10,7 +10,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.databinding.FragmentMangaSummaryBinding
 import com.flamyoad.honnoki.model.Chapter
@@ -69,8 +68,12 @@ class MangaSummaryFragment : Fragment() {
             layoutManager = gridLayoutManager
         }
 
-        viewModel.mangaOverview().observe(viewLifecycleOwner) {
-            mangaSummaryAdapter.setItem(it)
+        viewModel.mangaOverview.observe(viewLifecycleOwner) {
+            mangaSummaryAdapter.setMangaOverview(State.Success(it))
+        }
+
+        viewModel.genreList.observe(viewLifecycleOwner) {
+            mangaSummaryAdapter.setGenres(State.Success(it))
         }
 
         viewModel.chapterList().observe(viewLifecycleOwner) {

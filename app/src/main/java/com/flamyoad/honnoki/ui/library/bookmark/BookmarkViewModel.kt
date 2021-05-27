@@ -30,7 +30,7 @@ class BookmarkViewModel(application: Application) : AndroidViewModel(application
         bookmarkGroupsWithCoverImages = db.bookmarkGroupDao().getAllWithCoverImages()
 
         bookmarkItems = selectedBookmarkGroup
-            .filter { it -> it.id != null }
+//            .filter { it.id != null }
             .flatMapLatest { return@flatMapLatest bookmarkDao.getAllFrom(requireNotNull(it.id)) }
             .asLiveData()
     }
