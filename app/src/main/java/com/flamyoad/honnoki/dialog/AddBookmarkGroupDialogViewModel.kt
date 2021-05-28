@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.flamyoad.honnoki.MyApplication
 import com.flamyoad.honnoki.db.AppDatabase
 import com.flamyoad.honnoki.model.BookmarkGroup
 import kotlinx.coroutines.Dispatchers
@@ -15,6 +16,8 @@ import kotlinx.coroutines.launch
 class AddBookmarkGroupDialogViewModel(application: Application) : AndroidViewModel(application) {
 
     private val db: AppDatabase = AppDatabase.getInstance(application)
+
+    private val applicationScope = (application as MyApplication).applicationScope
 
     private val nameInputByUser = MutableStateFlow("")
 
@@ -32,7 +35,7 @@ class AddBookmarkGroupDialogViewModel(application: Application) : AndroidViewMod
     }
 
     fun createNewGroup() {
-        viewModelScope.launch(Dispatchers.IO) {
+        applicationScope.launch(Dispatchers.IO) {
             val name = nameInputByUser.value
             db.bookmarkGroupDao().insert(BookmarkGroup(name = name))
         }

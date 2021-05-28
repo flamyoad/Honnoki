@@ -48,6 +48,7 @@ class BookmarkDialog : DialogFragment() {
         with(binding.listGroups) {
             adapter = groupAdapter
             layoutManager = linearLayoutManager
+            itemAnimator = null
         }
 
         viewModel.bookmarkGroups().observe(viewLifecycleOwner) {
@@ -83,6 +84,11 @@ class BookmarkDialog : DialogFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        viewModel.clearBookmarkGroup()
     }
 
     companion object {

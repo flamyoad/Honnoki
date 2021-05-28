@@ -17,6 +17,10 @@ class BookmarkDialogAdapter(private val onGroupClick: (BookmarkGroup) -> Unit)
             val group = getItem(holder.bindingAdapterPosition)
             onGroupClick(group)
         }
+
+        binding.checkBox.setOnClickListener {
+            binding.rootLayout.performClick()
+        }
     }
 
     override fun onBind(holder: BaseViewHolder, item: BookmarkGroup) {

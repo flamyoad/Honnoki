@@ -1,11 +1,13 @@
 package com.flamyoad.honnoki.dialog
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.room.withTransaction
+import com.flamyoad.honnoki.MyApplication
 import com.flamyoad.honnoki.db.AppDatabase
 import com.flamyoad.honnoki.model.Bookmark
 import com.flamyoad.honnoki.model.BookmarkGroup
@@ -14,6 +16,8 @@ import kotlinx.coroutines.launch
 
 class BookmarkDialogViewModel(application: Application) : AndroidViewModel(application) {
     private val db: AppDatabase = AppDatabase.getInstance(application)
+
+    private val applicationScope = (application as MyApplication).applicationScope
 
     private val bookmarkGroupDao = db.bookmarkGroupDao()
 
@@ -55,7 +59,7 @@ class BookmarkDialogViewModel(application: Application) : AndroidViewModel(appli
      *  This operation is safe because it runs in transaction
      */
     fun saveBookmarkGroup() {
-        viewModelScope.launch(Dispatchers.IO) {
+        applicationScope.launch(Dispatchers.IO) {
             db.withTransaction {
                 db.bookmarkDao().deleteAllFrom(currentMangaOverviewId)
 
@@ -70,5 +74,14 @@ class BookmarkDialogViewModel(application: Application) : AndroidViewModel(appli
                 db.bookmarkDao().insert(newBookmarks)
             }
         }
+    }
+
+    fun clearBookmarkGroup() {
+        bookmarkGroups.value = emptyList()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        Log.d("vm", "vm clered")
     }
 }
