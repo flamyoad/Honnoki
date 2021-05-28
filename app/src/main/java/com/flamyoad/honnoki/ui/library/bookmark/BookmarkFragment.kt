@@ -2,10 +2,8 @@ package com.flamyoad.honnoki.ui.library.bookmark
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.paging.ExperimentalPagingApi
@@ -16,9 +14,10 @@ import com.flamyoad.honnoki.adapter.BookmarkAdapter
 import com.flamyoad.honnoki.adapter.BookmarkGroupAdapter
 import com.flamyoad.honnoki.databinding.FragmentBookmarkBinding
 import com.flamyoad.honnoki.dialog.AddBookmarkGroupDialog
+import com.flamyoad.honnoki.dialog.ChangeBookmarkGroupNameDialog
+import com.flamyoad.honnoki.dialog.DeleteBookmarkGroupDialog
 import com.flamyoad.honnoki.model.BookmarkWithOverview
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
-import kotlinx.android.synthetic.main.fragment_bookmark.*
 
 @ExperimentalPagingApi
 class BookmarkFragment : Fragment() {
@@ -39,6 +38,11 @@ class BookmarkFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        registerForContextMenu(binding.btnContextMenu)
+        binding.btnContextMenu.setOnClickListener {
+            it.showContextMenu()
+        }
 
         val groupAdapter = BookmarkGroupAdapter(
             viewModel::selectBookmarkGroup,
@@ -79,12 +83,41 @@ class BookmarkFragment : Fragment() {
         }
 
         viewModel.selectedBookmarkGroup().observe(viewLifecycleOwner) {
-            header.text = it.name
+            binding.header.text = it.name
         }
 
         viewModel.bookmarkItems.observe(viewLifecycleOwner) {
             bookmarkAdapter.submitList(it)
         }
+    }
+
+    override fun onCreateContextMenu(
+        menu: ContextMenu,
+        v: View,
+        menuInfo: ContextMenu.ContextMenuInfo?
+    ) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+
+        val selectedGroup = viewModel.getSelectedBookmarkGroup()
+        menu.apply {
+            setHeaderTitle(selectedGroup.name)
+            add(MENU_CHANGE_GROUP_NAME)
+            add(MENU_DELETE_GROUP)
+        }
+    }
+
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        val selectedGroup = viewModel.getSelectedBookmarkGroup()
+
+        val dialog: DialogFragment =
+            when (item.title) {
+                MENU_CHANGE_GROUP_NAME -> ChangeBookmarkGroupNameDialog.newInstance(selectedGroup)
+                MENU_DELETE_GROUP -> DeleteBookmarkGroupDialog.newInstance(selectedGroup)
+                else -> throw IllegalArgumentException("Invalid menu option!")
+            }
+
+        dialog.show(childFragmentManager, "dialog")
+        return true
     }
 
     private fun openBookmark(bookmark: BookmarkWithOverview) {
@@ -107,6 +140,9 @@ class BookmarkFragment : Fragment() {
     }
 
     companion object {
+        private const val MENU_CHANGE_GROUP_NAME = "Change Name"
+        private const val MENU_DELETE_GROUP = "Delete Bookmark Group"
+
         @JvmStatic
         fun newInstance() = BookmarkFragment()
     }

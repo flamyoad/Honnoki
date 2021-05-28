@@ -11,4 +11,12 @@ data class BookmarkGroupWithCoverImages(
         entityColumn = "bookmarkGroupId"
     )
     val coverImageList: List<BookmarkGroupCoverImage>
-)
+) {
+
+    companion object {
+        fun empty() = BookmarkGroupWithCoverImages(
+            bookmarkGroup = BookmarkGroup(name = ""),
+            coverImageList = emptyList()
+        )
+    }
+}

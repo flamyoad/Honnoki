@@ -1,10 +1,7 @@
 package com.flamyoad.honnoki.db.dao
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Transaction
+import androidx.room.*
 import com.flamyoad.honnoki.model.BookmarkGroup
 import com.flamyoad.honnoki.model.BookmarkGroupWithCoverImages
 import com.flamyoad.honnoki.model.BookmarkWithOverview
@@ -16,8 +13,17 @@ interface BookmarkGroupDao {
     @Insert
     suspend fun insert(bookmarkGroup: BookmarkGroup)
 
+    @Update
+    suspend fun update(bookmarkGroup: BookmarkGroup)
+
+    @Query("DELETE FROM bookmark_group WHERE id = :id")
+    suspend fun delete(id: Long)
+
     @Query("SELECT EXISTS(SELECT * FROM bookmark_group WHERE name = :name)")
     fun existsByName(name: String): Flow<Boolean>
+
+    @Query("SELECT * FROM bookmark_group WHERE id = :id")
+    fun getById(id: Long): Flow<BookmarkGroup>
 
     @Query("SELECT * FROM bookmark_group LIMIT 1")
     suspend fun getFirst(): BookmarkGroup

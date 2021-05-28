@@ -11,22 +11,23 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
-import com.flamyoad.honnoki.databinding.DialogAddBookmarkGroupBinding
+import com.flamyoad.honnoki.databinding.DialogChangeBookmarkGroupNameBinding
+import com.flamyoad.honnoki.model.BookmarkGroup
 
-class AddBookmarkGroupDialog: DialogFragment() {
-    private val viewModel: AddBookmarkGroupDialogViewModel by activityViewModels()
+class ChangeBookmarkGroupNameDialog: DialogFragment() {
+    private val viewModel: ChangeBookmarkGroupNameViewModel by activityViewModels()
 
-    private var _binding: DialogAddBookmarkGroupBinding? = null
+    private var _binding: DialogChangeBookmarkGroupNameBinding? = null
     private val binding get() = requireNotNull(_binding)
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        _binding = DialogAddBookmarkGroupBinding.inflate(layoutInflater, null, false)
+        _binding = DialogChangeBookmarkGroupNameBinding.inflate(layoutInflater, null, false)
 
         val builder = AlertDialog.Builder(requireContext()).apply {
             setTitle("Create new group")
             setView(binding.root)
             setPositiveButton("Ok") { dialogInterface: DialogInterface, i: Int ->
-                viewModel.createNewGroup()
+                viewModel.changeGroupName()
             }
             .setNegativeButton("Return") { dialogInterface: DialogInterface, i: Int ->
 
@@ -43,9 +44,11 @@ class AddBookmarkGroupDialog: DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val bookmarkGroupId = arguments?.getLong(BOOKMARK_GROUP_ID)
+        viewModel.setBookmarkGroupId(requireNotNull(bookmarkGroupId))
+
         binding.fieldName.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
             override fun afterTextChanged(p0: Editable?) {}
 
             override fun onTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -64,6 +67,10 @@ class AddBookmarkGroupDialog: DialogFragment() {
                 thisDialog.getButton(Dialog.BUTTON_POSITIVE).isEnabled = true
             }
         }
+
+        viewModel.bookmarkGroup.observe(viewLifecycleOwner) {
+            dialog!!.setTitle(it.name)
+        }
     }
 
     override fun onDismiss(dialog: DialogInterface) {
@@ -77,8 +84,14 @@ class AddBookmarkGroupDialog: DialogFragment() {
     }
 
     companion object {
-        const val TAG = "ADD_BOOKMARK_GROUP"
-        fun newInstance() = AddBookmarkGroupDialog()
-    }
+        const val TAG = "CHANGE_BOOKMARK_GROUP_DIALOG"
 
+        const val BOOKMARK_GROUP_ID = "BOOKMARK_GROUP_ID"
+
+        fun newInstance(bookmarkGroup: BookmarkGroup) = ChangeBookmarkGroupNameDialog().apply {
+            arguments = Bundle().apply {
+                putLong(BOOKMARK_GROUP_ID, requireNotNull(bookmarkGroup.id))
+            }
+        }
+    }
 }

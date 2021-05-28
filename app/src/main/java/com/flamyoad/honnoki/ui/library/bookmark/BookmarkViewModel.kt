@@ -55,6 +55,10 @@ class BookmarkViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
+    fun getSelectedBookmarkGroup(): BookmarkGroup {
+        return requireNotNull(selectedBookmarkGroup.value)
+    }
+
     fun selectBookmarkGroup(bookmarkGroup: BookmarkGroup) {
         selectedBookmarkGroup.value = bookmarkGroup
     }

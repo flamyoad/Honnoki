@@ -41,7 +41,7 @@ class BookmarkGroupAdapter(
                 val holder = GroupViewHolder(binding)
 
                 binding.rootLayout.setOnClickListener {
-                    val item = getItem(holder.bindingAdapterPosition - 1)
+                    val item = getItem(holder.bindingAdapterPosition)
                     onBookmarkGroupClick(item.bookmarkGroup)
                 }
 
@@ -57,26 +57,31 @@ class BookmarkGroupAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder.itemViewType) {
-            GROUP_ITEM -> (holder as GroupViewHolder).bind(getItem(position - 1))
+            GROUP_ITEM -> (holder as GroupViewHolder).bind(getItem(position))
         }
     }
 
-    override fun getItemCount(): Int {
-        return currentList.size + 1
-    }
-
     override fun getItemViewType(position: Int): Int {
-        return if (position == 0) {
+        val item = getItem(position)
+        return if (item == BookmarkGroupWithCoverImages.empty()) {
             BTN_ADD_NEW_GROUP
         } else {
             GROUP_ITEM
         }
     }
 
+    override fun submitList(list: List<BookmarkGroupWithCoverImages>?) {
+        // Add empty object at first position. It acts as the "Add New Group" button
+        // We don't want to modify getItemCount() to return + 1 because it will mess up Diffutil
+        val modifiedList = list?.toMutableList()
+        modifiedList?.add(0, BookmarkGroupWithCoverImages.empty())
+        super.submitList(modifiedList)
+    }
+
     inner class GroupViewHolder(val binding: BookmarkGroupItemStackedBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(group: BookmarkGroupWithCoverImages) {
-
+        fun bind(item: BookmarkGroupWithCoverImages) {
+            binding.txtGroupName.text = item.bookmarkGroup.name
         }
 
         private fun loadImage() {
@@ -85,9 +90,7 @@ class BookmarkGroupAdapter(
     }
 
     inner class AddButtonViewHolder(val binding: ButtonAddBookmarkGroupBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-
-    }
+        RecyclerView.ViewHolder(binding.root)
 
     companion object {
         val GROUP_COMPARATOR = object : DiffUtil.ItemCallback<BookmarkGroupWithCoverImages>() {
