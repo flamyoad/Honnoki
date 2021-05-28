@@ -7,5 +7,5 @@ data class BookmarkWithOverview(
     @Embedded val bookmark: Bookmark,
 
     @Relation(parentColumn = "mangaOverviewId", entityColumn = "id")
-    val coverImageList: MangaOverview
+    val overview: MangaOverview
 )

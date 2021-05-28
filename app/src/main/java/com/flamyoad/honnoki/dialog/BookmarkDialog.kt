@@ -19,12 +19,12 @@ class BookmarkDialog : DialogFragment() {
     private val binding get() = requireNotNull(_binding)
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialogBuilder = AlertDialog.Builder(requireContext())
-            .setTitle("Bookmark to")
-
         _binding = DialogBookmarkGroupBinding.inflate(layoutInflater, null, false)
 
-        dialogBuilder.setView(binding.root)
+        val dialogBuilder = AlertDialog.Builder(requireContext()).apply {
+            setView(binding.root)
+            setTitle("Bookmark to")
+        }
 
         return dialogBuilder.create()
     }
@@ -86,6 +86,8 @@ class BookmarkDialog : DialogFragment() {
     }
 
     companion object {
+        const val TAG = "BOOKMARK_DIALOG"
+
         private const val OVERVIEW_ID = "OVERVIEW_ID"
 
         fun newInstance(overviewId: Long) = BookmarkDialog().apply {

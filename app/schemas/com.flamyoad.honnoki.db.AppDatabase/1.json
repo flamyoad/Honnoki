@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "979bc837bca7517a749e2d218af6c051",
+    "identityHash": "b15fd776f17b2fd12e6e0ab18884e46e",
     "entities": [
       {
         "tableName": "manga",
@@ -444,13 +444,20 @@
         },
         "indices": [
           {
-            "name": "index_bookmark_bookmarkGroupId_mangaOverviewId",
+            "name": "index_bookmark_bookmarkGroupId",
             "unique": false,
             "columnNames": [
-              "bookmarkGroupId",
+              "bookmarkGroupId"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_bookmark_bookmarkGroupId` ON `${TABLE_NAME}` (`bookmarkGroupId`)"
+          },
+          {
+            "name": "index_bookmark_mangaOverviewId",
+            "unique": true,
+            "columnNames": [
               "mangaOverviewId"
             ],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_bookmark_bookmarkGroupId_mangaOverviewId` ON `${TABLE_NAME}` (`bookmarkGroupId`, `mangaOverviewId`)"
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_bookmark_mangaOverviewId` ON `${TABLE_NAME}` (`mangaOverviewId`)"
           }
         ],
         "foreignKeys": [
@@ -565,7 +572,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '979bc837bca7517a749e2d218af6c051')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b15fd776f17b2fd12e6e0ab18884e46e')"
     ]
   }
 }

@@ -26,7 +26,7 @@ class BookmarkDialogViewModel(application: Application) : AndroidViewModel(appli
         currentMangaOverviewId = overviewId
 
         viewModelScope.launch(Dispatchers.IO) {
-            val groups = bookmarkGroupDao.getAll().map {
+            val groups = bookmarkGroupDao.getAllBlocking().map {
                 if (bookmarkGroupDao.hasBookmarkedItems(requireNotNull(it.id), overviewId)) {
                     it.copy(isSelected = true)
                 } else {

@@ -1,25 +1,26 @@
 package com.flamyoad.honnoki.ui.library.bookmark
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.paging.ExperimentalPagingApi
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-
-import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.adapter.BookmarkAdapter
 import com.flamyoad.honnoki.adapter.BookmarkGroupAdapter
 import com.flamyoad.honnoki.databinding.FragmentBookmarkBinding
-import com.flamyoad.honnoki.model.Bookmark
-import com.flamyoad.honnoki.model.BookmarkGroup
+import com.flamyoad.honnoki.dialog.AddBookmarkGroupDialog
 import com.flamyoad.honnoki.model.BookmarkWithOverview
+import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import kotlinx.android.synthetic.main.fragment_bookmark.*
-import java.security.PrivateKey
 
+@ExperimentalPagingApi
 class BookmarkFragment : Fragment() {
 
     private var _binding: FragmentBookmarkBinding? = null
@@ -39,8 +40,13 @@ class BookmarkFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val groupAdapter = BookmarkGroupAdapter()
-        val groupLayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        val groupAdapter = BookmarkGroupAdapter(
+            viewModel::selectBookmarkGroup,
+            this::openAddNewBookmarkDialog
+        )
+
+        val groupLayoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
         with(binding.listGroups) {
             adapter = groupAdapter
@@ -54,12 +60,19 @@ class BookmarkFragment : Fragment() {
                     }
                     return false
                 }
+
                 override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
                 override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
             })
         }
 
         val bookmarkAdapter = BookmarkAdapter(this::openBookmark)
+        val bookmarkLayoutManager = GridLayoutManager(requireContext(), 3)
+
+        with(binding.listItems) {
+            adapter = bookmarkAdapter
+            layoutManager = bookmarkLayoutManager
+        }
 
         viewModel.bookmarkGroupsWithCoverImages.observe(viewLifecycleOwner) {
             groupAdapter.submitList(it)
@@ -74,12 +87,18 @@ class BookmarkFragment : Fragment() {
         }
     }
 
-    private fun selectBookmarkGroup(bookmarkGroup: BookmarkGroup) {
-
+    private fun openBookmark(bookmark: BookmarkWithOverview) {
+        val intent = Intent(requireContext(), MangaOverviewActivity::class.java).apply {
+            putExtra(MangaOverviewActivity.MANGA_URL, bookmark.overview.link)
+            putExtra(MangaOverviewActivity.MANGA_SOURCE, bookmark.overview.source.toString())
+            putExtra(MangaOverviewActivity.MANGA_TITLE, bookmark.overview.mainTitle)
+        }
+        requireContext().startActivity(intent)
     }
 
-    private fun openBookmark(bookmark: BookmarkWithOverview) {
-
+    private fun openAddNewBookmarkDialog() {
+        val dialog = AddBookmarkGroupDialog.newInstance()
+        dialog.show(childFragmentManager, AddBookmarkGroupDialog.TAG)
     }
 
     override fun onDestroyView() {
@@ -88,6 +107,7 @@ class BookmarkFragment : Fragment() {
     }
 
     companion object {
-        @JvmStatic fun newInstance() = BookmarkFragment()
+        @JvmStatic
+        fun newInstance() = BookmarkFragment()
     }
 }
