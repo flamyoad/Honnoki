@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.flamyoad.honnoki.databinding.FragmentReadHistoryBinding
+import com.flamyoad.honnoki.utils.ui.ToggleState
 
 class ReadHistoryFragment : Fragment() {
 
@@ -19,6 +20,21 @@ class ReadHistoryFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentReadHistoryBinding.inflate(layoutInflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        with(binding) {
+            val toggle = toggleView
+            btnOff.setOnClickListener {
+                toggle.setView(ToggleState.OFF)
+            }
+            btnOn.setOnClickListener {
+                toggle.setView(ToggleState.ON)
+            }
+        }
+
     }
 
     override fun onDestroyView() {

@@ -82,6 +82,7 @@ class BookmarkGroupAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: BookmarkGroupWithCoverImages) {
             binding.txtGroupName.text = item.bookmarkGroup.name
+            binding.txtTotalManga.text = "(" + item.itemCount + ")"
         }
 
         private fun loadImage() {

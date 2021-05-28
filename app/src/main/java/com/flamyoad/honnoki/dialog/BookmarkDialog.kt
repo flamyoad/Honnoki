@@ -86,11 +86,6 @@ class BookmarkDialog : DialogFragment() {
         _binding = null
     }
 
-    override fun onDismiss(dialog: DialogInterface) {
-        super.onDismiss(dialog)
-        viewModel.clearBookmarkGroup()
-    }
-
     companion object {
         const val TAG = "BOOKMARK_DIALOG"
 

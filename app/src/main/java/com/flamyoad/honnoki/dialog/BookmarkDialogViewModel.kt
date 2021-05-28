@@ -65,7 +65,9 @@ class BookmarkDialogViewModel(application: Application) : AndroidViewModel(appli
 
                 val currentBookmarkGroups = bookmarkGroups.value ?: emptyList()
 
-                val newBookmarks = currentBookmarkGroups.map {
+                val newBookmarks = currentBookmarkGroups
+                    .filter { it -> it.isSelected }
+                    .map {
                     Bookmark(
                         bookmarkGroupId = requireNotNull(it.id),
                         mangaOverviewId = currentMangaOverviewId

@@ -6,6 +6,7 @@ import android.view.Gravity
 import android.view.Menu
 import androidx.appcompat.widget.AppCompatSeekBar
 import android.view.MenuItem
+import android.view.WindowManager
 import android.widget.SeekBar
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
@@ -39,6 +40,8 @@ class ReaderActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
         if (savedInstanceState == null) {
             val chapterUrl = intent.getStringExtra(CHAPTER_URL) ?: ""
