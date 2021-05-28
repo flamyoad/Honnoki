@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 
 @Entity(
     tableName = "bookmark",
-    indices = [Index(value = ["bookmarkGroupId"]), Index(value = ["mangaOverviewId"], unique = true)],
+    indices = [Index(value = ["bookmarkGroupId", "mangaOverviewId"], unique = true)],
     foreignKeys = [ForeignKey(
         entity = BookmarkGroup::class,
         parentColumns = ["id"],
