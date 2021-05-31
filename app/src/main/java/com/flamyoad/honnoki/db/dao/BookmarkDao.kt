@@ -22,6 +22,10 @@ interface BookmarkDao {
     @Query("SELECT * FROM bookmark WHERE bookmarkGroupId = :bookmarkGroupId")
     fun getAllWithOverviewFrom(bookmarkGroupId: Long): Flow<List<BookmarkWithOverview>>
 
+    @Transaction
+    @Query("SELECT * FROM bookmark WHERE bookmarkGroupId = :bookmarkGroupId")
+    fun getAllWithOverviewFromBlocking(bookmarkGroupId: Long): List<BookmarkWithOverview>
+
     @Query("DELETE FROM bookmark WHERE mangaOverviewId = :overviewId")
     suspend fun deleteAllFrom(overviewId: Long): Int
 }

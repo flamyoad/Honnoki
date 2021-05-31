@@ -1,10 +1,13 @@
 package com.flamyoad.honnoki.adapter
 
+import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.flamyoad.honnoki.databinding.BookmarkGroupItemStackedBinding
 import com.flamyoad.honnoki.databinding.ButtonAddBookmarkGroupBinding
 import com.flamyoad.honnoki.model.BookmarkGroup
@@ -61,6 +64,48 @@ class BookmarkGroupAdapter(
         }
     }
 
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, payloads: MutableList<Any>) {
+        if (payloads.isEmpty()) {
+            super.onBindViewHolder(holder, position, payloads)
+            return
+        }
+
+        if (holder.itemViewType == GROUP_ITEM) {
+            val groupHolder = holder as GroupViewHolder
+            val bundle = payloads[0] as Bundle
+
+            with(groupHolder.binding) {
+                bundle.getString(NAME)?.let {
+                    txtGroupName.text = it
+                }
+
+                bundle.getInt(TOTAL_ITEMS).let {
+                    if (it != 0) {
+                        txtTotalManga.text = "(" + it.toString() + ")"
+                    }
+                }
+
+                bundle.getString(FIRST_IMAGE)?.let {
+                    Glide.with(root)
+                        .load(it)
+                        .into(firstImage)
+                }
+
+                bundle.getString(SECOND_IMAGE)?.let {
+                    Glide.with(root)
+                        .load(it)
+                        .into(secondImage)
+                }
+
+                bundle.getString(THIRD_IMAGE)?.let {
+                    Glide.with(root)
+                        .load(it)
+                        .into(thirdImage)
+                }
+            }
+        }
+    }
+
     override fun getItemViewType(position: Int): Int {
         val item = getItem(position)
         return if (item == BookmarkGroupWithCoverImages.empty()) {
@@ -83,10 +128,22 @@ class BookmarkGroupAdapter(
         fun bind(item: BookmarkGroupWithCoverImages) {
             binding.txtGroupName.text = item.bookmarkGroup.name
             binding.txtTotalManga.text = "(" + item.itemCount + ")"
+            loadCoverImages(item.coverImage ?: "")
         }
 
-        private fun loadImage() {
+        private fun loadCoverImages(image: String) {
+            for (i in 0 until BookmarkGroup.COVER_IMAGE_LIMIT) {
+                val imageView = when (i) {
+                    0 -> binding.firstImage
+                    1 -> binding.secondImage
+                    2 -> binding.thirdImage
+                    else -> throw IllegalArgumentException("Image does not exist")
+                }
 
+                Glide.with(imageView)
+                    .load(image)
+                    .into(imageView)
+            }
         }
     }
 
@@ -94,6 +151,12 @@ class BookmarkGroupAdapter(
         RecyclerView.ViewHolder(binding.root)
 
     companion object {
+        private const val FIRST_IMAGE = "first_image"
+        private const val SECOND_IMAGE = "second_image"
+        private const val THIRD_IMAGE = "third_image"
+        private const val NAME = "name"
+        private const val TOTAL_ITEMS = "total_items"
+
         val GROUP_COMPARATOR = object : DiffUtil.ItemCallback<BookmarkGroupWithCoverImages>() {
             override fun areItemsTheSame(
                 oldItem: BookmarkGroupWithCoverImages,
@@ -107,6 +170,23 @@ class BookmarkGroupAdapter(
                 newItem: BookmarkGroupWithCoverImages
             ): Boolean {
                 return oldItem == newItem
+            }
+
+            override fun getChangePayload(
+                oldItem: BookmarkGroupWithCoverImages,
+                newItem: BookmarkGroupWithCoverImages
+            ): Any? {
+                val diff = Bundle()
+
+                if (oldItem.bookmarkGroup.name != newItem.bookmarkGroup.name) {
+                    diff.putString(NAME, newItem.bookmarkGroup.name)
+                }
+
+                if (oldItem.itemCount != newItem.itemCount) {
+                    diff.putInt(TOTAL_ITEMS, newItem.itemCount)
+                }
+
+                return diff
             }
         }
     }

@@ -17,7 +17,9 @@ import androidx.room.PrimaryKey
     )]
 )
 data class Bookmark(
-    @PrimaryKey val id: Long? = null,
+    @PrimaryKey
+    val id: Long? = null,
+
     val bookmarkGroupId: Long,
     val mangaOverviewId: Long,
 )

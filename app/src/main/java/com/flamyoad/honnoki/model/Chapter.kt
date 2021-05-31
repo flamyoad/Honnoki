@@ -19,7 +19,9 @@ import androidx.room.PrimaryKey
     )]
 )
 data class Chapter(
-    @PrimaryKey val id: Long? = null,
+    @PrimaryKey
+    val id: Long? = null,
+
     val title: String,
     val date: String,
     val link: String,

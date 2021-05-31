@@ -2,16 +2,33 @@ package com.flamyoad.honnoki.dialog
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.flamyoad.honnoki.MyApplication
 import com.flamyoad.honnoki.db.AppDatabase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 
 class DeleteBookmarkGroupDialogViewModel(application: Application) : AndroidViewModel(application) {
     private val db: AppDatabase = AppDatabase.getInstance(application)
 
     private val applicationScope = (application as MyApplication).applicationScope
+
+    private val bookmarkGroupId = MutableStateFlow(-1L)
+
+    val bookmarkGroup = bookmarkGroupId
+        .flatMapLatest {
+            if (it == -1L) return@flatMapLatest emptyFlow()
+            return@flatMapLatest db.bookmarkGroupDao().getById(it)
+        }
+        .asLiveData()
+
+    fun setBookmarkGroupId(id: Long) {
+        bookmarkGroupId.value = id
+    }
 
     fun deleteGroup(id: Long) {
         applicationScope.launch(Dispatchers.IO) {

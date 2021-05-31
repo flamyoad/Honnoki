@@ -4,24 +4,39 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    tools:background="@color/colorPrimary">
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/btnFavouriteExpanded"
+    <ToggleButton
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginEnd="18dp"
         android:background="@android:color/transparent"
+        android:drawableStart="@drawable/bookmark_button_drawable_selector"
         android:drawablePadding="4dp"
-        android:drawableStart="@drawable/ic_bookmark_inactive_24dp"
         android:textColor="@color/white"
-        android:gravity="center"
-        android:text="Bookmarked"
+        android:checked="false"
+        android:clickable="false"
+        android:textOff="Bookmark"
+        android:textOn="Bookmarked"
         android:textSize="12dp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btnReadExpanded"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textStyle="bold" />
+
+<!--    <TextView-->
+<!--        android:id="@+id/btnFavouriteExpanded"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:background="@android:color/transparent"-->
+<!--        android:drawablePadding="4dp"-->
+<!--        android:drawableStart="@drawable/ic_bookmark_inactive_24dp"-->
+<!--        android:textColor="@color/white"-->
+<!--        android:gravity="center"-->
+<!--        android:text="Bookmark"-->
+<!--        android:textSize="12dp"-->
+<!--        android:textAllCaps="true"-->
+<!--        android:letterSpacing="0.05"-->
+<!--        tools:textColor="@color/mainTextColor"-->
+<!--        android:textStyle="bold"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toStartOf="@+id/btnReadExpanded"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
 
 </FrameLayout>

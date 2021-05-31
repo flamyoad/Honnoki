@@ -25,8 +25,7 @@ class ToggleView @JvmOverloads constructor(
     private var viewOnToggle: View? = null
     private var viewOffToggle: View? = null
 
-    var toggleState: ToggleState = ToggleState.OFF
-        private set
+    private var toggleState: ToggleState = ToggleState.OFF
 
     var isChecked: Boolean = false
         get() {
@@ -78,7 +77,7 @@ class ToggleView @JvmOverloads constructor(
         setView(toggleState)
     }
 
-    fun setView(state: ToggleState) {
+    private fun setView(state: ToggleState) {
         viewOffToggle?.isVisible = false
         viewOnToggle?.isVisible = false
 

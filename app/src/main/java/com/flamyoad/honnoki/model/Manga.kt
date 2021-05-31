@@ -9,7 +9,8 @@ import androidx.room.PrimaryKey
     indices = [Index(value = ["title", "source", "type"], unique = true)]
 )
 data class Manga(
-    @PrimaryKey val id: Long? = null,
+    @PrimaryKey
+    val id: Long? = null,
     val coverImage: String = "",
     val title: String = "",
     val latestChapter: String = "",

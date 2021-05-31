@@ -34,7 +34,6 @@ class ChangeBookmarkGroupNameDialog: DialogFragment() {
 
             }
         }
-
         return builder.create()
     }
 
@@ -89,9 +88,9 @@ class ChangeBookmarkGroupNameDialog: DialogFragment() {
 
         const val BOOKMARK_GROUP_ID = "BOOKMARK_GROUP_ID"
 
-        fun newInstance(bookmarkGroup: BookmarkGroup) = ChangeBookmarkGroupNameDialog().apply {
+        fun newInstance(bookmarkGroupId: Long) = ChangeBookmarkGroupNameDialog().apply {
             arguments = Bundle().apply {
-                putLong(BOOKMARK_GROUP_ID, requireNotNull(bookmarkGroup.id))
+                putLong(BOOKMARK_GROUP_ID, bookmarkGroupId)
             }
         }
     }

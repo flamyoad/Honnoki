@@ -24,17 +24,6 @@ class ReadHistoryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        with(binding) {
-            val toggle = toggleView
-            btnOff.setOnClickListener {
-                toggle.setView(ToggleState.OFF)
-            }
-            btnOn.setOnClickListener {
-                toggle.setView(ToggleState.ON)
-            }
-        }
-
     }
 
     override fun onDestroyView() {

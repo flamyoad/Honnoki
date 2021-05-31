@@ -28,4 +28,12 @@ class ReaderViewModel(app: Application) : AndroidViewModel(app) {
             imageList.postValue(result)
         }
     }
+
+    fun loadNextChapter() {
+
+    }
+
+    fun loadPrevChapter() {
+
+    }
 }

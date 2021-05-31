@@ -6,6 +6,7 @@ import android.view.*
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,6 +19,7 @@ import com.flamyoad.honnoki.dialog.ChangeBookmarkGroupNameDialog
 import com.flamyoad.honnoki.dialog.DeleteBookmarkGroupDialog
 import com.flamyoad.honnoki.model.BookmarkWithOverview
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
+import kotlinx.coroutines.flow.collect
 
 @ExperimentalPagingApi
 class BookmarkFragment : Fragment() {
@@ -46,7 +48,7 @@ class BookmarkFragment : Fragment() {
 
         val groupAdapter = BookmarkGroupAdapter(
             viewModel::selectBookmarkGroup,
-            this::openAddNewBookmarkDialog
+            this::openAddNewBookmarkDialog,
         )
 
         val groupLayoutManager =
@@ -82,13 +84,16 @@ class BookmarkFragment : Fragment() {
             groupAdapter.submitList(it)
         }
 
-        viewModel.selectedBookmarkGroup().observe(viewLifecycleOwner) {
-            binding.header.text = it.name
-        }
-
         viewModel.bookmarkItems.observe(viewLifecycleOwner) {
             bookmarkAdapter.submitList(it)
         }
+
+        lifecycleScope.launchWhenResumed {
+            viewModel.selectedBookmarkGroup.collect {
+                binding.header.text = it.name
+            }
+        }
+
     }
 
     override fun onCreateContextMenu(
@@ -98,21 +103,20 @@ class BookmarkFragment : Fragment() {
     ) {
         super.onCreateContextMenu(menu, v, menuInfo)
 
-        val selectedGroup = viewModel.getSelectedBookmarkGroup()
         menu.apply {
-            setHeaderTitle(selectedGroup.name)
+            setHeaderTitle(viewModel.bookmarkGroupName)
             add(MENU_CHANGE_GROUP_NAME)
             add(MENU_DELETE_GROUP)
         }
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
-        val selectedGroup = viewModel.getSelectedBookmarkGroup()
+        val selectedGroupId = viewModel.getSelectedBookmarkGroupId()
 
         val dialog: DialogFragment =
             when (item.title) {
-                MENU_CHANGE_GROUP_NAME -> ChangeBookmarkGroupNameDialog.newInstance(selectedGroup)
-                MENU_DELETE_GROUP -> DeleteBookmarkGroupDialog.newInstance(selectedGroup)
+                MENU_CHANGE_GROUP_NAME -> ChangeBookmarkGroupNameDialog.newInstance(selectedGroupId)
+                MENU_DELETE_GROUP -> DeleteBookmarkGroupDialog.newInstance(selectedGroupId)
                 else -> throw IllegalArgumentException("Invalid menu option!")
             }
 

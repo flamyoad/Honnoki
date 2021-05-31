@@ -3,7 +3,6 @@ package com.flamyoad.honnoki.db.dao
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.flamyoad.honnoki.model.BookmarkGroup
-import com.flamyoad.honnoki.model.BookmarkGroupWithCoverImages
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -24,19 +23,11 @@ interface BookmarkGroupDao {
     @Query("SELECT * FROM bookmark_group WHERE id = :id")
     fun getById(id: Long): Flow<BookmarkGroup>
 
-    @Query("SELECT * FROM bookmark_group LIMIT 1")
-    suspend fun getFirst(): BookmarkGroup
+    @Query("SELECT id FROM bookmark_group LIMIT 1")
+    suspend fun getFirstItemId(): Long
 
-    @Transaction
-    @Query(
-        """
-        SELECT bookmark_group.*, COUNT(bookmark.id) AS item_count
-        FROM bookmark_group
-        LEFT OUTER JOIN bookmark ON bookmark_group.id = bookmark.bookmarkGroupId
-        GROUP BY bookmark_group.id
-    """
-    )
-    fun getAllWithCoverImages(): LiveData<List<BookmarkGroupWithCoverImages>>
+    @Query("SELECT * FROM bookmark_group")
+    fun getAll(): Flow<List<BookmarkGroup>>
 
     @Query("SELECT * FROM bookmark_group")
     suspend fun getAllBlocking(): List<BookmarkGroup>

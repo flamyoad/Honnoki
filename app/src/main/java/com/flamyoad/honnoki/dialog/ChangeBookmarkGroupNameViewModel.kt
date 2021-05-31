@@ -19,9 +19,9 @@ class ChangeBookmarkGroupNameViewModel(application: Application) : AndroidViewMo
 
     private val applicationScope = (application as MyApplication).applicationScope
 
-    private val bookmarkGroupId = MutableStateFlow(-1L)
-
     private val nameInputByUser = MutableStateFlow("")
+
+    private val bookmarkGroupId = MutableStateFlow(-1L)
 
     val bookmarkGroup = bookmarkGroupId
         .flatMapLatest {

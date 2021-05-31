@@ -9,7 +9,9 @@ import androidx.room.PrimaryKey
     indices = [Index(value = ["link"], unique = true)]
 )
 data class MangaOverview(
-    @PrimaryKey val id: Long? = null,
+    @PrimaryKey
+    val id: Long? = null,
+
     val coverImage: String,
     val mainTitle: String,
     val alternativeTitle: String,

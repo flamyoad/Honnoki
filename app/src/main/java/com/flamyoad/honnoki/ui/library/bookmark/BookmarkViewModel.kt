@@ -11,9 +11,8 @@ import com.flamyoad.honnoki.model.BookmarkGroup
 import com.flamyoad.honnoki.model.BookmarkGroupWithCoverImages
 import com.flamyoad.honnoki.model.BookmarkWithOverview
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class BookmarkViewModel(application: Application) : AndroidViewModel(application) {
@@ -22,12 +21,21 @@ class BookmarkViewModel(application: Application) : AndroidViewModel(application
 
     private val bookmarkGroupDao = db.bookmarkGroupDao()
 
-    private val selectedBookmarkGroup = MutableStateFlow(BookmarkGroup.empty())
-    fun selectedBookmarkGroup(): LiveData<BookmarkGroup> = selectedBookmarkGroup
-        .asLiveData()
+    private val selectedBookmarkGroupId = MutableStateFlow(-1L)
 
     val bookmarkGroupsWithCoverImages: LiveData<List<BookmarkGroupWithCoverImages>> =
-        db.bookmarkGroupDao().getAllWithCoverImages()
+        db.bookmarkGroupWithCoverImageDao()
+            .getAll()
+            .asLiveData()
+
+    var bookmarkGroupName: String = ""
+        private set
+
+    val selectedBookmarkGroup = selectedBookmarkGroupId
+        .flatMapLatest {
+            if (it == -1L) return@flatMapLatest flowOf(BookmarkGroup.empty())
+            return@flatMapLatest db.bookmarkGroupDao().getById(it)
+        }
 
     val bookmarkItems: LiveData<List<BookmarkWithOverview>> =
         selectedBookmarkGroup
@@ -45,21 +53,22 @@ class BookmarkViewModel(application: Application) : AndroidViewModel(application
     }
 
     private fun initializeBookmarkGroups() {
+        // move init part to mainactivity!! or Application
         viewModelScope.launch(Dispatchers.IO) {
             db.withTransaction {
                 if (bookmarkGroupDao.getAllBlocking().isEmpty()) {
                     bookmarkGroupDao.insert(BookmarkGroup(name = "All"))
                 }
-                selectedBookmarkGroup.value  = bookmarkGroupDao.getFirst()
+                selectedBookmarkGroupId.value  = bookmarkGroupDao.getFirstItemId()
             }
         }
     }
 
-    fun getSelectedBookmarkGroup(): BookmarkGroup {
-        return requireNotNull(selectedBookmarkGroup.value)
+    fun getSelectedBookmarkGroupId(): Long {
+        return requireNotNull(selectedBookmarkGroupId.value)
     }
 
     fun selectBookmarkGroup(bookmarkGroup: BookmarkGroup) {
-        selectedBookmarkGroup.value = bookmarkGroup
+        selectedBookmarkGroupId.value = bookmarkGroup.id ?: -1
     }
 }

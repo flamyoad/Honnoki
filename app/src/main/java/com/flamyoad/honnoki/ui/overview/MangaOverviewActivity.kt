@@ -15,6 +15,7 @@ import com.flamyoad.honnoki.model.MangaOverview
 import com.flamyoad.honnoki.utils.ViewUtils
 import com.flamyoad.honnoki.utils.ui.AppBarStateChangeListener
 import com.flamyoad.honnoki.utils.ui.DepthPageTransformer
+import com.flamyoad.honnoki.utils.ui.ToggleState
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.activity_manga_overview.*

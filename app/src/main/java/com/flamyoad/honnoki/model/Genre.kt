@@ -15,7 +15,9 @@ import androidx.room.PrimaryKey
     )]
 )
 data class Genre(
-    @PrimaryKey val id: Long? = null,
+    @PrimaryKey
+    val id: Long? = null,
+
     val name: String,
     val link: String,
     val mangaOverviewId: Long = -1

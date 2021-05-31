@@ -5,8 +5,8 @@
     android:id="@+id/swipeRefreshLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.overview.MangaOverviewActivity"
-    android:fitsSystemWindows="false">
+    android:fitsSystemWindows="false"
+    tools:context=".ui.overview.MangaOverviewActivity">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -188,22 +188,17 @@
                     android:background="@android:color/transparent"
                     app:layout_collapseMode="pin">
 
-                    <ToggleButton
+                    <com.flamyoad.honnoki.utils.ui.ToggleView
                         android:id="@+id/btnFavouriteExpanded"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginEnd="18dp"
                         android:background="@android:color/transparent"
-                        android:drawableStart="@drawable/bookmark_button_drawable_selector"
-                        android:drawablePadding="4dp"
-                        android:textColor="@color/white"
-                        android:textOff="Bookmark"
-                        android:textOn="Bookmarked"
-                        android:textSize="12dp"
-                        android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/btnReadExpanded"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:viewOff="@layout/layout_bookmark_off"
+                        app:viewOn="@layout/layout_bookmark_on" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnReadExpanded"
@@ -234,7 +229,7 @@
                         android:background="@android:color/transparent"
                         app:layout_collapseMode="pin">
 
-                        <ToggleButton
+                        <com.flamyoad.honnoki.utils.ui.ToggleView
                             android:id="@+id/btnFavouriteCollapsed"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
@@ -243,13 +238,13 @@
                             android:drawableStart="@drawable/bookmark_button_drawable_selector"
                             android:drawablePadding="4dp"
                             android:textColor="@color/white"
-                            android:textOff="Bookmark"
-                            android:textOn="Bookmarked"
-                            android:textSize="12dp"
                             android:textStyle="bold"
+                            android:translationZ="8dp"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@+id/btnReadCollapsed"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintEnd_toStartOf="@id/btnReadCollapsed"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:viewOff="@layout/layout_bookmark_off"
+                            app:viewOn="@layout/layout_bookmark_on" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnReadCollapsed"

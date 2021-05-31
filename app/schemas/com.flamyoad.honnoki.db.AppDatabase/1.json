@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "d7e346ed9d66f550b9b823a2555ce7c1",
+    "identityHash": "c5c8915a9981c91168a0f6489bfbeb21",
     "entities": [
       {
         "tableName": "manga",
@@ -501,71 +501,12 @@
           }
         ],
         "foreignKeys": []
-      },
-      {
-        "tableName": "bookmark_group_cover_img",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `bookmarkGroupId` INTEGER, `coverImage` TEXT NOT NULL, `position` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`bookmarkGroupId`) REFERENCES `bookmark_group`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
-        "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "bookmarkGroupId",
-            "columnName": "bookmarkGroupId",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "coverImage",
-            "columnName": "coverImage",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "position",
-            "columnName": "position",
-            "affinity": "INTEGER",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "columnNames": [
-            "id"
-          ],
-          "autoGenerate": false
-        },
-        "indices": [
-          {
-            "name": "index_bookmark_group_cover_img_bookmarkGroupId",
-            "unique": false,
-            "columnNames": [
-              "bookmarkGroupId"
-            ],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_bookmark_group_cover_img_bookmarkGroupId` ON `${TABLE_NAME}` (`bookmarkGroupId`)"
-          }
-        ],
-        "foreignKeys": [
-          {
-            "table": "bookmark_group",
-            "onDelete": "CASCADE",
-            "onUpdate": "CASCADE",
-            "columns": [
-              "bookmarkGroupId"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
-          }
-        ]
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd7e346ed9d66f550b9b823a2555ce7c1')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c5c8915a9981c91168a0f6489bfbeb21')"
     ]
   }
 }

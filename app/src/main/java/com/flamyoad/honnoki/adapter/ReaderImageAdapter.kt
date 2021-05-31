@@ -11,6 +11,7 @@ import com.flamyoad.honnoki.databinding.ReaderImageListItemBinding
 import com.flamyoad.honnoki.model.Page
 import com.flamyoad.honnoki.utils.ViewUtils
 import com.flamyoad.honnoki.utils.ui.MangaImageViewTarget
+import java.util.*
 
 class ReaderImageAdapter: RecyclerView.Adapter<ReaderImageAdapter.ImageViewHolder>() {
 
@@ -70,7 +71,11 @@ class ReaderImageAdapter: RecyclerView.Adapter<ReaderImageAdapter.ImageViewHolde
         }
 
         fun recycle() {
-            binding.imageView.recycle()
+            with(binding) {
+                imageView.recycle()
+                imageView.isVisible = false
+                progressBarContainer.isVisible = true
+            }
         }
     }
 }
