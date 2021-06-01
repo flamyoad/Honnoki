@@ -73,8 +73,6 @@ class ReaderImageAdapter: RecyclerView.Adapter<ReaderImageAdapter.ImageViewHolde
         fun recycle() {
             with(binding) {
                 imageView.recycle()
-                imageView.isVisible = false
-                progressBarContainer.isVisible = true
             }
         }
     }

@@ -20,7 +20,6 @@
             android:background="@drawable/manga_overview_gradient_background"
             android:fitsSystemWindows="true"
             android:minHeight="@dimen/app_bar_height"
-            android:paddingTop="@dimen/status_bar_height"
             android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
