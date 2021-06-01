@@ -11,6 +11,7 @@ import android.widget.SeekBar
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.paging.ExperimentalPagingApi
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Slide
@@ -58,6 +59,7 @@ class ReaderActivity : AppCompatActivity() {
         with(binding.listImages) {
             adapter = readerAdapter
             layoutManager = linearLayoutManager
+            addItemDecoration(DividerItemDecoration(this@ReaderActivity, DividerItemDecoration.VERTICAL))
         }
 
         binding.listImages.addOnScrollListener(object: RecyclerView.OnScrollListener() {
@@ -98,7 +100,7 @@ class ReaderActivity : AppCompatActivity() {
         viewModel.imageList().observe(this) {
             when (it) {
                 is State.Success -> {
-                    readerAdapter.setList(it.value)
+                    readerAdapter.submitList(it.value)
                     binding.seekbar.max = it.value.size - 1 // Change it to zero-based integer
                 }
             }

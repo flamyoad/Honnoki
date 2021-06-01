@@ -9,6 +9,7 @@ import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import androidx.paging.ExperimentalPagingApi
 import com.bumptech.glide.Glide
 import com.flamyoad.honnoki.R
@@ -44,20 +45,10 @@ class MangaOverviewActivity : AppCompatActivity() {
         // Transparent status bar
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             window.insetsController?.let {
-                // Default behavior is that if navigation bar is hidden, the system will "steal" touches
-                // and show it again upon user's touch. We just want the user to be able to show the
-                // navigation bar by swipe, touches are handled by custom code -> change system bar behavior.
-                // Alternative to deprecated SYSTEM_UI_FLAG_IMMERSIVE.
-                // make navigation bar translucent (alternative to deprecated
-                // WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
-                // - do this already in hideSystemUI() so that the bar
-                // is translucent if user swipes it up
                 window.navigationBarColor = getColor(R.color.sea_blue)
-                // Finally, hide the system bars, alternative to View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                // and SYSTEM_UI_FLAG_FULLSCREEN.
-//                it.hide(WindowInsets.Type.systemBars())
             }
         } else {
+            binding.appbarLayout.updatePadding(top = 32)
             window.setFlags(
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS

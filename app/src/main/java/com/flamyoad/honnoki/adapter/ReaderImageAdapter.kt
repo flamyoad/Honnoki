@@ -3,6 +3,7 @@ package com.flamyoad.honnoki.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.model.GlideUrl
@@ -13,51 +14,40 @@ import com.flamyoad.honnoki.utils.ViewUtils
 import com.flamyoad.honnoki.utils.ui.MangaImageViewTarget
 import java.util.*
 
-class ReaderImageAdapter: RecyclerView.Adapter<ReaderImageAdapter.ImageViewHolder>() {
+class ReaderImageAdapter: BaseListAdapter<Page, ReaderImageListItemBinding>(PAGE_COMPARATOR) {
 
-    private var list: List<Page> = emptyList()
+    override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> ReaderImageListItemBinding
+        get() = ReaderImageListItemBinding::inflate
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
-        val binding = ReaderImageListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        val holder = ImageViewHolder(binding)
-
+    override fun onCreate(holder: BaseViewHolder, binding: ReaderImageListItemBinding) {
         binding.btnRetry.setOnClickListener {
-            val item = list[holder.bindingAdapterPosition]
+            val item = getItem(holder.bindingAdapterPosition)
             holder.loadImage(item)
         }
-
-        return holder
     }
 
-    override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
-        holder.loadImage(list[position])
+    override fun onBind(holder: BaseViewHolder, page: Page) {
+        holder.loadImage(page)
     }
 
-    override fun getItemCount(): Int {
-        return list.size
+    override fun onRecycleView(holder: BaseViewHolder) {
+        super.onRecycleView(holder)
+        with(holder.binding) {
+            imageView.recycle()
+        }
     }
 
-    override fun onViewRecycled(holder: ImageViewHolder) {
-        super.onViewRecycled(holder)
-        holder.recycle()
-    }
+    private fun BaseViewHolder.loadImage(page: Page) {
+        with(binding) {
+            errorContainer.isVisible = false
+            progressBarContainer.isVisible = true
 
-    fun setList(list: List<Page>) {
-        this.list = list
-        notifyDataSetChanged()
-    }
+            txtPageNumber.text = page.number.toString()
 
-    inner class ImageViewHolder(val binding: ReaderImageListItemBinding): RecyclerView.ViewHolder(binding.root) {
-        fun loadImage(page: Page) {
-            binding.errorContainer.isVisible = false
-            binding.progressBarContainer.isVisible = true
-
-            binding.txtPageNumber.text = page.number.toString()
-
-            binding.imageView.setOnImageEventListener(object: SubsamplingScaleImageView.DefaultOnImageEventListener() {
+            imageView.setOnImageEventListener(object: SubsamplingScaleImageView.DefaultOnImageEventListener() {
                 override fun onReady() {
                     super.onReady()
-                    binding.statusContainer.isVisible = false
+                    statusContainer.isVisible = false
                 }
             })
 
@@ -65,14 +55,20 @@ class ReaderImageAdapter: RecyclerView.Adapter<ReaderImageAdapter.ImageViewHolde
                 mapOf("Referer" to "https://manganelo.com/")
             }
 
-            Glide.with(binding.root)
+            Glide.with(root)
                 .download(urlWithHeader)
-                .into(MangaImageViewTarget(binding))
+                .into(MangaImageViewTarget(this))
         }
+    }
 
-        fun recycle() {
-            with(binding) {
-                imageView.recycle()
+    companion object {
+        val PAGE_COMPARATOR = object: DiffUtil.ItemCallback<Page>() {
+            override fun areItemsTheSame(oldItem: Page, newItem: Page): Boolean {
+                return oldItem.id == newItem.id
+            }
+
+            override fun areContentsTheSame(oldItem: Page, newItem: Page): Boolean {
+                return oldItem == newItem
             }
         }
     }

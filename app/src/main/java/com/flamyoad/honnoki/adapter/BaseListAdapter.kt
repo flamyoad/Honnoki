@@ -13,6 +13,7 @@ abstract class BaseListAdapter<T: Any, VB: ViewBinding>
     abstract val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> VB
     abstract fun onCreate(holder: BaseViewHolder, binding: VB)
     abstract fun onBind(holder: BaseViewHolder, item: T)
+    open fun onRecycleView(holder: BaseViewHolder) {}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
         val binding = bindingInflater.invoke(LayoutInflater.from(parent.context), parent, false)
@@ -24,6 +25,11 @@ abstract class BaseListAdapter<T: Any, VB: ViewBinding>
     override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
         val item = getItem(position)
         onBind(holder, item)
+    }
+
+    override fun onViewRecycled(holder: BaseViewHolder) {
+        super.onViewRecycled(holder)
+        onRecycleView(holder)
     }
 
     inner class BaseViewHolder(val binding: VB): RecyclerView.ViewHolder(binding.root)
