@@ -8,6 +8,7 @@ import com.flamyoad.honnoki.model.*
 import com.flamyoad.honnoki.repository.BaseMangaRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
@@ -19,6 +20,8 @@ class MangaOverviewViewModel(private val app: Application) : AndroidViewModel(ap
     private lateinit var mangaRepo: BaseMangaRepository
 
     private val mangaOverviewId = MutableStateFlow(-1L)
+
+    val overviewId get() = mangaOverviewId.value
 
     val mangaOverview = mangaOverviewId
         .flatMapLatest {

@@ -2,38 +2,58 @@ package com.flamyoad.honnoki.ui.reader
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
 import com.flamyoad.honnoki.db.AppDatabase
-import com.flamyoad.honnoki.model.Page
-import com.flamyoad.honnoki.model.State
-import com.flamyoad.honnoki.repository.BaseMangaRepository
-import com.flamyoad.honnoki.repository.MangakalotRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.*
+import java.text.FieldPosition
 
 @ExperimentalPagingApi
 class ReaderViewModel(app: Application) : AndroidViewModel(app) {
     private val db = AppDatabase.getInstance(app)
-    private var mangaRepo: BaseMangaRepository = MangakalotRepository(db, app.applicationContext)
 
-    private val imageList = MutableLiveData<State<List<Page>>>()
-    fun imageList(): LiveData<State<List<Page>>> = imageList
+    private val mangaOverviewId = MutableStateFlow(-1L)
 
-    fun fetchManga(link: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val result = mangaRepo.getImages(link)
-            imageList.postValue(result)
-        }
+    val overviewId get() = mangaOverviewId.value
+
+    val chapterList = mangaOverviewId
+        .flatMapLatest { db.chapterDao().getByOverviewId(it) }
+
+    private val sideKickVisibility = MutableStateFlow(false)
+    fun sideKickVisibility(): StateFlow<Boolean> = sideKickVisibility
+
+    private val currentPage = MutableStateFlow(0)
+    fun currentPage(): StateFlow<Int> = currentPage
+
+    private val totalPages = MutableStateFlow(0)
+    fun totalPages(): StateFlow<Int> = totalPages
+
+    private val pageNumberScrolledBySeekbar = MutableStateFlow(-1)
+    fun pageNumberScrolledBySeekbar(): Flow<Int> = pageNumberScrolledBySeekbar
+
+    private val allowScrollToOtherChapters = MutableStateFlow(false)
+    fun allowScrollToOtherChapters(): StateFlow<Boolean> = allowScrollToOtherChapters
+
+    val currentPageIndicator = currentPage.combine(totalPages) { current, total ->
+        "Page: ${current + 1} / ${total + 1}"
     }
 
-    fun loadNextChapter() {
-
+    fun fetchChapterList(overviewId: Long) {
+        mangaOverviewId.value = overviewId
     }
 
-    fun loadPrevChapter() {
+    fun setSideKickVisibility(isVisible: Boolean) {
+        sideKickVisibility.value = isVisible
+    }
 
+    fun setCurrentPage(number: Int) {
+        currentPage.value = number
+    }
+
+    fun setTotalPages(number: Int) {
+        totalPages.value = number - 1
+    }
+
+    fun setSeekbarScrolledPosition(position: Int) {
+        pageNumberScrolledBySeekbar.tryEmit(position)
     }
 }

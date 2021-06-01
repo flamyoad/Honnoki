@@ -20,6 +20,7 @@ import com.flamyoad.honnoki.ui.overview.adapter.MainHeaderAdapter
 import com.flamyoad.honnoki.ui.overview.adapter.MangaSummaryAdapter
 import com.flamyoad.honnoki.ui.reader.ReaderActivity
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
+import java.io.Reader
 
 @ExperimentalPagingApi
 class MangaSummaryFragment : Fragment() {
@@ -87,9 +88,11 @@ class MangaSummaryFragment : Fragment() {
 
         val intent = Intent(requireContext(), ReaderActivity::class.java)
         intent.apply {
+            putExtra(ReaderActivity.CHAPTER_ID, chapter.id)
             putExtra(ReaderActivity.CHAPTER_URL, chapter.link)
             putExtra(ReaderActivity.CHAPTER_TITLE, chapter.title)
             putExtra(ReaderActivity.MANGA_TITLE, mangaTitle)
+            putExtra(ReaderActivity.OVERVIEW_ID, viewModel.overviewId)
         }
         startActivity(intent)
     }
