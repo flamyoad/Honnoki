@@ -15,4 +15,24 @@ interface ChapterDao {
 
     @Query("SELECT * FROM chapters WHERE mangaOverviewId = :overviewId")
     fun getByOverviewId(overviewId: Long): Flow<List<Chapter>>
+
+    @Query("SELECT * FROM chapters WHERE id = :id")
+    fun get(id: Long): Chapter?
+
+    @Query("SELECT link FROM chapters WHERE id = :id")
+    fun getLink(id: Long): String
+
+    @Query("""
+        SELECT * FROM chapters
+        WHERE mangaOverviewId = :overviewId AND id < :currentChapterId
+        ORDER BY id DESC
+        """)
+    fun getPreviousChapter(overviewId: Long, currentChapterId: Long): Chapter?
+
+    @Query("""
+        SELECT * FROM chapters
+        WHERE mangaOverviewId = :overviewId AND id > :currentChapterId
+        ORDER BY id
+        """)
+    fun getNextChapter(overviewId: Long, currentChapterId: Long): Chapter?
 }

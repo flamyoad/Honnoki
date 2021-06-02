@@ -1,6 +1,7 @@
 package com.flamyoad.honnoki.model
 
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
@@ -10,12 +11,12 @@ import androidx.room.PrimaryKey
         Index(value = ["mangaOverviewId"]),
         Index(value = ["link"], unique = true)
     ],
-    foreignKeys = [androidx.room.ForeignKey(
+    foreignKeys = [ForeignKey(
         entity = MangaOverview::class,
         parentColumns = ["id"],
         childColumns = ["mangaOverviewId"],
-        onDelete = androidx.room.ForeignKey.CASCADE,
-        onUpdate = androidx.room.ForeignKey.CASCADE
+        onDelete = ForeignKey.CASCADE,
+        onUpdate = ForeignKey.CASCADE
     )]
 )
 data class Chapter(

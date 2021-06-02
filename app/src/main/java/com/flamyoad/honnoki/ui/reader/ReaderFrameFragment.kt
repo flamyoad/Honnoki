@@ -1,6 +1,7 @@
 package com.flamyoad.honnoki.ui.reader
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +16,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.flamyoad.honnoki.adapter.ReaderImageAdapter
 import com.flamyoad.honnoki.databinding.FragmentReaderFrameBinding
 import com.flamyoad.honnoki.model.Chapter
-import com.flamyoad.honnoki.model.State
+import com.scwang.smart.refresh.layout.api.RefreshLayout
+import com.scwang.smart.refresh.layout.listener.OnRefreshListener
 import kotlinx.coroutines.flow.collectLatest
 
 @ExperimentalPagingApi
@@ -32,8 +34,6 @@ class ReaderFrameFragment : Fragment() {
 
     private var scrollingFromSeekbar: Boolean = false
 
-    private var hasLoadedData: Boolean = false
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -45,15 +45,13 @@ class ReaderFrameFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if (hasLoadedData) return
 
-        val chapterUrl = arguments?.getString(CHAPTER_URL) ?: ""
-        viewModel.fetchManga(chapterUrl)
+        val chapterId = requireActivity().intent?.getLongExtra(ReaderActivity.CHAPTER_ID, -1) ?: -1
+
+        parentViewModel.fetchManga(chapterId)
 
         initUi()
         observeUi()
-
-        hasLoadedData = true
     }
 
     private fun initUi() {
@@ -86,18 +84,38 @@ class ReaderFrameFragment : Fragment() {
                     // Resets the boolean
                     scrollingFromSeekbar = false
                 }
+
+                // Prefetch new chapter when arriving end of list
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    if (linearLayoutManager.findLastVisibleItemPosition() == readerAdapter.itemCount - 1) {
+                        parentViewModel.loadNextChapter()
+                    }
+
+                    val lastVisiblePos = linearLayoutManager.findFirstVisibleItemPosition()
+                    val lastVisibleView = linearLayoutManager.findViewByPosition(lastVisiblePos)
+                    if (lastVisiblePos == 0 && lastVisibleView?.top == 0) {
+                        viewModel.setPullToRefreshEnabled(true)
+                    } else {
+                        viewModel.setPullToRefreshEnabled(false)
+                    }
+                }
             })
+
+            smartRefreshLayout.setOnRefreshListener {
+                parentViewModel.loadPreviousChapter()
+                it.finishRefresh(true)
+            }
+
+
+
         }
     }
 
     private fun observeUi() {
-        viewModel.pageList().observe(viewLifecycleOwner) {
-            when (it) {
-                is State.Success -> {
-                    readerAdapter.submitList(it.value)
-                    parentViewModel.setTotalPages(it.value.size)
-                }
-            }
+        parentViewModel.pageList().observe(viewLifecycleOwner) {
+            readerAdapter.submitList(it)
+            parentViewModel.setTotalPages(it.size)
         }
 
         lifecycleScope.launchWhenResumed {
@@ -105,24 +123,21 @@ class ReaderFrameFragment : Fragment() {
                 binding.listImages.scrollToPosition(it)
             }
         }
+
+        lifecycleScope.launchWhenResumed {
+            viewModel.disablePullToRefresh().collectLatest {
+                binding.smartRefreshLayout.isEnabled = it
+            }
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-        hasLoadedData = false
     }
 
     companion object {
-        const val CHAPTER_ID = "chapter_id"
-        const val CHAPTER_NAME = "chapter_name"
-        const val CHAPTER_URL = "chapter_url"
-
         @JvmStatic
-        fun newInstance(chapter: Chapter) = ReaderFrameFragment().apply {
-            arguments = Bundle().apply {
-                putString(CHAPTER_URL, chapter.link)
-            }
-        }
+        fun newInstance() = ReaderFrameFragment()
     }
 }

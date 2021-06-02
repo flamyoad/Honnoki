@@ -1,9 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.scwang.smart.refresh.layout.SmartRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/smartRefreshLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.reader.ReaderFrameFragment">
+
+    <com.scwang.smart.refresh.header.ClassicsHeader
+        android:id="@+id/refreshHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:srlAccentColor="@color/colorPrimary"
+        app:srlTextPulling="Pull up to load previous chapter"
+        app:srlTextRelease="Pull up to load previous chapter"
+        app:srlTextFinish="Done"
+        app:srlTextRefreshing="Loading chapter 564"
+        app:srlEnableLastTime="false">
+
+    </com.scwang.smart.refresh.header.ClassicsHeader>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/listImages"
@@ -12,4 +27,4 @@
 
     </androidx.recyclerview.widget.RecyclerView>
 
-</FrameLayout>
+</com.scwang.smart.refresh.layout.SmartRefreshLayout>

@@ -22,6 +22,6 @@ class ReaderFrameFragmentAdapter(activity: FragmentActivity
     }
 
     override fun createFragment(position: Int): Fragment {
-        return ReaderFrameFragment.newInstance(chapterList[position])
+        return ReaderFrameFragment.newInstance()
     }
 }

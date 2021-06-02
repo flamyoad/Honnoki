@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "c5c8915a9981c91168a0f6489bfbeb21",
+    "identityHash": "d4fdbdd75f929c6984def540ab6063eb",
     "entities": [
       {
         "tableName": "manga",
@@ -226,6 +226,73 @@
             "onUpdate": "CASCADE",
             "columns": [
               "mangaOverviewId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "page",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `number` INTEGER NOT NULL, `chapterId` INTEGER, `link` TEXT NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`chapterId`) REFERENCES `chapters`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "number",
+            "columnName": "number",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "chapterId",
+            "columnName": "chapterId",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "link",
+            "columnName": "link",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_page_chapterId",
+            "unique": false,
+            "columnNames": [
+              "chapterId"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_page_chapterId` ON `${TABLE_NAME}` (`chapterId`)"
+          },
+          {
+            "name": "index_page_link",
+            "unique": true,
+            "columnNames": [
+              "link"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_page_link` ON `${TABLE_NAME}` (`link`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "chapters",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "chapterId"
             ],
             "referencedColumns": [
               "id"
@@ -506,7 +573,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c5c8915a9981c91168a0f6489bfbeb21')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd4fdbdd75f929c6984def540ab6063eb')"
     ]
   }
 }

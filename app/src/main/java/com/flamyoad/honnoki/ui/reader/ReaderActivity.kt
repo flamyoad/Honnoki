@@ -19,9 +19,6 @@ import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.databinding.ActivityReaderBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.withContext
-import java.lang.IllegalArgumentException
 
 @ExperimentalPagingApi
 class ReaderActivity : AppCompatActivity() {
@@ -30,8 +27,6 @@ class ReaderActivity : AppCompatActivity() {
     val binding get() = requireNotNull(_binding)
 
     private val viewModel: ReaderViewModel by viewModels()
-
-    private val readerFrameAdapter by lazy { ReaderFrameFragmentAdapter(this) }
 
     private var scrollingFromSeekbar: Boolean = false
 
@@ -47,6 +42,13 @@ class ReaderActivity : AppCompatActivity() {
 
         initUi()
         observeUi()
+
+        if (savedInstanceState == null) {
+            val frameFragment = ReaderFrameFragment.newInstance()
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.container, frameFragment)
+                .commit()
+        }
 
         viewModel.fetchChapterList(intent.getLongExtra(OVERVIEW_ID, -1L))
     }
@@ -68,21 +70,12 @@ class ReaderActivity : AppCompatActivity() {
             txtToolbarMangaTitle.text = intent.getStringExtra(MANGA_TITLE)
             txtToolbarChapterTitle.text = intent.getStringExtra(CHAPTER_TITLE)
 
-            viewPager.orientation = ViewPager2.ORIENTATION_VERTICAL
-            viewPager.isUserInputEnabled = false
-            viewPager.adapter = readerFrameAdapter
-
             bottomSheetOpener.setOnClickListener {
                 viewModel.setSideKickVisibility(true)
             }
 
             seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(
-                    seekBar: SeekBar?,
-                    progress: Int,
-                    fromUser: Boolean
-                ) {
-                    // todo: Show thumbnail on top of the seekbar button?!
+                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                     if (fromUser) {
                         viewModel.setCurrentPage(progress)
                     }
@@ -139,16 +132,6 @@ class ReaderActivity : AppCompatActivity() {
         lifecycleScope.launchWhenResumed {
             viewModel.currentPage().collectLatest {
                 binding.seekbar.progress = it + 1
-            }
-        }
-
-        lifecycleScope.launchWhenResumed {
-            viewModel.chapterList.collectLatest { chapters ->
-                val position = withContext(Dispatchers.Default) {
-                    chapters.indexOfFirst { it.id == intent.getLongExtra(CHAPTER_ID, -1) }
-                }
-                readerFrameAdapter.setList(chapters)
-                binding.viewPager.setCurrentItem(position, false)
             }
         }
     }

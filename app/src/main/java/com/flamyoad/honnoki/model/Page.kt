@@ -1,8 +1,27 @@
 package com.flamyoad.honnoki.model
 
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "page",
+    indices = [
+        Index("chapterId"),
+        Index("link", unique = true)
+    ],
+    foreignKeys = [ForeignKey(
+        entity = Chapter::class,
+        parentColumns = ["id"],
+        childColumns = ["chapterId"],
+        onDelete = ForeignKey.CASCADE,
+        onUpdate = ForeignKey.CASCADE
+    )]
+)
 data class Page(
-    val id: Long? = null,
-    val from: Long? = null,
-    val link: String,
-    val number: Int
+    @PrimaryKey val id: Long? = null,
+    val number: Int,
+    val chapterId: Long? = null,
+    val link: String
 )
