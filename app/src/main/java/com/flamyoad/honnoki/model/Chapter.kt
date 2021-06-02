@@ -27,4 +27,15 @@ data class Chapter(
     val date: String,
     val link: String,
     val mangaOverviewId: Long = -1
-)
+) {
+
+    companion object {
+        fun empty() = Chapter(
+            id = -1,
+            title = "",
+            date = "",
+            link = "",
+            mangaOverviewId = -1
+        )
+    }
+}

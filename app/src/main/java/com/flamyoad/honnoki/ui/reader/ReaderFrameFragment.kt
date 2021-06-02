@@ -10,6 +10,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -43,19 +44,20 @@ class ReaderFrameFragment : Fragment() {
         return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        val chapterId = requireActivity().intent?.getLongExtra(ReaderActivity.CHAPTER_ID, -1) ?: -1
-
-        parentViewModel.fetchManga(chapterId)
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if (savedInstanceState == null) {
+            val chapterId = requireActivity().intent?.getLongExtra(ReaderActivity.CHAPTER_ID, -1) ?: -1
+            parentViewModel.fetchManga(chapterId)
+        }
         initUi()
         observeUi()
     }
 
     private fun initUi() {
         parentViewModel.setSideKickVisibility(false)
+
+        val concatAdapter = ConcatAdapter()
 
         with(binding) {
             readerAdapter = ReaderImageAdapter()
@@ -106,9 +108,6 @@ class ReaderFrameFragment : Fragment() {
                 parentViewModel.loadPreviousChapter()
                 it.finishRefresh(true)
             }
-
-
-
         }
     }
 

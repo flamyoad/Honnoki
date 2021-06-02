@@ -11,11 +11,11 @@
         android:id="@+id/refreshHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:srlAccentColor="@color/colorPrimary"
+        app:srlPrimaryColor="@color/colorPrimary"
+        app:srlAccentColor="@color/white"
         app:srlTextPulling="Pull up to load previous chapter"
         app:srlTextRelease="Pull up to load previous chapter"
-        app:srlTextFinish="Done"
-        app:srlTextRefreshing="Loading chapter 564"
+        app:srlTextRefreshing="Loading ..."
         app:srlEnableLastTime="false">
 
     </com.scwang.smart.refresh.header.ClassicsHeader>
