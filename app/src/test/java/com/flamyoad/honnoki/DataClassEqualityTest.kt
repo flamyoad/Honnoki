@@ -1,9 +1,8 @@
 package com.flamyoad.honnoki
 
-import androidx.recyclerview.widget.DiffUtil
 import com.flamyoad.honnoki.adapter.BookmarkGroupAdapter
 import com.flamyoad.honnoki.model.BookmarkGroup
-import com.flamyoad.honnoki.model.BookmarkGroupWithCoverImages
+import com.flamyoad.honnoki.model.BookmarkGroupWithInfo
 import org.junit.Assert
 import org.junit.Test
 
@@ -13,12 +12,12 @@ class DataClassEqualityTest {
 
     @Test
     fun `areItemsTheSame() returns true when both items have same id`() {
-        val first = BookmarkGroupWithCoverImages(
+        val first = BookmarkGroupWithInfo(
             bookmarkGroup = BookmarkGroup(id = 1, name = "All", isSelected = false),
             coverImageList = emptyList()
         )
 
-        val second = BookmarkGroupWithCoverImages(
+        val second = BookmarkGroupWithInfo(
             bookmarkGroup = BookmarkGroup(id = 1, name = "Recents", isSelected = false),
             coverImageList = emptyList()
         )
@@ -30,12 +29,12 @@ class DataClassEqualityTest {
 
     @Test
     fun `areItemsTheSame() returns false when both items have different id`() {
-        val first = BookmarkGroupWithCoverImages(
+        val first = BookmarkGroupWithInfo(
             bookmarkGroup = BookmarkGroup(id = 1, name = "All", isSelected = false),
             coverImageList = emptyList()
         )
 
-        val second = BookmarkGroupWithCoverImages(
+        val second = BookmarkGroupWithInfo(
             bookmarkGroup = BookmarkGroup(id = 2, name = "Recents", isSelected = false),
             coverImageList = emptyList()
         )

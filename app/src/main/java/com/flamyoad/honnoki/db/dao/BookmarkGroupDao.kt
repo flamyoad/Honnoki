@@ -39,4 +39,12 @@ interface BookmarkGroupDao {
 """
     )
     suspend fun hasBookmarkedItems(bookmarkGroupId: Long, overviewId: Long): Boolean
+
+    @Transaction
+    @Query("""
+        SELECT manga_overview.coverImage FROM bookmark
+        INNER JOIN manga_overview ON bookmark.mangaOverviewId = manga_overview.id
+        WHERE bookmarkGroupId = :bookmarkGroupId
+    """)
+    suspend fun getCoverImagesFrom(bookmarkGroupId: Long): List<String>
 }

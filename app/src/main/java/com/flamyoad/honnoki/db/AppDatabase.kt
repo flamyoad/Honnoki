@@ -36,7 +36,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun searchResultDao(): SearchResultDao
     abstract fun bookmarkDao(): BookmarkDao
     abstract fun bookmarkGroupDao(): BookmarkGroupDao
-    abstract fun bookmarkGroupWithCoverImageDao(): BookmarkGroupCoverImageDao
+    abstract fun bookmarkGroupWithInfoDao(): BookmarkGroupWithInfoDao
     abstract fun genreDao(): GenreDao
     abstract fun authorDao(): AuthorDao
 

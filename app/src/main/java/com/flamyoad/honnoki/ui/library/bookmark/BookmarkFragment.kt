@@ -20,6 +20,7 @@ import com.flamyoad.honnoki.dialog.DeleteBookmarkGroupDialog
 import com.flamyoad.honnoki.model.BookmarkWithOverview
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 
 @ExperimentalPagingApi
 class BookmarkFragment : Fragment() {
@@ -80,7 +81,7 @@ class BookmarkFragment : Fragment() {
             layoutManager = bookmarkLayoutManager
         }
 
-        viewModel.bookmarkGroupsWithCoverImages.observe(viewLifecycleOwner) {
+        viewModel.bookmarkGroupsWithInfo.observe(viewLifecycleOwner) {
             groupAdapter.submitList(it)
         }
 

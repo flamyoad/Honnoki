@@ -137,7 +137,7 @@ class ReaderFrameFragment : Fragment() {
                     .filterIsInstance<ReaderPage.Value>()
                     .indexOfFirst { it.chapter == currentChapter && it.page.number == pageNumberScrolledBySeekbar }
 
-                binding.listImages.scrollToPosition(pagePositionInList)
+                linearLayoutManager.scrollToPositionWithOffset(pagePositionInList, 0)
             }
         }
 

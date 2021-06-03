@@ -12,7 +12,7 @@ data class BookmarkGroup(
     val name: String,
 
     @Ignore
-    val isSelected: Boolean = false
+    val isSelected: Boolean = false,
 ) {
 
     constructor(id: Long, name: String): this(id, name, false)

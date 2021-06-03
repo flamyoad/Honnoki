@@ -8,12 +8,12 @@ import androidx.lifecycle.viewModelScope
 import androidx.room.withTransaction
 import com.flamyoad.honnoki.db.AppDatabase
 import com.flamyoad.honnoki.model.BookmarkGroup
-import com.flamyoad.honnoki.model.BookmarkGroupWithCoverImages
+import com.flamyoad.honnoki.model.BookmarkGroupWithInfo
 import com.flamyoad.honnoki.model.BookmarkWithOverview
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class BookmarkViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -23,9 +23,10 @@ class BookmarkViewModel(application: Application) : AndroidViewModel(application
 
     private val selectedBookmarkGroupId = MutableStateFlow(-1L)
 
-    val bookmarkGroupsWithCoverImages: LiveData<List<BookmarkGroupWithCoverImages>> =
-        db.bookmarkGroupWithCoverImageDao()
+    val bookmarkGroupsWithInfo: LiveData<List<BookmarkGroupWithInfo>> =
+        db.bookmarkGroupWithInfoDao()
             .getAll()
+            .flatMapLatest { flowOf(attachCoverImages(it)) }
             .asLiveData()
 
     var bookmarkGroupName: String = ""
@@ -60,6 +61,16 @@ class BookmarkViewModel(application: Application) : AndroidViewModel(application
                     bookmarkGroupDao.insert(BookmarkGroup(name = "All"))
                 }
                 selectedBookmarkGroupId.value  = bookmarkGroupDao.getFirstItemId()
+            }
+        }
+    }
+
+    private suspend fun attachCoverImages(groups: List<BookmarkGroupWithInfo>): List<BookmarkGroupWithInfo> {
+        return withContext(Dispatchers.IO) {
+            groups.map {
+                val bookmarkGroupId = it.bookmarkGroup.id ?: -1
+                val coverImages = db.bookmarkGroupDao().getCoverImagesFrom(bookmarkGroupId)
+                return@map it.copy(coverImages = coverImages)
             }
         }
     }
