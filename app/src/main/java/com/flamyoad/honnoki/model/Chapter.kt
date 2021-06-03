@@ -24,6 +24,7 @@ data class Chapter(
     val id: Long? = null,
 
     val title: String,
+    val number: Double,
     val date: String,
     val link: String,
     val mangaOverviewId: Long = -1
@@ -33,6 +34,7 @@ data class Chapter(
         fun empty() = Chapter(
             id = -1,
             title = "",
+            number = 0.00,
             date = "",
             link = "",
             mangaOverviewId = -1

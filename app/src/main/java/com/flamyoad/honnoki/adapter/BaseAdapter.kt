@@ -2,13 +2,13 @@ package com.flamyoad.honnoki.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 
-abstract class BaseListAdapter<T: Any, VB: ViewBinding>
-    (comparator: DiffUtil.ItemCallback<T>): ListAdapter<T, BaseListAdapter<T, VB>.BaseViewHolder>(comparator) {
+abstract class BaseAdapter<T: Any, VB: ViewBinding>
+    : RecyclerView.Adapter<BaseAdapter<T, VB>.BaseViewHolder>() {
+
+    private var itemList: List<T> = emptyList()
 
     abstract val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> VB
     abstract fun onCreate(holder: BaseViewHolder, binding: VB)
@@ -23,7 +23,7 @@ abstract class BaseListAdapter<T: Any, VB: ViewBinding>
     }
 
     final override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
-        val item = getItem(position)
+        val item = itemList.getOrNull(position) ?: return
         onBind(holder, item)
     }
 
@@ -32,6 +32,12 @@ abstract class BaseListAdapter<T: Any, VB: ViewBinding>
         onRecycleView(holder)
     }
 
+    override fun getItemCount(): Int = itemList.size
+
+    fun setList(list: List<T>) {
+        itemList = list
+        notifyDataSetChanged()
+    }
+
     inner class BaseViewHolder(val binding: VB): RecyclerView.ViewHolder(binding.root)
 }
-

@@ -11,9 +11,8 @@ import com.bumptech.glide.load.model.GlideUrl
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.flamyoad.honnoki.databinding.ReaderImageListAdsBinding
 import com.flamyoad.honnoki.databinding.ReaderImageListItemBinding
-import com.flamyoad.honnoki.databinding.ReaderImageListLoadingBinding
 import com.flamyoad.honnoki.model.Page
-import com.flamyoad.honnoki.ui.reader.ReaderPage
+import com.flamyoad.honnoki.ui.reader.model.ReaderPage
 import com.flamyoad.honnoki.utils.ui.MangaImageViewTarget
 
 class ReaderImageAdapter : ListAdapter<ReaderPage, RecyclerView.ViewHolder>(PAGE_COMPARATOR) {
@@ -37,12 +36,6 @@ class ReaderImageAdapter : ListAdapter<ReaderPage, RecyclerView.ViewHolder>(PAGE
                 holder
             }
 
-            LOADING_INDICATOR -> {
-                val binding = ReaderImageListLoadingBinding.inflate(layoutInflater, parent, false)
-                val holder = LoadingViewHolder(binding)
-                holder
-            }
-
             else -> throw IllegalArgumentException("Invalid view type in onCreateViewHolder!!")
         }
     }
@@ -52,8 +45,8 @@ class ReaderImageAdapter : ListAdapter<ReaderPage, RecyclerView.ViewHolder>(PAGE
 
         when (holder) {
             is ItemViewHolder -> {
-                val imagePage = (item as ReaderPage.Value).page
-                holder.loadImage(imagePage)
+                val pageWithChapterInfo = (item as ReaderPage.Value)
+                holder.loadImage(pageWithChapterInfo.page)
             }
         }
     }
@@ -62,7 +55,6 @@ class ReaderImageAdapter : ListAdapter<ReaderPage, RecyclerView.ViewHolder>(PAGE
         return when (getItem(position)) {
             is ReaderPage.Value -> ITEM
             is ReaderPage.Ads -> ADS
-            is ReaderPage.LoadingIndicator -> LOADING_INDICATOR
             else -> throw IllegalArgumentException("Invalid reader item view type")
         }
     }
@@ -110,15 +102,9 @@ class ReaderImageAdapter : ListAdapter<ReaderPage, RecyclerView.ViewHolder>(PAGE
 
     }
 
-    inner class LoadingViewHolder(val binding: ReaderImageListLoadingBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-
-    }
-
     companion object {
         const val ITEM = 0
         const val ADS = 1
-        const val LOADING_INDICATOR = 2
 
         val PAGE_COMPARATOR = object : DiffUtil.ItemCallback<ReaderPage>() {
             override fun areItemsTheSame(oldItem: ReaderPage, newItem: ReaderPage): Boolean {
@@ -128,21 +114,15 @@ class ReaderImageAdapter : ListAdapter<ReaderPage, RecyclerView.ViewHolder>(PAGE
                 if (oldItem is ReaderPage.Ads && newItem is ReaderPage.Ads) {
                     return oldItem.chapterId == newItem.chapterId
                 }
-                if (oldItem is ReaderPage.LoadingIndicator && newItem is ReaderPage.LoadingIndicator) {
-                    return true
-                }
                 return false
             }
 
             override fun areContentsTheSame(oldItem: ReaderPage, newItem: ReaderPage): Boolean {
                 if (oldItem is ReaderPage.Value && newItem is ReaderPage.Value) {
-                    return oldItem.page == newItem.page
+                    return oldItem.pageWithChapterInfo == newItem.pageWithChapterInfo
                 }
                 if (oldItem is ReaderPage.Ads && newItem is ReaderPage.Ads) {
                     return oldItem.chapterId == newItem.chapterId
-                }
-                if (oldItem is ReaderPage.LoadingIndicator && newItem is ReaderPage.LoadingIndicator) {
-                    return true
                 }
                 return false
             }

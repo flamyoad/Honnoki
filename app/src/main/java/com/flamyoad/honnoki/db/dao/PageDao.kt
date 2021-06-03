@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.flamyoad.honnoki.model.Page
+import com.flamyoad.honnoki.model.PageWithChapterInfo
 
 @Dao
 interface PageDao {
@@ -13,5 +14,5 @@ interface PageDao {
     fun insertAll(pageList: List<Page>)
 
     @Query("SELECT * FROM page WHERE chapterId = :chapterId")
-    fun getAllFromChapter(chapterId: Long): List<Page>
+    fun getAllFromChapter(chapterId: Long): List<PageWithChapterInfo>
 }

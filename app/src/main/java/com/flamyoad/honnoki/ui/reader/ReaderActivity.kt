@@ -134,6 +134,12 @@ class ReaderActivity : AppCompatActivity() {
                 binding.seekbar.progress = it + 1
             }
         }
+
+        lifecycleScope.launchWhenResumed {
+            viewModel.currentChapterShown().collectLatest {
+                binding.txtToolbarChapterTitle.text = it.title
+            }
+        }
     }
 
     private fun toggleSidekickVisibility(isVisible: Boolean) {

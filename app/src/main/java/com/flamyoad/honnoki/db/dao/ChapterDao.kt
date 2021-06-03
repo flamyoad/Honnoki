@@ -24,15 +24,15 @@ interface ChapterDao {
 
     @Query("""
         SELECT * FROM chapters
-        WHERE mangaOverviewId = :overviewId AND id < :currentChapterId
-        ORDER BY id DESC
+        WHERE mangaOverviewId = :overviewId AND number < :currentChapterNumber
+        ORDER BY number DESC
         """)
-    fun getPreviousChapter(overviewId: Long, currentChapterId: Long): Chapter?
+    fun getPreviousChapter(overviewId: Long, currentChapterNumber: Double): Chapter?
 
     @Query("""
         SELECT * FROM chapters
-        WHERE mangaOverviewId = :overviewId AND id > :currentChapterId
-        ORDER BY id
+        WHERE mangaOverviewId = :overviewId AND number > :currentChapterNumber
+        ORDER BY number
         """)
-    fun getNextChapter(overviewId: Long, currentChapterId: Long): Chapter?
+    fun getNextChapter(overviewId: Long, currentChapterNumber: Double): Chapter?
 }

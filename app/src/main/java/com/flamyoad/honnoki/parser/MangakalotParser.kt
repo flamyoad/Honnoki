@@ -154,10 +154,11 @@ class MangakalotParser {
         val document = Jsoup.parse(html)
 
         val chapterList = document.select(".row-content-chapter > li")
-        return chapterList.map {
+        return chapterList.mapIndexed { index, it ->
             val chapterLink = it.selectFirst(".chapter-name")
             Chapter(
                 title = chapterLink.textNonNull(),
+                number = (chapterList.size - (index + 1)).toDouble(),
                 link = chapterLink.attrNonNull("href"),
                 date = it.selectFirst(".chapter-time").textNonNull()
             )

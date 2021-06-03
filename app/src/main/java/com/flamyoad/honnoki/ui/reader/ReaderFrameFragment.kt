@@ -1,7 +1,6 @@
 package com.flamyoad.honnoki.ui.reader
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,10 +14,10 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.flamyoad.honnoki.adapter.ReaderImageAdapter
+import com.flamyoad.honnoki.adapter.ReaderLoadingAdapter
 import com.flamyoad.honnoki.databinding.FragmentReaderFrameBinding
-import com.flamyoad.honnoki.model.Chapter
-import com.scwang.smart.refresh.layout.api.RefreshLayout
-import com.scwang.smart.refresh.layout.listener.OnRefreshListener
+import com.flamyoad.honnoki.ui.reader.model.LoadType
+import com.flamyoad.honnoki.ui.reader.model.ReaderPage
 import kotlinx.coroutines.flow.collectLatest
 
 @ExperimentalPagingApi
@@ -30,8 +29,10 @@ class ReaderFrameFragment : Fragment() {
     private val parentViewModel: ReaderViewModel by activityViewModels()
     private val viewModel: ReaderFrameViewModel by viewModels()
 
-    private lateinit var readerAdapter: ReaderImageAdapter
-    private lateinit var linearLayoutManager: LinearLayoutManager
+    private val concatAdapter = ConcatAdapter()
+    private val readerAdapter = ReaderImageAdapter()
+    private val loadingAdapter = ReaderLoadingAdapter()
+    private val linearLayoutManager by lazy { LinearLayoutManager(requireContext()) }
 
     private var scrollingFromSeekbar: Boolean = false
 
@@ -48,8 +49,9 @@ class ReaderFrameFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         if (savedInstanceState == null) {
             val chapterId = requireActivity().intent?.getLongExtra(ReaderActivity.CHAPTER_ID, -1) ?: -1
-            parentViewModel.fetchManga(chapterId)
+            parentViewModel.fetchManga(chapterId, LoadType.INITIAL)
         }
+
         initUi()
         observeUi()
     }
@@ -57,14 +59,11 @@ class ReaderFrameFragment : Fragment() {
     private fun initUi() {
         parentViewModel.setSideKickVisibility(false)
 
-        val concatAdapter = ConcatAdapter()
+        concatAdapter.addAdapter(readerAdapter)
 
         with(binding) {
-            readerAdapter = ReaderImageAdapter()
-            linearLayoutManager = LinearLayoutManager(requireContext())
-
             with(listImages) {
-                adapter = readerAdapter
+                adapter = concatAdapter
                 layoutManager = linearLayoutManager
                 addItemDecoration(
                     DividerItemDecoration(
@@ -83,14 +82,17 @@ class ReaderFrameFragment : Fragment() {
                     if (!scrollingFromSeekbar) {
                         parentViewModel.setSideKickVisibility(false)
                     }
+
+                    syncCurrentChapterShown()
+
                     // Resets the boolean
                     scrollingFromSeekbar = false
                 }
 
-                // Prefetch new chapter when arriving end of list
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
-                    if (linearLayoutManager.findLastVisibleItemPosition() == readerAdapter.itemCount - 1) {
+                    // Prefetch when scrolled to the second last item (minus ads & last page)
+                    if (linearLayoutManager.findLastVisibleItemPosition() >= readerAdapter.itemCount - 2) {
                         parentViewModel.loadNextChapter()
                     }
 
@@ -126,6 +128,26 @@ class ReaderFrameFragment : Fragment() {
         lifecycleScope.launchWhenResumed {
             viewModel.disablePullToRefresh().collectLatest {
                 binding.smartRefreshLayout.isEnabled = it
+            }
+        }
+
+        lifecycleScope.launchWhenResumed {
+            parentViewModel.showBottomLoadingIndicator().collectLatest {
+                if (it) {
+                    concatAdapter.addAdapter(loadingAdapter)
+                } else {
+                    concatAdapter.removeAdapter(loadingAdapter)
+                }
+            }
+        }
+    }
+
+    private fun syncCurrentChapterShown() {
+        val currentPage = readerAdapter.currentList.getOrNull(linearLayoutManager.findFirstVisibleItemPosition())
+        currentPage?.let {
+            if (it is ReaderPage.Value) {
+                val currentChapter = it.chapter
+                parentViewModel.setCurrentChapter(currentChapter)
             }
         }
     }
