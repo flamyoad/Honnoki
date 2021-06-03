@@ -11,13 +11,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
-import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Slide
 import androidx.transition.TransitionManager
-import androidx.viewpager2.widget.ViewPager2
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.databinding.ActivityReaderBinding
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 
 @ExperimentalPagingApi
@@ -77,7 +74,11 @@ class ReaderActivity : AppCompatActivity() {
             seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                     if (fromUser) {
-                        viewModel.setCurrentPage(progress)
+                        if (progress == 0) {
+                            viewModel.setCurrentPageNumber(1)
+                        } else {
+                            viewModel.setCurrentPageNumber(progress)
+                        }
                     }
                 }
 
@@ -88,7 +89,11 @@ class ReaderActivity : AppCompatActivity() {
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {
                     // User has stopped moving. Move to the image selected
                     val progress = seekBar?.progress ?: return
-                    viewModel.setSeekbarScrolledPosition(progress)
+                    if (progress == 0) {
+                        viewModel.setSeekbarScrolledPosition(1)
+                    } else {
+                        viewModel.setSeekbarScrolledPosition(progress)
+                    }
                 }
             })
         }
@@ -124,14 +129,15 @@ class ReaderActivity : AppCompatActivity() {
         }
 
         lifecycleScope.launchWhenResumed {
-            viewModel.totalPages().collectLatest {
+            viewModel.totalPageNumber.collectLatest {
                 binding.seekbar.max = it + 1
             }
         }
 
         lifecycleScope.launchWhenResumed {
-            viewModel.currentPage().collectLatest {
-                binding.seekbar.progress = it + 1
+            viewModel.currentPageNumber().collectLatest {
+                println(it.toString())
+                binding.seekbar.progress = it
             }
         }
 

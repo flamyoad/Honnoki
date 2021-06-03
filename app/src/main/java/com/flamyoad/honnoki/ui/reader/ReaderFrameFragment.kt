@@ -48,7 +48,8 @@ class ReaderFrameFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (savedInstanceState == null) {
-            val chapterId = requireActivity().intent?.getLongExtra(ReaderActivity.CHAPTER_ID, -1) ?: -1
+            val chapterId =
+                requireActivity().intent?.getLongExtra(ReaderActivity.CHAPTER_ID, -1) ?: -1
             parentViewModel.fetchManga(chapterId, LoadType.INITIAL)
         }
 
@@ -76,14 +77,12 @@ class ReaderFrameFragment : Fragment() {
             listImages.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
-                    parentViewModel.setCurrentPage(linearLayoutManager.findFirstVisibleItemPosition())
+                    syncCurrentChapterShown()
 
                     // Show the bottom bar when the scrolling is done by seekbar
                     if (!scrollingFromSeekbar) {
                         parentViewModel.setSideKickVisibility(false)
                     }
-
-                    syncCurrentChapterShown()
 
                     // Resets the boolean
                     scrollingFromSeekbar = false
@@ -114,14 +113,31 @@ class ReaderFrameFragment : Fragment() {
     }
 
     private fun observeUi() {
-        parentViewModel.pageList().observe(viewLifecycleOwner) {
-            readerAdapter.submitList(it)
-            parentViewModel.setTotalPages(it.size)
+        lifecycleScope.launchWhenResumed {
+            parentViewModel.pageList().collectLatest {
+                readerAdapter.submitList(it)
+            }
         }
 
         lifecycleScope.launchWhenResumed {
             parentViewModel.pageNumberScrolledBySeekbar().collectLatest {
-                binding.listImages.scrollToPosition(it)
+                val currentPage = readerAdapter.currentList.getOrNull(it) ?: return@collectLatest
+                if (currentPage is ReaderPage.Value) {
+                    parentViewModel.setCurrentPageNumber(currentPage.page.number)
+                }
+            }
+        }
+
+        lifecycleScope.launchWhenResumed {
+            parentViewModel.pageNumberScrolledBySeekbar().collectLatest { pageNumberScrolledBySeekbar ->
+                val currentChapter = parentViewModel.currentChapter
+                val adapterItems = readerAdapter.currentList
+
+                val pagePositionInList = adapterItems
+                    .filterIsInstance<ReaderPage.Value>()
+                    .indexOfFirst { it.chapter == currentChapter && it.page.number == pageNumberScrolledBySeekbar }
+
+                binding.listImages.scrollToPosition(pagePositionInList)
             }
         }
 
@@ -143,11 +159,12 @@ class ReaderFrameFragment : Fragment() {
     }
 
     private fun syncCurrentChapterShown() {
-        val currentPage = readerAdapter.currentList.getOrNull(linearLayoutManager.findFirstVisibleItemPosition())
+        val currentPage =
+            readerAdapter.currentList.getOrNull(linearLayoutManager.findFirstVisibleItemPosition())
         currentPage?.let {
             if (it is ReaderPage.Value) {
-                val currentChapter = it.chapter
-                parentViewModel.setCurrentChapter(currentChapter)
+                parentViewModel.setCurrentChapter(it.chapter)
+                parentViewModel.setCurrentPageNumber(it.page.number)
             }
         }
     }

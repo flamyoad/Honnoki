@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
 import com.flamyoad.honnoki.db.AppDatabase
 import com.flamyoad.honnoki.model.Chapter
+import com.flamyoad.honnoki.model.Page
 import com.flamyoad.honnoki.model.State
 import com.flamyoad.honnoki.repository.BaseMangaRepository
 import com.flamyoad.honnoki.repository.MangakalotRepository
@@ -17,7 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import java.lang.IllegalArgumentException
+import kotlin.math.roundToInt
 
 @ExperimentalPagingApi
 class ReaderViewModel(app: Application) : AndroidViewModel(app) {
@@ -35,27 +36,31 @@ class ReaderViewModel(app: Application) : AndroidViewModel(app) {
     private val sideKickVisibility = MutableStateFlow(false)
     fun sideKickVisibility(): StateFlow<Boolean> = sideKickVisibility
 
-    private val currentPageNumber = MutableStateFlow(0)
-    fun currentPage(): StateFlow<Int> = currentPageNumber
+    private val currentChapterShown = MutableStateFlow(Chapter.empty())
+    fun currentChapterShown(): Flow<Chapter> = currentChapterShown
 
-    private val totalPageNumber = MutableStateFlow(0)
-    fun totalPages(): StateFlow<Int> = totalPageNumber
+    val currentChapter get() = currentChapterShown.value
+
+    private val currentPageNumber = MutableStateFlow(0)
+    fun currentPageNumber(): StateFlow<Int> = currentPageNumber
+
+    val totalPageNumber = currentChapterShown.flatMapLatest {
+        if (it.id == null) return@flatMapLatest flowOf(0)
+        db.chapterDao().getTotalPages(it.id)
+    }
 
     val currentPageIndicator = currentPageNumber.combine(totalPageNumber) { current, total ->
-        "Page: ${current + 1} / ${total + 1}"
+        "Page: $current / $total"
     }
 
     private val pageNumberScrolledBySeekbar = MutableStateFlow(-1)
     fun pageNumberScrolledBySeekbar(): Flow<Int> = pageNumberScrolledBySeekbar
 
-    private val pageList = MutableLiveData<List<ReaderPage>>()
-    fun pageList(): LiveData<List<ReaderPage>> = pageList
+    private val pageList = MutableStateFlow<List<ReaderPage>>(emptyList())
+    fun pageList(): Flow<List<ReaderPage>> = pageList
 
     private val showBottomLoadingIndicator = MutableStateFlow(false)
     fun showBottomLoadingIndicator(): StateFlow<Boolean> = showBottomLoadingIndicator
-
-    private val currentChapterShown = MutableStateFlow(Chapter.empty())
-    fun currentChapterShown(): Flow<Chapter> = currentChapterShown
 
     private var fetchMangaJob: Job? = null
 
@@ -86,7 +91,8 @@ class ReaderViewModel(app: Application) : AndroidViewModel(app) {
                         existingList.add(ReaderPage.Ads(chapterId))
                     }
                     LoadType.PREV -> {
-                        val list = pagesWithChapterId.map { ReaderPage.Value(it) } as MutableList<ReaderPage>
+                        val list =
+                            pagesWithChapterId.map { ReaderPage.Value(it) } as MutableList<ReaderPage>
                         list.add(ReaderPage.Ads(chapterId))
                         existingList.addAll(0, list)
                     }
@@ -96,9 +102,8 @@ class ReaderViewModel(app: Application) : AndroidViewModel(app) {
                     }
                 }
 
-                pageList.postValue(existingList)
+                pageList.value = existingList
                 currentChapterShown.value = chapter
-
                 showBottomLoadingIndicator.value = false
             }
         }
@@ -112,16 +117,12 @@ class ReaderViewModel(app: Application) : AndroidViewModel(app) {
         sideKickVisibility.value = isVisible
     }
 
-    fun setCurrentPage(number: Int) {
+    fun setCurrentPageNumber(number: Int) {
         currentPageNumber.value = number
     }
 
-    fun setTotalPages(number: Int) {
-        totalPageNumber.value = number - 1
-    }
-
     fun setSeekbarScrolledPosition(position: Int) {
-        pageNumberScrolledBySeekbar.tryEmit(position)
+        pageNumberScrolledBySeekbar.value = position
     }
 
     fun setCurrentChapter(chapter: Chapter) {
@@ -131,7 +132,8 @@ class ReaderViewModel(app: Application) : AndroidViewModel(app) {
     fun loadPreviousChapter() {
         viewModelScope.launch(Dispatchers.IO) {
             val currentChapterNumber = currentChapterShown.value.number
-            val prevChapter = db.chapterDao().getPreviousChapter(overviewId, currentChapterNumber) ?: return@launch
+            val prevChapter = db.chapterDao().getPreviousChapter(overviewId, currentChapterNumber)
+                ?: return@launch
             val chapterId = prevChapter.id ?: return@launch
             fetchManga(chapterId, LoadType.PREV)
         }
@@ -140,9 +142,14 @@ class ReaderViewModel(app: Application) : AndroidViewModel(app) {
     fun loadNextChapter() {
         viewModelScope.launch(Dispatchers.IO) {
             val currentChapterNumber = currentChapterShown.value.number
-            val nextChapter = db.chapterDao().getNextChapter(overviewId, currentChapterNumber) ?: return@launch
+            val nextChapter =
+                db.chapterDao().getNextChapter(overviewId, currentChapterNumber) ?: return@launch
             val chapterId = nextChapter.id ?: return@launch
             fetchManga(chapterId, LoadType.NEXT)
         }
+    }
+
+    fun getImagePositionInList(page: Page) {
+
     }
 }

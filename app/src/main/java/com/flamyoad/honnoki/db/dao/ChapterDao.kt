@@ -22,6 +22,9 @@ interface ChapterDao {
     @Query("SELECT link FROM chapters WHERE id = :id")
     fun getLink(id: Long): String
 
+    @Query("SELECT COUNT(id) FROM page WHERE chapterId = :chapterId")
+    fun getTotalPages(chapterId: Long): Flow<Int>
+
     @Query("""
         SELECT * FROM chapters
         WHERE mangaOverviewId = :overviewId AND number < :currentChapterNumber
