@@ -148,8 +148,4 @@ class ReaderViewModel(app: Application) : AndroidViewModel(app) {
             fetchManga(chapterId, LoadType.NEXT)
         }
     }
-
-    fun getImagePositionInList(page: Page) {
-
-    }
 }

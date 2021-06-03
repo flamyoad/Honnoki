@@ -48,7 +48,7 @@ class DeleteBookmarkGroupDialog: DialogFragment() {
 
         super.onActivityCreated(savedInstanceState)
         viewModel.bookmarkGroup.observe(this) {
-            dialog?.setTitle(it.name)
+            dialog?.setTitle(it?.name)
         }
     }
 

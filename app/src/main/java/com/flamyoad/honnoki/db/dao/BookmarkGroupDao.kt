@@ -21,7 +21,7 @@ interface BookmarkGroupDao {
     fun existsByName(name: String): Flow<Boolean>
 
     @Query("SELECT * FROM bookmark_group WHERE id = :id")
-    fun getById(id: Long): Flow<BookmarkGroup>
+    fun getById(id: Long): Flow<BookmarkGroup?>
 
     @Query("SELECT id FROM bookmark_group LIMIT 1")
     suspend fun getFirstItemId(): Long

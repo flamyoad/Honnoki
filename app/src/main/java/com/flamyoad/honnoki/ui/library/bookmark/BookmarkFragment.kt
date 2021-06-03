@@ -91,7 +91,7 @@ class BookmarkFragment : Fragment() {
 
         lifecycleScope.launchWhenResumed {
             viewModel.selectedBookmarkGroup.collect {
-                binding.header.text = it.name
+                binding.header.text = it?.name ?: ""
             }
         }
 

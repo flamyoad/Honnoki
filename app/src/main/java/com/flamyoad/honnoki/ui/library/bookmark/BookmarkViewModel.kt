@@ -26,7 +26,7 @@ class BookmarkViewModel(application: Application) : AndroidViewModel(application
     val bookmarkGroupsWithInfo: LiveData<List<BookmarkGroupWithInfo>> =
         db.bookmarkGroupWithInfoDao()
             .getAll()
-            .flatMapLatest { flowOf(attachCoverImages(it)) }
+            .flatMapLatest { flowOf(attachCoverImagesToGroups(it)) }
             .asLiveData()
 
     var bookmarkGroupName: String = ""
@@ -41,11 +41,11 @@ class BookmarkViewModel(application: Application) : AndroidViewModel(application
     val bookmarkItems: LiveData<List<BookmarkWithOverview>> =
         selectedBookmarkGroup
             .flatMapLatest {
-                val groupId = it.id
+                val groupId = it?.id
                 if (groupId != null)
                     return@flatMapLatest db.bookmarkDao().getAllWithOverviewFrom(groupId)
                 else
-                    return@flatMapLatest emptyFlow()
+                    return@flatMapLatest flowOf(emptyList())
             }
             .asLiveData()
 
@@ -65,7 +65,7 @@ class BookmarkViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    private suspend fun attachCoverImages(groups: List<BookmarkGroupWithInfo>): List<BookmarkGroupWithInfo> {
+    private suspend fun attachCoverImagesToGroups(groups: List<BookmarkGroupWithInfo>): List<BookmarkGroupWithInfo> {
         return withContext(Dispatchers.IO) {
             groups.map {
                 val bookmarkGroupId = it.bookmarkGroup.id ?: -1

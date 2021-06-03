@@ -69,7 +69,7 @@ class ChangeBookmarkGroupNameDialog: DialogFragment() {
         }
 
         viewModel.bookmarkGroup.observe(viewLifecycleOwner) {
-            dialog!!.setTitle(it.name)
+            dialog!!.setTitle(it?.name)
         }
     }
 
