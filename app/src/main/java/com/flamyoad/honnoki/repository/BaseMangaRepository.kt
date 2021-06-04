@@ -15,11 +15,20 @@ abstract class BaseMangaRepository(val db: AppDatabase, val context: Context) {
         return emptyFlow()
     }
 
+    // Hot
     open fun getTrendingManga(): Flow<PagingData<Manga>> {
         return emptyFlow()
     }
 
     open fun getTopManga(): Flow<PagingData<Manga>> {
+        return emptyFlow()
+    }
+
+    open fun getLatestManga(): Flow<PagingData<Manga>> {
+        return emptyFlow()
+    }
+
+    open fun getNewManga(): Flow<PagingData<Manga>> {
         return emptyFlow()
     }
 

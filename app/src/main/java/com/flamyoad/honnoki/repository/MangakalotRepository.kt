@@ -23,7 +23,7 @@ class MangakalotRepository(db: AppDatabase, context: Context) : BaseMangaReposit
 
     override fun getRecentManga(): Flow<PagingData<Manga>> {
         return Pager(
-            config = PagingConfig(pageSize = PAGINATION_SIZE, enablePlaceholders = false),
+            config = PagingConfig(pageSize = PAGINATION_SIZE, enablePlaceholders = true),
             remoteMediator = MangaMediator(api, db, MangaType.RECENTLY),
             pagingSourceFactory = { db.mangaDao().getFrom(SOURCE, MangaType.RECENTLY) }
         ).flow
@@ -31,7 +31,7 @@ class MangakalotRepository(db: AppDatabase, context: Context) : BaseMangaReposit
 
     override fun getTrendingManga(): Flow<PagingData<Manga>> {
         return Pager(
-            config = PagingConfig(pageSize = PAGINATION_SIZE, enablePlaceholders = false),
+            config = PagingConfig(pageSize = PAGINATION_SIZE, enablePlaceholders = true),
             remoteMediator = MangaMediator(api, db, MangaType.TRENDING),
             pagingSourceFactory = { db.mangaDao().getFrom(SOURCE, MangaType.TRENDING) }
         ).flow
@@ -39,9 +39,17 @@ class MangakalotRepository(db: AppDatabase, context: Context) : BaseMangaReposit
 
     override fun getTopManga(): Flow<PagingData<Manga>> {
         return Pager(
-            config = PagingConfig(pageSize = PAGINATION_SIZE, enablePlaceholders = false),
+            config = PagingConfig(pageSize = PAGINATION_SIZE, enablePlaceholders = true),
             remoteMediator = MangaMediator(api, db, MangaType.TOP),
             pagingSourceFactory = { db.mangaDao().getFrom(SOURCE, MangaType.TOP) }
+        ).flow
+    }
+
+    override fun getNewManga(): Flow<PagingData<Manga>> {
+        return Pager(
+            config = PagingConfig(pageSize = PAGINATION_SIZE, enablePlaceholders = true),
+            remoteMediator = MangaMediator(api, db, MangaType.NEW),
+            pagingSourceFactory = { db.mangaDao().getFrom(SOURCE, MangaType.NEW) }
         ).flow
     }
 

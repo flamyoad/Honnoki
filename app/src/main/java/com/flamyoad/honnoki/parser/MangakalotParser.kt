@@ -99,7 +99,7 @@ class MangakalotParser {
         return mangaList
     }
 
-    fun parseForNewestManga(html: String?): List<Manga> {
+    fun parseForNewManga(html: String?): List<Manga> {
         if (html.isNullOrBlank()) return emptyList()
 
         val document = Jsoup.parse(html)

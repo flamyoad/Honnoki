@@ -10,7 +10,6 @@ import androidx.lifecycle.Observer
 import androidx.paging.ExperimentalPagingApi
 import com.flamyoad.honnoki.BaseFragment
 import com.flamyoad.honnoki.R
-import com.flamyoad.honnoki.adapter.HomeListFragmentAdapter
 import com.flamyoad.honnoki.databinding.FragmentHomeBinding
 import com.flamyoad.honnoki.dialog.SourceSwitcherDialog
 import com.flamyoad.honnoki.model.MangaType
@@ -18,6 +17,8 @@ import com.flamyoad.honnoki.model.Source
 import com.flamyoad.honnoki.model.TabType
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
 import com.flamyoad.honnoki.utils.ui.DepthPageTransformer
+import com.google.android.material.tabs.TabLayoutMediator
+import java.lang.IllegalArgumentException
 
 @ExperimentalPagingApi
 class HomeFragment : BaseFragment(), SourceSwitcherDialog.Listener {
@@ -26,7 +27,8 @@ class HomeFragment : BaseFragment(), SourceSwitcherDialog.Listener {
 
     private val tabList = listOf(
         TabType("all", MangaType.RECENTLY),
-        TabType("all", MangaType.TRENDING)
+        TabType("all", MangaType.TRENDING),
+        TabType("all", MangaType.NEW)
     )
 
     override fun onCreateView(
@@ -62,8 +64,16 @@ class HomeFragment : BaseFragment(), SourceSwitcherDialog.Listener {
         with(binding.viewPager) {
             adapter = pagerAdapter
             setPageTransformer(DepthPageTransformer())
-            isUserInputEnabled = false
         }
+
+        TabLayoutMediator(binding.tabLayoutMain, binding.viewPager) { tab, position ->
+            tab.text = when(position) {
+                0 -> "Most Recent"
+                1 -> "Trending"
+                2 -> "New"
+                else -> throw IllegalArgumentException("Invalid tab")
+            }
+        }.attach()
     }
 
     override fun onSourceSwitch(source: Source) {

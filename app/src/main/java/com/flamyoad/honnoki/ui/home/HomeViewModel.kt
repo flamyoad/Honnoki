@@ -13,8 +13,9 @@ import com.flamyoad.honnoki.model.Manga
 import com.flamyoad.honnoki.model.Source
 import com.flamyoad.honnoki.repository.BaseMangaRepository
 import com.flamyoad.honnoki.repository.MangakalotRepository
-import com.flamyoad.honnoki.repository.SenMangaRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 
 @ExperimentalPagingApi
 class HomeViewModel(val app: Application) : AndroidViewModel(app) {
@@ -24,9 +25,17 @@ class HomeViewModel(val app: Application) : AndroidViewModel(app) {
     private val shouldShrinkFab = MutableLiveData<Boolean>(false)
     fun shouldShrinkFab(): LiveData<Boolean> = shouldShrinkFab
 
-    fun getRecentManga(): Flow<PagingData<Manga>> = mangaRepo.getRecentManga().cachedIn(viewModelScope)
-    fun getTrendingManga(): Flow<PagingData<Manga>> = mangaRepo.getTrendingManga().cachedIn(viewModelScope)
-//    fun getTopManga(): Flow<PagingData<Manga>> = mangaRepo.getTopManga().cachedIn(viewModelScope)
+    fun getRecentManga(): Flow<PagingData<Manga>> = mangaRepo.getRecentManga()
+        .flowOn(Dispatchers.IO)
+        .cachedIn(viewModelScope)
+
+    fun getTrendingManga(): Flow<PagingData<Manga>> = mangaRepo.getTrendingManga()
+        .flowOn(Dispatchers.IO)
+        .cachedIn(viewModelScope)
+
+    fun getNewManga(): Flow<PagingData<Manga>> = mangaRepo.getNewManga()
+        .flowOn(Dispatchers.IO)
+        .cachedIn(viewModelScope)
 
     fun setShouldShrinkFab(boolean: Boolean) {
         shouldShrinkFab.value = boolean

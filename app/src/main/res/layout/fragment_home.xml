@@ -30,20 +30,20 @@
                 app:tabSelectedTextColor="@color/white"
                 app:tabTextColor="@color/subLightTextColor">
 
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="All" />
+<!--                <com.google.android.material.tabs.TabItem-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="All" />-->
 
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Shounen" />
+<!--                <com.google.android.material.tabs.TabItem-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Shounen" />-->
 
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Adventure" />
+<!--                <com.google.android.material.tabs.TabItem-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Adventure" />-->
 
             </com.google.android.material.tabs.TabLayout>
 
