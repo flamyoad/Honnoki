@@ -9,7 +9,7 @@
         android:gravity="center"
         android:paddingVertical="18dp"
         android:text="Loading next chapter ..."
-        android:textColor="@color/mainTextColor"
+        android:textColor="?android:attr/textColorPrimary"
         android:textSize="18dp" />
 
 </FrameLayout>

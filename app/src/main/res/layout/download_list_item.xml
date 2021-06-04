@@ -23,7 +23,7 @@
         android:ellipsize="end"
         android:lines="1"
         android:text="@string/manga_title"
-        android:textColor="@color/mainTextColor"
+        android:textColor="?android:attr/textColorPrimary"
         app:layout_constraintEnd_toStartOf="@+id/btnAction"
         app:layout_constraintStart_toEndOf="@+id/image"
         app:layout_constraintTop_toTopOf="@+id/image" />
