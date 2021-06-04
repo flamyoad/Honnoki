@@ -34,7 +34,7 @@ class ReaderFrameFragment : Fragment() {
     private val loadingAdapter = ReaderLoadingAdapter()
     private val linearLayoutManager by lazy { LinearLayoutManager(requireContext()) }
 
-    private var scrollingFromSeekbar: Boolean = false
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,8 +48,7 @@ class ReaderFrameFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (savedInstanceState == null) {
-            val chapterId =
-                requireActivity().intent?.getLongExtra(ReaderActivity.CHAPTER_ID, -1) ?: -1
+            val chapterId = requireActivity().intent?.getLongExtra(ReaderActivity.CHAPTER_ID, -1) ?: -1
             parentViewModel.fetchManga(chapterId, LoadType.INITIAL)
         }
 
@@ -60,6 +59,7 @@ class ReaderFrameFragment : Fragment() {
     private fun initUi() {
         parentViewModel.setSideKickVisibility(false)
 
+        readerAdapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         concatAdapter.addAdapter(readerAdapter)
 
         with(binding) {
@@ -77,27 +77,27 @@ class ReaderFrameFragment : Fragment() {
             listImages.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
-                    syncCurrentChapterShown()
 
-                    // Show the bottom bar when the scrolling is done by seekbar
-                    if (!scrollingFromSeekbar) {
-                        parentViewModel.setSideKickVisibility(false)
-                    }
-
-                    // Resets the boolean
-                    scrollingFromSeekbar = false
+                    syncCurrentPageAndChapter()
+                    parentViewModel.currentScrollPosition = linearLayoutManager.findFirstVisibleItemPosition()
+                    parentViewModel.setSideKickVisibility(false)
                 }
 
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
+
                     // Prefetch when scrolled to the second last item (minus ads & last page)
-                    if (linearLayoutManager.findLastVisibleItemPosition() >= readerAdapter.itemCount - 2) {
+                    val reachedEndOfList = linearLayoutManager.findLastVisibleItemPosition() >= readerAdapter.itemCount - 2
+
+                    if (reachedEndOfList) {
                         parentViewModel.loadNextChapter()
                     }
 
                     val lastVisiblePos = linearLayoutManager.findFirstVisibleItemPosition()
                     val lastVisibleView = linearLayoutManager.findViewByPosition(lastVisiblePos)
-                    if (lastVisiblePos == 0 && lastVisibleView?.top == 0) {
+                    val reachedTopOfList = lastVisiblePos == 0 && lastVisibleView?.top == 0
+
+                    if (reachedTopOfList) {
                         viewModel.setPullToRefreshEnabled(true)
                     } else {
                         viewModel.setPullToRefreshEnabled(false)
@@ -121,9 +121,9 @@ class ReaderFrameFragment : Fragment() {
 
         lifecycleScope.launchWhenResumed {
             parentViewModel.pageNumberScrolledBySeekbar().collectLatest {
-                val currentPage = readerAdapter.currentList.getOrNull(it) ?: return@collectLatest
-                if (currentPage is ReaderPage.Value) {
-                    parentViewModel.setCurrentPageNumber(currentPage.page.number)
+                val currentItemScrolled = readerAdapter.currentList.getOrNull(it) ?: return@collectLatest
+                if (currentItemScrolled is ReaderPage.Value) {
+                    parentViewModel.setCurrentPageNumber(currentItemScrolled.page.number)
                 }
             }
         }
@@ -142,7 +142,7 @@ class ReaderFrameFragment : Fragment() {
         }
 
         lifecycleScope.launchWhenResumed {
-            viewModel.disablePullToRefresh().collectLatest {
+            viewModel.disablePullToRefresh.collectLatest {
                 binding.smartRefreshLayout.isEnabled = it
             }
         }
@@ -158,9 +158,8 @@ class ReaderFrameFragment : Fragment() {
         }
     }
 
-    private fun syncCurrentChapterShown() {
-        val currentPage =
-            readerAdapter.currentList.getOrNull(linearLayoutManager.findFirstVisibleItemPosition())
+    private fun syncCurrentPageAndChapter() {
+        val currentPage = readerAdapter.currentList.getOrNull(linearLayoutManager.findFirstVisibleItemPosition())
         currentPage?.let {
             if (it is ReaderPage.Value) {
                 parentViewModel.setCurrentChapter(it.chapter)

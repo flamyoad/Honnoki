@@ -2,13 +2,10 @@ package com.flamyoad.honnoki.ui.reader
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
 import com.flamyoad.honnoki.db.AppDatabase
 import com.flamyoad.honnoki.model.Chapter
-import com.flamyoad.honnoki.model.Page
 import com.flamyoad.honnoki.model.State
 import com.flamyoad.honnoki.repository.BaseMangaRepository
 import com.flamyoad.honnoki.repository.MangakalotRepository
@@ -18,7 +15,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlin.math.roundToInt
 
 @ExperimentalPagingApi
 class ReaderViewModel(app: Application) : AndroidViewModel(app) {
@@ -51,8 +47,11 @@ class ReaderViewModel(app: Application) : AndroidViewModel(app) {
         "Page: $current / $total"
     }
 
-    private val pageNumberScrolledBySeekbar = MutableStateFlow(-1)
-    fun pageNumberScrolledBySeekbar(): Flow<Int> = pageNumberScrolledBySeekbar
+    private val pageNumberScrolledBySeekbar = MutableSharedFlow<Int>(
+        replay = 0,
+        extraBufferCapacity = 1
+    )
+    fun pageNumberScrolledBySeekbar(): SharedFlow<Int> = pageNumberScrolledBySeekbar.asSharedFlow()
 
     private val pageList = MutableStateFlow<List<ReaderPage>>(emptyList())
     fun pageList(): Flow<List<ReaderPage>> = pageList
@@ -61,6 +60,8 @@ class ReaderViewModel(app: Application) : AndroidViewModel(app) {
     fun showBottomLoadingIndicator(): StateFlow<Boolean> = showBottomLoadingIndicator
 
     private var fetchMangaJob: Job? = null
+
+    var currentScrollPosition: Int = -1
 
     fun fetchManga(chapterId: Long, loadType: LoadType) {
         fetchMangaJob?.cancel()
@@ -144,7 +145,7 @@ class ReaderViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun setSeekbarScrolledPosition(position: Int) {
-        pageNumberScrolledBySeekbar.value = position
+        pageNumberScrolledBySeekbar.tryEmit(position)
     }
 
     fun setCurrentChapter(chapter: Chapter) {

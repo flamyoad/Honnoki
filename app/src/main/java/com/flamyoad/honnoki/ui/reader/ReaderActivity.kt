@@ -25,8 +25,6 @@ class ReaderActivity : AppCompatActivity() {
 
     private val viewModel: ReaderViewModel by viewModels()
 
-    private var scrollingFromSeekbar: Boolean = false
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityReaderBinding.inflate(layoutInflater)
@@ -82,9 +80,7 @@ class ReaderActivity : AppCompatActivity() {
                     }
                 }
 
-                override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                    scrollingFromSeekbar = true
-                }
+                override fun onStartTrackingTouch(seekBar: SeekBar?) {}
 
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {
                     // User has stopped moving. Move to the image selected

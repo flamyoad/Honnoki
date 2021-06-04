@@ -9,10 +9,10 @@ import kotlinx.coroutines.flow.StateFlow
 @ExperimentalPagingApi
 class ReaderFrameViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val pullToRefreshEnabled = MutableStateFlow(false)
-    fun disablePullToRefresh(): StateFlow<Boolean> = pullToRefreshEnabled
+    private val _pullToRefreshEnabled = MutableStateFlow(false)
+    val disablePullToRefresh: StateFlow<Boolean> get() = _pullToRefreshEnabled
 
     fun setPullToRefreshEnabled(isEnabled: Boolean) {
-        pullToRefreshEnabled.value = isEnabled
+        _pullToRefreshEnabled.value = isEnabled
     }
 }
