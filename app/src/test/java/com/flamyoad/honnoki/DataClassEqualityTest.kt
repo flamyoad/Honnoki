@@ -14,12 +14,14 @@ class DataClassEqualityTest {
     fun `areItemsTheSame() returns true when both items have same id`() {
         val first = BookmarkGroupWithInfo(
             bookmarkGroup = BookmarkGroup(id = 1, name = "All", isSelected = false),
-            coverImageList = emptyList()
+            bookmarks = emptyList(),
+            coverImages = emptyList()
         )
 
         val second = BookmarkGroupWithInfo(
             bookmarkGroup = BookmarkGroup(id = 1, name = "Recents", isSelected = false),
-            coverImageList = emptyList()
+            bookmarks = emptyList(),
+            coverImages = emptyList()
         )
 
         val areItemsTheSame = comparator.areItemsTheSame(first, second)
@@ -31,12 +33,14 @@ class DataClassEqualityTest {
     fun `areItemsTheSame() returns false when both items have different id`() {
         val first = BookmarkGroupWithInfo(
             bookmarkGroup = BookmarkGroup(id = 1, name = "All", isSelected = false),
-            coverImageList = emptyList()
+            bookmarks = emptyList(),
+            coverImages = emptyList()
         )
 
         val second = BookmarkGroupWithInfo(
             bookmarkGroup = BookmarkGroup(id = 2, name = "Recents", isSelected = false),
-            coverImageList = emptyList()
+            bookmarks = emptyList(),
+            coverImages = emptyList()
         )
 
         val areItemsTheSame = comparator.areItemsTheSame(first, second)

@@ -28,8 +28,6 @@ class ReaderViewModel(app: Application) : AndroidViewModel(app) {
 
     private val mangaOverviewId = MutableStateFlow(-1L)
 
-    val overviewId get() = mangaOverviewId.value
-
     val chapterList = mangaOverviewId
         .flatMapLatest { db.chapterDao().getByOverviewId(it) }
 
@@ -109,6 +107,30 @@ class ReaderViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    fun loadPreviousChapter() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val overviewId = mangaOverviewId.value
+            val currentChapterNumber = currentChapterShown.value.number
+
+            val prevChapter = db.chapterDao().getPreviousChapter(overviewId, currentChapterNumber)
+                ?: return@launch
+            val chapterId = prevChapter.id ?: return@launch
+            fetchManga(chapterId, LoadType.PREV)
+        }
+    }
+
+    fun loadNextChapter() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val overviewId = mangaOverviewId.value
+            val currentChapterNumber = currentChapterShown.value.number
+
+            val nextChapter =
+                db.chapterDao().getNextChapter(overviewId, currentChapterNumber) ?: return@launch
+            val chapterId = nextChapter.id ?: return@launch
+            fetchManga(chapterId, LoadType.NEXT)
+        }
+    }
+
     fun fetchChapterList(overviewId: Long) {
         mangaOverviewId.value = overviewId
     }
@@ -127,25 +149,5 @@ class ReaderViewModel(app: Application) : AndroidViewModel(app) {
 
     fun setCurrentChapter(chapter: Chapter) {
         currentChapterShown.value = chapter
-    }
-
-    fun loadPreviousChapter() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val currentChapterNumber = currentChapterShown.value.number
-            val prevChapter = db.chapterDao().getPreviousChapter(overviewId, currentChapterNumber)
-                ?: return@launch
-            val chapterId = prevChapter.id ?: return@launch
-            fetchManga(chapterId, LoadType.PREV)
-        }
-    }
-
-    fun loadNextChapter() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val currentChapterNumber = currentChapterShown.value.number
-            val nextChapter =
-                db.chapterDao().getNextChapter(overviewId, currentChapterNumber) ?: return@launch
-            val chapterId = nextChapter.id ?: return@launch
-            fetchManga(chapterId, LoadType.NEXT)
-        }
     }
 }

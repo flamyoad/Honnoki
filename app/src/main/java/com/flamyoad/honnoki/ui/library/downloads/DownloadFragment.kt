@@ -31,5 +31,4 @@ class DownloadFragment : Fragment() {
     companion object {
         @JvmStatic fun newInstance() = DownloadFragment()
     }
-
 }
