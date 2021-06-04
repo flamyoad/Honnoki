@@ -41,6 +41,8 @@ class MangaMediator(
             val mangas = when (mangaType) {
                 MangaType.RECENTLY -> api.searchForLatestManga(pageNumber)
                 MangaType.TRENDING -> api.searchForTrendingManga(pageNumber)
+                MangaType.TOP -> api.searchForTopManga(1) // Only have first page
+                MangaType.NEW -> throw NotImplementedError("")
             }
             val endOfPaginationReached = mangas.isEmpty()
 

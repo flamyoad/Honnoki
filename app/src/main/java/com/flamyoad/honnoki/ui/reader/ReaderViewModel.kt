@@ -47,6 +47,9 @@ class ReaderViewModel(app: Application) : AndroidViewModel(app) {
         "Page: $current / $total"
     }
 
+    // https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-shared-flow/
+    // A default implementation of a shared flow that is created with MutableSharedFlow()
+    // constructor function without parameters has no replay cache nor additional buffer
     private val pageNumberScrolledBySeekbar = MutableSharedFlow<Int>(
         replay = 0,
         extraBufferCapacity = 1
@@ -82,7 +85,7 @@ class ReaderViewModel(app: Application) : AndroidViewModel(app) {
                 db.pageDao().insertAll(pagesWithoutChapterId)
                 val pagesWithChapterId = db.pageDao().getAllFromChapter(chapterId)
 
-                val existingList = pageList.value?.toMutableList() ?: mutableListOf()
+                val existingList = pageList.value.toMutableList()
 
                 when (loadType) {
                     LoadType.INITIAL -> {

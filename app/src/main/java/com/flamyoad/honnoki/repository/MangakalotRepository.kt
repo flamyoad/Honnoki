@@ -17,6 +17,10 @@ import kotlinx.coroutines.flow.Flow
 class MangakalotRepository(db: AppDatabase, context: Context) : BaseMangaRepository(db, context) {
     private val api: MangakalotApi = MangakalotApi(MangakalotService.create(context))
 
+    override fun getSourceType(): Source {
+        return Source.MANGAKALOT
+    }
+
     override fun getRecentManga(): Flow<PagingData<Manga>> {
         return Pager(
             config = PagingConfig(pageSize = PAGINATION_SIZE, enablePlaceholders = false),
@@ -33,8 +37,12 @@ class MangakalotRepository(db: AppDatabase, context: Context) : BaseMangaReposit
         ).flow
     }
 
-    override fun getSourceType(): Source {
-        return Source.MANGAKALOT
+    override fun getTopManga(): Flow<PagingData<Manga>> {
+        return Pager(
+            config = PagingConfig(pageSize = PAGINATION_SIZE, enablePlaceholders = false),
+            remoteMediator = MangaMediator(api, db, MangaType.TOP),
+            pagingSourceFactory = { db.mangaDao().getFrom(SOURCE, MangaType.TOP) }
+        ).flow
     }
 
     override suspend fun getMangaOverview(urlPath: String): State<MangaOverview> {

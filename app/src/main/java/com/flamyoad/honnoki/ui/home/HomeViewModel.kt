@@ -26,6 +26,7 @@ class HomeViewModel(val app: Application) : AndroidViewModel(app) {
 
     fun getRecentManga(): Flow<PagingData<Manga>> = mangaRepo.getRecentManga().cachedIn(viewModelScope)
     fun getTrendingManga(): Flow<PagingData<Manga>> = mangaRepo.getTrendingManga().cachedIn(viewModelScope)
+//    fun getTopManga(): Flow<PagingData<Manga>> = mangaRepo.getTopManga().cachedIn(viewModelScope)
 
     fun setShouldShrinkFab(boolean: Boolean) {
         shouldShrinkFab.value = boolean

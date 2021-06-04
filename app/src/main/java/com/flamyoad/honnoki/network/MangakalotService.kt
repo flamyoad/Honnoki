@@ -51,6 +51,9 @@ interface MangakalotService {
     @GET("genre-all/{index}?type=topview")
     suspend fun getTrendingManga(@Path("index") index: Int): ResponseBody
 
+    @GET("genre-all/1")
+    suspend fun getTopWeekManga(): ResponseBody
+
     @GET
     @Headers(CACHE_CONTROL_MAX_AGE_60)
     suspend fun getMangaOverview(@Url url: String): ResponseBody

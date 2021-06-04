@@ -68,6 +68,69 @@ class MangakalotParser {
         return mangaList
     }
 
+    // Not working now because its run inside a JS file
+    fun parseForTopManga(html: String?): List<Manga> {
+        if (html.isNullOrBlank()) return emptyList()
+
+        val document = Jsoup.parse(html)
+
+        val mangaDivs = document.select("#owl-slider > .item")
+
+        val mangaList = mangaDivs.map {
+            val titleDiv = it.selectFirst(".slide-caption > h3 > a")
+
+            val title = titleDiv.attrNonNull("href")
+            val link = titleDiv.attrNonNull("title")
+            val coverImage = it.selectFirst(".img-loading").attrNonNull("src")
+            val latestChapter = it.selectFirst(".slide-caption > a").attrNonNull("title")
+
+            return@map Manga(
+                title = title,
+                link = link,
+                coverImage = coverImage,
+                latestChapter = latestChapter,
+                viewCount = 0, // Can't get view count info from this section
+                source = Source.MANGAKALOT,
+                type = MangaType.TOP
+            )
+
+        }.toList()
+
+        return mangaList
+    }
+
+    fun parseForNewestManga(html: String?): List<Manga> {
+        if (html.isNullOrBlank()) return emptyList()
+
+        val document = Jsoup.parse(html)
+
+        val mangaDivs = document.select(".content-genres-item")
+
+        val mangaList = mutableListOf<Manga>()
+        for (div in mangaDivs) {
+            val nameDiv = div.selectFirst(".genres-item-name")
+            val title = nameDiv.textNonNull()
+            val link = nameDiv.attrNonNull("href")
+
+            val coverImage = div.selectFirst(".genres-item-img > img").attrNonNull("src")
+            val latestChapter = div.selectFirst(".genres-item-chap").textNonNull()
+            val viewCount = div.selectFirst(".genres-item-view").textNonNull()
+
+            mangaList.add(
+                Manga(
+                    title = title,
+                    link = link,
+                    latestChapter = latestChapter,
+                    coverImage = coverImage,
+                    viewCount = viewCount.toIntOrNull() ?: 0,
+                    source = Source.MANGAKALOT,
+                    type = MangaType.NEW
+                )
+            )
+        }
+        return mangaList
+    }
+
     fun parseForMangaOverview(html: String?, link: String): MangaOverview {
         if (html.isNullOrBlank()) {
             return MangaOverview.empty()

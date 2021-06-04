@@ -31,6 +31,17 @@ class MangakalotApi(private val service: MangakalotService): BaseApi() {
         }
     }
 
+    override suspend fun searchForTopManga(index: Int): List<Manga> {
+        val response = service.getTopWeekManga()
+
+        return withContext(Dispatchers.Default) {
+            val html = response.string()
+            val mangaList = parser.parseForTopManga(html)
+
+            return@withContext mangaList
+        }
+    }
+
     suspend fun searchForMangaOverview(link: String): State<MangaOverview> {
         val response = try {
             service.getMangaOverview(link)

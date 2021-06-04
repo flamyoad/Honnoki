@@ -6,7 +6,6 @@ import okhttp3.Response
 import java.util.concurrent.TimeUnit
 
 
-// todo: implement caching when offline
 // https://medium.com/@bapspatil/caching-with-retrofit-store-responses-offline-71439ed32fda
 // https://blog.mindorks.com/okhttp-interceptor-making-the-most-of-it#:~:text=Application%20Interceptors%3A%20These%20are%20interceptors,Core%20Library%20and%20the%20Server.
 
