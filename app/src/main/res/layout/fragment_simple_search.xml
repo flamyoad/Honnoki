@@ -9,7 +9,8 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary">
+        android:background="@color/colorPrimary"
+        android:paddingBottom="8dp">
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -25,11 +26,18 @@
                 android:focusable="true"
                 android:imeOptions="flagNoExtractUi"
                 app:iconifiedByDefault="false"
+                app:queryBackground="@android:color/transparent"
                 app:queryHint="Search title">
 
             </androidx.appcompat.widget.SearchView>
 
         </androidx.cardview.widget.CardView>
+
+        <include
+            layout="@layout/simple_search_source_selector"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -42,10 +50,10 @@
             android:id="@+id/listSearchResultView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:msv_loadingView="@layout/recyclerview_loading_layout"
-            app:msv_errorView="@layout/recyclerview_error_layout"
+            android:scrollbars="vertical"
             app:msv_emptyView="@layout/layout_empty_search_result"
-            android:scrollbars="vertical">
+            app:msv_errorView="@layout/recyclerview_error_layout"
+            app:msv_loadingView="@layout/recyclerview_loading_layout">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/listSearchResult"
