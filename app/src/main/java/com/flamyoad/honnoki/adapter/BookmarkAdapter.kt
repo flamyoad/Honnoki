@@ -14,13 +14,6 @@ class BookmarkAdapter(private val onBookmarkClick: (BookmarkWithOverview) -> Uni
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> BookmarkListItemBinding
         get() = BookmarkListItemBinding::inflate
 
-    override fun onCreate(holder: BaseViewHolder, binding: BookmarkListItemBinding) {
-        holder.itemView.setOnClickListener {
-            val item = getItem(holder.bindingAdapterPosition) ?: return@setOnClickListener
-            onBookmarkClick(item)
-        }
-    }
-
     override fun onBind(holder: BaseViewHolder, item: BookmarkWithOverview) {
         with(holder.binding) {
             Glide.with(this.root)
@@ -30,6 +23,11 @@ class BookmarkAdapter(private val onBookmarkClick: (BookmarkWithOverview) -> Uni
             txtTitle.text = item.overview.mainTitle
             txtInformation.text = item.overview.status
         }
+    }
+
+    override fun onItemClick(item: BookmarkWithOverview?) {
+        super.onItemClick(item)
+        onBookmarkClick(item ?: return)
     }
 
     companion object {

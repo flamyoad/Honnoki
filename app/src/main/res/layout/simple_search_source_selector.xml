@@ -104,10 +104,11 @@
                 android:layout_marginHorizontal="8dp"
                 android:paddingVertical="2dp"
                 android:text="Filter by genre"
-                app:layout_constraintTop_toTopOf="@id/logoGenre"
-                app:layout_constraintStart_toEndOf="@id/logoGenre"
+                android:textColor="?android:attr/textColorPrimary"
+                app:layout_constraintBottom_toBottomOf="@+id/logoGenre"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:textColor="?android:attr/textColorPrimary" />
+                app:layout_constraintStart_toEndOf="@id/logoGenre"
+                app:layout_constraintTop_toTopOf="@id/logoGenre" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/listGenres"
