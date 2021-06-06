@@ -4,8 +4,10 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
+import androidx.room.withTransaction
 import com.flamyoad.honnoki.db.AppDatabase
 import com.flamyoad.honnoki.model.Chapter
+import com.flamyoad.honnoki.model.PageWithChapterInfo
 import com.flamyoad.honnoki.model.State
 import com.flamyoad.honnoki.repository.BaseMangaRepository
 import com.flamyoad.honnoki.repository.MangakalotRepository
@@ -26,6 +28,7 @@ class ReaderViewModel(app: Application) : AndroidViewModel(app) {
 
     val chapterList = mangaOverviewId
         .flatMapLatest { db.chapterDao().getByOverviewId(it) }
+        .flowOn(Dispatchers.IO)
 
     private val sideKickVisibility = MutableStateFlow(false)
     fun sideKickVisibility(): StateFlow<Boolean> = sideKickVisibility
@@ -89,6 +92,7 @@ class ReaderViewModel(app: Application) : AndroidViewModel(app) {
 
                 when (loadType) {
                     LoadType.INITIAL -> {
+                        existingList.clear()
                         existingList.addAll(pagesWithChapterId.map { ReaderPage.Value(it) })
                         existingList.add(ReaderPage.Ads(chapterId))
                     }

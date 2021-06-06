@@ -34,8 +34,6 @@ class ReaderFrameFragment : Fragment() {
     private val loadingAdapter = ReaderLoadingAdapter()
     private val linearLayoutManager by lazy { LinearLayoutManager(requireContext()) }
 
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

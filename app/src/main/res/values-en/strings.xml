@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="chapter_list_total">
+        <item quantity="zero">%1$d chapter</item>
+        <item quantity="one">%1$d chapter</item>
+        <item quantity="other">%1$d chapters</item>
+    </plurals>
+
+    <string name="genre_action">Action</string>
+    <string name="genre_adult">Adult</string>
+    <string name="genre_adventure">Adventure</string>
+    <string name="genre_comedy">Comedy</string>
+    <string name="genre_cooking">Cooking</string>
+    <string name="genre_doujinshi">Doujinshi</string>
+    <string name="genre_drama">Drama</string>
+    <string name="genre_ecchi">Ecchi</string>
+    <string name="genre_fantasy">Fantasy</string>
+    <string name="genre_gender_bender">Gender Bender</string>
+    <string name="genre_harem">Harem</string>
+    <string name="genre_historical">Historical</string>
+    <string name="genre_horror">Horror</string>
+    <string name="genre_isekai">Isekai</string>
+    <string name="genre_josei">Josei</string>
+    <string name="genre_manhua">Manhua</string>
+    <string name="genre_manhwa">Manhwa</string>
+    <string name="genre_martial_arts">Martial Arts</string>
+    <string name="genre_mature">Mature</string>
+    <string name="genre_mecha">Mecha</string>
+    <string name="genre_medical">Medical</string>
+    <string name="genre_mystery">Mystery</string>
+    <string name="genre_oneshot">Oneshot</string>
+    <string name="genre_psychological">Psychological</string>
+    <string name="genre_romance">Romance</string>
+    <string name="genre_school_life">School Life</string>
+    <string name="genre_scifi">Scifi</string>
+    <string name="genre_seinen">Seinen</string>
+    <string name="genre_shoujo">Shoujo</string>
+    <string name="genre_shoujo_ai">Shoujo Ai</string>
+    <string name="genre_shounen">Shounen</string>
+    <string name="genre_shounen_ai">Shounen Ai</string>
+    <string name="genre_slice_of_life">Slice of Life</string>
+    <string name="genre_smut">Smut</string>
+    <string name="genre_sports">Sports</string>
+    <string name="genre_supernatural">Supernatural</string>
+    <string name="genre_tragedy">Tragedy</string>
+    <string name="genre_webtoons">Webtoons</string>
+    <string name="genre_yaoi">Yaoi</string>
+    <string name="genre_yuri">Yuri</string>
+</resources>

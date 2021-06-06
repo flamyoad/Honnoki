@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".ui.search.SimpleSearchFragment">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <FrameLayout
+        android:id="@+id/searchBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:paddingBottom="8dp">
+        android:background="@color/colorPrimary">
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            app:cardCornerRadius="8dp">
+            app:cardCornerRadius="4dp">
 
             <!-- app:iconifiedByDefault="false" makes the searchbar expanded by default-->
             <androidx.appcompat.widget.SearchView
@@ -33,27 +34,38 @@
 
         </androidx.cardview.widget.CardView>
 
-        <include
-            layout="@layout/simple_search_source_selector"
+    </FrameLayout>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/searchDetailsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="8dp" />
+            android:background="?android:attr/colorBackground">
 
-    </com.google.android.material.appbar.AppBarLayout>
+            <include
+                layout="@layout/simple_search_source_selector"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                app:layout_scrollFlags="scroll|enterAlwaysCollapsed" />
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+        </com.google.android.material.appbar.AppBarLayout>
 
         <com.kennyc.view.MultiStateView
             android:id="@+id/listSearchResultView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="vertical"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
             app:msv_emptyView="@layout/layout_empty_search_result"
             app:msv_errorView="@layout/recyclerview_error_layout"
-            app:msv_loadingView="@layout/recyclerview_loading_layout">
+            app:msv_loadingView="@layout/recyclerview_loading_layout_nestedscrollview">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/listSearchResult"
@@ -65,17 +77,17 @@
 
         </com.kennyc.view.MultiStateView>
 
-    </FrameLayout>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_search_white_24dp"
+            app:backgroundTint="@color/flower_petal_medium"
+            app:fabSize="normal"
+            app:tint="@color/white" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="54dp"
-        android:layout_height="54dp"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        android:src="@drawable/ic_search_white_24dp"
-        app:backgroundTint="@color/flower_petal_medium"
-        app:fabSize="normal"
-        app:tint="@color/white" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>

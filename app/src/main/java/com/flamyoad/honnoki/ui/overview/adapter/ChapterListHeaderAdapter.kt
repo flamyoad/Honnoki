@@ -39,13 +39,8 @@ class ChapterListHeaderAdapter(val sortList: (Boolean) -> Unit) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(chapterList: List<Chapter>) {
             val resources = binding.root.context.resources
-            if (chapterList.isEmpty()) {
-                binding.txtTotalChapters.text = resources.getString(R.string.chapter_list_total, 0)
-            } else {
-                binding.txtTotalChapters.text = resources.getString(
-                    R.string.chapter_list_total, chapterList.size
-                )
-            }
+            binding.txtTotalChapters.text =
+                resources.getQuantityText(R.plurals.chapter_list_total, chapterList.size)
         }
     }
 }
