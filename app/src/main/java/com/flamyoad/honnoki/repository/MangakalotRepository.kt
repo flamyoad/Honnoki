@@ -11,6 +11,8 @@ import com.flamyoad.honnoki.model.*
 import com.flamyoad.honnoki.network.MangakalotService
 import com.flamyoad.honnoki.paging.MangaMediator
 import com.flamyoad.honnoki.paging.SimpleSearchResultMediator
+import com.flamyoad.honnoki.ui.search.model.SearchGenre
+import com.flamyoad.honnoki.utils.GenreConstants
 import kotlinx.coroutines.flow.Flow
 
 @ExperimentalPagingApi
@@ -53,6 +55,23 @@ class MangakalotRepository(db: AppDatabase, context: Context) : BaseMangaReposit
         ).flow
     }
 
+    override fun getSimpleSearch(query: String): Flow<PagingData<SearchResult>> {
+        // Replaces whitespaces between words with underscore. Otherwise it will become %20 which is invalid in search
+        // Example query: Gakuen    Alice
+        // Valid URL: https://manganelo.com/search/story/gakuen_alice
+        val encodedQuery = query.replace("\\s".toRegex(), "_")
+
+        return Pager(
+            config = PagingConfig(pageSize = PAGINATION_SIZE, enablePlaceholders = false),
+            remoteMediator = SimpleSearchResultMediator(api, db, encodedQuery, SOURCE),
+            pagingSourceFactory = { db.searchResultDao().getAll() }
+        ).flow
+    }
+
+    override fun getSimpleSearchWithGenre(query: String, genre: GenreConstants): Flow<PagingData<SearchResult>> {
+        return super.getSimpleSearchWithGenre(query, genre)
+    }
+
     override suspend fun getMangaOverview(urlPath: String): State<MangaOverview> {
         return api.searchForMangaOverview(urlPath)
     }
@@ -71,19 +90,6 @@ class MangakalotRepository(db: AppDatabase, context: Context) : BaseMangaReposit
 
     override suspend fun getImages(urlPath: String): State<List<Page>> {
         return api.searchForImageList(urlPath)
-    }
-
-    override fun getSimpleSearch(query: String): Flow<PagingData<SearchResult>> {
-        // Replaces whitespaces between words with underscore. Otherwise it will become %20 which is invalid in search
-        // Example query: Gakuen    Alice
-        // Valid URL: https://manganelo.com/search/story/gakuen_alice
-        val encodedQuery = query.replace("\\s".toRegex(), "_")
-
-        return Pager(
-            config = PagingConfig(pageSize = PAGINATION_SIZE, enablePlaceholders = false),
-            remoteMediator = SimpleSearchResultMediator(api, db, encodedQuery, SOURCE),
-            pagingSourceFactory = { db.searchResultDao().getAll() }
-        ).flow
     }
 
     companion object {

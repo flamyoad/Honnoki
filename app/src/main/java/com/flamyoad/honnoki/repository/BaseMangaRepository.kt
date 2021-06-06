@@ -5,6 +5,8 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingData
 import com.flamyoad.honnoki.db.AppDatabase
 import com.flamyoad.honnoki.model.*
+import com.flamyoad.honnoki.ui.search.model.SearchGenre
+import com.flamyoad.honnoki.utils.GenreConstants
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
@@ -33,6 +35,10 @@ abstract class BaseMangaRepository(val db: AppDatabase, val context: Context) {
     }
 
     open fun getSimpleSearch(query: String): Flow<PagingData<SearchResult>> {
+        return emptyFlow()
+    }
+
+    open fun getSimpleSearchWithGenre(query: String, genre: GenreConstants): Flow<PagingData<SearchResult>> {
         return emptyFlow()
     }
 

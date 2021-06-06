@@ -1,7 +1,6 @@
 package com.flamyoad.honnoki.network
 
 import android.content.Context
-import android.util.Log
 import com.flamyoad.honnoki.network.interceptor.CacheInterceptor
 import com.flamyoad.honnoki.network.interceptor.RefererInterceptor
 import com.flamyoad.honnoki.network.interceptor.UserAgentInterceptor
@@ -25,9 +24,10 @@ interface MangakalotService {
         fun create(context: Context): MangakalotService {
             val myCache = (Cache(context.cacheDir, CACHE_SIZE))
 
-            val httpLoggingInterceptor = HttpLoggingInterceptor(HttpLoggingInterceptor.Logger.DEFAULT).apply {
-                level = HttpLoggingInterceptor.Level.BASIC
-            }
+            val httpLoggingInterceptor =
+                HttpLoggingInterceptor(HttpLoggingInterceptor.Logger.DEFAULT).apply {
+                    level = HttpLoggingInterceptor.Level.BASIC
+                }
 
             val httpClient = OkHttpClient.Builder()
                 .cache(myCache)
@@ -73,9 +73,18 @@ interface MangakalotService {
     @Headers(CACHE_CONTROL_MAX_AGE_60)
     suspend fun getGenres(@Url url: String): ResponseBody
 
+    // https://manganato.com/search/story/one_piece
     @GET("search/story/{keyword}")
     suspend fun searchByKeyword(
         @Path("keyword") keyword: String,
         @Query("page") index: Int
     ): ResponseBody
+
+    // https://manganato.com/advanced_search?s=all&g_i=_2_&page=1&keyw=manji
+    @GET("advanced_search")
+    suspend fun searchByKeywordAndGenres(
+        @Query("s") mode: String = "all",
+        @Query("i") genre: String,
+        @Query("page") index: Int,
+        @Query("keyw") keyword: String): ResponseBody
 }

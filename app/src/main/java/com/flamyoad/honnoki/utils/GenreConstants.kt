@@ -4,6 +4,7 @@ import android.content.Context
 import com.flamyoad.honnoki.R
 
 enum class GenreConstants(val stringResource: Int) {
+    ALL(-1),
     ACTION(R.string.genre_action),
     ADULT(R.string.genre_adult),
     ADVENTURE(R.string.genre_adventure),

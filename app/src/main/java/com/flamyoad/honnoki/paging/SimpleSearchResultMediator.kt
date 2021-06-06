@@ -9,6 +9,7 @@ import com.flamyoad.honnoki.api.BaseApi
 import com.flamyoad.honnoki.db.AppDatabase
 import com.flamyoad.honnoki.model.SearchResult
 import com.flamyoad.honnoki.model.Source
+import com.flamyoad.honnoki.utils.GenreConstants
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -17,6 +18,7 @@ class SimpleSearchResultMediator(
     private val api: BaseApi,
     private val db: AppDatabase,
     private val keyword: String,
+    private val genre: GenreConstants,
     private val source: Source
 ) : RemoteMediator<Int, SearchResult>() {
 
@@ -46,7 +48,11 @@ class SimpleSearchResultMediator(
         }
 
         try {
-            val searchedResults = api.searchByKeyword(keyword, pageNumber)
+            val searchedResults = if (genre == GenreConstants.ALL) {
+                api.searchByKeyword(keyword, pageNumber)
+            } else {
+                api.searchByKeywordAndGenres(keyword, genre, pageNumber)
+            }
 
             val endOfPaginationReached = searchedResults.isEmpty()
 

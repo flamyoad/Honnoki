@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.db.AppDatabase
 import com.flamyoad.honnoki.model.SearchResult
 import com.flamyoad.honnoki.repository.BaseMangaRepository
@@ -46,13 +45,9 @@ class SimpleSearchViewModel(val app: Application) : AndroidViewModel(app) {
     }
 
     private fun initializeGenreList(): List<SearchGenre> {
-        val list = GenreConstants.values().map {
-            SearchGenre(name = it.toReadableName(app.applicationContext), isSelected = false)
-        }.toMutableList()
-
-        // This is the "All" item in first row
-        list.add(0, SearchGenre.getDefaultItem(applicationContext))
-        return list
+        return GenreConstants.values().map {
+            SearchGenre(name = it.toReadableName(app.applicationContext), isSelected = it == GenreConstants.ALL)
+        }
     }
 
     fun selectGenre(genre: SearchGenre) {

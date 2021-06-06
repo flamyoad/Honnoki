@@ -1,12 +1,14 @@
 package com.flamyoad.honnoki.api
 
+import com.flamyoad.honnoki.api.exception.InvalidGenreException
 import com.flamyoad.honnoki.model.*
 import com.flamyoad.honnoki.network.MangakalotService
 import com.flamyoad.honnoki.parser.MangakalotParser
+import com.flamyoad.honnoki.utils.GenreConstants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class MangakalotApi(private val service: MangakalotService): BaseApi() {
+class MangakalotApi(private val service: MangakalotService) : BaseApi() {
     private val parser = MangakalotParser()
 
     override suspend fun searchForLatestManga(index: Int): List<Manga> {
@@ -138,4 +140,81 @@ class MangakalotApi(private val service: MangakalotService): BaseApi() {
             return@withContext searchResultList
         }
     }
+
+    override suspend fun searchByKeywordAndGenres(
+        keyword: String,
+        genre: GenreConstants,
+        index: Int
+    ): List<SearchResult> {
+
+        if (genre == GenreConstants.ALL) {
+            throw InvalidGenreException("There is no id for `All` genres! Use searchByKeyword() instead of searchByKeywordAndGenres()")
+        }
+
+        val genreString = "_" + getMangakalotGenreId(genre) + "_"
+        val response = service.searchByKeywordAndGenres(
+            genre = genreString,
+            keyword = keyword,
+            index =  index
+        )
+
+        return withContext(Dispatchers.Default) {
+            val html = response.string()
+            val searchResultList = parser.parseForSearchByKeywordAndGenre(html)
+
+            return@withContext searchResultList
+        }
+    }
+
+    companion object {
+        /**
+         * Get the id of genre in Mangakalot's database
+         */
+        fun getMangakalotGenreId(genre: GenreConstants): Int {
+            return when (genre) {
+                GenreConstants.ALL -> throw InvalidGenreException("This genre constant does not have its own id")
+                GenreConstants.ACTION -> 2
+                GenreConstants.ADULT -> 3
+                GenreConstants.ADVENTURE -> 4
+                GenreConstants.COMEDY -> 6
+                GenreConstants.COOKING -> 7
+                GenreConstants.DOUJINSHI -> 9
+                GenreConstants.DRAMA -> 10
+                GenreConstants.ECCHI -> 11
+                GenreConstants.FANTASY -> 12
+                GenreConstants.GENDER_BENDER -> 13
+                GenreConstants.HAREM -> 14
+                GenreConstants.HISTORICAL -> 15
+                GenreConstants.HORROR -> 16
+                GenreConstants.ISEKAI -> 45
+                GenreConstants.JOSEI -> 17
+                GenreConstants.MANHUA -> 44
+                GenreConstants.MANHWA -> 43
+                GenreConstants.MARTIAL_ARTS -> 19
+                GenreConstants.MATURE -> 20
+                GenreConstants.MECHA -> 21
+                GenreConstants.MEDICAL -> 22
+                GenreConstants.MYSTERY -> 24
+                GenreConstants.ONE_SHOT -> 25
+                GenreConstants.PSYCHOLOGICAL -> 26
+                GenreConstants.ROMANCE -> 27
+                GenreConstants.SCHOOL_LIFE -> 28
+                GenreConstants.SCIFI -> 29
+                GenreConstants.SEINEN -> 30
+                GenreConstants.SHOUJO -> 31
+                GenreConstants.SHOUJO_AI -> 32
+                GenreConstants.SHOUNEN -> 33
+                GenreConstants.SHOUNEN_AI -> 34
+                GenreConstants.SLICE_OF_LIFE -> 35
+                GenreConstants.SMUT -> 36
+                GenreConstants.SPORTS -> 37
+                GenreConstants.SUPERNATURAL -> 38
+                GenreConstants.TRAGEDY -> 39
+                GenreConstants.WEBTOONS -> 40
+                GenreConstants.YAOI -> 41
+                GenreConstants.YURI -> 42
+            }
+        }
+    }
+
 }
