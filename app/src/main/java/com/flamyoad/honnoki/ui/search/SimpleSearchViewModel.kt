@@ -7,6 +7,7 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.flamyoad.honnoki.db.AppDatabase
+import com.flamyoad.honnoki.model.Genre
 import com.flamyoad.honnoki.model.SearchResult
 import com.flamyoad.honnoki.repository.BaseMangaRepository
 import com.flamyoad.honnoki.repository.MangakalotRepository
@@ -28,14 +29,27 @@ class SimpleSearchViewModel(val app: Application) : AndroidViewModel(app) {
 
     private val searchQuery = MutableStateFlow("")
 
+    private val searchGenre = MutableStateFlow(GenreConstants.ALL)
+
     val searchResult: Flow<PagingData<SearchResult>> = searchQuery
         .debounce(500)
-        .flatMapLatest { query ->
-            if (query.isBlank()) {
-                return@flatMapLatest emptyFlow()
+        .combine(searchGenre) { s, genreConstant -> return@combine Pair(s, genreConstant) }
+        .flatMapLatest {
+            val query = it.first
+            val genre = it.second
+
+            if (query.isBlank() && genre == GenreConstants.ALL) {
+                return@flatMapLatest flowOf(PagingData.empty())
             }
-            return@flatMapLatest mangaRepo.getSimpleSearch(query).cachedIn(viewModelScope)
+
+            if (genre == GenreConstants.ALL) {
+                return@flatMapLatest mangaRepo.getSimpleSearch(query)
+            } else {
+                return@flatMapLatest mangaRepo.getSimpleSearchWithGenre(query, genre)
+            }
         }
+        .flowOn(Dispatchers.IO)
+        .cachedIn(viewModelScope)
 
     fun submitQuery(query: String) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -46,11 +60,16 @@ class SimpleSearchViewModel(val app: Application) : AndroidViewModel(app) {
 
     private fun initializeGenreList(): List<SearchGenre> {
         return GenreConstants.values().map {
-            SearchGenre(name = it.toReadableName(app.applicationContext), isSelected = it == GenreConstants.ALL)
+            SearchGenre(
+                name = it.toReadableName(app.applicationContext),
+                enumOrdinal = it.ordinal,
+                isSelected = it == GenreConstants.ALL)
         }
     }
 
     fun selectGenre(genre: SearchGenre) {
+        searchGenre.value = GenreConstants.getByOrdinal(genre.enumOrdinal) ?: return
+
         val prevList = genreList.value
         val newList = prevList.map {
             it.copy(isSelected = it == genre)

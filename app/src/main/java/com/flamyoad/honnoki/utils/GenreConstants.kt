@@ -2,9 +2,10 @@ package com.flamyoad.honnoki.utils
 
 import android.content.Context
 import com.flamyoad.honnoki.R
+import com.flamyoad.honnoki.model.Genre
 
 enum class GenreConstants(val stringResource: Int) {
-    ALL(-1),
+    ALL(R.string.genre_all),
     ACTION(R.string.genre_action),
     ADULT(R.string.genre_adult),
     ADVENTURE(R.string.genre_adventure),
@@ -47,4 +48,8 @@ enum class GenreConstants(val stringResource: Int) {
     YURI(R.string.genre_yuri);
 
     fun toReadableName(context: Context): String = context.resources.getString(this.stringResource)
+
+    companion object {
+        fun getByOrdinal(ordinal: Int): GenreConstants? = values().getOrNull(ordinal)
+    }
 }

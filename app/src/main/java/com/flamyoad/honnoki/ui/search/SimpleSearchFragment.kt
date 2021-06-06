@@ -92,6 +92,7 @@ class SimpleSearchFragment : BaseFragment() {
         with(binding.selectLayout.listGenres) {
             adapter = genreAdapter
             layoutManager = gridLayoutManager
+            itemAnimator = null
         }
     }
 

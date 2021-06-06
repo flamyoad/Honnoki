@@ -11,7 +11,6 @@ import com.flamyoad.honnoki.model.*
 import com.flamyoad.honnoki.network.MangakalotService
 import com.flamyoad.honnoki.paging.MangaMediator
 import com.flamyoad.honnoki.paging.SimpleSearchResultMediator
-import com.flamyoad.honnoki.ui.search.model.SearchGenre
 import com.flamyoad.honnoki.utils.GenreConstants
 import kotlinx.coroutines.flow.Flow
 
@@ -25,7 +24,7 @@ class MangakalotRepository(db: AppDatabase, context: Context) : BaseMangaReposit
 
     override fun getRecentManga(): Flow<PagingData<Manga>> {
         return Pager(
-            config = PagingConfig(pageSize = PAGINATION_SIZE, enablePlaceholders = true),
+            config = PagingConfig(pageSize = NORMAL_PAGINATION_SIZE, enablePlaceholders = true),
             remoteMediator = MangaMediator(api, db, MangaType.RECENTLY),
             pagingSourceFactory = { db.mangaDao().getFrom(SOURCE, MangaType.RECENTLY) }
         ).flow
@@ -33,7 +32,7 @@ class MangakalotRepository(db: AppDatabase, context: Context) : BaseMangaReposit
 
     override fun getTrendingManga(): Flow<PagingData<Manga>> {
         return Pager(
-            config = PagingConfig(pageSize = PAGINATION_SIZE, enablePlaceholders = true),
+            config = PagingConfig(pageSize = NORMAL_PAGINATION_SIZE, enablePlaceholders = true),
             remoteMediator = MangaMediator(api, db, MangaType.TRENDING),
             pagingSourceFactory = { db.mangaDao().getFrom(SOURCE, MangaType.TRENDING) }
         ).flow
@@ -41,7 +40,7 @@ class MangakalotRepository(db: AppDatabase, context: Context) : BaseMangaReposit
 
     override fun getTopManga(): Flow<PagingData<Manga>> {
         return Pager(
-            config = PagingConfig(pageSize = PAGINATION_SIZE, enablePlaceholders = true),
+            config = PagingConfig(pageSize = NORMAL_PAGINATION_SIZE, enablePlaceholders = true),
             remoteMediator = MangaMediator(api, db, MangaType.TOP),
             pagingSourceFactory = { db.mangaDao().getFrom(SOURCE, MangaType.TOP) }
         ).flow
@@ -49,7 +48,7 @@ class MangakalotRepository(db: AppDatabase, context: Context) : BaseMangaReposit
 
     override fun getNewManga(): Flow<PagingData<Manga>> {
         return Pager(
-            config = PagingConfig(pageSize = PAGINATION_SIZE, enablePlaceholders = true),
+            config = PagingConfig(pageSize = NORMAL_PAGINATION_SIZE, enablePlaceholders = true),
             remoteMediator = MangaMediator(api, db, MangaType.NEW),
             pagingSourceFactory = { db.mangaDao().getFrom(SOURCE, MangaType.NEW) }
         ).flow
@@ -62,15 +61,35 @@ class MangakalotRepository(db: AppDatabase, context: Context) : BaseMangaReposit
         val encodedQuery = query.replace("\\s".toRegex(), "_")
 
         return Pager(
-            config = PagingConfig(pageSize = PAGINATION_SIZE, enablePlaceholders = false),
-            remoteMediator = SimpleSearchResultMediator(api, db, encodedQuery, SOURCE),
+            config = PagingConfig(pageSize = LOW_PAGINATION_SIZE, enablePlaceholders = false),
+            remoteMediator = SimpleSearchResultMediator(
+                api,
+                db,
+                encodedQuery,
+                GenreConstants.ALL,
+                SOURCE
+            ),
             pagingSourceFactory = { db.searchResultDao().getAll() }
         ).flow
     }
 
-    override fun getSimpleSearchWithGenre(query: String, genre: GenreConstants): Flow<PagingData<SearchResult>> {
-        return super.getSimpleSearchWithGenre(query, genre)
-    }
+    override fun getSimpleSearchWithGenre(
+        query: String,
+        genre: GenreConstants
+    ): Flow<PagingData<SearchResult>> {
+        val encodedQuery = query.replace("\\s".toRegex(), "_")
+
+        return Pager(
+            config = PagingConfig(pageSize = LOW_PAGINATION_SIZE, enablePlaceholders = false),
+            remoteMediator = SimpleSearchResultMediator(
+                api,
+                db,
+                encodedQuery,
+                genre,
+                SOURCE
+            ),
+            pagingSourceFactory = { db.searchResultDao().getAll() }
+        ).flow    }
 
     override suspend fun getMangaOverview(urlPath: String): State<MangaOverview> {
         return api.searchForMangaOverview(urlPath)
@@ -93,7 +112,8 @@ class MangakalotRepository(db: AppDatabase, context: Context) : BaseMangaReposit
     }
 
     companion object {
-        private const val PAGINATION_SIZE = 30
+        private const val LOW_PAGINATION_SIZE = 20
+        private const val NORMAL_PAGINATION_SIZE = 30
         private val SOURCE = Source.MANGAKALOT
     }
 

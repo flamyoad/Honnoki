@@ -54,6 +54,8 @@ class SimpleSearchResultMediator(
                 api.searchByKeywordAndGenres(keyword, genre, pageNumber)
             }
 
+            println("list size: " + searchedResults.size)
+
             val endOfPaginationReached = searchedResults.isEmpty()
 
             db.withTransaction {
