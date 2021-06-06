@@ -11,14 +11,21 @@ abstract class BaseAdapter<T: Any, VB: ViewBinding>
     private var itemList: List<T> = emptyList()
 
     abstract val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> VB
-    abstract fun onCreate(holder: BaseViewHolder, binding: VB)
     abstract fun onBind(holder: BaseViewHolder, item: T)
+
+    open fun onCreate(holder: BaseViewHolder, binding: VB) {}
+    open fun onItemClick(item: T) {}
     open fun onRecycleView(holder: BaseViewHolder) {}
 
     final override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
         val binding = bindingInflater.invoke(LayoutInflater.from(parent.context), parent, false)
         val holder = BaseViewHolder(binding)
         onCreate(holder, binding)
+
+        holder.itemView.setOnClickListener {
+            val item = itemList[holder.bindingAdapterPosition]
+            onItemClick(item)
+        }
         return holder
     }
 

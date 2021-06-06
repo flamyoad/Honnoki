@@ -23,6 +23,8 @@
         <item quantity="other">%1$d chapters</item>
     </plurals>
 
+    <string name="genre_all">All</string>
+
     <string name="genre_action">Action</string>
     <string name="genre_adult">Adult</string>
     <string name="genre_adventure">Adventure</string>

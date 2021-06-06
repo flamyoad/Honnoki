@@ -47,6 +47,7 @@
             android:background="?android:attr/colorBackground">
 
             <include
+                android:id="@+id/selectLayout"
                 layout="@layout/simple_search_source_selector"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

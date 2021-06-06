@@ -11,14 +11,21 @@ abstract class BaseListAdapter<T: Any, VB: ViewBinding>
     (comparator: DiffUtil.ItemCallback<T>): ListAdapter<T, BaseListAdapter<T, VB>.BaseViewHolder>(comparator) {
 
     abstract val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> VB
-    abstract fun onCreate(holder: BaseViewHolder, binding: VB)
     abstract fun onBind(holder: BaseViewHolder, item: T)
+
+    open fun onCreate(holder: BaseViewHolder, binding: VB) {}
+    open fun onItemClick(item: T?) {}
     open fun onRecycleView(holder: BaseViewHolder) {}
 
     final override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
         val binding = bindingInflater.invoke(LayoutInflater.from(parent.context), parent, false)
         val holder = BaseViewHolder(binding)
         onCreate(holder, binding)
+
+        holder.itemView.setOnClickListener {
+            val item = getItem(holder.bindingAdapterPosition)
+            onItemClick(item)
+        }
         return holder
     }
 

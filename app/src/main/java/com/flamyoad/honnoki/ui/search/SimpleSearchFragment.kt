@@ -8,27 +8,25 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.paging.CombinedLoadStates
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
-import androidx.paging.LoadStates
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.flamyoad.honnoki.BaseFragment
 
 import com.flamyoad.honnoki.R
-import com.flamyoad.honnoki.adapter.MangaLoadStateAdapter
 import com.flamyoad.honnoki.adapter.SimpleSearchResultAdapter
 import com.flamyoad.honnoki.databinding.FragmentSimpleSearchBinding
-import com.flamyoad.honnoki.model.Manga
 import com.flamyoad.honnoki.model.SearchResult
 import com.flamyoad.honnoki.model.Source
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
-import com.flamyoad.honnoki.ui.search.result.AdvancedSearchResultActivity
+import com.flamyoad.honnoki.ui.search.model.SearchGenre
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexWrap
+import com.google.android.flexbox.FlexboxLayoutManager
 import com.kennyc.view.MultiStateView
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 
 @ExperimentalPagingApi
 class SimpleSearchFragment : BaseFragment() {
@@ -36,6 +34,7 @@ class SimpleSearchFragment : BaseFragment() {
 
     private val binding by viewLifecycleLazy { FragmentSimpleSearchBinding.bind(requireView()) }
 
+    private val genreAdapter = GenrePickerAdapter(this::selectGenre)
     private val searchResultAdapter = SimpleSearchResultAdapter(this::openManga)
 
     override fun onCreateView(
@@ -49,8 +48,13 @@ class SimpleSearchFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initRecyclerView()
+        initUi()
+        initSearchResultList()
+        initGenreList()
+        observeUi()
+    }
 
+    private fun initUi() {
         binding.searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean { return true }
 
@@ -61,7 +65,7 @@ class SimpleSearchFragment : BaseFragment() {
         })
     }
 
-    private fun initRecyclerView() {
+    private fun initSearchResultList() {
         val linearLayoutManager = LinearLayoutManager(requireContext())
 
         with(binding.listSearchResult) {
@@ -75,13 +79,39 @@ class SimpleSearchFragment : BaseFragment() {
                 is LoadState.Loading -> binding.listSearchResultView.viewState = MultiStateView.ViewState.LOADING
             }
         }
+    }
 
-        lifecycleScope.launch {
+    private fun initGenreList() {
+//        val flexLayoutManager = FlexboxLayoutManager(requireContext()).apply {
+//            flexDirection = FlexDirection.ROW
+//            flexWrap = FlexWrap.WRAP
+//        }
+
+        val gridLayoutManager = GridLayoutManager(requireContext(), 3, GridLayoutManager.HORIZONTAL, false)
+
+        with(binding.selectLayout.listGenres) {
+            adapter = genreAdapter
+            layoutManager = gridLayoutManager
+        }
+    }
+
+    private fun observeUi() {
+        lifecycleScope.launchWhenResumed {
             viewModel.searchResult.collectLatest {
                 searchResultAdapter.submitData(it)
                 binding.listSearchResultView.viewState = MultiStateView.ViewState.CONTENT
             }
         }
+
+        lifecycleScope.launchWhenResumed {
+            viewModel.genreList().collectLatest {
+                genreAdapter.submitList(it)
+            }
+        }
+    }
+
+    private fun selectGenre(genre: SearchGenre) {
+        viewModel.selectGenre(genre)
     }
 
     private fun openManga(searchResult: SearchResult) {

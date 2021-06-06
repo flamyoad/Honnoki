@@ -92,8 +92,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="8dp"
                 android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
                 android:src="@drawable/ic_baseline_filter_list_24"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
@@ -109,43 +109,18 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 android:textColor="?android:attr/textColorPrimary" />
 
-            <com.google.android.material.chip.ChipGroup
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/listGenres"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/logoGenre"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:layout_constraintTop_toBottomOf="@id/logoGenre"
+                tools:itemCount="4"
+                tools:listitem="@layout/search_genre_list_item">
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_1"
-                    style="@style/Widget.MaterialComponents.Chip.Filter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="No Filter"
-                    android:textColor="@color/search_genre_chip_text_color"
-                    app:checkedIconTint="@color/white"
-                    app:chipBackgroundColor="@color/search_genre_chip_background_color" />
-
-                <com.google.android.material.chip.Chip
-                    style="@style/Widget.MaterialComponents.Chip.Filter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Comedy"
-                    android:textColor="@color/search_genre_chip_text_color"
-                    app:checkedIconTint="@color/white"
-                    app:chipBackgroundColor="@color/search_genre_chip_background_color" />
-
-                <com.google.android.material.chip.Chip
-                    style="@style/Widget.MaterialComponents.Chip.Filter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Comedy"
-                    android:textColor="@color/search_genre_chip_text_color"
-                    app:checkedIconTint="@color/white"
-                    app:chipBackgroundColor="@color/search_genre_chip_background_color" />
-
-            </com.google.android.material.chip.ChipGroup>
+            </androidx.recyclerview.widget.RecyclerView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
