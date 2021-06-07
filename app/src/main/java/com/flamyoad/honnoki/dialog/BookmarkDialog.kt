@@ -8,12 +8,15 @@ import android.view.*
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
+import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.flamyoad.honnoki.adapter.BookmarkDialogAdapter
 import com.flamyoad.honnoki.databinding.DialogBookmarkGroupBinding
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
+@ExperimentalPagingApi
 class BookmarkDialog : DialogFragment() {
-    private val viewModel: BookmarkDialogViewModel by activityViewModels()
+    private val viewModel: BookmarkDialogViewModel by viewModel()
 
     private var _binding: DialogBookmarkGroupBinding? = null
     private val binding get() = requireNotNull(_binding)

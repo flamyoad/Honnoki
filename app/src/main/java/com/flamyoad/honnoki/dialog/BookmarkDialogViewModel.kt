@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.paging.ExperimentalPagingApi
 import androidx.room.withTransaction
 import com.flamyoad.honnoki.MyApplication
 import com.flamyoad.honnoki.data.db.AppDatabase
@@ -14,9 +15,8 @@ import com.flamyoad.honnoki.data.model.BookmarkGroup
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class BookmarkDialogViewModel(application: Application) : AndroidViewModel(application) {
-    private val db: AppDatabase = AppDatabase.getInstance(application)
-
+@ExperimentalPagingApi
+class BookmarkDialogViewModel(application: Application, private val db: AppDatabase) : AndroidViewModel(application) {
     private val applicationScope = (application as MyApplication).applicationScope
 
     private val bookmarkGroupDao = db.bookmarkGroupDao()

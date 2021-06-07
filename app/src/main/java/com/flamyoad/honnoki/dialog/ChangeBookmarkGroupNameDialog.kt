@@ -11,10 +11,13 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
+import androidx.paging.ExperimentalPagingApi
 import com.flamyoad.honnoki.databinding.DialogChangeBookmarkGroupNameBinding
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
+@ExperimentalPagingApi
 class ChangeBookmarkGroupNameDialog: DialogFragment() {
-    private val viewModel: ChangeBookmarkGroupNameViewModel by activityViewModels()
+    private val viewModel: ChangeBookmarkGroupNameViewModel by viewModel()
 
     private var _binding: DialogChangeBookmarkGroupNameBinding? = null
     private val binding get() = requireNotNull(_binding)

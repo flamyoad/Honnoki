@@ -20,7 +20,6 @@ import com.flamyoad.honnoki.utils.ui.AppBarStateChangeListener
 import com.flamyoad.honnoki.utils.ui.DepthPageTransformer
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import kotlinx.android.synthetic.main.activity_manga_overview.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @ExperimentalPagingApi
@@ -113,11 +112,11 @@ class MangaOverviewActivity : AppCompatActivity() {
             }
         })
 
-        btnFavouriteExpanded.setOnClickListener {
+        binding.btnFavouriteExpanded.setOnClickListener {
             showBookmarkGroupDialog()
         }
 
-        btnFavouriteCollapsed.setOnClickListener {
+        binding.btnFavouriteCollapsed.setOnClickListener {
             showBookmarkGroupDialog()
         }
     }
@@ -140,8 +139,8 @@ class MangaOverviewActivity : AppCompatActivity() {
 
     private fun observeUi() {
         viewModel.hasBeenBookmarked.observe(this) {
-            btnFavouriteCollapsed.isChecked = it
-            btnFavouriteExpanded.isChecked = it
+            binding.btnFavouriteCollapsed.isChecked = it
+            binding.btnFavouriteExpanded.isChecked = it
         }
 
         viewModel.mangaOverview.observe(this) {
@@ -149,7 +148,7 @@ class MangaOverviewActivity : AppCompatActivity() {
         }
 
         viewModel.authorList.observe(this) { authors ->
-            txtAuthor.text = authors.joinToString { it.name }
+            binding.txtAuthor.text = authors.joinToString { it.name }
         }
     }
 

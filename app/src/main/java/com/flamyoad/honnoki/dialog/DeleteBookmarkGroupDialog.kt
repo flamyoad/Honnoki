@@ -8,10 +8,13 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
+import androidx.paging.ExperimentalPagingApi
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
+@ExperimentalPagingApi
 class DeleteBookmarkGroupDialog: DialogFragment() {
 
-    private val viewModel: DeleteBookmarkGroupDialogViewModel by activityViewModels()
+    private val viewModel: DeleteBookmarkGroupDialogViewModel by viewModel()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(requireContext())

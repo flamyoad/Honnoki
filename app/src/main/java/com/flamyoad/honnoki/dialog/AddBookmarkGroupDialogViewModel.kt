@@ -3,6 +3,7 @@ package com.flamyoad.honnoki.dialog
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.asLiveData
+import androidx.paging.ExperimentalPagingApi
 import com.flamyoad.honnoki.MyApplication
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.model.BookmarkGroup
@@ -12,9 +13,11 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
-class AddBookmarkGroupDialogViewModel(application: Application) : AndroidViewModel(application) {
-
-    private val db: AppDatabase = AppDatabase.getInstance(application)
+@ExperimentalPagingApi
+class AddBookmarkGroupDialogViewModel(
+    application: Application, private val db: AppDatabase
+) :
+    AndroidViewModel(application) {
 
     private val applicationScope = (application as MyApplication).applicationScope
 
