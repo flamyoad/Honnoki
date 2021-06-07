@@ -16,6 +16,7 @@ import androidx.transition.TransitionManager
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.databinding.ActivityReaderBinding
 import kotlinx.coroutines.flow.collectLatest
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @ExperimentalPagingApi
 class ReaderActivity : AppCompatActivity() {
@@ -23,7 +24,7 @@ class ReaderActivity : AppCompatActivity() {
     private var _binding: ActivityReaderBinding? = null
     val binding get() = requireNotNull(_binding)
 
-    private val viewModel: ReaderViewModel by viewModels()
+    private val viewModel: ReaderViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,7 +71,11 @@ class ReaderActivity : AppCompatActivity() {
             }
 
             seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                override fun onProgressChanged(
+                    seekBar: SeekBar?,
+                    progress: Int,
+                    fromUser: Boolean
+                ) {
                     if (fromUser) {
                         if (progress == 0) {
                             viewModel.setCurrentPageNumber(1)

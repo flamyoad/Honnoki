@@ -15,6 +15,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
+
 
 @ExperimentalPagingApi
 class ReaderViewModel(

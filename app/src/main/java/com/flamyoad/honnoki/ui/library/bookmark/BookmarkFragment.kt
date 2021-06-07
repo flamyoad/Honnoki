@@ -20,6 +20,7 @@ import com.flamyoad.honnoki.dialog.DeleteBookmarkGroupDialog
 import com.flamyoad.honnoki.data.model.BookmarkWithOverview
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import kotlinx.coroutines.flow.collect
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @ExperimentalPagingApi
 class BookmarkFragment : Fragment() {
@@ -27,7 +28,7 @@ class BookmarkFragment : Fragment() {
     private var _binding: FragmentBookmarkBinding? = null
     private val binding get() = requireNotNull(_binding)
 
-    private val viewModel: BookmarkViewModel by activityViewModels()
+    private val viewModel: BookmarkViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

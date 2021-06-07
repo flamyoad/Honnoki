@@ -18,10 +18,11 @@ import com.flamyoad.honnoki.ui.overview.adapter.*
 import com.flamyoad.honnoki.ui.reader.ReaderActivity
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
 import jp.wasabeef.recyclerview.animators.FadeInAnimator
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 @ExperimentalPagingApi
 class MangaSummaryFragment : Fragment() {
-    private val viewModel: MangaOverviewViewModel by activityViewModels()
+    private val viewModel: MangaOverviewViewModel by sharedViewModel()
     private val binding by viewLifecycleLazy { FragmentMangaSummaryBinding.bind(requireView()) }
 
     private val mainHeaderAdapter by lazy { MainHeaderAdapter() }

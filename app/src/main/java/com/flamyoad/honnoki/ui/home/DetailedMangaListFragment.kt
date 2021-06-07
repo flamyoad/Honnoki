@@ -25,13 +25,14 @@ import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 private const val GRID_SPANCOUNT = 3
 
 @ExperimentalPagingApi
 class DetailedMangaListFragment : Fragment() {
 
-    private val viewModel: HomeViewModel by activityViewModels()
+    private val viewModel: HomeViewModel by sharedViewModel()
 
     private val binding by viewLifecycleLazy { FragmentDetailedMangaListBinding.bind(requireView()) }
 

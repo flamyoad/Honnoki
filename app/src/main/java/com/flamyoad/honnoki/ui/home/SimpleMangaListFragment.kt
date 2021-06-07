@@ -20,11 +20,12 @@ import com.flamyoad.honnoki.data.model.MangaType
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 @ExperimentalPagingApi
 class SimpleMangaListFragment : Fragment() {
 
-    private val viewModel: HomeViewModel by activityViewModels()
+    private val viewModel: HomeViewModel by sharedViewModel()
 
     private var _binding: FragmentSimpleMangaListBinding? = null
     private val binding get() = requireNotNull(_binding)

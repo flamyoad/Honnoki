@@ -21,14 +21,14 @@ import com.flamyoad.honnoki.utils.ui.DepthPageTransformer
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.activity_manga_overview.*
-
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @ExperimentalPagingApi
 class MangaOverviewActivity : AppCompatActivity() {
     private var _binding: ActivityMangaOverviewBinding? = null
     val binding get() = requireNotNull(_binding)
 
-    private val viewModel: MangaOverviewViewModel by viewModels()
+    private val viewModel: MangaOverviewViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

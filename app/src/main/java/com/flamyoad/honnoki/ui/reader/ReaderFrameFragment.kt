@@ -19,6 +19,8 @@ import com.flamyoad.honnoki.databinding.FragmentReaderFrameBinding
 import com.flamyoad.honnoki.ui.reader.model.LoadType
 import com.flamyoad.honnoki.ui.reader.model.ReaderPage
 import kotlinx.coroutines.flow.collectLatest
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 @ExperimentalPagingApi
 class ReaderFrameFragment : Fragment() {
@@ -26,8 +28,8 @@ class ReaderFrameFragment : Fragment() {
     private var _binding: FragmentReaderFrameBinding? = null
     private val binding get() = requireNotNull(_binding)
 
-    private val parentViewModel: ReaderViewModel by activityViewModels()
-    private val viewModel: ReaderFrameViewModel by viewModels()
+    private val parentViewModel: ReaderViewModel by sharedViewModel()
+    private val viewModel: ReaderFrameViewModel by viewModel()
 
     private val concatAdapter = ConcatAdapter()
     private val readerAdapter = ReaderImageAdapter()

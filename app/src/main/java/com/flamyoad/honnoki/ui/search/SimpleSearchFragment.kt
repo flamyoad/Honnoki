@@ -25,10 +25,11 @@ import com.flamyoad.honnoki.ui.search.model.SearchGenre
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
 import com.kennyc.view.MultiStateView
 import kotlinx.coroutines.flow.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @ExperimentalPagingApi
 class SimpleSearchFragment : BaseFragment() {
-    private val viewModel: SimpleSearchViewModel by viewModels()
+    private val viewModel: SimpleSearchViewModel by viewModel()
 
     private val binding by viewLifecycleLazy { FragmentSimpleSearchBinding.bind(requireView()) }
 
