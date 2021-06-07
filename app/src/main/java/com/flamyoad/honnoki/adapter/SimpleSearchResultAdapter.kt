@@ -2,9 +2,7 @@ package com.flamyoad.honnoki.adapter
 
 import android.graphics.Color
 import android.graphics.Paint
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -12,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.flamyoad.honnoki.databinding.SimpleSearchResultItemBinding
-import com.flamyoad.honnoki.model.SearchResult
+import com.flamyoad.honnoki.data.model.SearchResult
 
 class SimpleSearchResultAdapter(private val onItemClick: (SearchResult) -> Unit) :
     PagingDataAdapter<SearchResult, SimpleSearchResultAdapter.ResultViewHolder>(

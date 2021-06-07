@@ -5,8 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.Glide
 import com.flamyoad.honnoki.databinding.BookmarkListItemBinding
-import com.flamyoad.honnoki.model.Bookmark
-import com.flamyoad.honnoki.model.BookmarkWithOverview
+import com.flamyoad.honnoki.data.model.BookmarkWithOverview
 
 class BookmarkAdapter(private val onBookmarkClick: (BookmarkWithOverview) -> Unit) :
     BaseListAdapter<BookmarkWithOverview, BookmarkListItemBinding>(BOOKMARK_COMPARATOR) {

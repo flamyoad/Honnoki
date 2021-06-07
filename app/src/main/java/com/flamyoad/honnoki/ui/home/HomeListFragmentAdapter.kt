@@ -3,8 +3,8 @@ package com.flamyoad.honnoki.ui.home
 import androidx.fragment.app.Fragment
 import androidx.paging.ExperimentalPagingApi
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.flamyoad.honnoki.model.MangaType
-import com.flamyoad.honnoki.model.TabType
+import com.flamyoad.honnoki.data.model.MangaType
+import com.flamyoad.honnoki.data.model.TabType
 
 class HomeListFragmentAdapter(private val list: List<TabType>, val fragment: Fragment) :
     FragmentStateAdapter(fragment) {

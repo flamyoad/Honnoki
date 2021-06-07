@@ -12,13 +12,12 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.databinding.FragmentMangaSummaryBinding
-import com.flamyoad.honnoki.model.Chapter
-import com.flamyoad.honnoki.model.State
+import com.flamyoad.honnoki.data.model.Chapter
+import com.flamyoad.honnoki.data.model.State
 import com.flamyoad.honnoki.ui.overview.adapter.*
 import com.flamyoad.honnoki.ui.reader.ReaderActivity
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
 import jp.wasabeef.recyclerview.animators.FadeInAnimator
-import jp.wasabeef.recyclerview.animators.LandingAnimator
 
 @ExperimentalPagingApi
 class MangaSummaryFragment : Fragment() {

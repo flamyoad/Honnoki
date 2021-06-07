@@ -12,9 +12,9 @@ import com.flamyoad.honnoki.BaseFragment
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.databinding.FragmentHomeBinding
 import com.flamyoad.honnoki.dialog.SourceSwitcherDialog
-import com.flamyoad.honnoki.model.MangaType
-import com.flamyoad.honnoki.model.Source
-import com.flamyoad.honnoki.model.TabType
+import com.flamyoad.honnoki.data.model.MangaType
+import com.flamyoad.honnoki.data.model.Source
+import com.flamyoad.honnoki.data.model.TabType
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
 import com.flamyoad.honnoki.utils.ui.DepthPageTransformer
 import com.google.android.material.tabs.TabLayoutMediator

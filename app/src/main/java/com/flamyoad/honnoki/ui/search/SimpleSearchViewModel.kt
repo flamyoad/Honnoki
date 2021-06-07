@@ -6,22 +6,24 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.flamyoad.honnoki.db.AppDatabase
-import com.flamyoad.honnoki.model.SearchResult
+import com.flamyoad.honnoki.data.db.AppDatabase
+import com.flamyoad.honnoki.data.model.SearchResult
 import com.flamyoad.honnoki.source.BaseSource
 import com.flamyoad.honnoki.source.MangakalotSource
 import com.flamyoad.honnoki.ui.search.model.SearchGenre
-import com.flamyoad.honnoki.utils.GenreConstants
+import com.flamyoad.honnoki.data.GenreConstants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 @ExperimentalPagingApi
-class SimpleSearchViewModel(val app: Application) : AndroidViewModel(app) {
-    private val applicationContext get() = app.applicationContext
+class SimpleSearchViewModel(
+    private val app: Application,
+    private val db: AppDatabase,
+    private val baseSource: BaseSource
+) : AndroidViewModel(app) {
 
-    private val db = AppDatabase.getInstance(app)
-    private var baseSource: BaseSource = MangakalotSource(db, app.applicationContext)
+    private val applicationContext get() = app.applicationContext
 
     private val genreList = MutableStateFlow(initializeGenreList())
     fun genreList() = genreList.asStateFlow()
@@ -60,7 +62,8 @@ class SimpleSearchViewModel(val app: Application) : AndroidViewModel(app) {
             SearchGenre(
                 name = it.toReadableName(app.applicationContext),
                 enumOrdinal = it.ordinal,
-                isSelected = it == GenreConstants.ALL)
+                isSelected = it == GenreConstants.ALL
+            )
         }
     }
 

@@ -7,22 +7,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
-import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.adapter.MangaLoadStateAdapter
-import com.flamyoad.honnoki.adapter.RecentMangaHeaderAdapter
 import com.flamyoad.honnoki.adapter.RecentMangaListAdapter
-import com.flamyoad.honnoki.adapter.TrendingMangaAdapter
 import com.flamyoad.honnoki.databinding.FragmentSimpleMangaListBinding
-import com.flamyoad.honnoki.model.Manga
-import com.flamyoad.honnoki.model.MangaType
+import com.flamyoad.honnoki.data.model.Manga
+import com.flamyoad.honnoki.data.model.MangaType
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch

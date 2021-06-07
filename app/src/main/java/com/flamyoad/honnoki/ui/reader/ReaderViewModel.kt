@@ -4,9 +4,9 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
-import com.flamyoad.honnoki.db.AppDatabase
-import com.flamyoad.honnoki.model.Chapter
-import com.flamyoad.honnoki.model.State
+import com.flamyoad.honnoki.data.db.AppDatabase
+import com.flamyoad.honnoki.data.model.Chapter
+import com.flamyoad.honnoki.data.model.State
 import com.flamyoad.honnoki.source.BaseSource
 import com.flamyoad.honnoki.source.MangakalotSource
 import com.flamyoad.honnoki.ui.reader.model.LoadType
@@ -17,10 +17,11 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 @ExperimentalPagingApi
-class ReaderViewModel(app: Application) : AndroidViewModel(app) {
-    private val db = AppDatabase.getInstance(app)
-
-    private var baseSource: BaseSource = MangakalotSource(db, app.applicationContext)
+class ReaderViewModel(
+    private val app: Application,
+    private val db: AppDatabase,
+    private val baseSource: BaseSource
+) : AndroidViewModel(app) {
 
     private val mangaOverviewId = MutableStateFlow(-1L)
 
@@ -55,6 +56,7 @@ class ReaderViewModel(app: Application) : AndroidViewModel(app) {
         replay = 0,
         extraBufferCapacity = 1
     )
+
     fun pageNumberScrolledBySeekbar() = pageNumberScrolledBySeekbar.asSharedFlow()
 
     private val pageList = MutableStateFlow<List<ReaderPage>>(emptyList())

@@ -3,10 +3,9 @@ package com.flamyoad.honnoki.dialog
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
 import com.flamyoad.honnoki.MyApplication
-import com.flamyoad.honnoki.db.AppDatabase
-import com.flamyoad.honnoki.model.BookmarkGroup
+import com.flamyoad.honnoki.data.db.AppDatabase
+import com.flamyoad.honnoki.data.model.BookmarkGroup
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest

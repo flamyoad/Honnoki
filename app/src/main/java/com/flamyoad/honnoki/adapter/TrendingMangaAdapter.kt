@@ -8,7 +8,7 @@ import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.flamyoad.honnoki.databinding.MangaTrendingListBinding
-import com.flamyoad.honnoki.model.Manga
+import com.flamyoad.honnoki.data.model.Manga
 
 class TrendingMangaAdapter(context: Context, onItemClick: (Manga) -> Unit) :
     RecyclerView.Adapter<TrendingMangaAdapter.ListViewHolder>() {

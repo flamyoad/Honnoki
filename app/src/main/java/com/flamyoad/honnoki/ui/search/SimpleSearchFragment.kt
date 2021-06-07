@@ -2,7 +2,6 @@ package com.flamyoad.honnoki.ui.search
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,14 +18,11 @@ import com.flamyoad.honnoki.BaseFragment
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.adapter.SimpleSearchResultAdapter
 import com.flamyoad.honnoki.databinding.FragmentSimpleSearchBinding
-import com.flamyoad.honnoki.model.SearchResult
-import com.flamyoad.honnoki.model.Source
+import com.flamyoad.honnoki.data.model.SearchResult
+import com.flamyoad.honnoki.data.model.Source
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import com.flamyoad.honnoki.ui.search.model.SearchGenre
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
-import com.google.android.flexbox.FlexDirection
-import com.google.android.flexbox.FlexWrap
-import com.google.android.flexbox.FlexboxLayoutManager
 import com.kennyc.view.MultiStateView
 import kotlinx.coroutines.flow.*
 

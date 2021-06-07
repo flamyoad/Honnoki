@@ -3,9 +3,10 @@ package com.flamyoad.honnoki.source
 import android.content.Context
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingData
-import com.flamyoad.honnoki.db.AppDatabase
-import com.flamyoad.honnoki.model.*
-import com.flamyoad.honnoki.utils.GenreConstants
+import com.flamyoad.honnoki.api.BaseApi
+import com.flamyoad.honnoki.data.db.AppDatabase
+import com.flamyoad.honnoki.data.GenreConstants
+import com.flamyoad.honnoki.data.model.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
@@ -62,12 +63,12 @@ abstract class BaseSource(val db: AppDatabase, val context: Context) {
     }
 
     companion object {
-        @ExperimentalPagingApi
-        fun get(source: Source, db: AppDatabase, context: Context): BaseSource {
-            return when (source) {
-                Source.MANGAKALOT -> MangakalotSource(db, context)
-                Source.SENMANGA -> SenMangaSource(db, context)
-            }
-        }
+//        @ExperimentalPagingApi
+//        fun get(source: Source, db: AppDatabase, context: Context): BaseSource {
+//            return when (source) {
+//                Source.MANGAKALOT -> MangakalotSource(db, context)
+//                Source.SENMANGA -> SenMangaSource(db, context)
+//            }
+//        }
     }
 }

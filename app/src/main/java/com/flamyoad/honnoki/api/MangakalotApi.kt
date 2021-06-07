@@ -1,15 +1,17 @@
 package com.flamyoad.honnoki.api
 
 import com.flamyoad.honnoki.api.exception.InvalidGenreException
-import com.flamyoad.honnoki.model.*
 import com.flamyoad.honnoki.network.MangakalotService
 import com.flamyoad.honnoki.parser.MangakalotParser
-import com.flamyoad.honnoki.utils.GenreConstants
+import com.flamyoad.honnoki.data.GenreConstants
+import com.flamyoad.honnoki.data.model.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class MangakalotApi(private val service: MangakalotService) : BaseApi() {
-    private val parser = MangakalotParser()
+class MangakalotApi(
+    private val service: MangakalotService,
+    private val parser: MangakalotParser
+) : BaseApi() {
 
     override suspend fun searchForLatestManga(index: Int): List<Manga> {
         val response = service.getLatestManga(index)
@@ -155,7 +157,7 @@ class MangakalotApi(private val service: MangakalotService) : BaseApi() {
         val response = service.searchByKeywordAndGenres(
             genre = genreString,
             keyword = keyword,
-            index =  index
+            index = index
         )
 
         return withContext(Dispatchers.Default) {

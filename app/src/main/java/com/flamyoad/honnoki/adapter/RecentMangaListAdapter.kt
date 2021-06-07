@@ -1,7 +1,6 @@
 package com.flamyoad.honnoki.adapter
 
 import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +11,7 @@ import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.databinding.MangaRecentListItemBinding
-import com.flamyoad.honnoki.model.Manga
+import com.flamyoad.honnoki.data.model.Manga
 
 class RecentMangaListAdapter(private val onItemClick: (Manga) -> Unit) :
     PagingDataAdapter<Manga, RecentMangaListAdapter.MangaViewHolder>(MANGA_COMPARATOR) {

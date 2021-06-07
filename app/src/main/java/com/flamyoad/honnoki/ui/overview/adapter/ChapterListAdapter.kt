@@ -1,13 +1,12 @@
 package com.flamyoad.honnoki.ui.overview.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.flamyoad.honnoki.databinding.ChapterListItemBinding
-import com.flamyoad.honnoki.model.Chapter
+import com.flamyoad.honnoki.data.model.Chapter
 
 class ChapterListAdapter(private val onChapterClick: (Chapter) -> Unit) :
     ListAdapter<Chapter, ChapterListAdapter.ChapterViewHolder>(ChapterDiffUtil()) {

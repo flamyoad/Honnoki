@@ -1,8 +1,8 @@
 package com.flamyoad.honnoki.parser
 
-import com.flamyoad.honnoki.model.Manga
-import com.flamyoad.honnoki.model.MangaType
-import com.flamyoad.honnoki.model.Source
+import com.flamyoad.honnoki.data.model.Manga
+import com.flamyoad.honnoki.data.model.MangaType
+import com.flamyoad.honnoki.data.model.Source
 import org.jsoup.Jsoup
 
 class SenMangaParser {

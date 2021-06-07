@@ -1,9 +1,8 @@
 package com.flamyoad.honnoki.api
 
-import com.flamyoad.honnoki.model.Manga
-import com.flamyoad.honnoki.model.SearchResult
-import com.flamyoad.honnoki.ui.search.model.SearchGenre
-import com.flamyoad.honnoki.utils.GenreConstants
+import com.flamyoad.honnoki.data.model.Manga
+import com.flamyoad.honnoki.data.model.SearchResult
+import com.flamyoad.honnoki.data.GenreConstants
 
 abstract class BaseApi {
     open suspend fun searchForLatestManga(index: Int): List<Manga> {

@@ -3,8 +3,8 @@ package com.flamyoad.honnoki.ui.overview
 import android.app.Application
 import androidx.lifecycle.*
 import androidx.paging.ExperimentalPagingApi
-import com.flamyoad.honnoki.db.AppDatabase
-import com.flamyoad.honnoki.model.*
+import com.flamyoad.honnoki.data.db.AppDatabase
+import com.flamyoad.honnoki.data.model.*
 import com.flamyoad.honnoki.source.BaseSource
 import com.flamyoad.honnoki.ui.overview.model.ChapterListSort
 import kotlinx.coroutines.Dispatchers
@@ -14,10 +14,11 @@ import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
 @ExperimentalPagingApi
-class MangaOverviewViewModel(private val app: Application) : AndroidViewModel(app) {
-    private val db = AppDatabase.getInstance(app)
-
-    private lateinit var baseSource: BaseSource
+class MangaOverviewViewModel(
+    private val app: Application,
+    private val db: AppDatabase,
+    private val baseSource: BaseSource
+) : AndroidViewModel(app) {
 
     private val mangaOverviewId = MutableStateFlow(-1L)
 
@@ -69,7 +70,6 @@ class MangaOverviewViewModel(private val app: Application) : AndroidViewModel(ap
             return
         }
 
-        baseSource = BaseSource.get(source, db, app.applicationContext)
         loadMangaOverview(url)
     }
 

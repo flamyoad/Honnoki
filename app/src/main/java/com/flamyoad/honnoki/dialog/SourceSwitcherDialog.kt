@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.adapter.SourceSwitcherAdapter
 import com.flamyoad.honnoki.databinding.DialogSourceSwitcherBinding
-import com.flamyoad.honnoki.model.Source
+import com.flamyoad.honnoki.data.model.Source
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.lang.IllegalArgumentException

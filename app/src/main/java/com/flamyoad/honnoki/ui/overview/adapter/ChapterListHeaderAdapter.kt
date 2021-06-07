@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.databinding.ChapterListSorterItemBinding
-import com.flamyoad.honnoki.model.Chapter
+import com.flamyoad.honnoki.data.model.Chapter
 
 class ChapterListHeaderAdapter(val sortList: () -> Unit) :
     RecyclerView.Adapter<ChapterListHeaderAdapter.SorterViewHolder>() {

@@ -6,17 +6,17 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.flamyoad.honnoki.api.MangakalotApi
-import com.flamyoad.honnoki.db.AppDatabase
-import com.flamyoad.honnoki.model.*
+import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.network.MangakalotService
 import com.flamyoad.honnoki.paging.MangaMediator
 import com.flamyoad.honnoki.paging.SimpleSearchResultMediator
-import com.flamyoad.honnoki.utils.GenreConstants
+import com.flamyoad.honnoki.data.GenreConstants
+import com.flamyoad.honnoki.data.model.*
 import kotlinx.coroutines.flow.Flow
 
 @ExperimentalPagingApi
-class MangakalotSource(db: AppDatabase, context: Context) : BaseSource(db, context) {
-    private val api: MangakalotApi = MangakalotApi(MangakalotService.create(context))
+class MangakalotSource(db: AppDatabase, context: Context, private val api: MangakalotApi) :
+    BaseSource(db, context) {
 
     override fun getSourceType(): Source {
         return Source.MANGAKALOT
@@ -89,7 +89,8 @@ class MangakalotSource(db: AppDatabase, context: Context) : BaseSource(db, conte
                 SOURCE
             ),
             pagingSourceFactory = { db.searchResultDao().getAll() }
-        ).flow    }
+        ).flow
+    }
 
     override suspend fun getMangaOverview(urlPath: String): State<MangaOverview> {
         return api.searchForMangaOverview(urlPath)

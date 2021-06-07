@@ -14,7 +14,7 @@ import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.adapter.MangaOverviewFragmentAdapter
 import com.flamyoad.honnoki.databinding.ActivityMangaOverviewBinding
 import com.flamyoad.honnoki.dialog.BookmarkDialog
-import com.flamyoad.honnoki.model.MangaOverview
+import com.flamyoad.honnoki.data.model.MangaOverview
 import com.flamyoad.honnoki.utils.ViewUtils
 import com.flamyoad.honnoki.utils.ui.AppBarStateChangeListener
 import com.flamyoad.honnoki.utils.ui.DepthPageTransformer

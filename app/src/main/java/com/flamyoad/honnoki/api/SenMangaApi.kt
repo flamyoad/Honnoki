@@ -1,13 +1,15 @@
 package com.flamyoad.honnoki.api
 
-import com.flamyoad.honnoki.model.Manga
+import com.flamyoad.honnoki.data.model.Manga
 import com.flamyoad.honnoki.network.SenMangaService
 import com.flamyoad.honnoki.parser.SenMangaParser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class SenMangaApi(private val service: SenMangaService): BaseApi() {
-    private val parser = SenMangaParser()
+class SenMangaApi(
+    private val service: SenMangaService,
+    private val parser: SenMangaParser
+) : BaseApi() {
 
     override suspend fun searchForLatestManga(index: Int): List<Manga> {
         val response = service.getLatestManga(index)

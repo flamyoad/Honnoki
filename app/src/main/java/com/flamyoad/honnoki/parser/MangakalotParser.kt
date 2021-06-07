@@ -1,6 +1,6 @@
 package com.flamyoad.honnoki.parser
 
-import com.flamyoad.honnoki.model.*
+import com.flamyoad.honnoki.data.model.*
 import org.jsoup.Jsoup
 
 class MangakalotParser {

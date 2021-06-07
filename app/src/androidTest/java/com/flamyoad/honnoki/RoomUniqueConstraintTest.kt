@@ -4,11 +4,11 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.flamyoad.honnoki.db.AppDatabase
-import com.flamyoad.honnoki.db.dao.MangaDao
-import com.flamyoad.honnoki.model.Manga
-import com.flamyoad.honnoki.model.MangaType
-import com.flamyoad.honnoki.model.Source
+import com.flamyoad.honnoki.data.db.AppDatabase
+import com.flamyoad.honnoki.data.db.dao.MangaDao
+import com.flamyoad.honnoki.data.model.Manga
+import com.flamyoad.honnoki.data.model.MangaType
+import com.flamyoad.honnoki.data.model.Source
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before

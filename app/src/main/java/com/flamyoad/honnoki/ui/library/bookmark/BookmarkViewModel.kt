@@ -6,18 +6,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.room.withTransaction
-import com.flamyoad.honnoki.db.AppDatabase
-import com.flamyoad.honnoki.model.BookmarkGroup
-import com.flamyoad.honnoki.model.BookmarkGroupWithInfo
-import com.flamyoad.honnoki.model.BookmarkWithOverview
+import com.flamyoad.honnoki.data.db.AppDatabase
+import com.flamyoad.honnoki.data.model.BookmarkGroup
+import com.flamyoad.honnoki.data.model.BookmarkGroupWithInfo
+import com.flamyoad.honnoki.data.model.BookmarkWithOverview
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class BookmarkViewModel(application: Application) : AndroidViewModel(application) {
-
-    private val db: AppDatabase = AppDatabase.getInstance(application.applicationContext)
+class BookmarkViewModel(
+    private val app: Application, private val db: AppDatabase
+) : AndroidViewModel(app) {
 
     private val bookmarkGroupDao = db.bookmarkGroupDao()
 
@@ -60,7 +60,7 @@ class BookmarkViewModel(application: Application) : AndroidViewModel(application
                 if (bookmarkGroupDao.getAllBlocking().isEmpty()) {
                     bookmarkGroupDao.insert(BookmarkGroup(name = "All"))
                 }
-                selectedBookmarkGroupId.value  = bookmarkGroupDao.getFirstItemId()
+                selectedBookmarkGroupId.value = bookmarkGroupDao.getFirstItemId()
             }
         }
     }

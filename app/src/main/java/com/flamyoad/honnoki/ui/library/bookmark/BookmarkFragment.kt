@@ -17,10 +17,9 @@ import com.flamyoad.honnoki.databinding.FragmentBookmarkBinding
 import com.flamyoad.honnoki.dialog.AddBookmarkGroupDialog
 import com.flamyoad.honnoki.dialog.ChangeBookmarkGroupNameDialog
 import com.flamyoad.honnoki.dialog.DeleteBookmarkGroupDialog
-import com.flamyoad.honnoki.model.BookmarkWithOverview
+import com.flamyoad.honnoki.data.model.BookmarkWithOverview
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
 
 @ExperimentalPagingApi
 class BookmarkFragment : Fragment() {

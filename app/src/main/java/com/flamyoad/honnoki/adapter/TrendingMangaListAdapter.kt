@@ -11,7 +11,7 @@ import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.databinding.MangaTrendingListItemBinding
-import com.flamyoad.honnoki.model.Manga
+import com.flamyoad.honnoki.data.model.Manga
 
 class TrendingMangaListAdapter(private val onItemClick: (Manga) -> Unit) :
     PagingDataAdapter<Manga, TrendingMangaListAdapter.MangaViewHolder>(MANGA_COMPARATOR) {

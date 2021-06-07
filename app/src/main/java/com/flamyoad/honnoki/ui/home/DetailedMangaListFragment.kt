@@ -19,8 +19,8 @@ import com.flamyoad.honnoki.adapter.RecentMangaHeaderAdapter
 import com.flamyoad.honnoki.adapter.RecentMangaListAdapter
 import com.flamyoad.honnoki.adapter.TrendingMangaAdapter
 import com.flamyoad.honnoki.databinding.FragmentDetailedMangaListBinding
-import com.flamyoad.honnoki.model.Manga
-import com.flamyoad.honnoki.model.TabType
+import com.flamyoad.honnoki.data.model.Manga
+import com.flamyoad.honnoki.data.model.TabType
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
 import kotlinx.coroutines.flow.collectLatest

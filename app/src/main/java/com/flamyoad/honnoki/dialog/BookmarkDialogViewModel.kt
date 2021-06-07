@@ -8,9 +8,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.room.withTransaction
 import com.flamyoad.honnoki.MyApplication
-import com.flamyoad.honnoki.db.AppDatabase
-import com.flamyoad.honnoki.model.Bookmark
-import com.flamyoad.honnoki.model.BookmarkGroup
+import com.flamyoad.honnoki.data.db.AppDatabase
+import com.flamyoad.honnoki.data.model.Bookmark
+import com.flamyoad.honnoki.data.model.BookmarkGroup
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

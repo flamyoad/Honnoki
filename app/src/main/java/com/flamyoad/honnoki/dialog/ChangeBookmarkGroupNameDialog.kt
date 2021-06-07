@@ -11,9 +11,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
-import com.flamyoad.honnoki.MyApplication
 import com.flamyoad.honnoki.databinding.DialogChangeBookmarkGroupNameBinding
-import com.flamyoad.honnoki.model.BookmarkGroup
 
 class ChangeBookmarkGroupNameDialog: DialogFragment() {
     private val viewModel: ChangeBookmarkGroupNameViewModel by activityViewModels()

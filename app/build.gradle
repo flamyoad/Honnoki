@@ -116,6 +116,14 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
     androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
 
+    def koin_version = '3.0.2'
+    // Koin main features for Android (Scope,ViewModel ...)
+    implementation "io.insert-koin:koin-android:$koin_version"
+    // Koin Android - experimental builder extensions
+    implementation "io.insert-koin:koin-android-ext:$koin_version"
+    // Koin for Jetpack WorkManager
+    implementation "io.insert-koin:koin-androidx-workmanager:$koin_version"
+
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:25.12.0')
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
