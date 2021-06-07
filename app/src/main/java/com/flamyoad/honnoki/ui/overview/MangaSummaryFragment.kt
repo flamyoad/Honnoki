@@ -17,7 +17,8 @@ import com.flamyoad.honnoki.model.State
 import com.flamyoad.honnoki.ui.overview.adapter.*
 import com.flamyoad.honnoki.ui.reader.ReaderActivity
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
-import java.io.Reader
+import jp.wasabeef.recyclerview.animators.FadeInAnimator
+import jp.wasabeef.recyclerview.animators.LandingAnimator
 
 @ExperimentalPagingApi
 class MangaSummaryFragment : Fragment() {
@@ -26,7 +27,7 @@ class MangaSummaryFragment : Fragment() {
 
     private val mainHeaderAdapter by lazy { MainHeaderAdapter() }
     private val mangaSummaryAdapter by lazy { MangaSummaryAdapter() }
-    private val chapterListHeaderAdapter by lazy { ChapterListHeaderAdapter(viewModel::sortChapterList) }
+    private val chapterListHeaderAdapter by lazy { ChapterListHeaderAdapter(viewModel::toggleChapterListSort) }
 
     private val chapterListLoadingAdapter by lazy { ChapterListLoadingAdapter() }
     private val chapterListAdapter by lazy { ChapterListAdapter(this::onChapterClick) }
@@ -71,6 +72,7 @@ class MangaSummaryFragment : Fragment() {
         with(binding.contentList) {
             adapter = concatAdapter
             layoutManager = gridLayoutManager
+            itemAnimator = FadeInAnimator()
         }
     }
 

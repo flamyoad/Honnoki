@@ -27,7 +27,7 @@ class ReaderViewModel(app: Application) : AndroidViewModel(app) {
     private val mangaOverviewId = MutableStateFlow(-1L)
 
     val chapterList = mangaOverviewId
-        .flatMapLatest { db.chapterDao().getByOverviewId(it) }
+        .flatMapLatest { db.chapterDao().getAscByOverviewId(it) }
         .flowOn(Dispatchers.IO)
 
     private val sideKickVisibility = MutableStateFlow(false)

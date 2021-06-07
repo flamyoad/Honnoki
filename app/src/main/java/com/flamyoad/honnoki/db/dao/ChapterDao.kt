@@ -10,11 +10,17 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ChapterDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(chapterList: List<Chapter>)
 
-    @Query("SELECT * FROM chapters WHERE mangaOverviewId = :overviewId")
-    fun getByOverviewId(overviewId: Long): Flow<List<Chapter>>
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAllForceRefresh(chapterList: List<Chapter>)
+
+    @Query("SELECT * FROM chapters WHERE mangaOverviewId = :overviewId ORDER BY number ")
+    fun getAscByOverviewId(overviewId: Long): Flow<List<Chapter>>
+
+    @Query("SELECT * FROM chapters WHERE mangaOverviewId = :overviewId ORDER BY number DESC")
+    fun getDescByOverviewId(overviewId: Long): Flow<List<Chapter>>
 
     @Query("SELECT * FROM chapters WHERE id = :id")
     fun get(id: Long): Chapter?

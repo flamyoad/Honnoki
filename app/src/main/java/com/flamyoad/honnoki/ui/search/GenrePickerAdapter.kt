@@ -4,11 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import com.flamyoad.honnoki.adapter.BaseListAdapter
-import com.flamyoad.honnoki.databinding.GenrePickerListItemBinding
 import com.flamyoad.honnoki.databinding.SearchGenreListItemBinding
 import com.flamyoad.honnoki.ui.search.model.SearchGenre
 
-class GenrePickerAdapter(private val onItemClick: (SearchGenre) -> Unit) :
+class GenrePickerAdapter(private val onGenreClick: (SearchGenre) -> Unit) :
     BaseListAdapter<SearchGenre, SearchGenreListItemBinding>(GENRE_COMPARATOR) {
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> SearchGenreListItemBinding
         get() = SearchGenreListItemBinding::inflate
@@ -22,7 +21,7 @@ class GenrePickerAdapter(private val onItemClick: (SearchGenre) -> Unit) :
 
     override fun onItemClick(item: SearchGenre?) {
         super.onItemClick(item)
-        item?.let { onItemClick.invoke(it) }
+        item?.let { onGenreClick.invoke(it) }
     }
 
     companion object {

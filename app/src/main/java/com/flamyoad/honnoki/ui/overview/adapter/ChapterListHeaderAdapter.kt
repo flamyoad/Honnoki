@@ -7,7 +7,7 @@ import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.databinding.ChapterListSorterItemBinding
 import com.flamyoad.honnoki.model.Chapter
 
-class ChapterListHeaderAdapter(val sortList: (Boolean) -> Unit) :
+class ChapterListHeaderAdapter(val sortList: () -> Unit) :
     RecyclerView.Adapter<ChapterListHeaderAdapter.SorterViewHolder>() {
 
     private var chapterList: List<Chapter> = emptyList()
@@ -18,7 +18,7 @@ class ChapterListHeaderAdapter(val sortList: (Boolean) -> Unit) :
         val holder = SorterViewHolder(binding)
 
         binding.btnSort.setOnClickListener {
-            sortList(true)
+            sortList()
         }
 
         return holder

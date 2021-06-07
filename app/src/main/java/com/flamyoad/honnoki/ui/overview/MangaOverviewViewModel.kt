@@ -6,6 +6,7 @@ import androidx.paging.ExperimentalPagingApi
 import com.flamyoad.honnoki.db.AppDatabase
 import com.flamyoad.honnoki.model.*
 import com.flamyoad.honnoki.repository.BaseMangaRepository
+import com.flamyoad.honnoki.ui.overview.model.ChapterListSort
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
@@ -37,9 +38,17 @@ class MangaOverviewViewModel(private val app: Application) : AndroidViewModel(ap
         .flatMapLatest { db.authorDao().getByOverviewId(it) }
         .asLiveData()
 
+    private val chapterListSortType = MutableStateFlow(ChapterListSort.DESC)
+
     val chapterList: LiveData<State<List<Chapter>>> = mangaOverviewId
+        .combine(chapterListSortType) { id, sortType -> Pair(id, sortType) }
         .onStart { flowOf(State.Loading) }
-        .flatMapLatest { db.chapterDao().getByOverviewId(it) }
+        .flatMapLatest { (id, sortType) ->
+            when (sortType) {
+                ChapterListSort.ASC -> db.chapterDao().getAscByOverviewId(id)
+                ChapterListSort.DESC -> db.chapterDao().getDescByOverviewId(id)
+            }
+        }
         .flatMapLatest {
             if (it.isNullOrEmpty()) {
                 flowOf(State.Loading)
@@ -120,23 +129,11 @@ class MangaOverviewViewModel(private val app: Application) : AndroidViewModel(ap
         }
     }
 
-    fun sortChapterList(isAscending: Boolean) {
-//        if (chapterList.value !is State.Success) {
-//            return
-//        }
-//
-//        val oldChapterList = chapterList.value
-//        val oldChapterListItems = (oldChapterList as State.Success).value
-//
-//        val x = Random.nextBoolean()
-//
-//        viewModelScope.launch(Dispatchers.Default) {
-//            val newChapterListItems = if (x) {
-//                oldChapterListItems.sortedBy { chapter -> chapter.title }
-//            } else {
-//                oldChapterListItems.sortedByDescending { chapter -> chapter.title }
-//            }
-//            chapterList.postValue(State.Success(newChapterListItems))
-//        }
+    fun toggleChapterListSort() {
+        val prevValue = chapterListSortType.value
+        chapterListSortType.value = when (prevValue) {
+            ChapterListSort.ASC -> ChapterListSort.DESC
+            ChapterListSort.DESC -> ChapterListSort.ASC
+        }
     }
 }

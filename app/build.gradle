@@ -134,8 +134,6 @@ dependencies {
 
     implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
 
-    implementation 'com.github.ibrahimsn98:SmoothBottomBar:1.7.6'
-
     implementation 'com.github.florent37:shapeofview:1.4.7'
 
     implementation 'androidx.palette:palette:1.0.0'
@@ -148,4 +146,6 @@ dependencies {
 
     implementation 'com.scwang.smart:refresh-layout-kernel:2.0.3'
     implementation 'com.scwang.smart:refresh-header-classics:2.0.3'
+
+    implementation 'jp.wasabeef:recyclerview-animators:4.0.2'
 }

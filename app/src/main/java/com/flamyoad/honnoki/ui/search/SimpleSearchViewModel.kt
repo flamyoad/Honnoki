@@ -33,11 +33,8 @@ class SimpleSearchViewModel(val app: Application) : AndroidViewModel(app) {
 
     val searchResult: Flow<PagingData<SearchResult>> = searchQuery
         .debounce(500)
-        .combine(searchGenre) { s, genreConstant -> return@combine Pair(s, genreConstant) }
-        .flatMapLatest {
-            val query = it.first
-            val genre = it.second
-
+        .combine(searchGenre) { query, genreConstant -> return@combine Pair(query, genreConstant) }
+        .flatMapLatest { (query, genre) ->
             if (query.isBlank() && genre == GenreConstants.ALL) {
                 return@flatMapLatest flowOf(PagingData.empty())
             }
