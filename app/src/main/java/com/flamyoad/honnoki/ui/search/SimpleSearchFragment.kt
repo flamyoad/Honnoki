@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.flamyoad.honnoki.BaseFragment
@@ -37,6 +38,7 @@ class SimpleSearchFragment : BaseFragment() {
 
     private val genreAdapter = GenrePickerAdapter(this::selectGenre)
     private val searchResultAdapter = SimpleSearchResultAdapter(this::openManga)
+    private val searchResultEndOfListAdapter = SearchResultEndOfListAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -69,8 +71,12 @@ class SimpleSearchFragment : BaseFragment() {
     private fun initSearchResultList() {
         val linearLayoutManager = LinearLayoutManager(requireContext())
 
+        val concatAdapter = ConcatAdapter().apply {
+            addAdapter(searchResultAdapter)
+        }
+
         with(binding.listSearchResult) {
-            adapter = searchResultAdapter
+            adapter = concatAdapter
             layoutManager = linearLayoutManager
         }
 
@@ -79,6 +85,9 @@ class SimpleSearchFragment : BaseFragment() {
                 is LoadState.Error -> binding.listSearchResultView.viewState = MultiStateView.ViewState.ERROR
                 is LoadState.Loading -> binding.listSearchResultView.viewState = MultiStateView.ViewState.LOADING
                 is LoadState.NotLoading -> binding.listSearchResultView.viewState = MultiStateView.ViewState.CONTENT
+            }
+            when (it.mediator?.append) {
+                is LoadState.NotLoading -> concatAdapter.addAdapter(searchResultEndOfListAdapter)
             }
         }
     }
