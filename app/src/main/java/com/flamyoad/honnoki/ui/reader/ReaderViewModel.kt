@@ -31,15 +31,15 @@ class ReaderViewModel(app: Application) : AndroidViewModel(app) {
         .flowOn(Dispatchers.IO)
 
     private val sideKickVisibility = MutableStateFlow(false)
-    fun sideKickVisibility(): StateFlow<Boolean> = sideKickVisibility
+    fun sideKickVisibility() = sideKickVisibility.asStateFlow()
 
     private val currentChapterShown = MutableStateFlow(Chapter.empty())
-    fun currentChapterShown(): Flow<Chapter> = currentChapterShown
+    fun currentChapterShown() = currentChapterShown.asStateFlow()
 
     val currentChapter get() = currentChapterShown.value
 
     private val currentPageNumber = MutableStateFlow(0)
-    fun currentPageNumber(): StateFlow<Int> = currentPageNumber
+    fun currentPageNumber() = currentPageNumber.asStateFlow()
 
     val totalPageNumber = currentChapterShown.flatMapLatest {
         if (it.id == null) return@flatMapLatest flowOf(0)
@@ -57,13 +57,13 @@ class ReaderViewModel(app: Application) : AndroidViewModel(app) {
         replay = 0,
         extraBufferCapacity = 1
     )
-    fun pageNumberScrolledBySeekbar(): SharedFlow<Int> = pageNumberScrolledBySeekbar.asSharedFlow()
+    fun pageNumberScrolledBySeekbar() = pageNumberScrolledBySeekbar.asSharedFlow()
 
     private val pageList = MutableStateFlow<List<ReaderPage>>(emptyList())
-    fun pageList(): Flow<List<ReaderPage>> = pageList
+    fun pageList() = pageList.asStateFlow()
 
     private val showBottomLoadingIndicator = MutableStateFlow(false)
-    fun showBottomLoadingIndicator(): StateFlow<Boolean> = showBottomLoadingIndicator
+    fun showBottomLoadingIndicator() = showBottomLoadingIndicator.asStateFlow()
 
     private var fetchMangaJob: Job? = null
 

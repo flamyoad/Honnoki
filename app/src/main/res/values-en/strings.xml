@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="chapter_list_no_items">0 chapter</string>
     <plurals name="chapter_list_total">
-        <item quantity="zero">%1$d chapter</item>
-        <item quantity="one">%1$d chapter</item>
-        <item quantity="other">%1$d chapters</item>
+        <item quantity="one">%d chapter</item>
+        <item quantity="other">%d chapters</item>
     </plurals>
 
     <string name="genre_all">All</string>

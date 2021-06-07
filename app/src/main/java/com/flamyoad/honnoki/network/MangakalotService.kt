@@ -84,7 +84,7 @@ interface MangakalotService {
     @GET("advanced_search")
     suspend fun searchByKeywordAndGenres(
         @Query("s") mode: String = "all",
-        @Query("i") genre: String,
+        @Query("g_i") genre: String,
         @Query("page") index: Int,
         @Query("keyw") keyword: String): ResponseBody
 }

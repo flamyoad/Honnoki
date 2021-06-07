@@ -13,14 +13,14 @@ class BookmarkDialogAdapter(private val onGroupClick: (BookmarkGroup) -> Unit)
         get() = DialogBookmarkGroupListItemBinding::inflate
 
     override fun onCreate(holder: BaseViewHolder, binding: DialogBookmarkGroupListItemBinding) {
-        binding.rootLayout.setOnClickListener {
-            val group = getItem(holder.bindingAdapterPosition)
-            onGroupClick(group)
-        }
-
         binding.checkBox.setOnClickListener {
             binding.rootLayout.performClick()
         }
+    }
+
+    override fun onItemClick(item: BookmarkGroup?) {
+        super.onItemClick(item)
+        onGroupClick(item ?: return)
     }
 
     override fun onBind(holder: BaseViewHolder, item: BookmarkGroup) {

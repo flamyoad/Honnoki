@@ -2,6 +2,7 @@ package com.flamyoad.honnoki.ui.search
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -74,9 +75,10 @@ class SimpleSearchFragment : BaseFragment() {
         }
 
         searchResultAdapter.addLoadStateListener {
-            when (it.refresh) {
+            when (it.mediator?.refresh) {
                 is LoadState.Error -> binding.listSearchResultView.viewState = MultiStateView.ViewState.ERROR
                 is LoadState.Loading -> binding.listSearchResultView.viewState = MultiStateView.ViewState.LOADING
+                is LoadState.NotLoading -> binding.listSearchResultView.viewState = MultiStateView.ViewState.CONTENT
             }
         }
     }
@@ -97,10 +99,11 @@ class SimpleSearchFragment : BaseFragment() {
     }
 
     private fun observeUi() {
+        binding.listSearchResultView.viewState = MultiStateView.ViewState.CONTENT
+
         lifecycleScope.launchWhenResumed {
             viewModel.searchResult.collectLatest {
                 searchResultAdapter.submitData(it)
-                binding.listSearchResultView.viewState = MultiStateView.ViewState.CONTENT
             }
         }
 

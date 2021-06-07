@@ -44,16 +44,17 @@ class SimpleSearchViewModel(val app: Application) : AndroidViewModel(app) {
 
             if (genre == GenreConstants.ALL) {
                 return@flatMapLatest mangaRepo.getSimpleSearch(query)
+                    .cachedIn(viewModelScope)
+
             } else {
                 return@flatMapLatest mangaRepo.getSimpleSearchWithGenre(query, genre)
+                    .cachedIn(viewModelScope)
             }
         }
         .flowOn(Dispatchers.IO)
-        .cachedIn(viewModelScope)
 
     fun submitQuery(query: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            db.searchResultDao().deleteAll()
             searchQuery.emit(query)
         }
     }
