@@ -1,4 +1,4 @@
-package com.flamyoad.honnoki.repository
+package com.flamyoad.honnoki.source
 
 import android.content.Context
 import androidx.paging.ExperimentalPagingApi
@@ -16,7 +16,7 @@ import retrofit2.Retrofit
 
 
 @ExperimentalPagingApi
-class SenMangaRepository(db: AppDatabase, context: Context): BaseMangaRepository(db, context) {
+class SenMangaSource(db: AppDatabase, context: Context): BaseSource(db, context) {
     private val service: SenMangaService
     private val api: SenMangaApi
 

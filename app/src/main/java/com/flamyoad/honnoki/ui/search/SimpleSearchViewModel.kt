@@ -7,10 +7,9 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.flamyoad.honnoki.db.AppDatabase
-import com.flamyoad.honnoki.model.Genre
 import com.flamyoad.honnoki.model.SearchResult
-import com.flamyoad.honnoki.repository.BaseMangaRepository
-import com.flamyoad.honnoki.repository.MangakalotRepository
+import com.flamyoad.honnoki.source.BaseSource
+import com.flamyoad.honnoki.source.MangakalotSource
 import com.flamyoad.honnoki.ui.search.model.SearchGenre
 import com.flamyoad.honnoki.utils.GenreConstants
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +21,7 @@ class SimpleSearchViewModel(val app: Application) : AndroidViewModel(app) {
     private val applicationContext get() = app.applicationContext
 
     private val db = AppDatabase.getInstance(app)
-    private var mangaRepo: BaseMangaRepository = MangakalotRepository(db, app.applicationContext)
+    private var baseSource: BaseSource = MangakalotSource(db, app.applicationContext)
 
     private val genreList = MutableStateFlow(initializeGenreList())
     fun genreList() = genreList.asStateFlow()
@@ -40,11 +39,11 @@ class SimpleSearchViewModel(val app: Application) : AndroidViewModel(app) {
             }
 
             if (genre == GenreConstants.ALL) {
-                return@flatMapLatest mangaRepo.getSimpleSearch(query)
+                return@flatMapLatest baseSource.getSimpleSearch(query)
                     .cachedIn(viewModelScope)
 
             } else {
-                return@flatMapLatest mangaRepo.getSimpleSearchWithGenre(query, genre)
+                return@flatMapLatest baseSource.getSimpleSearchWithGenre(query, genre)
                     .cachedIn(viewModelScope)
             }
         }

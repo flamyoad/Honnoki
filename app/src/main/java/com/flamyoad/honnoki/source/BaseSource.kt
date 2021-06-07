@@ -1,16 +1,15 @@
-package com.flamyoad.honnoki.repository
+package com.flamyoad.honnoki.source
 
 import android.content.Context
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingData
 import com.flamyoad.honnoki.db.AppDatabase
 import com.flamyoad.honnoki.model.*
-import com.flamyoad.honnoki.ui.search.model.SearchGenre
 import com.flamyoad.honnoki.utils.GenreConstants
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
-abstract class BaseMangaRepository(val db: AppDatabase, val context: Context) {
+abstract class BaseSource(val db: AppDatabase, val context: Context) {
     abstract fun getSourceType(): Source
 
     open fun getRecentManga(): Flow<PagingData<Manga>> {
@@ -64,10 +63,10 @@ abstract class BaseMangaRepository(val db: AppDatabase, val context: Context) {
 
     companion object {
         @ExperimentalPagingApi
-        fun get(source: Source, db: AppDatabase, context: Context): BaseMangaRepository {
+        fun get(source: Source, db: AppDatabase, context: Context): BaseSource {
             return when (source) {
-                Source.MANGAKALOT -> MangakalotRepository(db, context)
-                Source.SENMANGA -> SenMangaRepository(db, context)
+                Source.MANGAKALOT -> MangakalotSource(db, context)
+                Source.SENMANGA -> SenMangaSource(db, context)
             }
         }
     }

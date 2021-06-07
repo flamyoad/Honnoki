@@ -1,4 +1,4 @@
-package com.flamyoad.honnoki.repository
+package com.flamyoad.honnoki.source
 
 import android.content.Context
 import androidx.paging.ExperimentalPagingApi
@@ -15,7 +15,7 @@ import com.flamyoad.honnoki.utils.GenreConstants
 import kotlinx.coroutines.flow.Flow
 
 @ExperimentalPagingApi
-class MangakalotRepository(db: AppDatabase, context: Context) : BaseMangaRepository(db, context) {
+class MangakalotSource(db: AppDatabase, context: Context) : BaseSource(db, context) {
     private val api: MangakalotApi = MangakalotApi(MangakalotService.create(context))
 
     override fun getSourceType(): Source {

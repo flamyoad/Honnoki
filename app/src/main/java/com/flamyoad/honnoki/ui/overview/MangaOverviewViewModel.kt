@@ -5,7 +5,7 @@ import androidx.lifecycle.*
 import androidx.paging.ExperimentalPagingApi
 import com.flamyoad.honnoki.db.AppDatabase
 import com.flamyoad.honnoki.model.*
-import com.flamyoad.honnoki.repository.BaseMangaRepository
+import com.flamyoad.honnoki.source.BaseSource
 import com.flamyoad.honnoki.ui.overview.model.ChapterListSort
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 class MangaOverviewViewModel(private val app: Application) : AndroidViewModel(app) {
     private val db = AppDatabase.getInstance(app)
 
-    private lateinit var mangaRepo: BaseMangaRepository
+    private lateinit var baseSource: BaseSource
 
     private val mangaOverviewId = MutableStateFlow(-1L)
 
@@ -69,7 +69,7 @@ class MangaOverviewViewModel(private val app: Application) : AndroidViewModel(ap
             return
         }
 
-        mangaRepo = BaseMangaRepository.get(source, db, app.applicationContext)
+        baseSource = BaseSource.get(source, db, app.applicationContext)
         loadMangaOverview(url)
     }
 
@@ -84,7 +84,7 @@ class MangaOverviewViewModel(private val app: Application) : AndroidViewModel(ap
             }
 
             // Otherwise, load manga overview from network
-            when (val overview = mangaRepo.getMangaOverview(url)) {
+            when (val overview = baseSource.getMangaOverview(url)) {
                 is State.Success -> {
                     val overviewId = db.mangaOverviewDao().insert(overview.value)
                     mangaOverviewId.value = overviewId
@@ -97,7 +97,7 @@ class MangaOverviewViewModel(private val app: Application) : AndroidViewModel(ap
     }
 
     private suspend fun refreshGenres(url: String, overviewId: Long) {
-        when (val genreList = mangaRepo.getGenres(url)) {
+        when (val genreList = baseSource.getGenres(url)) {
             is State.Success -> {
                 val genreListWithId = genreList.value.map {
                     it.copy(mangaOverviewId = overviewId)
@@ -108,7 +108,7 @@ class MangaOverviewViewModel(private val app: Application) : AndroidViewModel(ap
     }
 
     private suspend fun refreshAuthors(url: String, overviewId: Long) {
-        when (val authorList = mangaRepo.getAuthors(url)) {
+        when (val authorList = baseSource.getAuthors(url)) {
             is State.Success -> {
                 val authorListWithId = authorList.value.map {
                     it.copy(mangaOverviewId = overviewId)
@@ -119,7 +119,7 @@ class MangaOverviewViewModel(private val app: Application) : AndroidViewModel(ap
     }
 
     private suspend fun refreshChapterList(url: String, overviewId: Long) {
-        when (val chapterList = mangaRepo.getChapterList(url)) {
+        when (val chapterList = baseSource.getChapterList(url)) {
             is State.Success -> {
                 val chapterListWithId = chapterList.value.map {
                     it.copy(mangaOverviewId = overviewId)

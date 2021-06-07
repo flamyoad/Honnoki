@@ -7,8 +7,8 @@ import androidx.paging.ExperimentalPagingApi
 import com.flamyoad.honnoki.db.AppDatabase
 import com.flamyoad.honnoki.model.Chapter
 import com.flamyoad.honnoki.model.State
-import com.flamyoad.honnoki.repository.BaseMangaRepository
-import com.flamyoad.honnoki.repository.MangakalotRepository
+import com.flamyoad.honnoki.source.BaseSource
+import com.flamyoad.honnoki.source.MangakalotSource
 import com.flamyoad.honnoki.ui.reader.model.LoadType
 import com.flamyoad.honnoki.ui.reader.model.ReaderPage
 import kotlinx.coroutines.Dispatchers
@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 class ReaderViewModel(app: Application) : AndroidViewModel(app) {
     private val db = AppDatabase.getInstance(app)
 
-    private var mangaRepo: BaseMangaRepository = MangakalotRepository(db, app.applicationContext)
+    private var baseSource: BaseSource = MangakalotSource(db, app.applicationContext)
 
     private val mangaOverviewId = MutableStateFlow(-1L)
 
@@ -75,7 +75,7 @@ class ReaderViewModel(app: Application) : AndroidViewModel(app) {
 
         viewModelScope.launch(Dispatchers.IO) {
             val chapter = db.chapterDao().get(chapterId) ?: throw IllegalArgumentException("")
-            val result = mangaRepo.getImages(chapter.link)
+            val result = baseSource.getImages(chapter.link)
 
             if (result is State.Success) {
                 val pagesWithoutChapterId = result.value.map {
