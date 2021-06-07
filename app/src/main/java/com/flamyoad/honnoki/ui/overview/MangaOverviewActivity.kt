@@ -3,8 +3,6 @@ package com.flamyoad.honnoki.ui.overview
 import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.WindowInsets
-import android.view.WindowInsetsController
 import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -20,7 +18,6 @@ import com.flamyoad.honnoki.model.MangaOverview
 import com.flamyoad.honnoki.utils.ViewUtils
 import com.flamyoad.honnoki.utils.ui.AppBarStateChangeListener
 import com.flamyoad.honnoki.utils.ui.DepthPageTransformer
-import com.flamyoad.honnoki.utils.ui.ToggleState
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.activity_manga_overview.*
@@ -62,8 +59,9 @@ class MangaOverviewActivity : AppCompatActivity() {
             )
         }
 
-        setupUi()
-        setupViewPager()
+        initUi()
+        initViewPager()
+        observeUi()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -73,7 +71,7 @@ class MangaOverviewActivity : AppCompatActivity() {
         return true
     }
 
-    private fun setupUi() {
+    private fun initUi() {
         binding.appbarLayout.addOnOffsetChangedListener(object : AppBarStateChangeListener() {
             override fun onStateChanged(appBarLayout: AppBarLayout?, state: State?) {
                 with(binding) {
@@ -122,22 +120,9 @@ class MangaOverviewActivity : AppCompatActivity() {
         btnFavouriteCollapsed.setOnClickListener {
             showBookmarkGroupDialog()
         }
-
-        viewModel.hasBeenBookmarked.observe(this) {
-            btnFavouriteCollapsed.isChecked = it
-            btnFavouriteExpanded.isChecked = it
-        }
-
-        viewModel.mangaOverview.observe(this) {
-            showMangaOverview(it)
-        }
-
-        viewModel.authorList.observe(this) { authors ->
-            txtAuthor.text = authors.joinToString { it.name }
-        }
     }
 
-    private fun setupViewPager() {
+    private fun initViewPager() {
         val tabList = listOf(TAB_NAME_SUMMARY)
 
         val pagerAdapter = MangaOverviewFragmentAdapter(tabList, this)
@@ -151,6 +136,21 @@ class MangaOverviewActivity : AppCompatActivity() {
             tab.text = tabList[position]
             binding.viewPager.setCurrentItem(tab.position, true)
         }.attach()
+    }
+
+    private fun observeUi() {
+        viewModel.hasBeenBookmarked.observe(this) {
+            btnFavouriteCollapsed.isChecked = it
+            btnFavouriteExpanded.isChecked = it
+        }
+
+        viewModel.mangaOverview.observe(this) {
+            showMangaOverview(it)
+        }
+
+        viewModel.authorList.observe(this) { authors ->
+            txtAuthor.text = authors.joinToString { it.name }
+        }
     }
 
     private fun showMangaOverview(overview: MangaOverview) {

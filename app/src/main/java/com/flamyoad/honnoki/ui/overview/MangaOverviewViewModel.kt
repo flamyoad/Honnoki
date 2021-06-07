@@ -7,12 +7,11 @@ import com.flamyoad.honnoki.db.AppDatabase
 import com.flamyoad.honnoki.model.*
 import com.flamyoad.honnoki.repository.BaseMangaRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
+@ExperimentalCoroutinesApi
 @ExperimentalPagingApi
 class MangaOverviewViewModel(private val app: Application) : AndroidViewModel(app) {
     private val db = AppDatabase.getInstance(app)
@@ -38,8 +37,16 @@ class MangaOverviewViewModel(private val app: Application) : AndroidViewModel(ap
         .flatMapLatest { db.authorDao().getByOverviewId(it) }
         .asLiveData()
 
-    val chapterList: LiveData<List<Chapter>> = mangaOverviewId
+    val chapterList: LiveData<State<List<Chapter>>> = mangaOverviewId
+        .onStart { flowOf(State.Loading) }
         .flatMapLatest { db.chapterDao().getByOverviewId(it) }
+        .flatMapLatest {
+            if (it.isNullOrEmpty()) {
+                flowOf(State.Loading)
+            } else {
+                flowOf(State.Success(it))
+            }
+        }
         .asLiveData()
 
     val hasBeenBookmarked = mangaOverviewId

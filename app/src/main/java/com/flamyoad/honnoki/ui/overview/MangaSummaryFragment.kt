@@ -14,10 +14,7 @@ import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.databinding.FragmentMangaSummaryBinding
 import com.flamyoad.honnoki.model.Chapter
 import com.flamyoad.honnoki.model.State
-import com.flamyoad.honnoki.ui.overview.adapter.ChapterListAdapter
-import com.flamyoad.honnoki.ui.overview.adapter.ChapterListHeaderAdapter
-import com.flamyoad.honnoki.ui.overview.adapter.MainHeaderAdapter
-import com.flamyoad.honnoki.ui.overview.adapter.MangaSummaryAdapter
+import com.flamyoad.honnoki.ui.overview.adapter.*
 import com.flamyoad.honnoki.ui.reader.ReaderActivity
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
 import java.io.Reader
@@ -26,6 +23,21 @@ import java.io.Reader
 class MangaSummaryFragment : Fragment() {
     private val viewModel: MangaOverviewViewModel by activityViewModels()
     private val binding by viewLifecycleLazy { FragmentMangaSummaryBinding.bind(requireView()) }
+
+    private val mainHeaderAdapter by lazy { MainHeaderAdapter() }
+    private val mangaSummaryAdapter by lazy { MangaSummaryAdapter() }
+    private val chapterListHeaderAdapter by lazy { ChapterListHeaderAdapter(viewModel::sortChapterList) }
+
+    private val chapterListLoadingAdapter by lazy { ChapterListLoadingAdapter() }
+    private val chapterListAdapter by lazy { ChapterListAdapter(this::onChapterClick) }
+
+    private val concatAdapter by lazy {
+        ConcatAdapter(
+            mainHeaderAdapter,
+            mangaSummaryAdapter,
+            chapterListHeaderAdapter,
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,20 +49,11 @@ class MangaSummaryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initUi()
+        observeUi()
+    }
 
-        val mainHeaderAdapter = MainHeaderAdapter()
-        val mangaSummaryAdapter = MangaSummaryAdapter()
-        val chapterListHeaderAdapter = ChapterListHeaderAdapter(viewModel::sortChapterList)
-        val chapterListAdapter = ChapterListAdapter(this::onChapterClick)
-
-        val concatAdapter =
-            ConcatAdapter(
-                mainHeaderAdapter,
-                mangaSummaryAdapter,
-                chapterListHeaderAdapter,
-                chapterListAdapter
-            )
-
+    private fun initUi() {
         val spanCount = 3
         val gridLayoutManager = GridLayoutManager(requireContext(), spanCount)
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -59,6 +62,7 @@ class MangaSummaryFragment : Fragment() {
                     0 -> spanCount
                     1 -> spanCount
                     2 -> spanCount
+                    3 -> spanCount
                     else -> 1
                 }
             }
@@ -68,7 +72,9 @@ class MangaSummaryFragment : Fragment() {
             adapter = concatAdapter
             layoutManager = gridLayoutManager
         }
+    }
 
+    private fun observeUi() {
         viewModel.mangaOverview.observe(viewLifecycleOwner) {
             mangaSummaryAdapter.setMangaOverview(State.Success(it))
         }
@@ -78,8 +84,19 @@ class MangaSummaryFragment : Fragment() {
         }
 
         viewModel.chapterList.observe(viewLifecycleOwner) {
-            chapterListHeaderAdapter.setItem(it)
-            chapterListAdapter.submitList(it)
+            when (it) {
+                is State.Loading -> {
+                    concatAdapter.addAdapter(chapterListLoadingAdapter)
+                }
+                is State.Success -> {
+                    concatAdapter.apply {
+                        removeAdapter(chapterListLoadingAdapter)
+                        addAdapter(chapterListAdapter)
+                    }
+                    chapterListHeaderAdapter.setItem(it.value)
+                    chapterListAdapter.submitList(it.value)
+                }
+            }
         }
     }
 
