@@ -47,7 +47,7 @@ class ReaderFrameFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         if (savedInstanceState == null) {
             val chapterId = requireActivity().intent?.getLongExtra(ReaderActivity.CHAPTER_ID, -1) ?: -1
-            parentViewModel.fetchManga(chapterId, LoadType.INITIAL)
+            parentViewModel.fetchChapterImages(chapterId, LoadType.INITIAL)
         }
 
         initUi()
@@ -79,17 +79,16 @@ class ReaderFrameFragment : Fragment() {
                     syncCurrentPageAndChapter()
                     parentViewModel.currentScrollPosition = linearLayoutManager.findFirstVisibleItemPosition()
                     parentViewModel.setSideKickVisibility(false)
+
+                    // Prefetch when scrolled to the second last item (minus ads & last page)
+                    val reachedEndOfList = linearLayoutManager.findLastVisibleItemPosition() == readerAdapter.itemCount - 2
+                    if (reachedEndOfList) {
+                        parentViewModel.loadNextChapter()
+                    }
                 }
 
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
-
-                    // Prefetch when scrolled to the second last item (minus ads & last page)
-                    val reachedEndOfList = linearLayoutManager.findLastVisibleItemPosition() >= readerAdapter.itemCount - 2
-
-                    if (reachedEndOfList) {
-                        parentViewModel.loadNextChapter()
-                    }
 
                     val lastVisiblePos = linearLayoutManager.findFirstVisibleItemPosition()
                     val lastVisibleView = linearLayoutManager.findViewByPosition(lastVisiblePos)

@@ -4,10 +4,8 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
-import androidx.room.withTransaction
 import com.flamyoad.honnoki.db.AppDatabase
 import com.flamyoad.honnoki.model.Chapter
-import com.flamyoad.honnoki.model.PageWithChapterInfo
 import com.flamyoad.honnoki.model.State
 import com.flamyoad.honnoki.repository.BaseMangaRepository
 import com.flamyoad.honnoki.repository.MangakalotRepository
@@ -65,18 +63,17 @@ class ReaderViewModel(app: Application) : AndroidViewModel(app) {
     private val showBottomLoadingIndicator = MutableStateFlow(false)
     fun showBottomLoadingIndicator() = showBottomLoadingIndicator.asStateFlow()
 
-    private var fetchMangaJob: Job? = null
+    private var loadPrevChapterJob: Job? = null
+    private var loadNextChapterJob: Job? = null
 
     var currentScrollPosition: Int = -1
 
-    fun fetchManga(chapterId: Long, loadType: LoadType) {
-        fetchMangaJob?.cancel()
-
+    fun fetchChapterImages(chapterId: Long, loadType: LoadType) {
         if (loadType == LoadType.NEXT) {
             showBottomLoadingIndicator.value = true
         }
 
-        fetchMangaJob = viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
             val chapter = db.chapterDao().get(chapterId) ?: throw IllegalArgumentException("")
             val result = mangaRepo.getImages(chapter.link)
 
@@ -116,26 +113,34 @@ class ReaderViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun loadPreviousChapter() {
-        viewModelScope.launch(Dispatchers.IO) {
+        if (loadPrevChapterJob?.isActive == true) {
+            return
+        }
+
+        loadPrevChapterJob = viewModelScope.launch(Dispatchers.IO) {
             val overviewId = mangaOverviewId.value
             val currentChapterNumber = currentChapterShown.value.number
 
             val prevChapter = db.chapterDao().getPreviousChapter(overviewId, currentChapterNumber)
                 ?: return@launch
             val chapterId = prevChapter.id ?: return@launch
-            fetchManga(chapterId, LoadType.PREV)
+            fetchChapterImages(chapterId, LoadType.PREV)
         }
     }
 
     fun loadNextChapter() {
-        viewModelScope.launch(Dispatchers.IO) {
+        if (loadNextChapterJob?.isActive == true) {
+            return
+        }
+
+        loadNextChapterJob = viewModelScope.launch(Dispatchers.IO) {
             val overviewId = mangaOverviewId.value
             val currentChapterNumber = currentChapterShown.value.number
 
             val nextChapter =
                 db.chapterDao().getNextChapter(overviewId, currentChapterNumber) ?: return@launch
             val chapterId = nextChapter.id ?: return@launch
-            fetchManga(chapterId, LoadType.NEXT)
+            fetchChapterImages(chapterId, LoadType.NEXT)
         }
     }
 
