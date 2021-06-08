@@ -36,10 +36,5 @@ class HomeViewModel(val db: AppDatabase, val mangaSource: BaseSource) : ViewMode
         shouldShrinkFab.value = boolean
     }
 
-    fun switchMangaSource(source: Source) {
-//        mangaSource = BaseSource.get(source, db, app.applicationContext)
-    }
-
     fun getSourceType(): Source = mangaSource.getSourceType()
-
 }

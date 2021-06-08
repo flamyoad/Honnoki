@@ -24,6 +24,7 @@ import java.lang.IllegalArgumentException
 
 @ExperimentalPagingApi
 class HomeFragment : BaseFragment(), SourceSwitcherDialog.Listener {
+
     private val viewModel: HomeViewModel by viewModel()
 
     private val binding by viewLifecycleLazy { FragmentHomeBinding.bind(requireView()) }
@@ -89,7 +90,6 @@ class HomeFragment : BaseFragment(), SourceSwitcherDialog.Listener {
 
         binding.fab.text = source.title
 
-        viewModel.switchMangaSource(source)
         setupViewPager()
 
         // Dismiss the dialog

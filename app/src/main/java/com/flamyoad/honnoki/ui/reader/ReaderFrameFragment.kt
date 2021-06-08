@@ -92,7 +92,7 @@ class ReaderFrameFragment : Fragment() {
 
                     // Prefetch when scrolled to the second last item (minus ads & last page)
                     val reachedEndOfList =
-                        linearLayoutManager.findLastVisibleItemPosition() == readerAdapter.itemCount - 2
+                        linearLayoutManager.findLastVisibleItemPosition() >= readerAdapter.itemCount - 2
                     if (reachedEndOfList) {
                         parentViewModel.loadNextChapter()
                     }

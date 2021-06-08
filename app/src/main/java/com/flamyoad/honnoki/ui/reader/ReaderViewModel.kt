@@ -14,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.util.concurrent.ConcurrentHashMap
 
 @ExperimentalPagingApi
 class ReaderViewModel(
@@ -51,6 +52,7 @@ class ReaderViewModel(
         replay = 0,
         extraBufferCapacity = 1
     )
+
     fun pageNumberScrolledBySeekbar() = pageNumberScrolledBySeekbar.asSharedFlow()
 
     private val pageList = MutableStateFlow<List<ReaderPage>>(emptyList())
@@ -65,9 +67,16 @@ class ReaderViewModel(
     private var loadPrevChapterJob: Job? = null
     private var loadNextChapterJob: Job? = null
 
+    private val loadCompletionStatusByChapterId = ConcurrentHashMap<Long, Boolean>()
+
     var currentScrollPosition: Int = -1
 
     fun fetchChapterImages(chapterId: Long, loadType: LoadType): Job {
+        // Skip loading this chapter if it has been loaded before. Returns a completed job by default
+        if (loadCompletionStatusByChapterId[chapterId] == true) {
+            return Job().apply { complete() }
+        }
+
         if (loadType == LoadType.NEXT) {
             showBottomLoadingIndicator.value = true
         }
@@ -116,8 +125,14 @@ class ReaderViewModel(
             }
         }
 
+        // Submits pages from the newly loaded chapter to adapter
         pageList.value = existingList
+
+        // Sets current chapter to the newly loaded chapter
         currentChapterShown.value = chapter
+
+        // Marks the chapter as completed to prevent duplicate loading
+        loadCompletionStatusByChapterId.put(chapter.id, true)
     }
 
     fun loadPreviousChapter() {
