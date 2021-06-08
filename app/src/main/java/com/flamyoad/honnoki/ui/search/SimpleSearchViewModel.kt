@@ -2,6 +2,7 @@ package com.flamyoad.honnoki.ui.search
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingData
@@ -21,7 +22,7 @@ class SimpleSearchViewModel(
     private val app: Application,
     private val db: AppDatabase,
     private val baseSource: BaseSource
-) : AndroidViewModel(app) {
+) : ViewModel() {
 
     private val applicationContext get() = app.applicationContext
 

@@ -14,11 +14,8 @@ import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
 @ExperimentalPagingApi
-class MangaOverviewViewModel(
-    private val app: Application,
-    private val db: AppDatabase,
-    private val baseSource: BaseSource
-) : AndroidViewModel(app) {
+class MangaOverviewViewModel(private val db: AppDatabase, private val baseSource: BaseSource) :
+    ViewModel() {
 
     private val mangaOverviewId = MutableStateFlow(-1L)
 

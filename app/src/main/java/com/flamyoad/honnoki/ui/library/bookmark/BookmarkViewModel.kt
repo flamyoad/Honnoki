@@ -1,10 +1,7 @@
 package com.flamyoad.honnoki.ui.library.bookmark
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import androidx.room.withTransaction
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.model.BookmarkGroup
@@ -16,8 +13,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class BookmarkViewModel(
-    private val app: Application, private val db: AppDatabase
-) : AndroidViewModel(app) {
+    private val db: AppDatabase
+) : ViewModel() {
 
     private val bookmarkGroupDao = db.bookmarkGroupDao()
 

@@ -18,11 +18,11 @@ import org.koin.dsl.module
 
 @ExperimentalPagingApi
 val viewModelModules = module {
-    viewModel { HomeViewModel(androidApplication(), get(), get(named(Constants.MANGAKALOT))) }
-    viewModel { BookmarkViewModel(androidApplication(), get()) }
-    viewModel { MangaOverviewViewModel(androidApplication(), get(), get(named(Constants.MANGAKALOT))) }
-    viewModel { ReaderViewModel(androidApplication(), get(), get(named(Constants.MANGAKALOT))) }
-    viewModel { ReaderFrameViewModel(androidApplication()) }
+    viewModel { HomeViewModel(get(), get(named(Constants.MANGAKALOT))) }
+    viewModel { BookmarkViewModel(get()) }
+    viewModel { MangaOverviewViewModel(get(), get(named(Constants.MANGAKALOT))) }
+    viewModel { ReaderViewModel(get(), get(named(Constants.MANGAKALOT))) }
+    viewModel { ReaderFrameViewModel() }
     viewModel { SimpleSearchViewModel(androidApplication(), get(), get(named(Constants.MANGAKALOT))) }
 
     // Dialogs

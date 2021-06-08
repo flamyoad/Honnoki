@@ -2,6 +2,7 @@ package com.flamyoad.honnoki.ui.reader
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
 import com.flamyoad.honnoki.data.db.AppDatabase
@@ -20,10 +21,9 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @ExperimentalPagingApi
 class ReaderViewModel(
-    private val app: Application,
     private val db: AppDatabase,
     private val baseSource: BaseSource
-) : AndroidViewModel(app) {
+) : ViewModel() {
 
     private val mangaOverviewId = MutableStateFlow(-1L)
 

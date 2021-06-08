@@ -1,10 +1,7 @@
 package com.flamyoad.honnoki.ui.home
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
@@ -18,9 +15,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 
 @ExperimentalPagingApi
-class HomeViewModel(val app: Application, val db: AppDatabase, val mangaSource: BaseSource) : AndroidViewModel(app) {
-//    private val db = AppDatabase.getInstance(app)
-//    private var mangaSource: BaseSource = MangakalotSource(db, app.applicationContext)
+class HomeViewModel(val db: AppDatabase, val mangaSource: BaseSource) : ViewModel() {
 
     private val shouldShrinkFab = MutableLiveData<Boolean>(false)
     fun shouldShrinkFab(): LiveData<Boolean> = shouldShrinkFab
