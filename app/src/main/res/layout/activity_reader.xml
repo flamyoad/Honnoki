@@ -59,13 +59,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:id="@+id/seekbarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="@color/translucent_black"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:translationZ="4dp"
         tools:visibility="visible">
 
@@ -84,7 +84,7 @@
         <TextView
             android:id="@+id/txtSeekbarCurrentPage"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
+            android:layout_height="match_parent"
             android:gravity="center"
             android:textColor="@android:color/white"
             android:textSize="16sp"
@@ -92,13 +92,14 @@
             app:layout_constraintBottom_toBottomOf="@id/btnToFirstPage"
             app:layout_constraintStart_toEndOf="@id/btnToFirstPage"
             app:layout_constraintTop_toTopOf="@id/btnToFirstPage"
+            app:layout_constraintEnd_toStartOf="@id/seekbar"
             tools:text="1/80" />
 
         <SeekBar
             android:id="@+id/seekbar"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
             android:layout_marginRight="16dp"
             android:maxHeight="6dp"
             android:progressDrawable="@drawable/seekbar_style"
@@ -106,7 +107,6 @@
             android:thumb="@drawable/seekbar_thumb"
             app:layout_constraintBottom_toBottomOf="@id/txtSeekbarCurrentPage"
             app:layout_constraintEnd_toStartOf="@id/btnToLastPage"
-            app:layout_constraintStart_toEndOf="@id/txtSeekbarCurrentPage"
             app:layout_constraintTop_toTopOf="@id/txtSeekbarCurrentPage"
             tools:progress="30" />
 
@@ -119,10 +119,9 @@
             android:paddingVertical="20dp"
             android:src="@drawable/ic_baseline_skip_next_24"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/seekbar"
             app:layout_constraintTop_toTopOf="parent" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/bottomRightInfoView"

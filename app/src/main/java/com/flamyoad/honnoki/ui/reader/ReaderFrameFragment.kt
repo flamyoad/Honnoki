@@ -17,7 +17,9 @@ import com.flamyoad.honnoki.databinding.FragmentReaderFrameBinding
 import com.flamyoad.honnoki.ui.reader.adapter.FailedToLoadNextChapterAdapter
 import com.flamyoad.honnoki.ui.reader.model.LoadType
 import com.flamyoad.honnoki.ui.reader.model.ReaderPage
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -130,6 +132,7 @@ class ReaderFrameFragment : Fragment() {
                 val currentItemScrolled =
                     readerAdapter.currentList.getOrNull(it) ?: return@collectLatest
                 if (currentItemScrolled is ReaderPage.Value) {
+                    // Set the page number in the bottom-right tooltip
                     parentViewModel.setCurrentPageNumber(currentItemScrolled.page.number)
                 }
             }
@@ -141,11 +144,19 @@ class ReaderFrameFragment : Fragment() {
                     val currentChapter = parentViewModel.currentChapter
                     val adapterItems = readerAdapter.currentList
 
-                    val pagePositionInList = adapterItems
-                        .filterIsInstance<ReaderPage.Value>()
-                        .indexOfFirst { it.chapter == currentChapter && it.page.number == pageNumberScrolledBySeekbar }
+                    val pagePositionInList = withContext(Dispatchers.Default) {
+                        adapterItems.indexOfFirst {
+                            if (it is ReaderPage.Value)
+                                it.chapter == currentChapter && it.page.number == pageNumberScrolledBySeekbar
+                            else {
+                                false
+                            }
+                        }
+                    }
 
-                    linearLayoutManager.scrollToPositionWithOffset(pagePositionInList, 0)
+                    withContext(Dispatchers.Main) {
+                        linearLayoutManager.scrollToPositionWithOffset(pagePositionInList, 0)
+                    }
                 }
         }
 
