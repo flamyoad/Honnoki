@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.model.Chapter
+import com.flamyoad.honnoki.data.model.Page
 import com.flamyoad.honnoki.data.model.State
 import com.flamyoad.honnoki.source.BaseSource
 import com.flamyoad.honnoki.ui.reader.model.LoadType
@@ -46,14 +47,10 @@ class ReaderViewModel(
         "$current / $total"
     }
 
-    // https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-shared-flow/
-    // A default implementation of a shared flow that is created with MutableSharedFlow()
-    // constructor function without parameters has no replay cache nor additional buffer
     private val pageNumberScrolledBySeekbar = MutableSharedFlow<Int>(
         replay = 0,
         extraBufferCapacity = 1
     )
-
     fun pageNumberScrolledBySeekbar() = pageNumberScrolledBySeekbar.asSharedFlow()
 
     private val pageList = MutableStateFlow<List<ReaderPage>>(emptyList())
@@ -61,6 +58,9 @@ class ReaderViewModel(
 
     private val showBottomLoadingIndicator = MutableStateFlow(false)
     fun showBottomLoadingIndicator() = showBottomLoadingIndicator.asStateFlow()
+
+    private val failedToLoadNextChapter = MutableStateFlow(false)
+    fun failedToLoadNextChapter() = failedToLoadNextChapter.asStateFlow()
 
     private var loadPrevChapterJob: Job? = null
     private var loadNextChapterJob: Job? = null
@@ -77,40 +77,47 @@ class ReaderViewModel(
                 ?: throw IllegalArgumentException("Chapter id is null")
 
             val result = baseSource.getImages(chapter.link)
+            when (result) {
+                is State.Success -> processChapterImages(chapter, result.value, loadType)
+                is State.Error -> failedToLoadNextChapter.value = true
+            }
 
-            if (result is State.Success) {
-                val pagesWithoutChapterId = result.value.map {
-                    it.copy(chapterId = chapterId)
-                }
+            // Hides the loading indicator regardless success or failed to load next chapter
+            showBottomLoadingIndicator.value = false
+        }
+    }
 
-                db.pageDao().insertAll(pagesWithoutChapterId)
-                val pagesWithChapterId = db.pageDao().getAllFromChapter(chapterId)
+    private fun processChapterImages(chapter: Chapter, pages: List<Page>, loadType: LoadType) {
+        val chapterId = chapter.id ?: throw IllegalArgumentException("Chapter id is null")
 
-                val existingList = pageList.value.toMutableList()
+        val pagesWithoutChapterId = pages.map {
+            it.copy(chapterId = chapterId)
+        }
 
-                when (loadType) {
-                    LoadType.INITIAL -> {
-                        existingList.clear()
-                        existingList.addAll(pagesWithChapterId.map { ReaderPage.Value(it) })
-                        existingList.add(ReaderPage.Ads(chapterId))
-                    }
-                    LoadType.PREV -> {
-                        val list =
-                            pagesWithChapterId.map { ReaderPage.Value(it) } as MutableList<ReaderPage>
-                        list.add(ReaderPage.Ads(chapterId))
-                        existingList.addAll(0, list)
-                    }
-                    LoadType.NEXT -> {
-                        existingList.addAll(pagesWithChapterId.map { ReaderPage.Value(it) })
-                        existingList.add(ReaderPage.Ads(chapterId))
-                    }
-                }
+        db.pageDao().insertAll(pagesWithoutChapterId)
+        val pagesWithChapterId = db.pageDao().getAllFromChapter(chapterId)
 
-                pageList.value = existingList
-                currentChapterShown.value = chapter
-                showBottomLoadingIndicator.value = false
+        val existingList = pageList.value.toMutableList()
+
+        when (loadType) {
+            LoadType.INITIAL -> {
+                existingList.clear()
+                existingList.addAll(pagesWithChapterId.map { ReaderPage.Value(it) })
+                existingList.add(ReaderPage.Ads(chapterId))
+            }
+            LoadType.PREV -> {
+                val list = pagesWithChapterId.map { ReaderPage.Value(it) } as MutableList<ReaderPage>
+                list.add(ReaderPage.Ads(chapterId))
+                existingList.addAll(0, list)
+            }
+            LoadType.NEXT -> {
+                existingList.addAll(pagesWithChapterId.map { ReaderPage.Value(it) })
+                existingList.add(ReaderPage.Ads(chapterId))
             }
         }
+
+        pageList.value = existingList
+        currentChapterShown.value = chapter
     }
 
     fun loadPreviousChapter() {
@@ -135,6 +142,8 @@ class ReaderViewModel(
         if (loadNextChapterJob?.isActive == true) {
             return
         }
+
+        failedToLoadNextChapter.value = false
 
         loadNextChapterJob = viewModelScope.launch(Dispatchers.IO) {
             val overviewId = mangaOverviewId.value
@@ -170,7 +179,8 @@ class ReaderViewModel(
     }
 
     fun goToFirstPage() {
-        pageNumberScrolledBySeekbar.tryEmit(0)
+        // One-based numbering is used because we are checking against the page number in db rows
+        pageNumberScrolledBySeekbar.tryEmit(1)
     }
 
     fun goToLastPage() {

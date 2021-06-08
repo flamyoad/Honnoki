@@ -9,7 +9,7 @@ class SearchResultEndOfListAdapter: BaseAdapter<Any, SimpleSearchEndOfListBindin
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> SimpleSearchEndOfListBinding
         get() = SimpleSearchEndOfListBinding::inflate
 
-    override val allowItemsToBeClicked: Boolean
+    override val itemLayoutsAreClickable: Boolean
         get() = false
 
     override fun onBind(holder: BaseViewHolder, item: Any) {}

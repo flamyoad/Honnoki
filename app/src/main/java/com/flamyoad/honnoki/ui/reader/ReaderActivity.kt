@@ -70,6 +70,14 @@ class ReaderActivity : AppCompatActivity() {
                 viewModel.setSideKickVisibility(true)
             }
 
+            btnToFirstPage.setOnClickListener {
+                viewModel.goToFirstPage()
+            }
+
+            btnToLastPage.setOnClickListener {
+                viewModel.goToLastPage()
+            }
+
             seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(
                     seekBar: SeekBar?,
@@ -131,7 +139,7 @@ class ReaderActivity : AppCompatActivity() {
 
         lifecycleScope.launchWhenResumed {
             viewModel.totalPageNumber.collectLatest {
-                binding.seekbar.max = it + 1
+                binding.seekbar.max = it
             }
         }
 

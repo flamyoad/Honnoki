@@ -39,14 +39,14 @@ abstract class BaseAdapter<T: Any, VB: ViewBinding>
      * Set this to false when you are using dummy item as a child for ConcatAdapter.
      * This prevents IndexOutOfException from being thrown when the layout is being clicked
      */
-    open val allowItemsToBeClicked: Boolean = true
+    open val itemLayoutsAreClickable: Boolean = true
 
     final override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
         val binding = bindingInflater.invoke(LayoutInflater.from(parent.context), parent, false)
         val holder = BaseViewHolder(binding)
         onCreate(holder, binding)
 
-        if (allowItemsToBeClicked) {
+        if (itemLayoutsAreClickable) {
             holder.itemView.setOnClickListener {
                 val item = itemList[holder.bindingAdapterPosition]
                 onItemClick(item)

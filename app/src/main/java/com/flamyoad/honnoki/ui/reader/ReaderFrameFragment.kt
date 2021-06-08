@@ -5,17 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.flamyoad.honnoki.adapter.ReaderImageAdapter
-import com.flamyoad.honnoki.adapter.ReaderLoadingAdapter
+import com.flamyoad.honnoki.ui.reader.adapter.ReaderImageAdapter
+import com.flamyoad.honnoki.ui.reader.adapter.ReaderLoadingAdapter
 import com.flamyoad.honnoki.databinding.FragmentReaderFrameBinding
+import com.flamyoad.honnoki.ui.reader.adapter.FailedToLoadNextChapterAdapter
 import com.flamyoad.honnoki.ui.reader.model.LoadType
 import com.flamyoad.honnoki.ui.reader.model.ReaderPage
 import kotlinx.coroutines.flow.collectLatest
@@ -34,6 +33,10 @@ class ReaderFrameFragment : Fragment() {
     private val concatAdapter = ConcatAdapter()
     private val readerAdapter = ReaderImageAdapter()
     private val loadingAdapter = ReaderLoadingAdapter()
+    private val failedToLoadNextChapAdapter by lazy {
+        FailedToLoadNextChapterAdapter(parentViewModel::loadNextChapter)
+    }
+
     private val linearLayoutManager by lazy { LinearLayoutManager(requireContext()) }
 
     override fun onCreateView(
@@ -48,7 +51,8 @@ class ReaderFrameFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (savedInstanceState == null) {
-            val chapterId = requireActivity().intent?.getLongExtra(ReaderActivity.CHAPTER_ID, -1) ?: -1
+            val chapterId =
+                requireActivity().intent?.getLongExtra(ReaderActivity.CHAPTER_ID, -1) ?: -1
             parentViewModel.fetchChapterImages(chapterId, LoadType.INITIAL)
         }
 
@@ -59,7 +63,8 @@ class ReaderFrameFragment : Fragment() {
     private fun initUi() {
         parentViewModel.setSideKickVisibility(false)
 
-        readerAdapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+        readerAdapter.stateRestorationPolicy =
+            RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         concatAdapter.addAdapter(readerAdapter)
 
         with(binding) {
@@ -79,11 +84,13 @@ class ReaderFrameFragment : Fragment() {
                     super.onScrolled(recyclerView, dx, dy)
 
                     syncCurrentPageAndChapter()
-                    parentViewModel.currentScrollPosition = linearLayoutManager.findFirstVisibleItemPosition()
+                    parentViewModel.currentScrollPosition =
+                        linearLayoutManager.findFirstVisibleItemPosition()
                     parentViewModel.setSideKickVisibility(false)
 
                     // Prefetch when scrolled to the second last item (minus ads & last page)
-                    val reachedEndOfList = linearLayoutManager.findLastVisibleItemPosition() == readerAdapter.itemCount - 2
+                    val reachedEndOfList =
+                        linearLayoutManager.findLastVisibleItemPosition() == readerAdapter.itemCount - 2
                     if (reachedEndOfList) {
                         parentViewModel.loadNextChapter()
                     }
@@ -120,7 +127,8 @@ class ReaderFrameFragment : Fragment() {
 
         lifecycleScope.launchWhenResumed {
             parentViewModel.pageNumberScrolledBySeekbar().collectLatest {
-                val currentItemScrolled = readerAdapter.currentList.getOrNull(it) ?: return@collectLatest
+                val currentItemScrolled =
+                    readerAdapter.currentList.getOrNull(it) ?: return@collectLatest
                 if (currentItemScrolled is ReaderPage.Value) {
                     parentViewModel.setCurrentPageNumber(currentItemScrolled.page.number)
                 }
@@ -128,16 +136,17 @@ class ReaderFrameFragment : Fragment() {
         }
 
         lifecycleScope.launchWhenResumed {
-            parentViewModel.pageNumberScrolledBySeekbar().collectLatest { pageNumberScrolledBySeekbar ->
-                val currentChapter = parentViewModel.currentChapter
-                val adapterItems = readerAdapter.currentList
+            parentViewModel.pageNumberScrolledBySeekbar()
+                .collectLatest { pageNumberScrolledBySeekbar ->
+                    val currentChapter = parentViewModel.currentChapter
+                    val adapterItems = readerAdapter.currentList
 
-                val pagePositionInList = adapterItems
-                    .filterIsInstance<ReaderPage.Value>()
-                    .indexOfFirst { it.chapter == currentChapter && it.page.number == pageNumberScrolledBySeekbar }
+                    val pagePositionInList = adapterItems
+                        .filterIsInstance<ReaderPage.Value>()
+                        .indexOfFirst { it.chapter == currentChapter && it.page.number == pageNumberScrolledBySeekbar }
 
-                linearLayoutManager.scrollToPositionWithOffset(pagePositionInList, 0)
-            }
+                    linearLayoutManager.scrollToPositionWithOffset(pagePositionInList, 0)
+                }
         }
 
         lifecycleScope.launchWhenResumed {
@@ -148,17 +157,26 @@ class ReaderFrameFragment : Fragment() {
 
         lifecycleScope.launchWhenResumed {
             parentViewModel.showBottomLoadingIndicator().collectLatest {
-                if (it) {
-                    concatAdapter.addAdapter(loadingAdapter)
-                } else {
-                    concatAdapter.removeAdapter(loadingAdapter)
+                when (it) {
+                    true -> concatAdapter.addAdapter(loadingAdapter)
+                    false -> concatAdapter.removeAdapter(loadingAdapter)
+                }
+            }
+        }
+
+        lifecycleScope.launchWhenResumed {
+            parentViewModel.failedToLoadNextChapter().collectLatest {
+                when (it) {
+                    true -> concatAdapter.addAdapter(failedToLoadNextChapAdapter)
+                    false -> concatAdapter.removeAdapter(failedToLoadNextChapAdapter)
                 }
             }
         }
     }
 
     private fun syncCurrentPageAndChapter() {
-        val currentPage = readerAdapter.currentList.getOrNull(linearLayoutManager.findFirstVisibleItemPosition())
+        val currentPage =
+            readerAdapter.currentList.getOrNull(linearLayoutManager.findFirstVisibleItemPosition())
         currentPage?.let {
             if (it is ReaderPage.Value) {
                 parentViewModel.setCurrentChapter(it.chapter)
