@@ -145,6 +145,7 @@ class ReaderActivity : AppCompatActivity() {
         lifecycleScope.launchWhenResumed {
             viewModel.currentChapterShown().collectLatest {
                 binding.txtToolbarChapterTitle.text = it.title
+                binding.txtCurrentChapterMini.text = it.title
             }
         }
     }

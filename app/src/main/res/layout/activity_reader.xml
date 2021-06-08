@@ -66,7 +66,8 @@
         android:layout_gravity="bottom"
         android:background="@color/translucent_black"
         android:orientation="vertical"
-        android:translationZ="4dp">
+        android:translationZ="4dp"
+        tools:visibility="gone">
 
         <TextView
             android:id="@+id/txtSeekbarCurrentPage"
@@ -101,17 +102,38 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end">
 
-        <TextView
-            android:id="@+id/txtCurrentPageMini"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="#5A5757"
-            android:gravity="center"
-            android:minWidth="80dp"
-            android:paddingHorizontal="4dp"
-            android:paddingVertical="2dp"
-            android:textColor="@android:color/white"
-            tools:text="10/200" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/txtCurrentPageMini"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#5A5757"
+                android:gravity="center"
+                android:maxWidth="120dp"
+                android:paddingHorizontal="4dp"
+                android:paddingVertical="2dp"
+                android:textColor="@android:color/white"
+                tools:text="10/200" />
+
+            <TextView
+                android:id="@+id/txtCurrentChapterMini"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#5A5757"
+                android:gravity="center"
+                android:maxWidth="100dp"
+                android:lines="1"
+                android:ellipsize="end"
+                android:paddingEnd="4dp"
+                android:paddingVertical="2dp"
+                android:textColor="@color/subLightTextColor"
+                tools:text="Chapter 134" />
+
+        </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>
 
