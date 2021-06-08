@@ -32,11 +32,11 @@
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:ellipsize="end"
+                    android:gravity="center_vertical"
                     android:lines="1"
                     android:textColor="@color/white"
                     app:autoSizeTextType="uniform"
-                    tools:text="@string/manga_title"
-                    android:gravity="center_vertical"/>
+                    tools:text="@string/manga_title" />
 
                 <TextView
                     android:id="@+id/txtToolbarChapterTitle"
@@ -59,7 +59,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/seekbarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -67,33 +67,59 @@
         android:background="@color/translucent_black"
         android:orientation="vertical"
         android:translationZ="4dp"
-        tools:visibility="gone">
+        tools:visibility="visible">
+
+        <ImageButton
+            android:id="@+id/btnToFirstPage"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="12dp"
+            android:background="?attr/selectableItemBackground"
+            android:src="@drawable/ic_baseline_skip_previous_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/txtSeekbarCurrentPage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
             android:gravity="center"
             android:textColor="@android:color/white"
             android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@id/btnToFirstPage"
+            app:layout_constraintStart_toEndOf="@id/btnToFirstPage"
+            app:layout_constraintTop_toTopOf="@id/btnToFirstPage"
             tools:text="1/80" />
 
         <SeekBar
             android:id="@+id/seekbar"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="24dp"
+            android:layout_marginStart="4dp"
             android:layout_marginRight="16dp"
-            android:layout_marginBottom="8dp"
             android:maxHeight="6dp"
             android:progressDrawable="@drawable/seekbar_style"
             android:splitTrack="false"
             android:thumb="@drawable/seekbar_thumb"
+            app:layout_constraintBottom_toBottomOf="@id/txtSeekbarCurrentPage"
+            app:layout_constraintEnd_toStartOf="@id/btnToLastPage"
+            app:layout_constraintStart_toEndOf="@id/txtSeekbarCurrentPage"
+            app:layout_constraintTop_toTopOf="@id/txtSeekbarCurrentPage"
             tools:progress="30" />
 
-    </LinearLayout>
+        <ImageButton
+            android:id="@+id/btnToLastPage"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="?attr/selectableItemBackground"
+            android:padding="12dp"
+            android:src="@drawable/ic_baseline_skip_next_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/seekbar"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/bottomRightInfoView"
@@ -124,12 +150,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#5A5757"
-                android:gravity="center"
-                android:maxWidth="100dp"
-                android:lines="1"
                 android:ellipsize="end"
-                android:paddingEnd="4dp"
+                android:gravity="center"
+                android:lines="1"
+                android:maxWidth="100dp"
                 android:paddingVertical="2dp"
+                android:paddingEnd="4dp"
                 android:textColor="@color/subLightTextColor"
                 tools:text="Chapter 134" />
 

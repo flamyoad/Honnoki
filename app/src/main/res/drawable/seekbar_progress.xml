@@ -9,8 +9,10 @@
                 <size android:height="5dp"/>
                 <corners
                     android:radius="5dp" />
-                <solid android:color="#ece400"/>
+                <solid android:color="@color/flower_petal_medium"/>
             </shape>
         </clip>
     </item>
 </layer-list>
+
+<!--<solid android:color="#ece400"/>-->
