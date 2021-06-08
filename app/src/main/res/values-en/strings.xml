@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="default_group_name">All</string>
+
     <string name="chapter_list_no_items">0 chapter</string>
     <plurals name="chapter_list_total">
         <item quantity="one">%d chapter</item>

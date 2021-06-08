@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.flamyoad.honnoki.ui.reader.adapter.ReaderImageAdapter
 import com.flamyoad.honnoki.ui.reader.adapter.ReaderLoadingAdapter
-import com.flamyoad.honnoki.databinding.FragmentReaderFrameBinding
+import com.flamyoad.honnoki.databinding.FragmentVerticalScrollingReaderBinding
 import com.flamyoad.honnoki.ui.reader.adapter.FailedToLoadNextChapterAdapter
 import com.flamyoad.honnoki.ui.reader.model.LoadType
 import com.flamyoad.honnoki.ui.reader.model.ReaderPage
@@ -24,13 +24,13 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 @ExperimentalPagingApi
-class ReaderFrameFragment : Fragment() {
+class VerticalScrollingReaderFragment : Fragment() {
 
-    private var _binding: FragmentReaderFrameBinding? = null
+    private var _binding: FragmentVerticalScrollingReaderBinding? = null
     private val binding get() = requireNotNull(_binding)
 
     private val parentViewModel: ReaderViewModel by sharedViewModel()
-    private val viewModel: ReaderFrameViewModel by viewModel()
+    private val viewModel: VerticalScrollingReaderViewModel by viewModel()
 
     private val concatAdapter = ConcatAdapter()
     private val readerAdapter = ReaderImageAdapter()
@@ -44,9 +44,8 @@ class ReaderFrameFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        _binding = FragmentReaderFrameBinding.inflate(layoutInflater, container, false)
+    ): View {
+        _binding = FragmentVerticalScrollingReaderBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 
@@ -203,6 +202,6 @@ class ReaderFrameFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance() = ReaderFrameFragment()
+        fun newInstance() = VerticalScrollingReaderFragment()
     }
 }

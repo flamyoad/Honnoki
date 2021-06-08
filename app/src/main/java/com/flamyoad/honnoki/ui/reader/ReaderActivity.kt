@@ -6,7 +6,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.WindowManager
 import android.widget.SeekBar
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
@@ -40,7 +39,7 @@ class ReaderActivity : AppCompatActivity() {
         observeUi()
 
         if (savedInstanceState == null) {
-            val frameFragment = ReaderFrameFragment.newInstance()
+            val frameFragment = VerticalScrollingReaderFragment.newInstance()
             supportFragmentManager.beginTransaction()
                 .replace(R.id.container, frameFragment)
                 .commit()

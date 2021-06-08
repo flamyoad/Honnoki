@@ -5,7 +5,7 @@
     android:id="@+id/smartRefreshLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.reader.ReaderFrameFragment">
+    tools:context=".ui.reader.VerticalScrollingReaderFragment">
 
     <com.scwang.smart.refresh.header.ClassicsHeader
         android:id="@+id/refreshHeader"

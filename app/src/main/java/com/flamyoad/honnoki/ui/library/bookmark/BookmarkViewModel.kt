@@ -45,14 +45,8 @@ class BookmarkViewModel(
     }
 
     private fun initializeBookmarkGroups() {
-        // move init part to mainactivity!! or Application
         viewModelScope.launch(Dispatchers.IO) {
-            db.withTransaction {
-                if (bookmarkGroupDao.getAllBlocking().isEmpty()) {
-                    bookmarkGroupDao.insert(BookmarkGroup(name = "All"))
-                }
-                selectedBookmarkGroupId.value = bookmarkGroupDao.getFirstItemId()
-            }
+            selectedBookmarkGroupId.value = bookmarkGroupDao.getFirstItemId()
         }
     }
 

@@ -6,12 +6,13 @@ import androidx.lifecycle.ViewModel
 import androidx.paging.ExperimentalPagingApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 @ExperimentalPagingApi
-class ReaderFrameViewModel() : ViewModel() {
+class VerticalScrollingReaderViewModel() : ViewModel() {
 
     private val _pullToRefreshEnabled = MutableStateFlow(false)
-    val disablePullToRefresh: StateFlow<Boolean> get() = _pullToRefreshEnabled
+    val disablePullToRefresh = _pullToRefreshEnabled.asStateFlow()
 
     fun setPullToRefreshEnabled(isEnabled: Boolean) {
         _pullToRefreshEnabled.value = isEnabled

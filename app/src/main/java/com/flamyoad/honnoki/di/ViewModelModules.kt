@@ -8,7 +8,7 @@ import com.flamyoad.honnoki.dialog.DeleteBookmarkGroupDialogViewModel
 import com.flamyoad.honnoki.ui.home.HomeViewModel
 import com.flamyoad.honnoki.ui.library.bookmark.BookmarkViewModel
 import com.flamyoad.honnoki.ui.overview.MangaOverviewViewModel
-import com.flamyoad.honnoki.ui.reader.ReaderFrameViewModel
+import com.flamyoad.honnoki.ui.reader.VerticalScrollingReaderViewModel
 import com.flamyoad.honnoki.ui.reader.ReaderViewModel
 import com.flamyoad.honnoki.ui.search.SimpleSearchViewModel
 import org.koin.android.ext.koin.androidApplication
@@ -23,7 +23,7 @@ val viewModelModules = module {
     viewModel { BookmarkViewModel(get()) }
     viewModel { MangaOverviewViewModel(get(), get(named(KoinConstants.MANGAKALOT))) }
     viewModel { ReaderViewModel(get(), get(named(KoinConstants.MANGAKALOT))) }
-    viewModel { ReaderFrameViewModel() }
+    viewModel { VerticalScrollingReaderViewModel() }
     viewModel { SimpleSearchViewModel(androidApplication(), get(), get(named(KoinConstants.MANGAKALOT))) }
 
     // Dialogs
