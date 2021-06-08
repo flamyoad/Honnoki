@@ -30,21 +30,15 @@ class BookmarkViewModel(
         private set
 
     val selectedBookmarkGroup = selectedBookmarkGroupId
-        .flatMapLatest {
-            if (it == -1L) return@flatMapLatest flowOf(BookmarkGroup.empty())
-            return@flatMapLatest db.bookmarkGroupDao().getById(it)
-        }
+        .onEach { flowOf(BookmarkGroup.empty()) }
+        .filter { it != -1L }
+        .flatMapLatest { return@flatMapLatest db.bookmarkGroupDao().getById(it) }
 
-    val bookmarkItems: LiveData<List<BookmarkWithOverview>> =
-        selectedBookmarkGroup
-            .flatMapLatest {
-                val groupId = it?.id
-                if (groupId != null)
-                    return@flatMapLatest db.bookmarkDao().getAllWithOverviewFrom(groupId)
-                else
-                    return@flatMapLatest flowOf(emptyList())
-            }
-            .asLiveData()
+    val bookmarkItems: LiveData<List<BookmarkWithOverview>> = selectedBookmarkGroup
+        .onEach { flowOf(emptyList<BookmarkWithOverview>()) }
+        .filterNotNull()
+        .flatMapLatest { db.bookmarkDao().getAllWithOverviewFrom(it.id ?: -1L) }
+        .asLiveData()
 
     init {
         initializeBookmarkGroups()

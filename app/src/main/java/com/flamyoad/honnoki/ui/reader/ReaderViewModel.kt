@@ -37,10 +37,10 @@ class ReaderViewModel(
     private val currentPageNumber = MutableStateFlow(0)
     fun currentPageNumber() = currentPageNumber.asStateFlow()
 
-    val totalPageNumber = currentChapterShown.flatMapLatest {
-        if (it.id == null) return@flatMapLatest flowOf(0)
-        db.chapterDao().getTotalPages(it.id)
-    }
+    val totalPageNumber = currentChapterShown
+        .filter { it.id != null }
+        .flatMapLatest { db.chapterDao().getTotalPages(requireNotNull(it.id)) }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
 
     val currentPageIndicator = currentPageNumber.combine(totalPageNumber) { current, total ->
         "$current / $total"
@@ -167,5 +167,14 @@ class ReaderViewModel(
 
     fun setCurrentChapter(chapter: Chapter) {
         currentChapterShown.value = chapter
+    }
+
+    fun goToFirstPage() {
+        pageNumberScrolledBySeekbar.tryEmit(0)
+    }
+
+    fun goToLastPage() {
+        val lastPage = totalPageNumber.value
+        pageNumberScrolledBySeekbar.tryEmit(lastPage)
     }
 }
