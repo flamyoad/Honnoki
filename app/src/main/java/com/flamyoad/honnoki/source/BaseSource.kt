@@ -61,14 +61,4 @@ abstract class BaseSource(val db: AppDatabase, val context: Context) {
     open suspend fun getImages(urlPath: String): State<List<Page>> {
         return State.Error()
     }
-
-    companion object {
-//        @ExperimentalPagingApi
-//        fun get(source: Source, db: AppDatabase, context: Context): BaseSource {
-//            return when (source) {
-//                Source.MANGAKALOT -> MangakalotSource(db, context)
-//                Source.SENMANGA -> SenMangaSource(db, context)
-//            }
-//        }
-    }
 }

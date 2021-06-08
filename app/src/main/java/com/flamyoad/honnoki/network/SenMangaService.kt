@@ -7,6 +7,7 @@ import retrofit2.http.Query
 interface SenMangaService {
     companion object {
         const val BASE_URL = "https://raw.senmanga.com/"
+        const val CACHE_SIZE = (2 * 1024 * 1024).toLong()
     }
 
     @GET("directory/last_update")

@@ -10,6 +10,6 @@ import org.koin.dsl.module
 
 @ExperimentalPagingApi
 val sourceModules = module {
-    factory<BaseSource>(named(Constants.MANGAKALOT)) { MangakalotSource(get(), androidContext(), get()) }
-    factory<BaseSource>(named(Constants.SENMANGA)) { SenMangaSource(get(), androidContext(), get()) }
+    factory<BaseSource>(named(KoinConstants.MANGAKALOT)) { MangakalotSource(get(), androidContext(), get()) }
+    factory<BaseSource>(named(KoinConstants.SENMANGA)) { SenMangaSource(get(), androidContext(), get()) }
 }

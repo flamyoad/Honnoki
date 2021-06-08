@@ -72,12 +72,12 @@ class ReaderViewModel(
 
     var currentScrollPosition: Int = -1
 
-    fun fetchChapterImages(chapterId: Long, loadType: LoadType) {
+    fun fetchChapterImages(chapterId: Long, loadType: LoadType): Job {
         if (loadType == LoadType.NEXT) {
             showBottomLoadingIndicator.value = true
         }
 
-        viewModelScope.launch(Dispatchers.IO) {
+        return viewModelScope.launch(Dispatchers.IO) {
             val chapter = db.chapterDao().get(chapterId) ?: throw IllegalArgumentException("")
             val result = baseSource.getImages(chapter.link)
 
@@ -112,6 +112,7 @@ class ReaderViewModel(
                 pageList.value = existingList
                 currentChapterShown.value = chapter
                 showBottomLoadingIndicator.value = false
+                println("Loaded all images!!")
             }
         }
     }
@@ -128,7 +129,9 @@ class ReaderViewModel(
             val prevChapter = db.chapterDao().getPreviousChapter(overviewId, currentChapterNumber)
                 ?: return@launch
             val chapterId = prevChapter.id ?: return@launch
+
             fetchChapterImages(chapterId, LoadType.PREV)
+                .join()
         }
     }
 
@@ -144,7 +147,9 @@ class ReaderViewModel(
             val nextChapter =
                 db.chapterDao().getNextChapter(overviewId, currentChapterNumber) ?: return@launch
             val chapterId = nextChapter.id ?: return@launch
+
             fetchChapterImages(chapterId, LoadType.NEXT)
+                .join()
         }
     }
 

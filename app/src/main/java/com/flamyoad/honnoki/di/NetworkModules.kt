@@ -2,6 +2,7 @@ package com.flamyoad.honnoki.di
 
 import android.content.Context
 import com.flamyoad.honnoki.network.MangakalotService
+import com.flamyoad.honnoki.network.SenMangaService
 import com.flamyoad.honnoki.network.interceptor.CacheInterceptor
 import com.flamyoad.honnoki.network.interceptor.RefererInterceptor
 import com.flamyoad.honnoki.network.interceptor.UserAgentInterceptor
@@ -15,13 +16,15 @@ import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
 
 val networkModules = module {
-    single { provideMangakalotService(get(named(Constants.MANGAKALOT))) }
+    single { provideMangakalotService(get(named(KoinConstants.MANGAKALOT))) }
+    single { provideSenmangaService(get(named(KoinConstants.SENMANGA))) }
 
-    single<OkHttpClient>(named(Constants.MANGAKALOT)) {
-        provideMangakalotOkHttpClient(
-            androidContext(),
-            get()
-        )
+    single<OkHttpClient>(named(KoinConstants.MANGAKALOT)) {
+        provideMangakalotHttpClient(androidContext(), get())
+    }
+
+    single<OkHttpClient>(named(KoinConstants.SENMANGA)) {
+        provideSenmangaHttpClient(androidContext(), get())
     }
 
     factory { provideHttpLoggingInterceptor() }
@@ -35,7 +38,15 @@ fun provideMangakalotService(httpClient: OkHttpClient): MangakalotService {
     return retrofit.create(MangakalotService::class.java)
 }
 
-fun provideMangakalotOkHttpClient(
+fun provideSenmangaService(httpClient: OkHttpClient): SenMangaService {
+    val retrofit = Retrofit.Builder()
+        .baseUrl(SenMangaService.BASE_URL)
+        .client(httpClient)
+        .build()
+    return retrofit.create(SenMangaService::class.java)
+}
+
+fun provideMangakalotHttpClient(
     context: Context,
     loggingInterceptor: HttpLoggingInterceptor
 ): OkHttpClient {
@@ -46,6 +57,20 @@ fun provideMangakalotOkHttpClient(
         .addInterceptor(loggingInterceptor)
         .addInterceptor(UserAgentInterceptor(context))
         .addInterceptor(RefererInterceptor(MangakalotService.BASE_URL))
+        .addNetworkInterceptor(CacheInterceptor(1, TimeUnit.MINUTES))
+        .build()
+}
+
+fun provideSenmangaHttpClient(
+    context: Context,
+    loggingInterceptor: HttpLoggingInterceptor
+): OkHttpClient {
+    val myCache = (Cache(context.cacheDir, MangakalotService.CACHE_SIZE))
+
+    return OkHttpClient.Builder()
+        .cache(myCache)
+        .addInterceptor(loggingInterceptor)
+        .addInterceptor(UserAgentInterceptor(context))
         .addNetworkInterceptor(CacheInterceptor(1, TimeUnit.MINUTES))
         .build()
 }

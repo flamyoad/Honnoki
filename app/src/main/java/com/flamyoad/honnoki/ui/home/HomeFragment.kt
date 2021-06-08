@@ -18,12 +18,14 @@ import com.flamyoad.honnoki.data.model.TabType
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
 import com.flamyoad.honnoki.utils.ui.DepthPageTransformer
 import com.google.android.material.tabs.TabLayoutMediator
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import java.lang.IllegalArgumentException
 
 @ExperimentalPagingApi
 class HomeFragment : BaseFragment(), SourceSwitcherDialog.Listener {
-    private val viewModel: HomeViewModel by sharedViewModel()
+    private val viewModel: HomeViewModel by viewModel()
+
     private val binding by viewLifecycleLazy { FragmentHomeBinding.bind(requireView()) }
 
     private val tabList = listOf(
@@ -31,6 +33,10 @@ class HomeFragment : BaseFragment(), SourceSwitcherDialog.Listener {
         TabType("all", MangaType.TRENDING),
         TabType("all", MangaType.NEW)
     )
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
