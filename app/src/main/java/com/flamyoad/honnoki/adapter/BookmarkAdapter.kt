@@ -4,11 +4,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.Glide
+import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.databinding.BookmarkListItemBinding
 import com.flamyoad.honnoki.data.model.BookmarkWithOverview
 
-class BookmarkAdapter(private val onBookmarkClick: (BookmarkWithOverview) -> Unit) :
-    BaseListAdapter<BookmarkWithOverview, BookmarkListItemBinding>(BOOKMARK_COMPARATOR) {
+class BookmarkAdapter(
+    private val onBookmarkClick: (BookmarkWithOverview) -> Unit,
+    private val onBookmarkLongClick: (BookmarkWithOverview) -> Unit
+) : BaseListAdapter<BookmarkWithOverview, BookmarkListItemBinding>(BOOKMARK_COMPARATOR) {
 
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> BookmarkListItemBinding
         get() = BookmarkListItemBinding::inflate
@@ -21,12 +24,22 @@ class BookmarkAdapter(private val onBookmarkClick: (BookmarkWithOverview) -> Uni
 
             txtTitle.text = item.overview.mainTitle
             txtInformation.text = item.overview.status
+
+            when (item.isSelected) {
+                true -> tickLogo.setImageResource(R.drawable.ic_check)
+                false -> tickLogo.setImageDrawable(null)
+            }
         }
     }
 
     override fun onItemClick(item: BookmarkWithOverview?) {
         super.onItemClick(item)
         onBookmarkClick(item ?: return)
+    }
+
+    override fun onItemLongClick(item: BookmarkWithOverview?) {
+        super.onItemLongClick(item)
+        onBookmarkLongClick(item ?: return)
     }
 
     companion object {

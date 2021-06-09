@@ -15,6 +15,7 @@ abstract class BaseListAdapter<T: Any, VB: ViewBinding>
 
     open fun onCreate(holder: BaseViewHolder, binding: VB) {}
     open fun onItemClick(item: T?) {}
+    open fun onItemLongClick(item: T?) {}
     open fun onRecycleView(holder: BaseViewHolder) {}
 
     final override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
@@ -26,6 +27,13 @@ abstract class BaseListAdapter<T: Any, VB: ViewBinding>
             val item = getItem(holder.bindingAdapterPosition)
             onItemClick(item)
         }
+
+        holder.itemView.setOnLongClickListener {
+            val item = getItem(holder.bindingAdapterPosition)
+            onItemLongClick(item)
+            return@setOnLongClickListener true
+        }
+
         return holder
     }
 

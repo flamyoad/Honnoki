@@ -6,6 +6,7 @@ import com.flamyoad.honnoki.dialog.BookmarkDialogViewModel
 import com.flamyoad.honnoki.dialog.ChangeBookmarkGroupNameViewModel
 import com.flamyoad.honnoki.dialog.DeleteBookmarkGroupDialogViewModel
 import com.flamyoad.honnoki.ui.home.HomeViewModel
+import com.flamyoad.honnoki.ui.library.LibraryViewModel
 import com.flamyoad.honnoki.ui.library.bookmark.BookmarkViewModel
 import com.flamyoad.honnoki.ui.overview.MangaOverviewViewModel
 import com.flamyoad.honnoki.ui.reader.VerticalScrollingReaderViewModel
@@ -20,7 +21,8 @@ import org.koin.dsl.module
 val viewModelModules = module {
 //    viewModel { parameters -> HomeViewModel(get(), get(named(parameters.get()))) }
     viewModel { HomeViewModel(get(), get(named(KoinConstants.MANGAKALOT))) }
-    viewModel { BookmarkViewModel(get()) }
+    viewModel { LibraryViewModel() }
+    viewModel { BookmarkViewModel(get(), get(), get(named(KoinConstants.APP_SCOPE))) }
     viewModel { MangaOverviewViewModel(get(), get(named(KoinConstants.MANGAKALOT))) }
     viewModel { ReaderViewModel(get(), get(named(KoinConstants.MANGAKALOT))) }
     viewModel { VerticalScrollingReaderViewModel() }

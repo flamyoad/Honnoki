@@ -144,7 +144,7 @@ dependencies {
 
     implementation 'com.github.florent37:shapeofview:1.4.7'
 
-    implementation 'androidx.palette:palette:1.0.0'
+    implementation 'androidx.palette:palette-ktx:1.0.0'
 
     implementation 'com.google.android:flexbox:2.0.1'
 
@@ -156,4 +156,8 @@ dependencies {
     implementation 'com.scwang.smart:refresh-header-classics:2.0.3'
 
     implementation 'jp.wasabeef:recyclerview-animators:4.0.2'
+
+    def material_dialogs = "3.3.0"
+    implementation "com.afollestad.material-dialogs:core:$material_dialogs"
+    implementation "com.afollestad.material-dialogs:lifecycle:$material_dialogs"
 }

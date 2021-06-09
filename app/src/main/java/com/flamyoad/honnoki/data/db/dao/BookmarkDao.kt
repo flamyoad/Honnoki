@@ -1,9 +1,6 @@
 package com.flamyoad.honnoki.data.db.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Transaction
+import androidx.room.*
 import com.flamyoad.honnoki.data.model.Bookmark
 import com.flamyoad.honnoki.data.model.BookmarkWithOverview
 import kotlinx.coroutines.flow.Flow
@@ -12,7 +9,13 @@ import kotlinx.coroutines.flow.Flow
 interface BookmarkDao {
 
     @Insert
-    fun insert(bookmark: List<Bookmark>)
+    fun insert(bookmarks: List<Bookmark>)
+
+    @Update
+    fun update(bookmarks: List<Bookmark>)
+
+    @Delete
+    fun delete(bookmarks: List<Bookmark>)
 
     @Query("SELECT * FROM bookmark WHERE bookmarkGroupId = :bookmarkGroupId")
     fun getAllFrom(bookmarkGroupId: Long): Flow<List<Bookmark>>

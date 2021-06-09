@@ -1,7 +1,9 @@
 package com.flamyoad.honnoki
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.paging.ExperimentalPagingApi
 import com.flamyoad.honnoki.databinding.ActivityMainBinding
 import com.flamyoad.honnoki.ui.home.HomeFragment
@@ -9,7 +11,7 @@ import com.flamyoad.honnoki.ui.library.LibraryFragment
 import com.flamyoad.honnoki.ui.search.SimpleSearchFragment
 
 @ExperimentalPagingApi
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), NavigationMenuListener {
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,5 +69,13 @@ class MainActivity : AppCompatActivity() {
         fragmentTransaction.setPrimaryNavigationFragment(fragmentTemp)
             .setReorderingAllowed(true)
             .commitNow()
+    }
+
+    override fun hideNavMenu() {
+        binding.bottomNavigation.isVisible = false
+    }
+
+    override fun showNavMenu() {
+        binding.bottomNavigation.isVisible = true
     }
 }

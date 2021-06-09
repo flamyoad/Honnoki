@@ -1,17 +1,22 @@
 package com.flamyoad.honnoki.ui.library
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.flamyoad.honnoki.BaseFragment
+import com.flamyoad.honnoki.NavigationMenuListener
 
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.adapter.LibraryTabsAdapter
 import com.flamyoad.honnoki.databinding.FragmentLibraryBinding
 import com.flamyoad.honnoki.utils.ui.DepthPageTransformer
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import java.lang.ClassCastException
 import java.lang.IllegalArgumentException
 
 class LibraryFragment : BaseFragment() {
@@ -19,10 +24,12 @@ class LibraryFragment : BaseFragment() {
     private var _binding: FragmentLibraryBinding? = null
     val binding get() = requireNotNull(_binding)
 
+    private val viewModel: LibraryViewModel by sharedViewModel()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         _binding = FragmentLibraryBinding.inflate(layoutInflater, container, false)
         return binding.root
@@ -50,6 +57,14 @@ class LibraryFragment : BaseFragment() {
                 else -> throw IllegalArgumentException("Invalid tab")
             }
         }.attach()
+
+        binding.tabLayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                viewModel.notifyCancelActionMode()
+            }
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+        })
     }
 
     override fun getTitle(): String {

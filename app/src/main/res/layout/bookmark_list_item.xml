@@ -29,6 +29,15 @@
             app:layout_constraintTop_toTopOf="parent"
             android:src="@drawable/arisa_lewd" />
 
+        <ImageView
+            android:id="@+id/tickLogo"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_margin="8dp"
+            tools:src="@drawable/ic_check"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/txtTitle"
             android:layout_width="0dp"

@@ -60,4 +60,53 @@
         app:fastScrollThumbColor="@color/colorAccent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
+    <LinearLayout
+        android:id="@+id/actionModeBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:padding="8dp"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnMoveTo"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Dialog.Flush"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:insetLeft="0dp"
+            android:insetRight="0dp"
+            android:letterSpacing="0"
+            android:text="Move To"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/flower_petal_medium"
+            app:icon="@drawable/ic_baseline_snippet_folder_24"
+            app:iconGravity="top"
+            app:iconPadding="4dp"
+            app:iconTint="@color/white"
+            app:shapeAppearanceOverlay="@style/bookmark_actionmode_btn_left" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnDelete"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Dialog.Flush"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:insetLeft="0dp"
+            android:insetRight="0dp"
+            android:letterSpacing="0"
+            android:text="Delete"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/colorPrimary"
+            app:icon="@drawable/ic_baseline_delete_24"
+            app:iconGravity="top"
+            app:iconPadding="4dp"
+            app:iconTint="@color/white"
+            app:shapeAppearanceOverlay="@style/bookmark_actionmode_btn_right" />
+
+    </LinearLayout>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

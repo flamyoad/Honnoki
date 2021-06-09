@@ -21,6 +21,8 @@ class MyApplication: Application() {
             dbModules,
             networkModules,
             sourceModules,
+            repositoryModules,
+            scopeModules,
             viewModelModules
         )
 
