@@ -40,8 +40,8 @@ class MangaOverviewViewModel(private val db: AppDatabase, private val baseSource
     private val chapterListSortType = MutableStateFlow(ChapterListSort.DESC)
 
     val chapterList: LiveData<State<List<ReaderChapter>>> = mangaOverviewId
-        .combine(chapterListSortType) { id, sortType -> Pair(id, sortType) }
         .onStart { flowOf(State.Loading) }
+        .combine(chapterListSortType) { id, sortType -> Pair(id, sortType) }
         .flatMapLatest { (id, sortType) ->
             when (sortType) {
                 ChapterListSort.ASC -> db.chapterDao().getAscByOverviewId(id)
