@@ -108,19 +108,6 @@ class ReaderActivity : AppCompatActivity() {
         }
     }
 
-    /*
-    Each collectLatest() must have its own coroutine scope.
-    You cannot combine all of them in one scope like this:
-
-        lifeCycleScope.launchWhenResumed {
-             ... collectLatest { }
-             ... collectLatest { }
-             ... collectLatest { }
-         }
-
-     In this case, only the first collectLatest() will emit values
-    */
-
     private fun observeUi() {
         lifecycleScope.launchWhenResumed {
             viewModel.mangaOverview.collectLatest {
@@ -192,11 +179,12 @@ class ReaderActivity : AppCompatActivity() {
         const val OVERVIEW_ID = "overview_id"
         const val START_AT_PAGE = "start_at_page"
 
-        fun start(context: Context, chapterId: Long, overviewId: Long) {
+        fun start(context: Context, chapterId: Long, overviewId: Long, startAtPage: Int) {
             val intent = Intent(context, ReaderActivity::class.java)
             intent.apply {
                 putExtra(CHAPTER_ID, chapterId)
                 putExtra(OVERVIEW_ID, overviewId)
+                putExtra(START_AT_PAGE, startAtPage)
             }
             context.startActivity(intent)
         }

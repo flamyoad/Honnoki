@@ -4,13 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.postDelayed
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
-import androidx.recyclerview.widget.ConcatAdapter
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.*
 import com.flamyoad.honnoki.ui.reader.adapter.ReaderImageAdapter
 import com.flamyoad.honnoki.ui.reader.adapter.ReaderLoadingAdapter
 import com.flamyoad.honnoki.databinding.FragmentVerticalScrollingReaderBinding
@@ -41,6 +39,8 @@ class VerticalScrollingReaderFragment : Fragment() {
 
     private val linearLayoutManager by lazy { LinearLayoutManager(requireContext()) }
 
+    private var initialScrollDone: Boolean = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -56,9 +56,20 @@ class VerticalScrollingReaderFragment : Fragment() {
                 requireActivity().intent?.getLongExtra(ReaderActivity.CHAPTER_ID, -1) ?: -1
             parentViewModel.fetchChapterImages(chapterId, LoadType.INITIAL)
         }
-
         initUi()
         observeUi()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(INITIAL_SCROLL_DONE, initialScrollDone)
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        savedInstanceState?.let {
+            initialScrollDone = it.getBoolean(INITIAL_SCROLL_DONE)
+        }
     }
 
     private fun initUi() {
@@ -67,6 +78,20 @@ class VerticalScrollingReaderFragment : Fragment() {
         readerAdapter.stateRestorationPolicy =
             RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         concatAdapter.addAdapter(readerAdapter)
+
+        // First pass is 0 item. So we skip calling the scrolling method
+        // Second pass will be the size of the list given to ListAdapter#submitList()
+        //
+        // Don't bother using the commit callback from submitList() to scroll.
+        // Because it doesn't work
+        readerAdapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                super.onItemRangeInserted(positionStart, itemCount)
+                if (itemCount != 0) {
+                    scrollToStartingPageNumber()
+                }
+            }
+        })
 
         with(binding) {
             with(listImages) {
@@ -195,13 +220,25 @@ class VerticalScrollingReaderFragment : Fragment() {
         }
     }
 
+    private fun scrollToStartingPageNumber() {
+        if (initialScrollDone) return
+
+        val startingPageNumber = requireActivity().intent.getIntExtra(ReaderActivity.START_AT_PAGE, 0)
+        linearLayoutManager.scrollToPositionWithOffset(startingPageNumber - 1, 0)
+
+        initialScrollDone = true
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
     }
 
     companion object {
+        private const val INITIAL_SCROLL_DONE = "initial_scroll_done"
+
         @JvmStatic
         fun newInstance() = VerticalScrollingReaderFragment()
     }
 }
+

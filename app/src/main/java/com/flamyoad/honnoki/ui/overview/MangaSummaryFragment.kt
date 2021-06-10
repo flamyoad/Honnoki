@@ -110,8 +110,8 @@ class MangaSummaryFragment : Fragment() {
     private fun onChapterClick(chapter: ReaderChapter) {
         val overview = viewModel.overview
 
-        val chapterId = chapter.id ?: return
         val overviewId = overview.id ?: return
+        val chapterId = chapter.id ?: return
 
         val startAtPage = if (overview.lastReadChapterId == chapterId) {
             overview.lastReadPageNumber
@@ -119,7 +119,7 @@ class MangaSummaryFragment : Fragment() {
             0
         }
 
-        ReaderActivity.start(requireContext(), chapterId, overviewId)
+        ReaderActivity.start(requireContext(), chapterId, overviewId, startAtPage)
     }
 
     companion object {

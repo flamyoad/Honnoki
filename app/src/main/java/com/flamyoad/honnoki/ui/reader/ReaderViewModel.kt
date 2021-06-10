@@ -3,7 +3,6 @@ package com.flamyoad.honnoki.ui.reader
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
-import androidx.room.withTransaction
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.model.Chapter
 import com.flamyoad.honnoki.data.model.Page
@@ -25,7 +24,7 @@ class ReaderViewModel(
     private val db: AppDatabase,
     private val chapterRepo: ChapterRepository,
     private val overviewRepo: OverviewRepository,
-    private val appScope: CoroutineScope,
+    private val applicationScope: CoroutineScope,
     private val baseSource: BaseSource
 ) : ViewModel() {
 
@@ -161,7 +160,7 @@ class ReaderViewModel(
 
     fun saveLastReadPage(pageNumber: Int) {
         val overviewId = mangaOverviewId.value ?: return
-        appScope.launch(Dispatchers.IO) {
+        applicationScope.launch(Dispatchers.IO) {
             overviewRepo.updateLastReadPage(pageNumber, overviewId)
         }
     }

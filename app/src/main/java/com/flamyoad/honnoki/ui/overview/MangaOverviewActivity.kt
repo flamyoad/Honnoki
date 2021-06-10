@@ -210,7 +210,6 @@ class MangaOverviewActivity : AppCompatActivity() {
 
     private fun startReading() {
         val overview = viewModel.overview
-        if (overview == MangaOverview.empty()) return
         val overviewId = overview.id ?: return
 
         lifecycleScope.launch(Dispatchers.IO) {
@@ -220,7 +219,13 @@ class MangaOverviewActivity : AppCompatActivity() {
                 overview.lastReadChapterId
             }
             if (chapterId == null) return@launch
-            ReaderActivity.start(this@MangaOverviewActivity, chapterId, overviewId)
+
+            val startAtPage = if (overview.lastReadChapterId == chapterId) {
+                overview.lastReadPageNumber
+            } else {
+                0
+            }
+            ReaderActivity.start(this@MangaOverviewActivity, chapterId, overviewId, startAtPage)
         }
     }
 
