@@ -57,6 +57,7 @@ class ReaderViewModel(
         .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
 
     val currentPageIndicator = currentPageNumber.combine(totalPageNumber) { current, total ->
+        println("Current: $current, Total: $total")
         "$current / $total"
     }
 

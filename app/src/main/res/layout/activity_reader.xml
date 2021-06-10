@@ -142,7 +142,7 @@
                 android:background="#5A5757"
                 android:gravity="center"
                 android:maxWidth="120dp"
-                android:paddingHorizontal="4dp"
+                android:paddingHorizontal="8dp"
                 android:paddingVertical="2dp"
                 android:textColor="@android:color/white"
                 tools:text="10/200" />

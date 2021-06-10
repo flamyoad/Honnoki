@@ -122,7 +122,9 @@ class ReaderActivity : AppCompatActivity() {
         }
 
         lifecycleScope.launchWhenResumed {
-            viewModel.currentPageIndicator.collectLatest {
+            viewModel.currentPageIndicator
+                .debounce(50)
+                .collectLatest {
                 with(binding) {
                     txtSeekbarCurrentPage.text = it
                     txtCurrentPageMini.text = it
