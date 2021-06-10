@@ -28,4 +28,7 @@ interface MangaOverviewDao {
 
     @Query("SELECT EXISTS(SELECT * FROM bookmark WHERE mangaOverviewId = :overviewId)")
     fun hasBeenBookmarked(overviewId: Long): Flow<Boolean>
+
+    @Query("UPDATE manga_overview SET lastReadChapterId = :chapterId WHERE id = :overviewId ")
+    fun updateLastReadChapter(chapterId: Long, overviewId: Long): Int
 }

@@ -24,7 +24,7 @@ val viewModelModules = module {
     viewModel { LibraryViewModel() }
     viewModel { BookmarkViewModel(get(), get(), get(named(KoinConstants.APP_SCOPE))) }
     viewModel { MangaOverviewViewModel(get(), get(named(KoinConstants.MANGAKALOT))) }
-    viewModel { ReaderViewModel(get(), get(named(KoinConstants.MANGAKALOT))) }
+    viewModel { ReaderViewModel(get(), get(), get(named(KoinConstants.MANGAKALOT))) }
     viewModel { VerticalScrollingReaderViewModel() }
     viewModel { SimpleSearchViewModel(androidApplication(), get(), get(named(KoinConstants.MANGAKALOT))) }
 

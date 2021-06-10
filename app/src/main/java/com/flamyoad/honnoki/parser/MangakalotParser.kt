@@ -166,7 +166,8 @@ class MangakalotParser {
             summary = summary,
             status = status,
             source = Source.MANGAKALOT,
-            link = link
+            link = link,
+            lastReadChapterId = -1
         )
     }
 
@@ -223,7 +224,9 @@ class MangakalotParser {
                 title = chapterLink.textNonNull(),
                 number = (chapterList.size - (index + 1)).toDouble(),
                 link = chapterLink.attrNonNull("href"),
-                date = it.selectFirst(".chapter-time").textNonNull()
+                date = it.selectFirst(".chapter-time").textNonNull(),
+                hasBeenRead = false,
+                hasBeenDownloaded = false
             )
         }
     }

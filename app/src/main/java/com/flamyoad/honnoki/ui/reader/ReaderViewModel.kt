@@ -3,10 +3,12 @@ package com.flamyoad.honnoki.ui.reader
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
+import androidx.room.withTransaction
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.model.Chapter
 import com.flamyoad.honnoki.data.model.Page
 import com.flamyoad.honnoki.data.model.State
+import com.flamyoad.honnoki.repository.ChapterRepository
 import com.flamyoad.honnoki.source.BaseSource
 import com.flamyoad.honnoki.ui.reader.model.LoadType
 import com.flamyoad.honnoki.ui.reader.model.ReaderPage
@@ -19,6 +21,7 @@ import java.util.concurrent.ConcurrentHashMap
 @ExperimentalPagingApi
 class ReaderViewModel(
     private val db: AppDatabase,
+    private val chapterRepo: ChapterRepository,
     private val baseSource: BaseSource
 ) : ViewModel() {
 
@@ -87,7 +90,10 @@ class ReaderViewModel(
 
             val result = baseSource.getImages(chapter.link)
             when (result) {
-                is State.Success -> processChapterImages(chapter, result.value, loadType)
+                is State.Success -> {
+                    processChapterImages(chapter, result.value, loadType)
+                    markChapterAsRead(chapter)
+                }
                 is State.Error -> failedToLoadNextChapter.value = true
             }
 
@@ -133,6 +139,13 @@ class ReaderViewModel(
 
         // Marks the chapter as completed to prevent duplicate loading
         loadCompletionStatusByChapterId.put(chapter.id, true)
+    }
+
+    private suspend fun markChapterAsRead(chapter: Chapter) {
+        val overviewId = mangaOverviewId.value
+        if (overviewId == -1L) return
+
+        chapterRepo.markChapterAsRead(chapter, overviewId)
     }
 
     fun loadPreviousChapter() {

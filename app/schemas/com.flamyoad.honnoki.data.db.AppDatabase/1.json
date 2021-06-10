@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "ae2c9d2da69147556ffa8c413bb2c591",
+    "identityHash": "07ab7e8fd74a0f8b7386b4b3a18b3080",
     "entities": [
       {
         "tableName": "manga",
@@ -91,7 +91,7 @@
       },
       {
         "tableName": "manga_overview",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `coverImage` TEXT NOT NULL, `mainTitle` TEXT NOT NULL, `alternativeTitle` TEXT NOT NULL, `summary` TEXT NOT NULL, `status` TEXT NOT NULL, `source` TEXT, `link` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `coverImage` TEXT NOT NULL, `mainTitle` TEXT NOT NULL, `alternativeTitle` TEXT NOT NULL, `summary` TEXT NOT NULL, `status` TEXT NOT NULL, `source` TEXT, `link` TEXT NOT NULL, `lastReadChapterId` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -140,6 +140,12 @@
             "columnName": "link",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "lastReadChapterId",
+            "columnName": "lastReadChapterId",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -162,7 +168,7 @@
       },
       {
         "tableName": "chapters",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `title` TEXT NOT NULL, `number` REAL NOT NULL, `date` TEXT NOT NULL, `link` TEXT NOT NULL, `mangaOverviewId` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`mangaOverviewId`) REFERENCES `manga_overview`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `title` TEXT NOT NULL, `number` REAL NOT NULL, `date` TEXT NOT NULL, `link` TEXT NOT NULL, `hasBeenRead` INTEGER NOT NULL, `hasBeenDownloaded` INTEGER NOT NULL, `mangaOverviewId` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`mangaOverviewId`) REFERENCES `manga_overview`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -192,6 +198,18 @@
             "fieldPath": "link",
             "columnName": "link",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hasBeenRead",
+            "columnName": "hasBeenRead",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hasBeenDownloaded",
+            "columnName": "hasBeenDownloaded",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -579,7 +597,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ae2c9d2da69147556ffa8c413bb2c591')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '07ab7e8fd74a0f8b7386b4b3a18b3080')"
     ]
   }
 }

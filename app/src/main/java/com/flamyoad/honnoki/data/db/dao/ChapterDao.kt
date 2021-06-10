@@ -1,14 +1,14 @@
 package com.flamyoad.honnoki.data.db.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.flamyoad.honnoki.data.model.Chapter
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ChapterDao {
+    @Update
+    suspend fun update(chapter: Chapter)
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(chapterList: List<Chapter>)
 

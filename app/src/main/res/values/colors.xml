@@ -11,7 +11,7 @@
 
     <color name="mainTextColor">#2b2b2b</color>
     <color name="subTextColor">#959595</color>
-    <color name="subLightTextColor">#c4c4c4</color>
+    <color name="subLightTextColor">#B8B8B8</color>
     <color name="textColorWhite">@color/white</color>
     <color name="tab_inactive_textcolor">#9b9a9a</color>
     <color name="view_background">#E1DFDF</color>

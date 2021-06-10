@@ -27,6 +27,8 @@ data class Chapter(
     val number: Double,
     val date: String,
     val link: String,
+    val hasBeenRead: Boolean,
+    val hasBeenDownloaded: Boolean,
     val mangaOverviewId: Long = -1
 ) {
 
@@ -37,6 +39,8 @@ data class Chapter(
             number = 0.00,
             date = "",
             link = "",
+            hasBeenRead = false,
+            hasBeenDownloaded = false,
             mangaOverviewId = -1
         )
     }

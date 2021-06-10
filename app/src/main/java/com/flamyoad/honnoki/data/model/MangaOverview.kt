@@ -18,7 +18,8 @@ data class MangaOverview(
     val summary: String,
     val status: String,
     val source: Source?,
-    val link: String
+    val link: String,
+    val lastReadChapterId: Long
 ) {
     companion object {
         fun empty(): MangaOverview {
@@ -29,7 +30,8 @@ data class MangaOverview(
                 summary = "",
                 status = "",
                 source = null,
-                link = ""
+                link = "",
+                lastReadChapterId = -1
             )
         }
     }

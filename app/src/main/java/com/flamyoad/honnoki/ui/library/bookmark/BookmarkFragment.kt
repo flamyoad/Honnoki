@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
 import com.afollestad.materialdialogs.list.customListAdapter
-import com.flamyoad.honnoki.BaseFragment
 import com.flamyoad.honnoki.NavigationMenuListener
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.adapter.BookmarkAdapter
@@ -26,7 +26,6 @@ import com.flamyoad.honnoki.dialog.DeleteBookmarkGroupDialog
 import com.flamyoad.honnoki.data.model.BookmarkWithOverview
 import com.flamyoad.honnoki.ui.library.LibraryViewModel
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
-import com.flamyoad.honnoki.utils.extensions.toast
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -41,6 +40,8 @@ class BookmarkFragment : Fragment() {
 
     private val viewModel: BookmarkViewModel by viewModel()
     private val parentViewModel: LibraryViewModel by sharedViewModel()
+
+    private val dialogMoveBookmarksAdapter by lazy { BookmarkDialogAdapter({}) }
 
     private var listener: NavigationMenuListener? = null
 
@@ -235,13 +236,14 @@ class BookmarkFragment : Fragment() {
     private fun openDeleteBookmarkDialog() {
         MaterialDialog(requireContext())
             .title(text = "Delete Bookmarks")
-            .message(text = "Are you sure you want to remove the bookmarks?")
+            .message(text = "Are you sure you want to remove the selected bookmark?")
             .show {
                 positiveButton(text = "Confirm") {
                     viewModel.deleteBookmarks()
                     exitActionMode()
                 }
             }
+            .lifecycleOwner(requireActivity())
     }
 
     override fun onDestroyView() {
