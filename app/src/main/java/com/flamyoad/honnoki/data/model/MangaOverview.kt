@@ -21,7 +21,8 @@ data class MangaOverview(
     val source: Source?,
     val link: String,
     val lastReadChapterId: Long,
-    val lastReadTime: LocalDateTime
+    val lastReadTime: LocalDateTime,
+    val lastReadPageNumber: Int
 ) {
     companion object {
         fun empty(): MangaOverview {
@@ -34,7 +35,8 @@ data class MangaOverview(
                 source = null,
                 link = "",
                 lastReadChapterId = -1,
-                lastReadTime = LocalDateTime.MIN
+                lastReadTime = LocalDateTime.MIN,
+                lastReadPageNumber = -1
             )
         }
     }

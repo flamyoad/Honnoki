@@ -15,7 +15,9 @@ import androidx.transition.TransitionManager
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.databinding.ActivityReaderBinding
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.concurrent.TimeUnit
 
 @ExperimentalPagingApi
 class ReaderActivity : AppCompatActivity() {
@@ -147,6 +149,14 @@ class ReaderActivity : AppCompatActivity() {
                 println(it.toString())
                 binding.seekbar.progress = it
             }
+        }
+
+        lifecycleScope.launchWhenResumed {
+            viewModel.currentPageNumber()
+                .debounce(250)
+                .collectLatest {
+                    viewModel.saveLastReadPage(it)
+                }
         }
 
         lifecycleScope.launchWhenResumed {

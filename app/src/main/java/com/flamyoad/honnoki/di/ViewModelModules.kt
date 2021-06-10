@@ -21,12 +21,32 @@ import org.koin.dsl.module
 val viewModelModules = module {
 //    viewModel { parameters -> HomeViewModel(get(), get(named(parameters.get()))) }
     viewModel { HomeViewModel(get(), get(named(KoinConstants.MANGAKALOT))) }
+
     viewModel { LibraryViewModel() }
+
     viewModel { BookmarkViewModel(get(), get(), get(named(KoinConstants.APP_SCOPE))) }
+
     viewModel { MangaOverviewViewModel(get(), get(named(KoinConstants.MANGAKALOT))) }
-    viewModel { ReaderViewModel(get(), get(), get(named(KoinConstants.MANGAKALOT))) }
+
+    viewModel {
+        ReaderViewModel(
+            get(),
+            get(),
+            get(),
+            get(named(KoinConstants.APP_SCOPE)),
+            get(named(KoinConstants.MANGAKALOT))
+        )
+    }
+
     viewModel { VerticalScrollingReaderViewModel() }
-    viewModel { SimpleSearchViewModel(androidApplication(), get(), get(named(KoinConstants.MANGAKALOT))) }
+
+    viewModel {
+        SimpleSearchViewModel(
+            androidApplication(),
+            get(),
+            get(named(KoinConstants.MANGAKALOT))
+        )
+    }
 
     // Dialogs
     viewModel { AddBookmarkGroupDialogViewModel(androidApplication(), get()) }

@@ -36,4 +36,11 @@ interface MangaOverviewDao {
         WHERE id = :overviewId 
        """)
     fun updateLastReadChapter(chapterId: Long, readTime: LocalDateTime, overviewId: Long): Int
+
+    @Query("""
+        UPDATE manga_overview 
+        SET lastReadPageNumber = :pageNumber
+        WHERE id = :overviewId 
+    """)
+    fun updateLastReadPage(pageNumber: Int, overviewId: Long): Int
 }

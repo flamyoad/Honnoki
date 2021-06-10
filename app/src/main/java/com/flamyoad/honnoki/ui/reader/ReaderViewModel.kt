@@ -9,9 +9,11 @@ import com.flamyoad.honnoki.data.model.Chapter
 import com.flamyoad.honnoki.data.model.Page
 import com.flamyoad.honnoki.data.model.State
 import com.flamyoad.honnoki.repository.ChapterRepository
+import com.flamyoad.honnoki.repository.OverviewRepository
 import com.flamyoad.honnoki.source.BaseSource
 import com.flamyoad.honnoki.ui.reader.model.LoadType
 import com.flamyoad.honnoki.ui.reader.model.ReaderPage
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
@@ -22,6 +24,8 @@ import java.util.concurrent.ConcurrentHashMap
 class ReaderViewModel(
     private val db: AppDatabase,
     private val chapterRepo: ChapterRepository,
+    private val overviewRepo: OverviewRepository,
+    private val appScope: CoroutineScope,
     private val baseSource: BaseSource
 ) : ViewModel() {
 
@@ -39,6 +43,7 @@ class ReaderViewModel(
 
     val currentChapter get() = currentChapterShown.value
 
+    // Not used for scrolling. Use #pageNumberScrolledBySeekbar instead for scrolling purpose
     private val currentPageNumber = MutableStateFlow(0)
     fun currentPageNumber() = currentPageNumber.asStateFlow()
 
@@ -145,7 +150,15 @@ class ReaderViewModel(
         val overviewId = mangaOverviewId.value
         if (overviewId == -1L) return
 
-        chapterRepo.markChapterAsRead(chapter, overviewId)
+        chapterRepo.markChapterAsRead(chapter)
+        overviewRepo.updateLastReadChapter(chapter, overviewId)
+    }
+
+    fun saveLastReadPage(pageNumber: Int) {
+        val overviewId = mangaOverviewId.value ?: return
+        appScope.launch(Dispatchers.IO) {
+            overviewRepo.updateLastReadPage(pageNumber, overviewId)
+        }
     }
 
     fun loadPreviousChapter() {

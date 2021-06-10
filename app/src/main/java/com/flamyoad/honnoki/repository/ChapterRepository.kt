@@ -11,13 +11,10 @@ class ChapterRepository(private val db: AppDatabase) {
     private val chapterDao get() = db.chapterDao()
     private val overviewDao get() = db.mangaOverviewDao()
 
-    suspend fun markChapterAsRead(chapter: Chapter, overviewId: Long) {
+    suspend fun markChapterAsRead(chapter: Chapter) {
+        if (chapter.hasBeenRead) return
+
         db.withTransaction {
-            val chapterId = chapter.id ?: throw NullEntityIdException()
-            overviewDao.updateLastReadChapter(chapterId, LocalDateTime.now(), overviewId)
-
-            if (chapter.hasBeenRead) return@withTransaction
-
             val readChapter = chapter.copy(hasBeenRead = true)
             chapterDao.update(readChapter)
         }

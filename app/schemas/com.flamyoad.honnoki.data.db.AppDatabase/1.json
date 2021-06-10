@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "f58e709386cc3d7c110acedcfe6a38d8",
+    "identityHash": "1c275a6862f38fc7f0b4fcc0d5f4f6e3",
     "entities": [
       {
         "tableName": "manga",
@@ -91,7 +91,7 @@
       },
       {
         "tableName": "manga_overview",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `coverImage` TEXT NOT NULL, `mainTitle` TEXT NOT NULL, `alternativeTitle` TEXT NOT NULL, `summary` TEXT NOT NULL, `status` TEXT NOT NULL, `source` TEXT, `link` TEXT NOT NULL, `lastReadChapterId` INTEGER NOT NULL, `lastReadTime` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `coverImage` TEXT NOT NULL, `mainTitle` TEXT NOT NULL, `alternativeTitle` TEXT NOT NULL, `summary` TEXT NOT NULL, `status` TEXT NOT NULL, `source` TEXT, `link` TEXT NOT NULL, `lastReadChapterId` INTEGER NOT NULL, `lastReadTime` TEXT NOT NULL, `lastReadPageNumber` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -151,6 +151,12 @@
             "fieldPath": "lastReadTime",
             "columnName": "lastReadTime",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastReadPageNumber",
+            "columnName": "lastReadPageNumber",
+            "affinity": "INTEGER",
             "notNull": true
           }
         ],
@@ -603,7 +609,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f58e709386cc3d7c110acedcfe6a38d8')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1c275a6862f38fc7f0b4fcc0d5f4f6e3')"
     ]
   }
 }

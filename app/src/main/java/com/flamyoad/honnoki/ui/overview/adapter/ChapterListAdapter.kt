@@ -50,6 +50,12 @@ class ChapterListAdapter(private val onChapterClick: (ReaderChapter) -> Unit) :
                     setCurrentlyReadBackground()
                     return
                 }
+
+                if (chapter.hasBeenRead) {
+                    setHasBeenReadBackground()
+                    return
+                }
+
                 setNormalBackground()
             }
         }
@@ -78,6 +84,16 @@ class ChapterListAdapter(private val onChapterClick: (ReaderChapter) -> Unit) :
             binding.btnChapter.setCardBackgroundColor(backgroundColor)
 
             val textColor = ColorUtils.resolveColorAttr(context, android.R.attr.textColorPrimary)
+            binding.txtChapter.setTextColor(textColor)
+        }
+
+        private fun setHasBeenReadBackground() {
+            Glide.with(context).clear(binding.icon)
+
+            val defaultBackground = ColorUtils.resolveColorAttr(context, R.attr.colorSurface)
+            binding.btnChapter.setCardBackgroundColor(defaultBackground)
+
+            val textColor = ContextCompat.getColor(context, R.color.subLightTextColor)
             binding.txtChapter.setTextColor(textColor)
         }
 
