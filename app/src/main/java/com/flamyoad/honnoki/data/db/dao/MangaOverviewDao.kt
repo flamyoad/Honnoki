@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.flamyoad.honnoki.data.model.MangaOverview
 import kotlinx.coroutines.flow.Flow
+import java.time.LocalDateTime
 
 @Dao
 interface MangaOverviewDao {
@@ -29,6 +30,10 @@ interface MangaOverviewDao {
     @Query("SELECT EXISTS(SELECT * FROM bookmark WHERE mangaOverviewId = :overviewId)")
     fun hasBeenBookmarked(overviewId: Long): Flow<Boolean>
 
-    @Query("UPDATE manga_overview SET lastReadChapterId = :chapterId WHERE id = :overviewId ")
-    fun updateLastReadChapter(chapterId: Long, overviewId: Long): Int
+    @Query("""
+        UPDATE manga_overview 
+        SET lastReadChapterId = :chapterId, lastReadTime = :readTime
+        WHERE id = :overviewId 
+       """)
+    fun updateLastReadChapter(chapterId: Long, readTime: LocalDateTime, overviewId: Long): Int
 }

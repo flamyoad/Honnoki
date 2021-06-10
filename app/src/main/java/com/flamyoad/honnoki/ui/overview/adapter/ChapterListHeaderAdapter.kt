@@ -6,11 +6,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.databinding.ChapterListSorterItemBinding
 import com.flamyoad.honnoki.data.model.Chapter
+import com.flamyoad.honnoki.ui.overview.model.ReaderChapter
 
 class ChapterListHeaderAdapter(val sortList: () -> Unit) :
     RecyclerView.Adapter<ChapterListHeaderAdapter.SorterViewHolder>() {
 
-    private var chapterList: List<Chapter> = emptyList()
+    private var chapterList: List<ReaderChapter> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SorterViewHolder {
         val binding =
@@ -28,7 +29,7 @@ class ChapterListHeaderAdapter(val sortList: () -> Unit) :
         holder.bind(chapterList)
     }
 
-    fun setItem(chapterList: List<Chapter>) {
+    fun setItem(chapterList: List<ReaderChapter>) {
         this.chapterList = chapterList
         notifyDataSetChanged()
     }
@@ -37,7 +38,7 @@ class ChapterListHeaderAdapter(val sortList: () -> Unit) :
 
     inner class SorterViewHolder(val binding: ChapterListSorterItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(chapterList: List<Chapter>) {
+        fun bind(chapterList: List<ReaderChapter>) {
             val resources = binding.root.context.resources
             binding.txtTotalChapters.text = if (chapterList.isEmpty()) {
                 resources.getString(R.string.chapter_list_no_items)

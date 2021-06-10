@@ -6,68 +6,32 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    android:foreground="?android:selectableItemBackgroundBorderless"
     android:clickable="true"
     android:focusable="true"
+    android:foreground="?android:selectableItemBackgroundBorderless"
     app:cardCornerRadius="4dp"
     app:cardElevation="8dp"
-    app:contentPadding="8dp">
+    tools:cardBackgroundColor="?android:attr/colorBackground">
 
     <!-- Rectangular Chip -->
     <TextView
         android:id="@+id/txtChapter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="12dp"
         android:backgroundTint="@color/view_background"
         android:gravity="center"
         android:lines="2"
-        android:layout_gravity="center"
         android:textColor="?android:attr/textColorPrimary"
         android:textSize="14dp"
         tools:text="Chapter 143" />
 
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_gravity="end|bottom"
+        tools:src="@drawable/ic_baseline_location_on_24" />
+
 </androidx.cardview.widget.CardView>
-
-    <!--<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
-    <!--xmlns:tools="http://schemas.android.com/tools"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:background="?android:selectableItemBackground"-->
-    <!--android:clickable="true"-->
-    <!--android:focusable="true"-->
-    <!--android:padding="8dp">-->
-
-    <!--<ImageButton-->
-    <!--    android:id="@+id/btnAction"-->
-    <!--    android:layout_width="50dp"-->
-    <!--    android:layout_height="0dp"-->
-    <!--    android:background="@android:color/transparent"-->
-    <!--    android:src="@drawable/ic_filter_list_black_24dp"-->
-    <!--    app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--    app:layout_constraintEnd_toEndOf="parent"-->
-    <!--    android:visibility="gone"-->
-    <!--    app:layout_constraintTop_toTopOf="parent" />-->
-
-    <!--<TextView-->
-    <!--    android:id="@+id/txtTitle"-->
-    <!--    android:layout_width="0dp"-->
-    <!--    android:layout_height="wrap_content"-->
-    <!--    android:layout_marginEnd="8dp"-->
-    <!--    android:textColor="@color/mainTextColor"-->
-    <!--    app:layout_constraintEnd_toStartOf="@id/btnAction"-->
-    <!--    app:layout_constraintStart_toStartOf="parent"-->
-    <!--    app:layout_constraintTop_toTopOf="parent"-->
-    <!--    tools:text="@string/manga_chap_title" />-->
-
-    <!--<TextView-->
-    <!--    android:id="@+id/txtDate"-->
-    <!--    android:layout_width="0dp"-->
-    <!--    android:layout_height="wrap_content"-->
-    <!--    android:layout_marginTop="8dp"-->
-    <!--    app:layout_constraintEnd_toEndOf="@id/txtTitle"-->
-    <!--    app:layout_constraintStart_toStartOf="@id/txtTitle"-->
-    <!--    app:layout_constraintTop_toBottomOf="@id/txtTitle"-->
-    <!--    tools:text="@string/manga_chap_date" />-->
-
-    <!--</androidx.constraintlayout.widget.ConstraintLayout>-->

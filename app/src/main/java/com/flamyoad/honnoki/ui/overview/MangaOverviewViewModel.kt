@@ -4,9 +4,11 @@ import android.app.Application
 import androidx.lifecycle.*
 import androidx.paging.ExperimentalPagingApi
 import com.flamyoad.honnoki.data.db.AppDatabase
+import com.flamyoad.honnoki.data.mapper.mapToDomain
 import com.flamyoad.honnoki.data.model.*
 import com.flamyoad.honnoki.source.BaseSource
 import com.flamyoad.honnoki.ui.overview.model.ChapterListSort
+import com.flamyoad.honnoki.ui.overview.model.ReaderChapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
@@ -26,7 +28,6 @@ class MangaOverviewViewModel(private val db: AppDatabase, private val baseSource
             if (it == -1L) return@flatMapLatest flowOf(MangaOverview.empty())
             return@flatMapLatest db.mangaOverviewDao().getById(it)
         }
-        .asLiveData()
 
     val genreList: LiveData<List<Genre>> = mangaOverviewId
         .flatMapLatest { db.genreDao().getByOverviewId(it) }
@@ -38,7 +39,7 @@ class MangaOverviewViewModel(private val db: AppDatabase, private val baseSource
 
     private val chapterListSortType = MutableStateFlow(ChapterListSort.DESC)
 
-    val chapterList: LiveData<State<List<Chapter>>> = mangaOverviewId
+    val chapterList: LiveData<State<List<ReaderChapter>>> = mangaOverviewId
         .combine(chapterListSortType) { id, sortType -> Pair(id, sortType) }
         .onStart { flowOf(State.Loading) }
         .flatMapLatest { (id, sortType) ->
@@ -47,6 +48,7 @@ class MangaOverviewViewModel(private val db: AppDatabase, private val baseSource
                 ChapterListSort.DESC -> db.chapterDao().getDescByOverviewId(id)
             }
         }
+        .combine(mangaOverview) { chapterList, overview -> chapterList.mapToDomain(overview) }
         .flatMapLatest {
             if (it.isNullOrEmpty()) {
                 flowOf(State.Loading)

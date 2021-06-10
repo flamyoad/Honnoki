@@ -56,7 +56,7 @@
                         android:paddingHorizontal="12dp"
                         android:src="@drawable/ic_file_download_white_24dp"
                         app:layout_constraintEnd_toStartOf="@+id/btnMore"
-                        app:layout_constraintTop_toTopOf="@+id/btnBack" />
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageButton
                         android:id="@+id/btnMore"
@@ -66,7 +66,7 @@
                         android:paddingHorizontal="12dp"
                         android:src="@drawable/ic_more_vert_white_24dp"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/btnBack" />
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/imageManga"

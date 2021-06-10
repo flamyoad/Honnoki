@@ -2,6 +2,7 @@ package com.flamyoad.honnoki.parser
 
 import com.flamyoad.honnoki.data.model.*
 import org.jsoup.Jsoup
+import java.time.LocalDateTime
 
 class MangakalotParser {
 
@@ -167,7 +168,8 @@ class MangakalotParser {
             status = status,
             source = Source.MANGAKALOT,
             link = link,
-            lastReadChapterId = -1
+            lastReadChapterId = -1,
+            lastReadTime = LocalDateTime.MIN
         )
     }
 

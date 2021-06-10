@@ -3,6 +3,7 @@ package com.flamyoad.honnoki.data.model
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import java.time.LocalDateTime
 
 @Entity(
     tableName = "manga_overview",
@@ -20,7 +21,7 @@ data class MangaOverview(
     val source: Source?,
     val link: String,
     val lastReadChapterId: Long,
-    val lastReadTime: Long
+    val lastReadTime: LocalDateTime
 ) {
     companion object {
         fun empty(): MangaOverview {
@@ -33,7 +34,7 @@ data class MangaOverview(
                 source = null,
                 link = "",
                 lastReadChapterId = -1,
-                lastReadTime = -1
+                lastReadTime = LocalDateTime.MIN
             )
         }
     }

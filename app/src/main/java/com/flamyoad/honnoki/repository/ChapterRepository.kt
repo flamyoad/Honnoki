@@ -2,7 +2,9 @@ package com.flamyoad.honnoki.repository
 
 import androidx.room.withTransaction
 import com.flamyoad.honnoki.data.db.AppDatabase
+import com.flamyoad.honnoki.data.exception.NullEntityIdException
 import com.flamyoad.honnoki.data.model.Chapter
+import java.time.LocalDateTime
 
 class ChapterRepository(private val db: AppDatabase) {
 
@@ -11,14 +13,13 @@ class ChapterRepository(private val db: AppDatabase) {
 
     suspend fun markChapterAsRead(chapter: Chapter, overviewId: Long) {
         db.withTransaction {
-            chapter.id?.let {
-                db.mangaOverviewDao().updateLastReadChapter(it, overviewId)
-            }
+            val chapterId = chapter.id ?: throw NullEntityIdException()
+            overviewDao.updateLastReadChapter(chapterId, LocalDateTime.now(), overviewId)
 
             if (chapter.hasBeenRead) return@withTransaction
 
             val readChapter = chapter.copy(hasBeenRead = true)
-            db.chapterDao().update(readChapter)
+            chapterDao.update(readChapter)
         }
     }
 
@@ -27,7 +28,7 @@ class ChapterRepository(private val db: AppDatabase) {
 
         val readChapter = chapter.copy(hasBeenDownloaded = true)
         db.withTransaction {
-            db.chapterDao().update(readChapter)
+            chapterDao.update(readChapter)
         }
     }
 }

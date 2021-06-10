@@ -6,6 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.flamyoad.honnoki.data.db.dao.*
+import com.flamyoad.honnoki.data.db.typeconverters.LocalDateTimeConverter
 import com.flamyoad.honnoki.data.model.*
 import com.flamyoad.honnoki.data.db.typeconverters.MangaTypeConverter
 import com.flamyoad.honnoki.data.db.typeconverters.SourceConverter
@@ -26,7 +27,7 @@ const val DATABASE_NAME = "com.flamyoad.android.honnoki.AppDatabase"
     version = 1
 )
 
-@TypeConverters(SourceConverter::class, MangaTypeConverter::class)
+@TypeConverters(SourceConverter::class, MangaTypeConverter::class, LocalDateTimeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun mangaDao(): MangaDao

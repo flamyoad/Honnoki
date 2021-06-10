@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
+import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
 import com.bumptech.glide.Glide
 import com.flamyoad.honnoki.R
@@ -20,6 +21,7 @@ import com.flamyoad.honnoki.utils.ui.AppBarStateChangeListener
 import com.flamyoad.honnoki.utils.ui.DepthPageTransformer
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @ExperimentalPagingApi
@@ -143,12 +145,14 @@ class MangaOverviewActivity : AppCompatActivity() {
             binding.btnFavouriteExpanded.isChecked = it
         }
 
-        viewModel.mangaOverview.observe(this) {
-            showMangaOverview(it)
-        }
-
         viewModel.authorList.observe(this) { authors ->
             binding.txtAuthor.text = authors.joinToString { it.name }
+        }
+
+        lifecycleScope.launchWhenResumed {
+            viewModel.mangaOverview.collectLatest {
+                showMangaOverview(it)
+            }
         }
     }
 
@@ -186,8 +190,9 @@ class MangaOverviewActivity : AppCompatActivity() {
     }
 
     private fun showBookmarkGroupDialog() {
-        val overviewId = viewModel.mangaOverview.value?.id ?: return
-        val dialog = BookmarkDialog.newInstance(overviewId)
+        if (viewModel.overviewId == -1L) return
+
+        val dialog = BookmarkDialog.newInstance(viewModel.overviewId)
         dialog.show(supportFragmentManager, "bookmark_dialog")
     }
 

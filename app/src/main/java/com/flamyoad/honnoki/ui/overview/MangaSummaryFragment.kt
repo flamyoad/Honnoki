@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
@@ -15,9 +16,11 @@ import com.flamyoad.honnoki.databinding.FragmentMangaSummaryBinding
 import com.flamyoad.honnoki.data.model.Chapter
 import com.flamyoad.honnoki.data.model.State
 import com.flamyoad.honnoki.ui.overview.adapter.*
+import com.flamyoad.honnoki.ui.overview.model.ReaderChapter
 import com.flamyoad.honnoki.ui.reader.ReaderActivity
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
 import jp.wasabeef.recyclerview.animators.FadeInAnimator
+import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 @ExperimentalPagingApi
@@ -77,8 +80,10 @@ class MangaSummaryFragment : Fragment() {
     }
 
     private fun observeUi() {
-        viewModel.mangaOverview.observe(viewLifecycleOwner) {
-            mangaSummaryAdapter.setMangaOverview(State.Success(it))
+        lifecycleScope.launchWhenResumed {
+            viewModel.mangaOverview.collectLatest {
+                mangaSummaryAdapter.setMangaOverview(State.Success(it))
+            }
         }
 
         viewModel.genreList.observe(viewLifecycleOwner) {
@@ -102,7 +107,7 @@ class MangaSummaryFragment : Fragment() {
         }
     }
 
-    private fun onChapterClick(chapter: Chapter) {
+    private fun onChapterClick(chapter: ReaderChapter) {
         val mangaTitle = requireActivity().intent.getStringExtra(MangaOverviewActivity.MANGA_TITLE)
 
         val intent = Intent(requireContext(), ReaderActivity::class.java)
