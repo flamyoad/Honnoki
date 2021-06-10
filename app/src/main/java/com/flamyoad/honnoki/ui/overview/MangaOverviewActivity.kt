@@ -16,12 +16,15 @@ import com.flamyoad.honnoki.adapter.MangaOverviewFragmentAdapter
 import com.flamyoad.honnoki.databinding.ActivityMangaOverviewBinding
 import com.flamyoad.honnoki.dialog.BookmarkDialog
 import com.flamyoad.honnoki.data.model.MangaOverview
+import com.flamyoad.honnoki.ui.reader.ReaderActivity
 import com.flamyoad.honnoki.utils.ViewUtils
 import com.flamyoad.honnoki.utils.ui.AppBarStateChangeListener
 import com.flamyoad.honnoki.utils.ui.DepthPageTransformer
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @ExperimentalPagingApi
@@ -121,6 +124,14 @@ class MangaOverviewActivity : AppCompatActivity() {
         binding.btnFavouriteCollapsed.setOnClickListener {
             showBookmarkGroupDialog()
         }
+
+        binding.btnReadCollapsed.setOnClickListener {
+            startReading()
+        }
+
+        binding.btnReadExpanded.setOnClickListener {
+            startReading()
+        }
     }
 
     private fun initViewPager() {
@@ -190,10 +201,27 @@ class MangaOverviewActivity : AppCompatActivity() {
     }
 
     private fun showBookmarkGroupDialog() {
-        if (viewModel.overviewId == -1L) return
+        val overviewId = viewModel.overview.id ?: return
+        if (overviewId == -1L) return
 
-        val dialog = BookmarkDialog.newInstance(viewModel.overviewId)
+        val dialog = BookmarkDialog.newInstance(overviewId)
         dialog.show(supportFragmentManager, "bookmark_dialog")
+    }
+
+    private fun startReading() {
+        val overview = viewModel.overview
+        if (overview == MangaOverview.empty()) return
+        val overviewId = overview.id ?: return
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            val chapterId = if (overview.lastReadChapterId == -1L) {
+                viewModel.getFirstChapter(overviewId)?.id
+            } else {
+                overview.lastReadChapterId
+            }
+            if (chapterId == null) return@launch
+            ReaderActivity.start(this@MangaOverviewActivity, chapterId, overviewId)
+        }
     }
 
     override fun onDestroy() {

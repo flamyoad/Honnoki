@@ -108,17 +108,18 @@ class MangaSummaryFragment : Fragment() {
     }
 
     private fun onChapterClick(chapter: ReaderChapter) {
-        val mangaTitle = requireActivity().intent.getStringExtra(MangaOverviewActivity.MANGA_TITLE)
+        val overview = viewModel.overview
 
-        val intent = Intent(requireContext(), ReaderActivity::class.java)
-        intent.apply {
-            putExtra(ReaderActivity.CHAPTER_ID, chapter.id)
-            putExtra(ReaderActivity.CHAPTER_URL, chapter.link)
-            putExtra(ReaderActivity.CHAPTER_TITLE, chapter.title)
-            putExtra(ReaderActivity.MANGA_TITLE, mangaTitle)
-            putExtra(ReaderActivity.OVERVIEW_ID, viewModel.overviewId)
+        val chapterId = chapter.id ?: return
+        val overviewId = overview.id ?: return
+
+        val startAtPage = if (overview.lastReadChapterId == chapterId) {
+            overview.lastReadPageNumber
+        } else {
+            0
         }
-        startActivity(intent)
+
+        ReaderActivity.start(requireContext(), chapterId, overviewId)
     }
 
     companion object {

@@ -1,5 +1,7 @@
 package com.flamyoad.honnoki.ui.reader
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
 import android.view.Menu
@@ -64,9 +66,6 @@ class ReaderActivity : AppCompatActivity() {
 
     private fun initUi() {
         with(binding) {
-            txtToolbarMangaTitle.text = intent.getStringExtra(MANGA_TITLE)
-            txtToolbarChapterTitle.text = intent.getStringExtra(CHAPTER_TITLE)
-
             bottomSheetOpener.setOnClickListener {
                 viewModel.setSideKickVisibility(true)
             }
@@ -124,6 +123,12 @@ class ReaderActivity : AppCompatActivity() {
 
     private fun observeUi() {
         lifecycleScope.launchWhenResumed {
+            viewModel.mangaOverview.collectLatest {
+                binding.txtToolbarMangaTitle.text = it.mainTitle
+            }
+        }
+
+        lifecycleScope.launchWhenResumed {
             viewModel.sideKickVisibility().collectLatest {
                 toggleSidekickVisibility(it)
             }
@@ -146,7 +151,6 @@ class ReaderActivity : AppCompatActivity() {
 
         lifecycleScope.launchWhenResumed {
             viewModel.currentPageNumber().collectLatest {
-                println(it.toString())
                 binding.seekbar.progress = it
             }
         }
@@ -184,10 +188,17 @@ class ReaderActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val MANGA_TITLE = "manga_title"
         const val CHAPTER_ID = "chapter_id"
-        const val CHAPTER_TITLE = "chapter_title"
-        const val CHAPTER_URL = "chapter_url"
         const val OVERVIEW_ID = "overview_id"
+        const val START_AT_PAGE = "start_at_page"
+
+        fun start(context: Context, chapterId: Long, overviewId: Long) {
+            val intent = Intent(context, ReaderActivity::class.java)
+            intent.apply {
+                putExtra(CHAPTER_ID, chapterId)
+                putExtra(OVERVIEW_ID, overviewId)
+            }
+            context.startActivity(intent)
+        }
     }
 }

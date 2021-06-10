@@ -24,6 +24,9 @@ interface ChapterDao {
     @Query("SELECT * FROM chapters WHERE id = :id")
     fun get(id: Long): Chapter?
 
+    @Query("SELECT * FROM chapters WHERE mangaOverviewId = :overviewId AND number = 0")
+    fun getFirst(overviewId: Long): Chapter?
+
     @Query("SELECT link FROM chapters WHERE id = :id")
     fun getLink(id: Long): String
 

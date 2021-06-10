@@ -21,7 +21,7 @@
         Delete (%d)
     </string>
 
-    <string name="default_group_name">All</string>
+    <string name="default_group_name">Default</string>
 
     <string name="chapter_list_no_items">0 chapter</string>
     <plurals name="chapter_list_total">

@@ -7,9 +7,6 @@ import androidx.room.Relation
 data class BookmarkGroupWithInfo(
     @Embedded val bookmarkGroup: BookmarkGroup,
 
-//    @ColumnInfo(name = "item_count")
-//    val itemCount: Int,
-
     @Relation(parentColumn = "id", entityColumn = "bookmarkGroupId")
     val bookmarks: List<Bookmark>,
 

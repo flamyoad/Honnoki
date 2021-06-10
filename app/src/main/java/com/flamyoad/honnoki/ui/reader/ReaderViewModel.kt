@@ -31,6 +31,10 @@ class ReaderViewModel(
 
     private val mangaOverviewId = MutableStateFlow(-1L)
 
+    val mangaOverview = mangaOverviewId
+        .flatMapLatest { db.mangaOverviewDao().getById(it) }
+        .flowOn(Dispatchers.IO)
+
     val chapterList = mangaOverviewId
         .flatMapLatest { db.chapterDao().getAscByOverviewId(it) }
         .flowOn(Dispatchers.IO)
@@ -50,6 +54,7 @@ class ReaderViewModel(
     val totalPageNumber = currentChapterShown
         .filter { it.id != null }
         .flatMapLatest { db.chapterDao().getTotalPages(requireNotNull(it.id)) }
+        .flowOn(Dispatchers.IO)
         .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
 
     val currentPageIndicator = currentPageNumber.combine(totalPageNumber) { current, total ->

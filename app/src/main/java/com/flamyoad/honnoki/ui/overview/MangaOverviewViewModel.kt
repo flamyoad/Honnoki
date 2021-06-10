@@ -21,13 +21,14 @@ class MangaOverviewViewModel(private val db: AppDatabase, private val baseSource
 
     private val mangaOverviewId = MutableStateFlow(-1L)
 
-    val overviewId get() = mangaOverviewId.value
-
     val mangaOverview = mangaOverviewId
         .flatMapLatest {
             if (it == -1L) return@flatMapLatest flowOf(MangaOverview.empty())
             return@flatMapLatest db.mangaOverviewDao().getById(it)
         }
+        .stateIn(viewModelScope, SharingStarted.Lazily, MangaOverview.empty())
+
+    val overview get() = mangaOverview.value
 
     val genreList: LiveData<List<Genre>> = mangaOverviewId
         .flatMapLatest { db.genreDao().getByOverviewId(it) }
@@ -56,6 +57,7 @@ class MangaOverviewViewModel(private val db: AppDatabase, private val baseSource
                 flowOf(State.Success(it))
             }
         }
+        .flowOn(Dispatchers.IO)
         .asLiveData()
 
     val hasBeenBookmarked = mangaOverviewId
@@ -134,5 +136,9 @@ class MangaOverviewViewModel(private val db: AppDatabase, private val baseSource
             ChapterListSort.ASC -> ChapterListSort.DESC
             ChapterListSort.DESC -> ChapterListSort.ASC
         }
+    }
+
+    suspend fun getFirstChapter(overviewId: Long): Chapter? {
+        return db.chapterDao().getFirst(overviewId)
     }
 }
