@@ -57,7 +57,6 @@ class ReaderViewModel(
         .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
 
     val currentPageIndicator = currentPageNumber.combine(totalPageNumber) { current, total ->
-        println("Current: $current, Total: $total")
         "$current / $total"
     }
 
@@ -143,9 +142,6 @@ class ReaderViewModel(
 
         // Submits pages from the newly loaded chapter to adapter
         pageList.value = existingList
-
-        // Sets current chapter to the newly loaded chapter
-        currentChapterShown.value = chapter
 
         // Marks the chapter as completed to prevent duplicate loading
         loadCompletionStatusByChapterId.put(chapter.id, true)

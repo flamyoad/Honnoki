@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,30 +7,18 @@
     android:orientation="vertical"
     tools:context=".ui.library.history.ReadHistoryFragment">
 
-    <com.flamyoad.honnoki.utils.ui.ToggleView
-        android:id="@+id/toggleView"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        app:viewOn="@layout/layout_bookmark_on"
-        app:viewOff="@layout/layout_bookmark_off"
-        app:initialState="on"/>
-
-    <Button
-        android:id="@+id/btnOn"
+    <com.kennyc.view.MultiStateView
+        android:id="@+id/multiStateView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="ON" />
+        android:layout_height="match_parent"
+        app:msv_loadingView="@layout/layout_loading_state_scrollable">
 
-    <Button
-        android:id="@+id/btnOff"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="OFF" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/listReadHistory"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/read_history_list_item"/>
 
-    <Button
-        android:id="@+id/btnLoading"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="LOADING" />
+    </com.kennyc.view.MultiStateView>
 
-</LinearLayout>
+</FrameLayout>

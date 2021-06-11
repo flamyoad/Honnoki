@@ -57,6 +57,14 @@
         <item name="cornerSizeBottomLeft">4dp</item>
     </style>
 
+    <style name="read_history_item_corner" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">12dp</item>
+        <item name="cornerSizeTopRight">12dp</item>
+        <item name="cornerSizeBottomLeft">12dp</item>
+        <item name="cornerSizeBottomRight">12dp</item>
+    </style>
+
     <style name="cutCornerTopLeftBottomRight">
         <item name="cornerFamily">cut</item>
         <item name="cornerSizeTopLeft">4dp</item>

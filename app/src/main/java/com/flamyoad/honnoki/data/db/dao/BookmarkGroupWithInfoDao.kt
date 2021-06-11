@@ -11,7 +11,7 @@ interface BookmarkGroupWithInfoDao {
     @Transaction
     @Query(
         """
-        SELECT bg.*, COUNT(bookmark.id) AS item_count
+        SELECT bg.*
         FROM bookmark_group as bg
         LEFT OUTER JOIN bookmark ON bg.id = bookmark.bookmarkGroupId
         GROUP BY bg.id

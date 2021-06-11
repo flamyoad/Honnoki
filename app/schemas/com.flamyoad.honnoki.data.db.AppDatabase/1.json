@@ -180,13 +180,19 @@
       },
       {
         "tableName": "chapters",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `title` TEXT NOT NULL, `number` REAL NOT NULL, `date` TEXT NOT NULL, `link` TEXT NOT NULL, `hasBeenRead` INTEGER NOT NULL, `hasBeenDownloaded` INTEGER NOT NULL, `mangaOverviewId` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`mangaOverviewId`) REFERENCES `manga_overview`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `link` TEXT NOT NULL, `title` TEXT NOT NULL, `number` REAL NOT NULL, `date` TEXT NOT NULL, `hasBeenRead` INTEGER NOT NULL, `hasBeenDownloaded` INTEGER NOT NULL, `mangaOverviewId` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`mangaOverviewId`) REFERENCES `manga_overview`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
             "affinity": "INTEGER",
             "notNull": false
+          },
+          {
+            "fieldPath": "link",
+            "columnName": "link",
+            "affinity": "TEXT",
+            "notNull": true
           },
           {
             "fieldPath": "title",
@@ -203,12 +209,6 @@
           {
             "fieldPath": "date",
             "columnName": "date",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "link",
-            "columnName": "link",
             "affinity": "TEXT",
             "notNull": true
           },

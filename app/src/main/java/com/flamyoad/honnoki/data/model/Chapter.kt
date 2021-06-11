@@ -1,9 +1,6 @@
 package com.flamyoad.honnoki.data.model
 
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
+import androidx.room.*
 
 @Entity(
     tableName = "chapters",
@@ -22,11 +19,10 @@ import androidx.room.PrimaryKey
 data class Chapter(
     @PrimaryKey
     val id: Long? = null,
-
+    val link: String,
     val title: String,
     val number: Double,
     val date: String,
-    val link: String,
     val hasBeenRead: Boolean,
     val hasBeenDownloaded: Boolean,
     val mangaOverviewId: Long = -1

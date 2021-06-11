@@ -49,6 +49,7 @@ class MangaOverviewViewModel(private val db: AppDatabase, private val baseSource
                 ChapterListSort.DESC -> db.chapterDao().getDescByOverviewId(id)
             }
         }
+        .flowOn(Dispatchers.IO)
         .combine(mangaOverview) { chapterList, overview -> chapterList.mapToDomain(overview) }
         .flatMapLatest {
             if (it.isNullOrEmpty()) {
@@ -57,7 +58,7 @@ class MangaOverviewViewModel(private val db: AppDatabase, private val baseSource
                 flowOf(State.Success(it))
             }
         }
-        .flowOn(Dispatchers.IO)
+        .flowOn(Dispatchers.Default)
         .asLiveData()
 
     val hasBeenBookmarked = mangaOverviewId

@@ -40,6 +40,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun bookmarkGroupWithInfoDao(): BookmarkGroupWithInfoDao
     abstract fun genreDao(): GenreDao
     abstract fun authorDao(): AuthorDao
+    abstract fun readHistoryDao(): ReadHistoryDao
 
     companion object {
         @Volatile
