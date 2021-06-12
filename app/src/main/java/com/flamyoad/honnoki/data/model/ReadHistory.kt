@@ -14,6 +14,6 @@ data class ReadHistory(
     val lastReadPageNumber: Int,
     val source: Source,
 
-    @Relation(parentColumn = "overviewId", entityColumn = "id")
+    @Relation(parentColumn = "lastReadChapterId", entityColumn = "id", entity = Chapter::class)
     val chapter: Chapter
 )

@@ -14,7 +14,7 @@ interface ReadHistoryDao {
     @RewriteQueriesToDropUnusedColumns
     @Query(
         """
-        SELECT *, 
+        SELECT *,
         overview.id AS overviewId,
         overview.link AS overviewLink
         FROM manga_overview AS overview
