@@ -2,6 +2,7 @@ package com.flamyoad.honnoki.ui.library.history
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -19,7 +20,7 @@ class ReadHistoryAdapter(
     private val onItemClick: (ReadHistory) -> Unit,
     private val onResumeRead: (ReadHistory) -> Unit,
     private val onRemoveItem: (ReadHistory) -> Unit,
-) : ListAdapter<ViewReadHistory, RecyclerView.ViewHolder>(COMPARATOR) {
+) : PagingDataAdapter<ViewReadHistory, RecyclerView.ViewHolder>(COMPARATOR) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -72,6 +73,7 @@ class ReadHistoryAdapter(
         return when (getItem(position)) {
             is ViewReadHistory.Header -> HEADER
             is ViewReadHistory.Item -> ITEM
+            else -> throw NotImplementedError("")
         }
     }
 

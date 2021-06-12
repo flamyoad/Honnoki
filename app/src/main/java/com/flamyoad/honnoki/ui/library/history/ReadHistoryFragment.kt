@@ -55,15 +55,8 @@ class ReadHistoryFragment : Fragment() {
 
         lifecycleScope.launchWhenResumed {
             viewModel.readHistory.collectLatest {
-                when (it) {
-                    is State.Loading -> {
-                        binding.multiStateView.viewState = MultiStateView.ViewState.LOADING
-                    }
-                    is State.Success -> {
-                        binding.multiStateView.viewState = MultiStateView.ViewState.CONTENT
-                        historyAdapter.submitList(it.value)
-                    }
-                }
+                binding.multiStateView.viewState = MultiStateView.ViewState.CONTENT
+                historyAdapter.submitData(it)
             }
         }
     }

@@ -9,5 +9,8 @@ import java.time.LocalDateTime
  */
 sealed class ViewReadHistory {
     data class Header(val date: LocalDate): ViewReadHistory()
-    data class Item(val history: ReadHistory): ViewReadHistory()
+
+    data class Item(val history: ReadHistory): ViewReadHistory() {
+        val lastReadDate: LocalDate get() = history.lastReadTime.toLocalDate()
+    }
 }

@@ -1,5 +1,6 @@
 package com.flamyoad.honnoki.data.db.dao
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.RewriteQueriesToDropUnusedColumns
@@ -19,9 +20,10 @@ interface ReadHistoryDao {
         overview.link AS overviewLink
         FROM manga_overview AS overview
         INNER JOIN chapters ON chapters.id == lastReadChapterId
+        ORDER BY lastReadTime DESC
     """
     )
-    fun getAll(): Flow<List<ReadHistory>>
+    fun getAll(): PagingSource<Int, ReadHistory>
 
     @Query(
         """

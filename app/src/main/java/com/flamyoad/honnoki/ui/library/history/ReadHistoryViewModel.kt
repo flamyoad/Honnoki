@@ -1,49 +1,42 @@
 package com.flamyoad.honnoki.ui.library.history
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.insertSeparators
+import androidx.paging.map
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.model.ReadHistory
-import com.flamyoad.honnoki.data.model.State
 import com.flamyoad.honnoki.repository.ReadHistoryRepository
 import com.flamyoad.honnoki.ui.library.history.model.ViewReadHistory
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 
 class ReadHistoryViewModel(
     private val db: AppDatabase,
-    private val bookmarkRepo: ReadHistoryRepository,
+    private val historyRepo: ReadHistoryRepository,
     private val applicationScope: CoroutineScope
 ) : ViewModel() {
 
-    val readHistory: Flow<State<List<ViewReadHistory>>> = bookmarkRepo.getAllHistories()
-        .flowOn(Dispatchers.IO)
-        .onStart { State.Loading }
-        .mapLatest { State.Success(groupHistoriesByDate(it)) }
-        .flowOn(Dispatchers.Default)
+    val readHistory =
+        historyRepo.getAllHistories().map { pagingData: PagingData<ReadHistory> ->
+            pagingData.map {
+                ViewReadHistory.Item(it)
+            }.insertSeparators { before, after ->
+                return@insertSeparators if (after == null) {
+                    null
+                } else if (before == null || before.lastReadDate != after.lastReadDate) {
+                    ViewReadHistory.Header(after.lastReadDate)
+                } else {
+                    null
+                }
+            }
+        }.cachedIn(viewModelScope)
 
-    fun removeHistory(history   : ReadHistory) {
-        applicationScope.launch {
-            bookmarkRepo.removeHistory(history)
-        }
-    }
-
-    private fun groupHistoriesByDate(histories: List<ReadHistory>): List<ViewReadHistory> {
-        val groups = histories
-            .sortedByDescending { it.lastReadTime }
-            .groupBy { it.lastReadTime.toLocalDate() }
-
-        return groups.flatMap {
-            val list = mutableListOf<ViewReadHistory>()
-
-            val header = ViewReadHistory.Header(it.key)
-            list.add(header)
-
-            val items = it.value.map { ViewReadHistory.Item(it) }
-            list.addAll(items)
-
-            return@flatMap list
-        }
+    fun removeHistory(history: ReadHistory) {
+//        applicationScope.launch {
+//            bookmarkRepo.removeHistory(history)
+//        }
     }
 }
