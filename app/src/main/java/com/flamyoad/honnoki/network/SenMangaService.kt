@@ -1,8 +1,10 @@
 package com.flamyoad.honnoki.network
 
 import okhttp3.ResponseBody
-import retrofit2.http.GET
-import retrofit2.http.Query
+import retrofit2.http.*
+
+private const val CACHE_CONTROL_MAX_AGE_60 = "Cache-Control: max-age=60"
+private const val CACHE_CONTROL_NO_CACHE = "Cache-Control: no-cache"
 
 interface SenMangaService {
     companion object {
@@ -13,6 +15,10 @@ interface SenMangaService {
     @GET("directory/last_update")
     suspend fun getLatestManga(@Query("page") index: Int): ResponseBody
 
-    @GET(".")
+    @GET("directory/popular")
     suspend fun getTrendingManga(@Query("page") index: Int): ResponseBody
+
+    @GET
+    @Headers(CACHE_CONTROL_MAX_AGE_60)
+    suspend fun getMangaOverview(@Url url: String): ResponseBody
 }

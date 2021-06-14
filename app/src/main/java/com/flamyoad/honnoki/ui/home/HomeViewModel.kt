@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel(private val sourcePref: SourcePreference) : ViewModel() {
 
-    private val shouldShrinkFab = MutableLiveData<Boolean>(false)
+    private val shouldShrinkFab = MutableLiveData(false)
     fun shouldShrinkFab(): LiveData<Boolean> = shouldShrinkFab
 
     val chosenSource = sourcePref.source

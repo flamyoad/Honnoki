@@ -48,11 +48,6 @@ class MangaMediator(
             }
             val endOfPaginationReached = mangas.isEmpty()
 
-            when (api) {
-                is MangakalotApi -> println("api is mangakalot api")
-                is SenMangaApi -> println("api is senmanga api")
-            }
-
             db.withTransaction {
                 if (loadType == LoadType.REFRESH) {
                     db.mangaDao().deleteFrom(currentSource, mangaType)

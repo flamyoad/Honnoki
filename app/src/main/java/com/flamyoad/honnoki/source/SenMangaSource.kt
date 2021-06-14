@@ -27,7 +27,11 @@ class SenMangaSource(db: AppDatabase, context: Context, private val api: SenMang
     }
 
     override fun getTrendingManga(): Flow<PagingData<Manga>> {
-        return emptyFlow()
+        return Pager(
+            config = PagingConfig(pageSize = PAGINATION_SIZE, enablePlaceholders = true),
+            remoteMediator = MangaMediator(api, db, MangaType.TRENDING),
+            pagingSourceFactory = { db.mangaDao().getFrom(Source.SENMANGA, MangaType.TRENDING) }
+        ).flow
     }
 
     override fun getSourceType(): Source {
@@ -42,11 +46,11 @@ class SenMangaSource(db: AppDatabase, context: Context, private val api: SenMang
         return emptyFlow()
     }
 
-    companion object {
-        private const val PAGINATION_SIZE = 40
+    override suspend fun getMangaOverview(urlPath: String): State<MangaOverview> {
+        return api.searchForOverview(urlPath)
     }
 
-    override suspend fun getMangaOverview(urlPath: String): State<MangaOverview> {
-        return State.Error()
+    companion object {
+        private const val PAGINATION_SIZE = 40
     }
 }
