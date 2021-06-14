@@ -20,8 +20,7 @@ import org.koin.dsl.module
 
 @ExperimentalPagingApi
 val viewModelModules = module {
-//    viewModel { parameters -> HomeViewModel(get(), get(named(parameters.get()))) }
-    viewModel { HomeViewModel(get(), get(named(KoinConstants.MANGAKALOT))) }
+    viewModel { (source: String) -> HomeViewModel(get(), get(named(source))) }
 
     viewModel { LibraryViewModel() }
 
@@ -29,15 +28,15 @@ val viewModelModules = module {
 
     viewModel { ReadHistoryViewModel(get(), get(), get(named(KoinConstants.APP_SCOPE))) }
 
-    viewModel { MangaOverviewViewModel(get(), get(named(KoinConstants.MANGAKALOT))) }
+    viewModel { (source: String) -> MangaOverviewViewModel(get(), get(named(source))) }
 
-    viewModel {
+    viewModel { (source: String) ->
         ReaderViewModel(
             get(),
             get(),
             get(),
             get(named(KoinConstants.APP_SCOPE)),
-            get(named(KoinConstants.MANGAKALOT))
+            get(named(source))
         )
     }
 

@@ -128,6 +128,12 @@ dependencies {
     // Koin for Jetpack WorkManager
     implementation "io.insert-koin:koin-androidx-workmanager:$koin_version"
 
+    def datastore_version = '1.0.0-beta01'
+    // Typed DataStore (Typed API surface, such as Proto)
+    implementation "androidx.datastore:datastore:$datastore_version"
+    // Preferences DataStore (SharedPreferences like APIs)
+    implementation "androidx.datastore:datastore-preferences:$datastore_version"
+
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:25.12.0')
     implementation 'com.google.firebase:firebase-crashlytics-ktx'

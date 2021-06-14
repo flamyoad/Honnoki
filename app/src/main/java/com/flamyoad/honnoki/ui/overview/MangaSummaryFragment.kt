@@ -22,10 +22,18 @@ import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
 import jp.wasabeef.recyclerview.animators.FadeInAnimator
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.core.parameter.parametersOf
 
 @ExperimentalPagingApi
 class MangaSummaryFragment : Fragment() {
-    private val viewModel: MangaOverviewViewModel by sharedViewModel()
+    private val mangaSource: String by lazy {
+        requireActivity().intent.getStringExtra(MangaOverviewActivity.MANGA_SOURCE) ?: ""
+    }
+
+    private val viewModel: MangaOverviewViewModel by sharedViewModel {
+        parametersOf(mangaSource)
+    }
+
     private val binding by viewLifecycleLazy { FragmentMangaSummaryBinding.bind(requireView()) }
 
     private val mainHeaderAdapter by lazy { MainHeaderAdapter() }
@@ -112,6 +120,7 @@ class MangaSummaryFragment : Fragment() {
 
         val overviewId = overview.id ?: return
         val chapterId = chapter.id ?: return
+        val source = overview.source ?: return
 
         val startAtPage = if (overview.lastReadChapterId == chapterId) {
             overview.lastReadPageNumber
@@ -119,7 +128,7 @@ class MangaSummaryFragment : Fragment() {
             0
         }
 
-        ReaderActivity.start(requireContext(), chapterId, overviewId, startAtPage)
+        ReaderActivity.start(requireContext(), chapterId, overviewId, startAtPage, source)
     }
 
     companion object {

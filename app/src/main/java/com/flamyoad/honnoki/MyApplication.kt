@@ -23,6 +23,7 @@ class MyApplication: Application() {
             sourceModules,
             repositoryModules,
             scopeModules,
+            preferenceModules,
             viewModelModules
         )
 

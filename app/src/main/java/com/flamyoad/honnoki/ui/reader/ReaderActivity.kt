@@ -15,10 +15,12 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.transition.Slide
 import androidx.transition.TransitionManager
 import com.flamyoad.honnoki.R
+import com.flamyoad.honnoki.data.model.Source
 import com.flamyoad.honnoki.databinding.ActivityReaderBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import java.util.concurrent.TimeUnit
 
 @ExperimentalPagingApi
@@ -27,7 +29,13 @@ class ReaderActivity : AppCompatActivity() {
     private var _binding: ActivityReaderBinding? = null
     val binding get() = requireNotNull(_binding)
 
-    private val viewModel: ReaderViewModel by viewModel()
+    private val source: String by lazy {
+        intent.getStringExtra(MANGA_SOURCE) ?: ""
+    }
+
+    private val viewModel: ReaderViewModel by viewModel {
+        parametersOf(source)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -184,13 +192,21 @@ class ReaderActivity : AppCompatActivity() {
         const val CHAPTER_ID = "chapter_id"
         const val OVERVIEW_ID = "overview_id"
         const val START_AT_PAGE = "start_at_page"
+        const val MANGA_SOURCE = "manga_source"
 
-        fun start(context: Context, chapterId: Long, overviewId: Long, startAtPage: Int) {
+        fun start(
+            context: Context,
+            chapterId: Long,
+            overviewId: Long,
+            startAtPage: Int,
+            source: Source
+        ) {
             val intent = Intent(context, ReaderActivity::class.java)
             intent.apply {
                 putExtra(CHAPTER_ID, chapterId)
                 putExtra(OVERVIEW_ID, overviewId)
                 putExtra(START_AT_PAGE, startAtPage)
+                putExtra(MANGA_SOURCE, source.toString())
             }
             context.startActivity(intent)
         }

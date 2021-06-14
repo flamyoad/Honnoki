@@ -17,15 +17,19 @@ import com.flamyoad.honnoki.adapter.RecentMangaListAdapter
 import com.flamyoad.honnoki.databinding.FragmentSimpleMangaListBinding
 import com.flamyoad.honnoki.data.model.Manga
 import com.flamyoad.honnoki.data.model.MangaType
+import com.flamyoad.honnoki.di.KoinConstants
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.core.parameter.parametersOf
 
 @ExperimentalPagingApi
 class SimpleMangaListFragment : Fragment() {
 
-    private val viewModel: HomeViewModel by sharedViewModel()
+    private val viewModel: HomeViewModel by sharedViewModel  {
+        parametersOf(KoinConstants.MANGAKALOT)
+    }
 
     private var _binding: FragmentSimpleMangaListBinding? = null
     private val binding get() = requireNotNull(_binding)

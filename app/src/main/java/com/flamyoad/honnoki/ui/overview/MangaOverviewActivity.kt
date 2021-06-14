@@ -16,6 +16,7 @@ import com.flamyoad.honnoki.adapter.MangaOverviewFragmentAdapter
 import com.flamyoad.honnoki.databinding.ActivityMangaOverviewBinding
 import com.flamyoad.honnoki.dialog.BookmarkDialog
 import com.flamyoad.honnoki.data.model.MangaOverview
+import com.flamyoad.honnoki.di.KoinConstants
 import com.flamyoad.honnoki.ui.reader.ReaderActivity
 import com.flamyoad.honnoki.utils.ViewUtils
 import com.flamyoad.honnoki.utils.ui.AppBarStateChangeListener
@@ -26,13 +27,20 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 @ExperimentalPagingApi
 class MangaOverviewActivity : AppCompatActivity() {
     private var _binding: ActivityMangaOverviewBinding? = null
     val binding get() = requireNotNull(_binding)
 
-    private val viewModel: MangaOverviewViewModel by viewModel()
+    private val mangaSource: String by lazy {
+        intent.getStringExtra(MANGA_SOURCE) ?: ""
+    }
+
+    private val viewModel: MangaOverviewViewModel by viewModel {
+        parametersOf(mangaSource)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -218,14 +226,22 @@ class MangaOverviewActivity : AppCompatActivity() {
             } else {
                 overview.lastReadChapterId
             }
+
             if (chapterId == null) return@launch
+            if (overview.source == null) return@launch
 
             val startAtPage = if (overview.lastReadChapterId == chapterId) {
                 overview.lastReadPageNumber
             } else {
                 0
             }
-            ReaderActivity.start(this@MangaOverviewActivity, chapterId, overviewId, startAtPage)
+            ReaderActivity.start(
+                this@MangaOverviewActivity,
+                chapterId,
+                overviewId,
+                startAtPage,
+                overview.source
+            )
         }
     }
 

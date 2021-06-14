@@ -21,18 +21,22 @@ import com.flamyoad.honnoki.adapter.TrendingMangaAdapter
 import com.flamyoad.honnoki.databinding.FragmentDetailedMangaListBinding
 import com.flamyoad.honnoki.data.model.Manga
 import com.flamyoad.honnoki.data.model.TabType
+import com.flamyoad.honnoki.di.KoinConstants
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.core.parameter.parametersOf
 
 private const val GRID_SPANCOUNT = 3
 
 @ExperimentalPagingApi
 class DetailedMangaListFragment : Fragment() {
 
-    private val viewModel: HomeViewModel by sharedViewModel()
+    private val viewModel: HomeViewModel by sharedViewModel  {
+        parametersOf(KoinConstants.MANGAKALOT)
+    }
 
     private val binding by viewLifecycleLazy { FragmentDetailedMangaListBinding.bind(requireView()) }
 

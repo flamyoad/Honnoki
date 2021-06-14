@@ -9,7 +9,6 @@ import org.koin.dsl.module
 
 val apiModules = module {
     factory { MangakalotApi(get(), get()) }
-
     factory { SenMangaApi(get(), get()) }
 
     single { MangakalotParser() }
