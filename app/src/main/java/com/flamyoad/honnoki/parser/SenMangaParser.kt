@@ -1,9 +1,6 @@
 package com.flamyoad.honnoki.parser
 
-import com.flamyoad.honnoki.data.model.Manga
-import com.flamyoad.honnoki.data.model.MangaOverview
-import com.flamyoad.honnoki.data.model.MangaType
-import com.flamyoad.honnoki.data.model.Source
+import com.flamyoad.honnoki.data.model.*
 import org.jsoup.Jsoup
 import java.time.LocalDateTime
 
@@ -100,5 +97,38 @@ class SenMangaParser {
             lastReadDateTime = LocalDateTime.MIN,
             lastReadPageNumber = -1
         )
+    }
+
+    fun parseForChapterList(html: String?): List<Chapter> {
+        if (html.isNullOrBlank()) {
+            return emptyList()
+        }
+
+        val document = Jsoup.parse(html)
+
+        val chapterList = document.select(".chapter-list > li")
+        println("chapter list in senmanga: ${chapterList.size}")
+
+        try {
+            val processedChapters = chapterList.mapIndexed { index, it ->
+                val chapterDiv = it.selectFirst("li")
+                val chapterLink = it.selectFirst("li > a")
+                Chapter(
+                    title = chapterDiv.selectFirst("a").textNonNull(),
+                    number = (chapterList.size - (index + 1)).toDouble(),
+                    link = chapterLink.attrNonNull("href"),
+                    date = it.selectFirst(".span > .time").attrNonNull("title"),
+                    hasBeenRead = false,
+                    hasBeenDownloaded = false
+                )
+            }
+            println("size: ${processedChapters.size}")
+            return processedChapters
+
+        }catch(e: Exception) {
+            println(e.stackTrace)
+        }
+
+        throw IllegalArgumentException("")
     }
 }

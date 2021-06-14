@@ -39,7 +39,7 @@ class SenMangaSource(db: AppDatabase, context: Context, private val api: SenMang
     }
 
     override suspend fun getChapterList(urlPath: String): State<List<Chapter>> {
-        return State.Error()
+        return api.searchForChapterList(urlPath)
     }
 
     override fun getSimpleSearch(query: String): Flow<PagingData<SearchResult>> {

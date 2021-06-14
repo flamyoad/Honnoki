@@ -112,8 +112,8 @@ class MangakalotApi(
         return withContext(Dispatchers.Default) {
             val html = response.string()
 
-            val mangaOverview = parser.parseForChapterList(html)
-            return@withContext State.Success(mangaOverview)
+            val chapterList = parser.parseForChapterList(html)
+            return@withContext State.Success(chapterList)
         }
     }
 
