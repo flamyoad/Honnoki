@@ -19,6 +19,7 @@ import com.flamyoad.honnoki.di.KoinConstants
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
 import com.flamyoad.honnoki.utils.ui.DepthPageTransformer
 import com.google.android.material.tabs.TabLayoutMediator
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.lang.IllegalArgumentException
@@ -26,7 +27,7 @@ import java.lang.IllegalArgumentException
 @ExperimentalPagingApi
 class HomeFragment : BaseFragment(), SourceSwitcherDialog.Listener {
 
-    private val viewModel: HomeViewModel by viewModel {
+    private val viewModel: HomeViewModel by sharedViewModel {
         parametersOf(KoinConstants.MANGAKALOT)
     }
 

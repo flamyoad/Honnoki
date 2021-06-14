@@ -11,7 +11,6 @@ import org.koin.dsl.module
 
 val preferenceModules = module {
     single { provideDataStore(androidContext()) }
-
     single { SourcePreference(get()) }
 }
 
