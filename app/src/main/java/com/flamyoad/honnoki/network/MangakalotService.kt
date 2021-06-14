@@ -20,29 +20,6 @@ interface MangakalotService {
     companion object {
         const val BASE_URL = "https://manganelo.com/"
         const val CACHE_SIZE = (2 * 1024 * 1024).toLong()
-
-        fun create(context: Context): MangakalotService {
-            val myCache = (Cache(context.cacheDir, CACHE_SIZE))
-
-            val httpLoggingInterceptor =
-                HttpLoggingInterceptor(HttpLoggingInterceptor.Logger.DEFAULT).apply {
-                    level = HttpLoggingInterceptor.Level.BASIC
-                }
-
-            val httpClient = OkHttpClient.Builder()
-                .cache(myCache)
-                .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(UserAgentInterceptor(context))
-                .addInterceptor(RefererInterceptor(BASE_URL))
-                .addNetworkInterceptor(CacheInterceptor(1, TimeUnit.MINUTES))
-                .build()
-
-            val retrofit = Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .client(httpClient)
-                .build()
-            return retrofit.create(MangakalotService::class.java)
-        }
     }
 
     @GET("genre-all/{index}")

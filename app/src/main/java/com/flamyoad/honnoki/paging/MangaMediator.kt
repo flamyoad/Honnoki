@@ -19,6 +19,7 @@ import java.io.IOException
 class MangaMediator(
     private val api: BaseApi,
     private val db: AppDatabase,
+    private val source: Source,
     private val mangaType: MangaType
 ) : RemoteMediator<Int, Manga>() {
 
@@ -50,7 +51,7 @@ class MangaMediator(
 
             db.withTransaction {
                 if (loadType == LoadType.REFRESH) {
-                    db.mangaDao().deleteFrom(currentSource, mangaType)
+                    db.mangaDao().deleteFrom(source, mangaType)
                 }
 
                 val prevKey = if (pageNumber == STARTING_PAGE_INDEX) null else pageNumber - 1
@@ -69,7 +70,6 @@ class MangaMediator(
     }
 
     companion object {
-        private val currentSource: Source = Source.MANGAKALOT
         private const val STARTING_PAGE_INDEX = 1
     }
 }

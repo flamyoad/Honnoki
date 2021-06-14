@@ -18,10 +18,14 @@ import retrofit2.Retrofit
 @ExperimentalPagingApi
 class SenMangaSource(db: AppDatabase, context: Context, private val api: SenMangaApi): BaseSource(db, context) {
 
+    override fun getSourceType(): Source {
+        return Source.SENMANGA
+    }
+
     override fun getRecentManga(): Flow<PagingData<Manga>> {
         return Pager(
             config = PagingConfig(pageSize = PAGINATION_SIZE, enablePlaceholders = true),
-            remoteMediator = MangaMediator(api, db, MangaType.RECENTLY),
+            remoteMediator = MangaMediator(api, db, getSourceType(), MangaType.RECENTLY),
             pagingSourceFactory = { db.mangaDao().getFrom(Source.SENMANGA, MangaType.RECENTLY) }
         ).flow
     }
@@ -29,13 +33,9 @@ class SenMangaSource(db: AppDatabase, context: Context, private val api: SenMang
     override fun getTrendingManga(): Flow<PagingData<Manga>> {
         return Pager(
             config = PagingConfig(pageSize = PAGINATION_SIZE, enablePlaceholders = true),
-            remoteMediator = MangaMediator(api, db, MangaType.TRENDING),
+            remoteMediator = MangaMediator(api, db, getSourceType(), MangaType.TRENDING),
             pagingSourceFactory = { db.mangaDao().getFrom(Source.SENMANGA, MangaType.TRENDING) }
         ).flow
-    }
-
-    override fun getSourceType(): Source {
-        return Source.SENMANGA
     }
 
     override suspend fun getChapterList(urlPath: String): State<List<Chapter>> {

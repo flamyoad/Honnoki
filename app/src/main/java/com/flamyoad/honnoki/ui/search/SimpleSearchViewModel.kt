@@ -24,8 +24,6 @@ class SimpleSearchViewModel(
     private val baseSource: BaseSource
 ) : ViewModel() {
 
-    private val applicationContext get() = app.applicationContext
-
     private val genreList = MutableStateFlow(initializeGenreList())
     fun genreList() = genreList.asStateFlow()
 

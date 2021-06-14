@@ -25,32 +25,32 @@ class MangakalotSource(db: AppDatabase, context: Context, private val api: Manga
     override fun getRecentManga(): Flow<PagingData<Manga>> {
         return Pager(
             config = PagingConfig(pageSize = NORMAL_PAGINATION_SIZE, enablePlaceholders = true),
-            remoteMediator = MangaMediator(api, db, MangaType.RECENTLY),
-            pagingSourceFactory = { db.mangaDao().getFrom(SOURCE, MangaType.RECENTLY) }
+            remoteMediator = MangaMediator(api, db, getSourceType(), MangaType.RECENTLY),
+            pagingSourceFactory = { db.mangaDao().getFrom(getSourceType(), MangaType.RECENTLY) }
         ).flow
     }
 
     override fun getTrendingManga(): Flow<PagingData<Manga>> {
         return Pager(
             config = PagingConfig(pageSize = NORMAL_PAGINATION_SIZE, enablePlaceholders = true),
-            remoteMediator = MangaMediator(api, db, MangaType.TRENDING),
-            pagingSourceFactory = { db.mangaDao().getFrom(SOURCE, MangaType.TRENDING) }
+            remoteMediator = MangaMediator(api, db, getSourceType(), MangaType.TRENDING),
+            pagingSourceFactory = { db.mangaDao().getFrom(getSourceType(), MangaType.TRENDING) }
         ).flow
     }
 
     override fun getTopManga(): Flow<PagingData<Manga>> {
         return Pager(
             config = PagingConfig(pageSize = NORMAL_PAGINATION_SIZE, enablePlaceholders = true),
-            remoteMediator = MangaMediator(api, db, MangaType.TOP),
-            pagingSourceFactory = { db.mangaDao().getFrom(SOURCE, MangaType.TOP) }
+            remoteMediator = MangaMediator(api, db, getSourceType(), MangaType.TOP),
+            pagingSourceFactory = { db.mangaDao().getFrom(getSourceType(), MangaType.TOP) }
         ).flow
     }
 
     override fun getNewManga(): Flow<PagingData<Manga>> {
         return Pager(
             config = PagingConfig(pageSize = NORMAL_PAGINATION_SIZE, enablePlaceholders = true),
-            remoteMediator = MangaMediator(api, db, MangaType.NEW),
-            pagingSourceFactory = { db.mangaDao().getFrom(SOURCE, MangaType.NEW) }
+            remoteMediator = MangaMediator(api, db, getSourceType(), MangaType.NEW),
+            pagingSourceFactory = { db.mangaDao().getFrom(getSourceType(), MangaType.NEW) }
         ).flow
     }
 
@@ -67,7 +67,7 @@ class MangakalotSource(db: AppDatabase, context: Context, private val api: Manga
                 db,
                 encodedQuery,
                 GenreConstants.ALL,
-                SOURCE
+                getSourceType()
             ),
             pagingSourceFactory = { db.searchResultDao().getAll() }
         ).flow
@@ -86,7 +86,7 @@ class MangakalotSource(db: AppDatabase, context: Context, private val api: Manga
                 db,
                 encodedQuery,
                 genre,
-                SOURCE
+                getSourceType()
             ),
             pagingSourceFactory = { db.searchResultDao().getAll() }
         ).flow
@@ -115,7 +115,6 @@ class MangakalotSource(db: AppDatabase, context: Context, private val api: Manga
     companion object {
         private const val LOW_PAGINATION_SIZE = 20
         private const val NORMAL_PAGINATION_SIZE = 30
-        private val SOURCE = Source.MANGAKALOT
     }
 
 }
