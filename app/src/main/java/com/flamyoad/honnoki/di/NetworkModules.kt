@@ -16,8 +16,8 @@ import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
 
 val networkModules = module {
-    single { provideMangakalotService(get(named(KoinConstants.MANGAKALOT))) }
-    single { provideSenmangaService(get(named(KoinConstants.SENMANGA))) }
+    single() { provideMangakalotService(get(named(KoinConstants.MANGAKALOT))) }
+    single() { provideSenmangaService(get(named(KoinConstants.SENMANGA))) }
 
     single<OkHttpClient>(named(KoinConstants.MANGAKALOT)) {
         provideMangakalotHttpClient(androidContext(), get())

@@ -22,6 +22,7 @@ import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 @ExperimentalPagingApi
@@ -29,11 +30,8 @@ class SimpleMangaListFragment : Fragment() {
 
     private val parentViewModel: HomeViewModel by sharedViewModel()
 
-    private val sourceName: String by lazy {
-        arguments?.getString(SOURCE) ?: ""
-    }
-
-    private val viewModel: HomeListViewModel by sharedViewModel {
+    private val viewModel: HomeListViewModel by viewModel {
+        val sourceName = arguments?.getString(SOURCE) ?: ""
         parametersOf(sourceName)
     }
 

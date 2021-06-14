@@ -10,6 +10,7 @@ import com.flamyoad.honnoki.data.model.Manga
 import com.flamyoad.honnoki.data.model.Source
 import com.flamyoad.honnoki.source.BaseSource
 import com.flamyoad.honnoki.source.MangakalotSource
+import com.flamyoad.honnoki.source.SenMangaSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn

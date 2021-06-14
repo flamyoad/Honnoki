@@ -6,6 +6,8 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.flamyoad.honnoki.api.BaseApi
+import com.flamyoad.honnoki.api.MangakalotApi
+import com.flamyoad.honnoki.api.SenMangaApi
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.model.Manga
 import com.flamyoad.honnoki.data.model.MangaType
@@ -45,6 +47,11 @@ class MangaMediator(
                 MangaType.NEW -> api.searchForNewManga(pageNumber)
             }
             val endOfPaginationReached = mangas.isEmpty()
+
+            when (api) {
+                is MangakalotApi -> println("api is mangakalot api")
+                is SenMangaApi -> println("api is senmanga api")
+            }
 
             db.withTransaction {
                 if (loadType == LoadType.REFRESH) {

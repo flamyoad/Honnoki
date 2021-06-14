@@ -5,6 +5,7 @@ import com.flamyoad.honnoki.api.MangakalotApi
 import com.flamyoad.honnoki.api.SenMangaApi
 import com.flamyoad.honnoki.parser.MangakalotParser
 import com.flamyoad.honnoki.parser.SenMangaParser
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val apiModules = module {

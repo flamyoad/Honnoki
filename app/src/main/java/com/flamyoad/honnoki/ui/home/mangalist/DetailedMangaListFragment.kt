@@ -25,6 +25,7 @@ import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 private const val GRID_SPANCOUNT = 3
@@ -35,9 +36,8 @@ class DetailedMangaListFragment : Fragment() {
 
     private val parentViewModel: HomeViewModel by sharedViewModel()
 
-    private val sourceName: String by lazy { arguments?.getString(SOURCE) ?: "" }
-
-    private val viewModel: HomeListViewModel by sharedViewModel {
+    private val viewModel: HomeListViewModel by viewModel {
+        val sourceName = arguments?.getString(SOURCE) ?: ""
         parametersOf(sourceName)
     }
 
@@ -62,7 +62,6 @@ class DetailedMangaListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
-        println("source in fragment: $sourceName")
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
