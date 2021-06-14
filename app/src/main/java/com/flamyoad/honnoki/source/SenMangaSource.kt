@@ -20,7 +20,7 @@ class SenMangaSource(db: AppDatabase, context: Context, private val api: SenMang
 
     override fun getRecentManga(): Flow<PagingData<Manga>> {
         return Pager(
-            config = PagingConfig(pageSize = PAGINATION_SIZE, enablePlaceholders = false),
+            config = PagingConfig(pageSize = PAGINATION_SIZE, enablePlaceholders = true),
             remoteMediator = MangaMediator(api, db, MangaType.RECENTLY),
             pagingSourceFactory = { db.mangaDao().getFrom(Source.SENMANGA, MangaType.RECENTLY) }
         ).flow

@@ -11,14 +11,14 @@ class SenMangaParser {
         if (html == null) return emptyList()
 
         val document = Jsoup.parse(html)
-        val mangaDivs = document.select("ul.directory > li.series")
+        val mangaDivs = document.select("div.item")
 
         val mangaList = mutableListOf<Manga>()
         for (div in mangaDivs) {
-            val title = div.selectFirst(".title > a").text()
-            val link = div.selectFirst("a.cover").attr("href")
-            val latestChapter = div.selectFirst(".latest-chapter").text()
-            val coverImage = div.selectFirst(".cover > img").attr("src")
+            val title = div.selectFirst(".series-title").textNonNull()
+            val link = div.selectFirst("a").attrNonNull("href")
+            val latestChapter = div.selectFirst(".chapter").textNonNull()
+            val coverImage = div.selectFirst("img").attrNonNull("src")
 
             mangaList.add(
                 Manga(
