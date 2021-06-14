@@ -169,7 +169,7 @@ class MangakalotParser {
             source = Source.MANGAKALOT,
             link = link,
             lastReadChapterId = -1,
-            lastReadTime = LocalDateTime.MIN,
+            lastReadDateTime = LocalDateTime.MIN,
             lastReadPageNumber = -1
         )
     }

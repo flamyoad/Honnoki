@@ -10,7 +10,7 @@ data class ReadHistory(
     val mainTitle: String,
     val overviewLink: String,
     val lastReadChapterId: Long,
-    val lastReadTime: LocalDateTime,
+    val lastReadDateTime: LocalDateTime,
     val lastReadPageNumber: Int,
     val source: Source,
 

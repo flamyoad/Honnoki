@@ -12,6 +12,7 @@ import com.flamyoad.honnoki.repository.ReadHistoryRepository
 import com.flamyoad.honnoki.ui.library.history.model.ViewReadHistory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
 class ReadHistoryViewModel(
     private val db: AppDatabase,
@@ -35,8 +36,8 @@ class ReadHistoryViewModel(
         }.cachedIn(viewModelScope)
 
     fun removeHistory(history: ReadHistory) {
-//        applicationScope.launch {
-//            bookmarkRepo.removeHistory(history)
-//        }
+        applicationScope.launch {
+            historyRepo.removeHistory(history)
+        }
     }
 }

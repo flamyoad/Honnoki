@@ -20,7 +20,7 @@ interface ReadHistoryDao {
         overview.link AS overviewLink
         FROM manga_overview AS overview
         INNER JOIN chapters ON chapters.id == lastReadChapterId
-        ORDER BY lastReadTime DESC
+        ORDER BY lastReadDateTime DESC
     """
     )
     fun getAll(): PagingSource<Int, ReadHistory>
@@ -28,7 +28,7 @@ interface ReadHistoryDao {
     @Query(
         """
         UPDATE manga_overview
-        SET lastReadChapterId = -1, lastReadTime = "", lastReadPageNumber = -1
+        SET lastReadChapterId = -1, lastReadDateTime = "", lastReadPageNumber = -1
         WHERE id = :overviewId
     """
     )
