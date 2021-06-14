@@ -7,9 +7,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.flamyoad.honnoki.api.MangaTownApi
 import com.flamyoad.honnoki.data.db.AppDatabase
-import com.flamyoad.honnoki.data.model.Manga
-import com.flamyoad.honnoki.data.model.MangaType
-import com.flamyoad.honnoki.data.model.Source
+import com.flamyoad.honnoki.data.model.*
 import com.flamyoad.honnoki.paging.MangaMediator
 import kotlinx.coroutines.flow.Flow
 
@@ -34,6 +32,22 @@ class MangaTownSource(db: AppDatabase, context: Context, private val api: MangaT
             remoteMediator = MangaMediator(api, db, getSourceType(), MangaType.TRENDING),
             pagingSourceFactory = { db.mangaDao().getFrom(getSourceType(), MangaType.TRENDING) }
         ).flow
+    }
+
+    override suspend fun getMangaOverview(urlPath: String): State<MangaOverview> {
+        return api.searchForMangaOverview(urlPath)
+    }
+
+    override suspend fun getChapterList(urlPath: String): State<List<Chapter>> {
+        return State.Error()
+    }
+
+    override suspend fun getAuthors(urlPath: String): State<List<Author>> {
+        return State.Error()
+    }
+
+    override suspend fun getGenres(urlPath: String): State<List<Genre>> {
+        return api.searchForGenres(urlPath)
     }
 
     companion object {
