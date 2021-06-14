@@ -1,13 +1,11 @@
-package com.flamyoad.honnoki.ui.home
+package com.flamyoad.honnoki.ui.home.mangalist
 
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.ConcatAdapter
@@ -20,8 +18,8 @@ import com.flamyoad.honnoki.adapter.RecentMangaListAdapter
 import com.flamyoad.honnoki.adapter.TrendingMangaAdapter
 import com.flamyoad.honnoki.databinding.FragmentDetailedMangaListBinding
 import com.flamyoad.honnoki.data.model.Manga
-import com.flamyoad.honnoki.data.model.TabType
-import com.flamyoad.honnoki.di.KoinConstants
+import com.flamyoad.honnoki.data.model.Source
+import com.flamyoad.honnoki.ui.home.HomeViewModel
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
 import kotlinx.coroutines.flow.collectLatest
@@ -33,21 +31,24 @@ private const val GRID_SPANCOUNT = 3
 
 @ExperimentalPagingApi
 class DetailedMangaListFragment : Fragment() {
-
-    private val viewModel: HomeViewModel by sharedViewModel  {
-        parametersOf(KoinConstants.MANGAKALOT)
-    }
-
     private val binding by viewLifecycleLazy { FragmentDetailedMangaListBinding.bind(requireView()) }
+
+    private val parentViewModel: HomeViewModel by sharedViewModel()
+
+    private val sourceName: String by lazy { arguments?.getString(SOURCE) ?: "" }
+
+    private val viewModel: HomeListViewModel by sharedViewModel {
+        parametersOf(sourceName)
+    }
 
     private val gridLayoutManager by lazy { GridLayoutManager(requireContext(), GRID_SPANCOUNT) }
 
     override fun onResume() {
         super.onResume()
         if (gridLayoutManager.findFirstVisibleItemPosition() == 0) {
-            viewModel.setShouldShrinkFab(false)
+            parentViewModel.setShouldShrinkFab(false)
         } else {
-            viewModel.setShouldShrinkFab(true)
+            parentViewModel.setShouldShrinkFab(true)
         }
     }
 
@@ -61,6 +62,7 @@ class DetailedMangaListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
+        println("source in fragment: $sourceName")
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -70,7 +72,8 @@ class DetailedMangaListFragment : Fragment() {
 
     private fun initRecyclerView() {
         val trendingMangaAdapter = TrendingMangaAdapter(requireContext(), this::openManga)
-        trendingMangaAdapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+        trendingMangaAdapter.stateRestorationPolicy =
+            RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
 
         val recentMangaHeaderAdapter = RecentMangaHeaderAdapter({})
 
@@ -116,9 +119,9 @@ class DetailedMangaListFragment : Fragment() {
                 super.onScrolled(recyclerView, dx, dy)
                 val firstVisiblePosition = gridLayoutManager.findFirstVisibleItemPosition()
                 if (firstVisiblePosition != 0) {
-                    viewModel.setShouldShrinkFab(true)
+                    parentViewModel.setShouldShrinkFab(true)
                 } else {
-                    viewModel.setShouldShrinkFab(false)
+                    parentViewModel.setShouldShrinkFab(false)
                 }
             }
         })
@@ -141,17 +144,13 @@ class DetailedMangaListFragment : Fragment() {
 
     companion object {
         private const val SCROLL_POSITION = "scroll_position"
-
-        const val TAB_GENRE = "HomeListFragment.TAB_GENRE"
-        const val TAB_TYPE = "HomeListFragment.TAB_TYPE"
+        private const val SOURCE = "source"
 
         @JvmStatic
-        fun newInstance(tab: TabType) =
-            DetailedMangaListFragment().apply {
-                arguments = bundleOf(
-                    TAB_GENRE to tab.genre,
-                    TAB_TYPE to tab.type.readableName
-                )
+        fun newInstance(source: Source) = DetailedMangaListFragment().apply {
+            arguments = Bundle().apply {
+                putString(SOURCE, source.toString())
             }
+        }
     }
 }

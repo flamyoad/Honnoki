@@ -5,43 +5,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
 import com.flamyoad.honnoki.BaseFragment
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.databinding.FragmentHomeBinding
 import com.flamyoad.honnoki.dialog.SourceSwitcherDialog
-import com.flamyoad.honnoki.data.model.MangaType
 import com.flamyoad.honnoki.data.model.Source
-import com.flamyoad.honnoki.data.model.TabType
-import com.flamyoad.honnoki.di.KoinConstants
+import com.flamyoad.honnoki.ui.home.adapter.MangaListFragmentAdapter
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
 import com.flamyoad.honnoki.utils.ui.DepthPageTransformer
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
 import java.lang.IllegalArgumentException
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @ExperimentalPagingApi
 class HomeFragment : BaseFragment(), SourceSwitcherDialog.Listener {
-
-    private val viewModel: HomeViewModel by sharedViewModel {
-        parametersOf(KoinConstants.MANGAKALOT)
-    }
-
     private val binding by viewLifecycleLazy { FragmentHomeBinding.bind(requireView()) }
 
-    private val tabList = listOf(
-        TabType("all", MangaType.RECENTLY),
-        TabType("all", MangaType.TRENDING),
-        TabType("all", MangaType.NEW)
-    )
+    private val viewModel: HomeViewModel by sharedViewModel()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private val viewPagerAdapter by lazy { MangaListFragmentAdapter(this) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,16 +40,30 @@ class HomeFragment : BaseFragment(), SourceSwitcherDialog.Listener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initUi()
         setupViewPager()
 
-        viewModel.shouldShrinkFab().observe(viewLifecycleOwner, Observer { shouldShrink ->
+        lifecycleScope.launchWhenResumed {
+            viewModel.chosenSource.collectLatest {  source ->
+                viewPagerAdapter.setSource(source)
+            }
+        }
+    }
+
+    private fun initUi() {
+        viewModel.shouldShrinkFab().observe(viewLifecycleOwner) { shouldShrink ->
             when (shouldShrink) {
                 true -> binding.fab.shrink()
                 false -> binding.fab.extend()
             }
-        })
+        }
 
-        binding.fab.text = viewModel.getSourceType().title
+        lifecycleScope.launchWhenResumed {
+            viewModel.chosenSource.collectLatest {
+                binding.fab.text = it.title
+            }
+        }
+
         binding.fab.setOnClickListener {
             val dialog = SourceSwitcherDialog.newInstance(this@HomeFragment)
             dialog.show(childFragmentManager, SourceSwitcherDialog.NAME)
@@ -71,15 +71,13 @@ class HomeFragment : BaseFragment(), SourceSwitcherDialog.Listener {
     }
 
     private fun setupViewPager() {
-        val pagerAdapter = HomeListFragmentAdapter(tabList, this)
-
         with(binding.viewPager) {
-            adapter = pagerAdapter
+            adapter = viewPagerAdapter
             setPageTransformer(DepthPageTransformer())
         }
 
         TabLayoutMediator(binding.tabLayoutMain, binding.viewPager) { tab, position ->
-            tab.text = when(position) {
+            tab.text = when (position) {
                 0 -> "Most Recent"
                 1 -> "Trending"
                 2 -> "New"
@@ -89,12 +87,7 @@ class HomeFragment : BaseFragment(), SourceSwitcherDialog.Listener {
     }
 
     override fun onSourceSwitch(source: Source) {
-        if (viewModel.getSourceType() == source)
-            return
-
-        binding.fab.text = source.title
-
-        setupViewPager()
+        viewModel.switchSource(source)
 
         // Dismiss the dialog
         childFragmentManager.findFragmentByTag(SourceSwitcherDialog.NAME).let {

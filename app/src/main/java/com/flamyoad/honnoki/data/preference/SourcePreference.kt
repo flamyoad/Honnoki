@@ -18,7 +18,7 @@ class SourcePreference(private val dataStore: DataStore<Preferences>) {
         return@map Source.valueOf(sourceName)
     }
 
-    suspend fun switchSource(source: Source) {
+    suspend fun editSource(source: Source) {
         dataStore.edit { 
             it[SOURCE] = source.toString()
         }

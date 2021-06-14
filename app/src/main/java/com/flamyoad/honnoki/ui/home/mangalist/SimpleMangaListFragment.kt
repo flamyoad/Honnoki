@@ -1,4 +1,4 @@
-package com.flamyoad.honnoki.ui.home
+package com.flamyoad.honnoki.ui.home.mangalist
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.GridLayoutManager
@@ -17,7 +16,8 @@ import com.flamyoad.honnoki.adapter.RecentMangaListAdapter
 import com.flamyoad.honnoki.databinding.FragmentSimpleMangaListBinding
 import com.flamyoad.honnoki.data.model.Manga
 import com.flamyoad.honnoki.data.model.MangaType
-import com.flamyoad.honnoki.di.KoinConstants
+import com.flamyoad.honnoki.data.model.Source
+import com.flamyoad.honnoki.ui.home.HomeViewModel
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -27,8 +27,14 @@ import org.koin.core.parameter.parametersOf
 @ExperimentalPagingApi
 class SimpleMangaListFragment : Fragment() {
 
-    private val viewModel: HomeViewModel by sharedViewModel  {
-        parametersOf(KoinConstants.MANGAKALOT)
+    private val parentViewModel: HomeViewModel by sharedViewModel()
+
+    private val sourceName: String by lazy {
+        arguments?.getString(SOURCE) ?: ""
+    }
+
+    private val viewModel: HomeListViewModel by sharedViewModel {
+        parametersOf(sourceName)
     }
 
     private var _binding: FragmentSimpleMangaListBinding? = null
@@ -39,9 +45,9 @@ class SimpleMangaListFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         if (gridLayoutManager.findFirstVisibleItemPosition() == 0) {
-            viewModel.setShouldShrinkFab(false)
+            parentViewModel.setShouldShrinkFab(false)
         } else {
-            viewModel.setShouldShrinkFab(true)
+            parentViewModel.setShouldShrinkFab(true)
         }
     }
 
@@ -91,9 +97,9 @@ class SimpleMangaListFragment : Fragment() {
                 super.onScrolled(recyclerView, dx, dy)
                 val firstVisiblePosition = gridLayoutManager.findFirstVisibleItemPosition()
                 if (firstVisiblePosition != 0) {
-                    viewModel.setShouldShrinkFab(true)
+                    parentViewModel.setShouldShrinkFab(true)
                 } else {
-                    viewModel.setShouldShrinkFab(false)
+                    parentViewModel.setShouldShrinkFab(false)
                 }
             }
         })
@@ -120,11 +126,13 @@ class SimpleMangaListFragment : Fragment() {
 
     companion object {
         private const val MANGA_TYPE = "manga_type"
+        private const val SOURCE = "source"
 
         @JvmStatic
-        fun newInstance(type: MangaType) =
+        fun newInstance(source: Source, type: MangaType) =
             SimpleMangaListFragment().apply {
                 arguments = Bundle().apply {
+                    putString(SOURCE, source.toString())
                     putString(MANGA_TYPE, type.name)
                 }
             }

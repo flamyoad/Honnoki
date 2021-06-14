@@ -5,6 +5,7 @@ import com.flamyoad.honnoki.dialog.AddBookmarkGroupDialogViewModel
 import com.flamyoad.honnoki.dialog.BookmarkDialogViewModel
 import com.flamyoad.honnoki.dialog.ChangeBookmarkGroupNameViewModel
 import com.flamyoad.honnoki.dialog.DeleteBookmarkGroupDialogViewModel
+import com.flamyoad.honnoki.ui.home.mangalist.HomeListViewModel
 import com.flamyoad.honnoki.ui.home.HomeViewModel
 import com.flamyoad.honnoki.ui.library.LibraryViewModel
 import com.flamyoad.honnoki.ui.library.bookmark.BookmarkViewModel
@@ -20,7 +21,9 @@ import org.koin.dsl.module
 
 @ExperimentalPagingApi
 val viewModelModules = module {
-    viewModel { (source: String) -> HomeViewModel(get(), get(named(source))) }
+    viewModel { HomeViewModel(get()) }
+
+    viewModel { (source: String) -> HomeListViewModel(get(), get(named(source))) }
 
     viewModel { LibraryViewModel() }
 
