@@ -92,6 +92,7 @@ class ReaderImageAdapter : ListAdapter<ReaderPage, RecyclerView.ViewHolder>(PAGE
 
                 Glide.with(root)
                     .download(urlWithHeader)
+                    .timeout(15000) // 15 seconds
                     .into(MangaImageViewTarget(this))
             }
         }
@@ -99,7 +100,6 @@ class ReaderImageAdapter : ListAdapter<ReaderPage, RecyclerView.ViewHolder>(PAGE
 
     inner class AdsViewHolder(val binding: ReaderImageListAdsBinding) :
         RecyclerView.ViewHolder(binding.root) {
-
     }
 
     companion object {

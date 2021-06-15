@@ -7,8 +7,8 @@ import com.flamyoad.honnoki.R
 
 enum class Source(val title: String, val logo: Int, val languageLogo: Int) {
     MANGAKALOT("Mangakalot", R.drawable.mangakalot_logo, R.drawable.uk_logo),
-    MANGATOWN("MangaTown", R.drawable.mangakalot_logo, R.drawable.uk_logo),
-    READMANGA("ReadManga", R.drawable.mangakalot_logo, R.drawable.uk_logo),
+    MANGATOWN("MangaTown", R.drawable.mangatown_logo, R.drawable.uk_logo),
+    READMANGA("ReadManga", R.drawable.readmanga_logo, R.drawable.uk_logo),
     SENMANGA("SenManga", R.drawable.senmanga_logo, R.drawable.jp_logo);
 
     fun getLogoDrawable(context: Context): Drawable? {

@@ -2,6 +2,7 @@ package com.flamyoad.honnoki.utils.ui
 
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.util.Log
 import androidx.core.view.isVisible
 import com.bumptech.glide.request.target.CustomViewTarget
 import com.bumptech.glide.request.transition.Transition
@@ -13,7 +14,8 @@ import java.io.File
 class MangaImageViewTarget(val binding: ReaderImageListItemBinding)
     : CustomViewTarget<SubsamplingScaleImageView, File>(binding.imageView) {
     override fun onResourceReady(resource: File, transition: Transition<in File>?) {
-        view.setImage(ImageSource.uri(Uri.fromFile(resource)))
+        val uri = ImageSource.uri(Uri.fromFile(resource))
+        view.setImage(uri)
     }
 
     override fun onLoadFailed(errorDrawable: Drawable?) {
