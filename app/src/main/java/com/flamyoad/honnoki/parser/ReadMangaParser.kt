@@ -5,35 +5,31 @@ import com.flamyoad.honnoki.network.MangaTownService
 import org.jsoup.Jsoup
 import java.time.LocalDateTime
 
-class MangaTownParser {
+class ReadMangaParser {
     fun parseForRecentMangas(html: String?): List<Manga> {
         if (html == null) return emptyList()
 
         val document = Jsoup.parse(html)
-        val mangaDivs = document.select(".manga_pic_list > li")
+        val mangaDivs = document.select(".style-thumbnail > .clearfix > li")
 
         val mangaList = mutableListOf<Manga>()
         for (div in mangaDivs) {
-            val title = div.selectFirst(".title > a").textNonNull()
-            val latestChapter = div.selectFirst(".new_chapter").textNonNull()
-            val coverImage = div.selectFirst(".manga_cover > img").attrNonNull("src")
-
-            val relativeLink = div.selectFirst(".title > a").attrNonNull("href")
-            val absoluteLink = MangaTownService.BASE_URL + relativeLink
+            val title = div.selectFirst("a").attrNonNull("title")
+            val coverImage = div.selectFirst("img").attrNonNull("src")
+            val link = div.selectFirst("a").attrNonNull("href")
 
             mangaList.add(
                 Manga(
                     title = title,
-                    link = absoluteLink,
-                    latestChapter = latestChapter,
+                    link = link,
+                    latestChapter = "", // Non existent
                     coverImage = coverImage,
-                    viewCount = -1, // Non existent in senmanga
-                    source = Source.MANGATOWN,
+                    viewCount = -1, // Non existent
+                    source = Source.READMANGA,
                     type = MangaType.RECENTLY
                 )
             )
         }
-        println(mangaList.size)
         return mangaList
     }
 
@@ -41,25 +37,22 @@ class MangaTownParser {
         if (html == null) return emptyList()
 
         val document = Jsoup.parse(html)
-        val mangaDivs = document.select(".manga_pic_list > li")
+        val mangaDivs = document.select(".style-thumbnail > .clearfix > li")
 
         val mangaList = mutableListOf<Manga>()
         for (div in mangaDivs) {
-            val title = div.selectFirst(".title > a").textNonNull()
-            val latestChapter = div.selectFirst(".new_chapter").textNonNull()
-            val coverImage = div.selectFirst(".manga_cover > img").attrNonNull("src")
-
-            val relativeLink = div.selectFirst(".title > a").attrNonNull("href")
-            val absoluteLink = MangaTownService.BASE_URL + relativeLink
+            val title = div.selectFirst("a").attrNonNull("title")
+            val coverImage = div.selectFirst("img").attrNonNull("src")
+            val link = div.selectFirst("a").attrNonNull("href")
 
             mangaList.add(
                 Manga(
                     title = title,
-                    link = absoluteLink,
-                    latestChapter = latestChapter,
+                    link = link,
+                    latestChapter = "", // Non existent
                     coverImage = coverImage,
-                    viewCount = -1, // Non existent in senmanga
-                    source = Source.MANGATOWN,
+                    viewCount = -1, // Non existent
+                    source = Source.READMANGA,
                     type = MangaType.TRENDING
                 )
             )
@@ -74,18 +67,17 @@ class MangaTownParser {
 
         val document = Jsoup.parse(html)
 
-        val mainTitle = document.selectFirst(".title-top").textNonNull()
+        val contentDiv = document.selectFirst(".panel-primary")
 
-        val contentDiv = document.selectFirst(".detail_content")
+        val mainTitle = contentDiv.selectFirst(".panel-heading > h1").textNonNull()
 
-        val summary = document.selectFirst("li:nth-child(11)").textNonNull()
+        val summary = contentDiv.selectFirst(".movie-detail > p").textNonNull()
 
-        val coverImage = contentDiv.selectFirst("div.detail_info.clearfix > img")
-            .attrNonNull("src")
+        val coverImage = contentDiv.selectFirst("img").attrNonNull("src")
 
-        val alternativeTitle = contentDiv.selectFirst("li:nth-child(3)").ownTextNonNull()
+        val alternativeTitle = contentDiv.selectFirst("dl > dd:nth-child(2)").ownTextNonNull()
 
-        val status = contentDiv.selectFirst("li:nth-child(8)").ownTextNonNull()
+        val status = contentDiv.selectFirst("dl > dd:nth-child(4)").ownTextNonNull()
 
         return MangaOverview(
             id = null,
@@ -94,7 +86,7 @@ class MangaTownParser {
             alternativeTitle = alternativeTitle,
             summary = summary,
             status = status,
-            source = Source.MANGATOWN,
+            source = Source.READMANGA,
             link = link,
             lastReadChapterId = -1,
             lastReadDateTime = LocalDateTime.MIN,
@@ -108,7 +100,7 @@ class MangaTownParser {
         }
 
         val document = Jsoup.parse(html)
-        val genres = document.selectFirst("div.detail_info.clearfix > ul > li:nth-child(5)")
+        val genres = document.selectFirst("dl > dd:nth-child(6)")
             .select("a")
             .map {
                 return@map Genre(
@@ -126,15 +118,13 @@ class MangaTownParser {
 
         val document = Jsoup.parse(html)
 
-        val authors = document.selectFirst("div.detail_info.clearfix > ul > li:nth-child(6)")
-            .select("a")
-            .map {
-                return@map Author(
-                    name = it.textNonNull(),
-                    link = it.attrNonNull("href")
-                )
-            }
-        return authors
+        val authorDiv = document.selectFirst(".director")
+        val authorLink = authorDiv.selectFirst("a").attrNonNull("href")
+        val authorName = authorDiv.selectFirst("ul > li:nth-child(1)").text()
+
+        return listOf(
+            Author(name = authorName, link = authorLink)
+        )
     }
 
     fun parseForChapterList(html: String?): List<Chapter> {
@@ -144,14 +134,14 @@ class MangaTownParser {
 
         val document = Jsoup.parse(html)
 
-        val chapterList = document.select(".chapter_list > li")
+        val chapterList = document.select(".chp_lst > li")
         return chapterList.mapIndexed { index, it ->
-            val absoluteLink = MangaTownService.BASE_URL + it.selectFirst("a").attrNonNull("href")
+            val link = it.selectFirst("a").attrNonNull("href") + "/all-pages"
             Chapter(
-                title = it.selectFirst("a").textNonNull(),
+                title = it.selectFirst(".val").textNonNull(),
                 number = (chapterList.size - (index + 1)).toDouble(),
-                link = absoluteLink,
-                date = it.selectFirst(".time").textNonNull(),
+                link = link,
+                date = it.selectFirst(".dte").attrNonNull("title"),
                 hasBeenRead = false,
                 hasBeenDownloaded = false
             )
@@ -165,8 +155,12 @@ class MangaTownParser {
 
         val document = Jsoup.parse(html)
 
-        val baseLink = document.selectFirst(".read_img > a > img").attrNonNull("src")
+        val pages = document
+            .select(".content-list > img")
+            .mapIndexed { index, element ->
+                Page(number = index + 1, link = element.attrNonNull("src"))
+            }
 
-        return emptyList()
+        return pages
     }
 }

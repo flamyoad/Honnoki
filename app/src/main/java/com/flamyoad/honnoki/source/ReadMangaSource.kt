@@ -5,17 +5,17 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.flamyoad.honnoki.api.MangaTownApi
+import com.flamyoad.honnoki.api.ReadMangaApi
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.model.*
 import com.flamyoad.honnoki.paging.MangaMediator
 import kotlinx.coroutines.flow.Flow
 
 @ExperimentalPagingApi
-class MangaTownSource(db: AppDatabase, context: Context, private val api: MangaTownApi): BaseSource(db, context) {
-
+class ReadMangaSource(db: AppDatabase, context: Context, private val api: ReadMangaApi) :
+    BaseSource(db, context) {
     override fun getSourceType(): Source {
-        return Source.MANGATOWN
+        return Source.READMANGA
     }
 
     override fun getRecentManga(): Flow<PagingData<Manga>> {
@@ -31,19 +31,18 @@ class MangaTownSource(db: AppDatabase, context: Context, private val api: MangaT
             config = PagingConfig(pageSize = NORMAL_PAGINATION_SIZE, enablePlaceholders = true),
             remoteMediator = MangaMediator(api, db, getSourceType(), MangaType.TRENDING),
             pagingSourceFactory = { db.mangaDao().getFrom(getSourceType(), MangaType.TRENDING) }
-        ).flow
-    }
+        ).flow    }
 
     override suspend fun getMangaOverview(urlPath: String): State<MangaOverview> {
         return api.searchForMangaOverview(urlPath)
     }
 
-    override suspend fun getAuthors(urlPath: String): State<List<Author>> {
-        return api.searchForAuthors(urlPath)
-    }
-
     override suspend fun getChapterList(urlPath: String): State<List<Chapter>> {
         return api.searchForChapterList(urlPath)
+    }
+
+    override suspend fun getAuthors(urlPath: String): State<List<Author>> {
+        return api.searchForAuthors(urlPath)
     }
 
     override suspend fun getGenres(urlPath: String): State<List<Genre>> {
@@ -55,8 +54,6 @@ class MangaTownSource(db: AppDatabase, context: Context, private val api: MangaT
     }
 
     companion object {
-        private const val LOW_PAGINATION_SIZE = 20
-        private const val NORMAL_PAGINATION_SIZE = 30
+        const val NORMAL_PAGINATION_SIZE = 40
     }
-
 }

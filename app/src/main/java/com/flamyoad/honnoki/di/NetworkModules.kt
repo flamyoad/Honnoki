@@ -3,6 +3,7 @@ package com.flamyoad.honnoki.di
 import android.content.Context
 import com.flamyoad.honnoki.network.MangaTownService
 import com.flamyoad.honnoki.network.MangakalotService
+import com.flamyoad.honnoki.network.ReadMangaService
 import com.flamyoad.honnoki.network.SenMangaService
 import com.flamyoad.honnoki.network.interceptor.CacheInterceptor
 import com.flamyoad.honnoki.network.interceptor.RefererInterceptor
@@ -20,6 +21,7 @@ val networkModules = module {
     single { provideMangakalotService(get(named(KoinConstants.MANGAKALOT))) }
     single { provideSenmangaService(get(named(KoinConstants.SENMANGA))) }
     single { provideMangaTownService(get(named(KoinConstants.MANGATOWN))) }
+    single { provideReadMangaService(get(named(KoinConstants.READMANGA))) }
 
     single<OkHttpClient>(named(KoinConstants.MANGAKALOT)) {
         provideMangakalotHttpClient(androidContext(), get())
@@ -31,6 +33,10 @@ val networkModules = module {
 
     single<OkHttpClient>(named(KoinConstants.MANGATOWN)) {
         provideMangaTownHttpClient(androidContext(), get())
+    }
+
+    single<OkHttpClient>(named(KoinConstants.READMANGA)) {
+        provideReadMangaHttpClient(androidContext(), get())
     }
 
     factory { provideHttpLoggingInterceptor() }
@@ -101,6 +107,28 @@ fun provideMangaTownHttpClient(
         .addInterceptor(UserAgentInterceptor(context))
         .addNetworkInterceptor(CacheInterceptor(1, TimeUnit.MINUTES))
         .build()
+}
+
+fun provideReadMangaHttpClient(
+    context: Context,
+    loggingInterceptor: HttpLoggingInterceptor
+): OkHttpClient {
+    val myCache = (Cache(context.cacheDir, ReadMangaService.CACHE_SIZE))
+
+    return OkHttpClient.Builder()
+        .cache(myCache)
+        .addInterceptor(loggingInterceptor)
+        .addInterceptor(UserAgentInterceptor(context))
+        .addNetworkInterceptor(CacheInterceptor(1, TimeUnit.MINUTES))
+        .build()
+}
+
+fun provideReadMangaService(httpClient: OkHttpClient): ReadMangaService {
+    val retrofit = Retrofit.Builder()
+        .baseUrl(ReadMangaService.BASE_URL)
+        .client(httpClient)
+        .build()
+    return retrofit.create(ReadMangaService::class.java)
 }
 
 fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {

@@ -1,17 +1,18 @@
 package com.flamyoad.honnoki.api
 
 import com.flamyoad.honnoki.data.model.*
-import com.flamyoad.honnoki.network.MangaTownService
-import com.flamyoad.honnoki.parser.MangaTownParser
+import com.flamyoad.honnoki.network.ReadMangaService
+import com.flamyoad.honnoki.parser.ReadMangaParser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class MangaTownApi(
-    private val service: MangaTownService,
-    private val parser: MangaTownParser
+class ReadMangaApi(
+    private val service: ReadMangaService,
+    private val parser: ReadMangaParser
 ): BaseApi() {
 
     override suspend fun searchForLatestManga(index: Int): List<Manga> {
+        println("search for latest")
         val response = service.getLatestManga(index)
 
         return withContext(Dispatchers.Default) {
@@ -35,7 +36,7 @@ class MangaTownApi(
 
     suspend fun searchForMangaOverview(link: String): State<MangaOverview> {
         val response = try {
-            service.getMangaOverview(link)
+            service.getHtml(link)
         } catch (e: Exception) {
             return State.Error(e)
         }
@@ -50,7 +51,7 @@ class MangaTownApi(
 
     suspend fun searchForGenres(link: String): State<List<Genre>> {
         val response = try {
-            service.getGenres(link)
+            service.getHtml(link)
         } catch (e: Exception) {
             return State.Error(e)
         }
@@ -65,7 +66,7 @@ class MangaTownApi(
 
     suspend fun searchForAuthors(link: String): State<List<Author>> {
         val response = try {
-            service.getAuthors(link)
+            service.getHtml(link)
         } catch (e: Exception) {
             return State.Error(e)
         }
@@ -80,7 +81,7 @@ class MangaTownApi(
 
     suspend fun searchForChapterList(link: String): State<List<Chapter>> {
         val response = try {
-            service.getMangaOverview(link)
+            service.getHtml(link)
         } catch (e: Exception) {
             return State.Error(e)
         }
@@ -95,7 +96,7 @@ class MangaTownApi(
 
     suspend fun searchForImageList(link: String): State<List<Page>> {
         val response = try {
-            service.getMangaOverview(link)
+            service.getHtml(link)
         } catch (e: Exception) {
             return State.Error(e)
         }
@@ -107,5 +108,4 @@ class MangaTownApi(
             return@withContext State.Success(imageList)
         }
     }
-
 }
