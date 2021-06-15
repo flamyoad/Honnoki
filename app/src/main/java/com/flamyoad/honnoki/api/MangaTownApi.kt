@@ -9,7 +9,7 @@ import kotlinx.coroutines.withContext
 class MangaTownApi(
     private val service: MangaTownService,
     private val parser: MangaTownParser
-): BaseApi() {
+) : BaseApi() {
 
     override suspend fun searchForLatestManga(index: Int): List<Manga> {
         val response = service.getLatestManga(index)
@@ -35,7 +35,7 @@ class MangaTownApi(
 
     suspend fun searchForMangaOverview(link: String): State<MangaOverview> {
         val response = try {
-            service.getMangaOverview(link)
+            service.getHtml(link)
         } catch (e: Exception) {
             return State.Error(e)
         }
@@ -50,7 +50,7 @@ class MangaTownApi(
 
     suspend fun searchForGenres(link: String): State<List<Genre>> {
         val response = try {
-            service.getGenres(link)
+            service.getHtml(link)
         } catch (e: Exception) {
             return State.Error(e)
         }
@@ -65,7 +65,7 @@ class MangaTownApi(
 
     suspend fun searchForAuthors(link: String): State<List<Author>> {
         val response = try {
-            service.getAuthors(link)
+            service.getHtml(link)
         } catch (e: Exception) {
             return State.Error(e)
         }
@@ -80,7 +80,7 @@ class MangaTownApi(
 
     suspend fun searchForChapterList(link: String): State<List<Chapter>> {
         val response = try {
-            service.getMangaOverview(link)
+            service.getHtml(link)
         } catch (e: Exception) {
             return State.Error(e)
         }
@@ -93,9 +93,20 @@ class MangaTownApi(
         }
     }
 
-    suspend fun searchForImageList(link: String): State<List<Page>> {
+    // Gets the list of pages from the right hand dropdown-box
+    suspend fun searchForPageList(link: String): List<String> {
+        val response = service.getHtml(link)
+        val html = response.string()
+
+        return withContext(Dispatchers.Default) {
+            val pageList = parser.parseForPageList(html)
+            return@withContext pageList
+        }
+    }
+
+    suspend fun getImageFromPage(link: String, index: Int): State<Page> {
         val response = try {
-            service.getMangaOverview(link)
+            service.getHtml(link)
         } catch (e: Exception) {
             return State.Error(e)
         }
@@ -103,8 +114,8 @@ class MangaTownApi(
         val html = response.string()
 
         return withContext(Dispatchers.Default) {
-            val imageList = parser.parseForPageList(html)
-            return@withContext State.Success(imageList)
+            val image = parser.parseImageFromPage(html, index)
+            return@withContext State.Success(image)
         }
     }
 

@@ -158,15 +158,26 @@ class MangaTownParser {
         }
     }
 
-    fun parseForPageList(html: String?): List<Page> {
+    fun parseForPageList(html: String?): List<String> {
         if (html.isNullOrBlank()) {
             return emptyList()
         }
 
         val document = Jsoup.parse(html)
 
-        val baseLink = document.selectFirst(".read_img > a > img").attrNonNull("src")
+        val dropdownListItems = document.select(".page_select > select > option")
 
-        return emptyList()
+        return dropdownListItems.map {
+            MangaTownService.BASE_URL + it.attrNonNull("value")
+        }
+    }
+
+    fun parseImageFromPage(html: String, index: Int): Page {
+        val document = Jsoup.parse(html)
+
+        val imageLink = document.selectFirst(".read_img > a")
+            .attrNonNull("src")
+
+        return Page(link = imageLink, number = index + 1)
     }
 }

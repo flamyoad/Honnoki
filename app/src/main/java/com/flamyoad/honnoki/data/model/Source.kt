@@ -5,9 +5,14 @@ import android.graphics.drawable.Drawable
 import androidx.core.content.ContextCompat
 import com.flamyoad.honnoki.R
 
-enum class Source(val title: String, val logo: Int, val languageLogo: Int) {
+enum class Source(
+    val title: String,
+    val logo: Int,
+    val languageLogo: Int,
+    val isEnabled: Boolean = true
+) {
     MANGAKALOT("Mangakalot", R.drawable.mangakalot_logo, R.drawable.uk_logo),
-    MANGATOWN("MangaTown", R.drawable.mangatown_logo, R.drawable.uk_logo),
+    MANGATOWN("MangaTown", R.drawable.mangatown_logo, R.drawable.uk_logo, isEnabled = false),
     READMANGA("ReadManga", R.drawable.readmanga_logo, R.drawable.uk_logo),
     SENMANGA("SenManga", R.drawable.senmanga_logo, R.drawable.jp_logo);
 

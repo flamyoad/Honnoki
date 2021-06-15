@@ -77,7 +77,7 @@ fun provideSenmangaHttpClient(
     context: Context,
     loggingInterceptor: HttpLoggingInterceptor
 ): OkHttpClient {
-    val myCache = (Cache(context.cacheDir, MangakalotService.CACHE_SIZE))
+    val myCache = (Cache(context.cacheDir, SenMangaService.CACHE_SIZE))
 
     return OkHttpClient.Builder()
         .cache(myCache)

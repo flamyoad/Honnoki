@@ -91,7 +91,7 @@ class SenMangaParser {
             alternativeTitle = alternativeTitle,
             summary = summary,
             status = status,
-            source = Source.MANGAKALOT,
+            source = Source.SENMANGA,
             link = link,
             lastReadChapterId = -1,
             lastReadDateTime = LocalDateTime.MIN,
@@ -130,5 +130,32 @@ class SenMangaParser {
         }
 
         throw IllegalArgumentException("")
+    }
+
+    fun parseForImageList(html: String?): List<Page> {
+        if (html.isNullOrBlank()) {
+            return emptyList()
+        }
+
+        val document = Jsoup.parse(html)
+
+        val divs = document.select("script")
+
+        // Senmanga loads the images at runtime with JS code
+        val div = document.select("script").toList()
+            .filter { it.attrNonNull("type") == "text/javascript" }
+            .filter { it.textNonNull().contains("imglist") }
+            .firstOrNull()
+
+        val javascript = div!!.text()
+
+        return emptyList()
+
+//        return imageList.mapIndexed { index, element ->
+//            Page(
+//                link = element.attrNonNull("src"),
+//                number = index + 1 // Add 1 to change the value into one-based numbering
+//            )
+//        }
     }
 }

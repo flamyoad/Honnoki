@@ -10,6 +10,7 @@ import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.model.*
 import com.flamyoad.honnoki.paging.MangaMediator
 import kotlinx.coroutines.flow.Flow
+import java.io.IOException
 
 @ExperimentalPagingApi
 class MangaTownSource(db: AppDatabase, context: Context, private val api: MangaTownApi): BaseSource(db, context) {
@@ -51,7 +52,23 @@ class MangaTownSource(db: AppDatabase, context: Context, private val api: MangaT
     }
 
     override suspend fun getImages(urlPath: String): State<List<Page>> {
-        return api.searchForImageList(urlPath)
+        try {
+            val pages = api.searchForPageList(urlPath)
+            val pagesWithImages = mutableListOf<Page>()
+
+            var count = 1
+            for (page in pages) {
+                val result = api.getImageFromPage(page, count)
+                if (result is State.Success) {
+                    pagesWithImages.add(result.value)
+                    count++
+                }
+            }
+            return State.Success(pagesWithImages)
+
+        } catch (e: IOException) {
+            return State.Error(e)
+        }
     }
 
     companion object {

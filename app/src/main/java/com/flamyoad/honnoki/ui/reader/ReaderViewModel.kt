@@ -10,6 +10,7 @@ import com.flamyoad.honnoki.data.model.State
 import com.flamyoad.honnoki.repository.ChapterRepository
 import com.flamyoad.honnoki.repository.OverviewRepository
 import com.flamyoad.honnoki.source.BaseSource
+import com.flamyoad.honnoki.source.SenMangaSource
 import com.flamyoad.honnoki.ui.reader.model.LoadType
 import com.flamyoad.honnoki.ui.reader.model.ReaderPage
 import kotlinx.coroutines.CoroutineScope

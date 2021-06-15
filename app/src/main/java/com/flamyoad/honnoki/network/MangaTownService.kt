@@ -23,13 +23,5 @@ interface MangaTownService {
 
     @GET
     @Headers(CACHE_CONTROL_MAX_AGE_60)
-    suspend fun getMangaOverview(@Url url: String): ResponseBody
-
-    @GET
-    @Headers(CACHE_CONTROL_MAX_AGE_60)
-    suspend fun getAuthors(@Url url: String): ResponseBody
-
-    @GET
-    @Headers(CACHE_CONTROL_MAX_AGE_60)
-    suspend fun getGenres(@Url url: String): ResponseBody
+    suspend fun getHtml(@Url url: String): ResponseBody
 }

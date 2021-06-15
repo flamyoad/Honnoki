@@ -1,9 +1,6 @@
 package com.flamyoad.honnoki.api
 
-import com.flamyoad.honnoki.data.model.Chapter
-import com.flamyoad.honnoki.data.model.Manga
-import com.flamyoad.honnoki.data.model.MangaOverview
-import com.flamyoad.honnoki.data.model.State
+import com.flamyoad.honnoki.data.model.*
 import com.flamyoad.honnoki.network.SenMangaService
 import com.flamyoad.honnoki.parser.SenMangaParser
 import kotlinx.coroutines.Dispatchers
@@ -37,7 +34,7 @@ class SenMangaApi(
 
     suspend fun searchForOverview(link: String): State<MangaOverview> {
         val response = try {
-            service.getMangaOverview(link)
+            service.getHtml(link)
         } catch (e: Exception) {
             return State.Error(e)
         }
@@ -52,7 +49,7 @@ class SenMangaApi(
 
     suspend fun searchForChapterList(link: String): State<List<Chapter>> {
         val response = try {
-            service.getMangaOverview(link)
+            service.getHtml(link)
         } catch (e: Exception) {
             return State.Error(e)
         }
@@ -62,6 +59,21 @@ class SenMangaApi(
 
             val chapterList = parser.parseForChapterList(html)
             return@withContext State.Success(chapterList)
+        }
+    }
+
+    suspend fun searchForImageList(link: String): State<List<Page>> {
+        val response = try {
+            service.getHtml(link)
+        } catch (e: Exception) {
+            return State.Error(e)
+        }
+
+        return withContext(Dispatchers.Default) {
+            val html = response.string()
+
+            val imageList = parser.parseForImageList(html)
+            return@withContext State.Success(imageList)
         }
     }
 }

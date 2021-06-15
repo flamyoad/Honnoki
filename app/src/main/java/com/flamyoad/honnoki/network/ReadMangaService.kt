@@ -1,10 +1,7 @@
 package com.flamyoad.honnoki.network
 
 import okhttp3.ResponseBody
-import retrofit2.http.GET
-import retrofit2.http.Headers
-import retrofit2.http.Path
-import retrofit2.http.Url
+import retrofit2.http.*
 
 
 private const val CACHE_CONTROL_MAX_AGE_60 = "Cache-Control: max-age=60"
@@ -25,4 +22,15 @@ interface ReadMangaService {
     @GET
     @Headers(CACHE_CONTROL_MAX_AGE_60)
     suspend fun getHtml(@Url url: String): ResponseBody
+
+    @POST("service/advanced_search")
+    @Headers(
+        "X-Requested-With:XMLHttpRequest",
+        "Content-Type:application/x-www-form-urlencoded; charset=UTF-8"
+    )
+    suspend fun searchByKeyword(
+        @Field("manga-name") query: String,
+        @Field("type") type: String = "all",
+        @Field("status") status: String = "both"
+    ): ResponseBody
 }

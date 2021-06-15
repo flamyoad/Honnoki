@@ -40,7 +40,9 @@ class SourceSwitcherDialog: BottomSheetDialogFragment() {
     }
 
     private fun initRecyclerView(listener: Listener) {
-        val sourceList = Source.values().toList()
+        val sourceList = Source.values()
+            .filter { it.isEnabled }
+            .toList()
         val sourceAdapter = SourceSwitcherAdapter(sourceList, listener::onSourceSwitch)
         val linearLayoutManager = LinearLayoutManager(requireContext())
 

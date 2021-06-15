@@ -20,5 +20,5 @@ interface SenMangaService {
 
     @GET
     @Headers(CACHE_CONTROL_MAX_AGE_60)
-    suspend fun getMangaOverview(@Url url: String): ResponseBody
+    suspend fun getHtml(@Url url: String): ResponseBody
 }

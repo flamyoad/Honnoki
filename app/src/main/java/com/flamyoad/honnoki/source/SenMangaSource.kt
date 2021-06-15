@@ -1,6 +1,7 @@
 package com.flamyoad.honnoki.source
 
 import android.content.Context
+import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -40,6 +41,10 @@ class SenMangaSource(db: AppDatabase, context: Context, private val api: SenMang
 
     override suspend fun getChapterList(urlPath: String): State<List<Chapter>> {
         return api.searchForChapterList(urlPath)
+    }
+
+    override suspend fun getImages(urlPath: String): State<List<Page>> {
+        return api.searchForImageList(urlPath)
     }
 
     override fun getSimpleSearch(query: String): Flow<PagingData<SearchResult>> {
