@@ -3,7 +3,7 @@
 
 WIP Manga Reader
 
-Heavily uses flavour of the year libs like [Paging 3](https://developer.android.com/topic/libraries/architecture/paging/v3-overview), [Flow](https://developer.android.com/kotlin/flow), and [Jetpack DataStore](https://developer.android.com/topic/libraries/architecture/datastore) on top of your usual MVVM+Retrofit+Koin architecture
+Heavily uses flavour of the year libs like [Paging 3](https://developer.android.com/topic/libraries/architecture/paging/v3-overview), [Flow](https://developer.android.com/kotlin/flow),  [ConcatAdapter](https://developer.android.com/reference/androidx/recyclerview/widget/ConcatAdapter), and [Jetpack DataStore](https://developer.android.com/topic/libraries/architecture/datastore) on top of your usual MVVM+Retrofit+Koin architecture
 
 | Screen 1                                                                        | Screen 2         | 
 | :-------------------------------------------------------------------------------------------------------------------: |:-------------:|
