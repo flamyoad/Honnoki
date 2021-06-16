@@ -9,10 +9,8 @@ import com.flamyoad.honnoki.data.model.*
 import com.flamyoad.honnoki.source.BaseSource
 import com.flamyoad.honnoki.ui.overview.model.ChapterListSort
 import com.flamyoad.honnoki.ui.overview.model.ReaderChapter
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
 @ExperimentalPagingApi
@@ -65,16 +63,6 @@ class MangaOverviewViewModel(private val db: AppDatabase, private val baseSource
         .flatMapLatest { db.mangaOverviewDao().hasBeenBookmarked(it) }
         .asLiveData()
 
-    fun initializeAll(url: String, sourceName: String) {
-        val source = try {
-            Source.valueOf(sourceName)
-        } catch (e: IllegalArgumentException) {
-            return
-        }
-
-        loadMangaOverview(url)
-    }
-
     fun loadMangaOverview(url: String) {
         viewModelScope.launch(Dispatchers.IO) {
             // Load manga overview from database
@@ -90,9 +78,14 @@ class MangaOverviewViewModel(private val db: AppDatabase, private val baseSource
                 is State.Success -> {
                     val overviewId = db.mangaOverviewDao().insert(overview.value)
                     mangaOverviewId.value = overviewId
-                    refreshChapterList(url, overviewId)
-                    refreshGenres(url, overviewId)
-                    refreshAuthors(url, overviewId)
+
+                    // Run all three jobs at same time. Should not put strain on server
+                    // because we are using Cache-Control: 60 in OkHttpInterceptor
+                    val chapterJob = async { refreshChapterList(url, overviewId) }
+                    val genreJob = async { refreshGenres(url, overviewId) }
+                    val authorJob = async { refreshAuthors(url, overviewId) }
+
+                    awaitAll(chapterJob, genreJob, authorJob)
                 }
             }
         }

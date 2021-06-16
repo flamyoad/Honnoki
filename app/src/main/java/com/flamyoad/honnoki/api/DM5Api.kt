@@ -1,6 +1,6 @@
 package com.flamyoad.honnoki.api
 
-import com.flamyoad.honnoki.data.model.Manga
+import com.flamyoad.honnoki.data.model.*
 import com.flamyoad.honnoki.network.DM5Service
 import com.flamyoad.honnoki.parser.DM5Parser
 import kotlinx.coroutines.Dispatchers
@@ -15,7 +15,10 @@ class DM5Api(
         const val MAXIMUM_DATE_INDEX = 6
     }
 
-    private val epochTimeMillis = System.currentTimeMillis()
+    /**
+     * DM5 uses epoch time (13 digits) to fetch recently updated manga from their server
+     */
+    private var epochTimeMillis = System.currentTimeMillis()
 
     override val startingPageIndex: Int
         get() = 0
@@ -34,4 +37,65 @@ class DM5Api(
             return@withContext mangaList
         }
     }
+
+    suspend fun searchForMangaOverview(link: String): State<MangaOverview> {
+        val response = try {
+            service.getHtml(link)
+        } catch (e: Exception) {
+            return State.Error(e)
+        }
+
+        return withContext(Dispatchers.Default) {
+            val html = response.string()
+
+            val mangaOverview = parser.parseForMangaOverview(html, link)
+            return@withContext State.Success(mangaOverview)
+        }
+    }
+
+    suspend fun searchForGenres(link: String): State<List<Genre>> {
+        val response = try {
+            service.getHtml(link)
+        } catch (e: Exception) {
+            return State.Error(e)
+        }
+
+        return withContext(Dispatchers.Default) {
+            val html = response.string()
+
+            val genres = parser.parseForGenres(html)
+            return@withContext State.Success(genres)
+        }
+    }
+
+    suspend fun searchForAuthors(link: String): State<List<Author>> {
+        val response = try {
+            service.getHtml(link)
+        } catch (e: Exception) {
+            return State.Error(e)
+        }
+
+        return withContext(Dispatchers.Default) {
+            val html = response.string()
+
+            val genres = parser.parseForAuthors(html)
+            return@withContext State.Success(genres)
+        }
+    }
+
+    suspend fun searchForChapterList(link: String): State<List<Chapter>> {
+        val response = try {
+            service.getHtml(link)
+        } catch (e: Exception) {
+            return State.Error(e)
+        }
+
+        return withContext(Dispatchers.Default) {
+            val html = response.string()
+
+            val chapterList = parser.parseForChapterList(html)
+            return@withContext State.Success(chapterList)
+        }
+    }
+
 }

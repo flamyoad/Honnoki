@@ -8,9 +8,7 @@ import androidx.paging.PagingData
 import com.flamyoad.honnoki.api.DM5Api
 import com.flamyoad.honnoki.api.MangakalotApi
 import com.flamyoad.honnoki.data.db.AppDatabase
-import com.flamyoad.honnoki.data.model.Manga
-import com.flamyoad.honnoki.data.model.MangaType
-import com.flamyoad.honnoki.data.model.Source
+import com.flamyoad.honnoki.data.model.*
 import com.flamyoad.honnoki.paging.MangaMediator
 import kotlinx.coroutines.flow.Flow
 
@@ -32,6 +30,22 @@ class DM5Source(db: AppDatabase, context: Context, private val api: DM5Api) :
 
     override fun getTrendingManga(): Flow<PagingData<Manga>> {
         return super.getTrendingManga()
+    }
+
+    override suspend fun getMangaOverview(urlPath: String): State<MangaOverview> {
+        return api.searchForMangaOverview(urlPath)
+    }
+
+    override suspend fun getAuthors(urlPath: String): State<List<Author>> {
+        return api.searchForAuthors(urlPath)
+    }
+
+    override suspend fun getGenres(urlPath: String): State<List<Genre>> {
+        return api.searchForGenres(urlPath)
+    }
+
+    override suspend fun getChapterList(urlPath: String): State<List<Chapter>> {
+        return api.searchForChapterList(urlPath)
     }
 
     companion object {

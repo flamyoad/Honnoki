@@ -24,11 +24,13 @@ import com.flamyoad.honnoki.utils.ui.DepthPageTransformer
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
+@ExperimentalCoroutinesApi
 @ExperimentalPagingApi
 class MangaOverviewActivity : AppCompatActivity() {
     private var _binding: ActivityMangaOverviewBinding? = null
@@ -65,10 +67,7 @@ class MangaOverviewActivity : AppCompatActivity() {
         }
 
         if (savedInstanceState == null) {
-            viewModel.initializeAll(
-                intent.getStringExtra(MANGA_URL) ?: "",
-                intent.getStringExtra(MANGA_SOURCE) ?: "",
-            )
+            viewModel.loadMangaOverview(intent.getStringExtra(MANGA_URL) ?: "")
         }
 
         initUi()
@@ -179,10 +178,12 @@ class MangaOverviewActivity : AppCompatActivity() {
         with(binding) {
             Glide.with(this@MangaOverviewActivity)
                 .load(overview.coverImage)
+                .timeout(10000)
                 .into(imageBackground)
 
             Glide.with(this@MangaOverviewActivity)
                 .load(overview.coverImage)
+                .timeout(10000)
                 .placeholder(ViewUtils.getLoadingIndicator(this@MangaOverviewActivity))
                 .into(imageManga)
 

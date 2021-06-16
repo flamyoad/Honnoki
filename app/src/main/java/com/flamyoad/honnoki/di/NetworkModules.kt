@@ -4,19 +4,16 @@ import android.content.Context
 import com.flamyoad.honnoki.network.*
 import com.flamyoad.honnoki.network.interceptor.CacheInterceptor
 import com.flamyoad.honnoki.network.interceptor.RefererInterceptor
-import com.flamyoad.honnoki.network.interceptor.UserAgentInterceptor
+import com.flamyoad.honnoki.network.interceptor.AndroidUserAgentInterceptor
+import com.flamyoad.honnoki.network.interceptor.PCUserAgentInterceptor
 import okhttp3.Cache
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
-import javax.net.ssl.HostnameVerifier
-import javax.net.ssl.SSLSession
 
 val networkModules = module {
     single { provideMangakalotService(get(named(KoinConstants.MANGAKALOT))) }
@@ -65,7 +62,7 @@ fun provideMangakalotHttpClient(
     return OkHttpClient.Builder()
         .cache(myCache)
         .addInterceptor(loggingInterceptor)
-        .addInterceptor(UserAgentInterceptor(context))
+        .addInterceptor(AndroidUserAgentInterceptor(context))
         .addInterceptor(RefererInterceptor(MangakalotService.BASE_URL))
         .addNetworkInterceptor(CacheInterceptor(1, TimeUnit.MINUTES))
         .build()
@@ -88,7 +85,7 @@ fun provideSenmangaHttpClient(
     return OkHttpClient.Builder()
         .cache(myCache)
         .addInterceptor(loggingInterceptor)
-        .addInterceptor(UserAgentInterceptor(context))
+        .addInterceptor(AndroidUserAgentInterceptor(context))
         .addNetworkInterceptor(CacheInterceptor(1, TimeUnit.MINUTES))
         .build()
 }
@@ -110,7 +107,7 @@ fun provideMangaTownHttpClient(
     return OkHttpClient.Builder()
         .cache(myCache)
         .addInterceptor(loggingInterceptor)
-        .addInterceptor(UserAgentInterceptor(context))
+        .addInterceptor(AndroidUserAgentInterceptor(context))
         .addNetworkInterceptor(CacheInterceptor(1, TimeUnit.MINUTES))
         .build()
 }
@@ -124,7 +121,7 @@ fun provideReadMangaHttpClient(
     return OkHttpClient.Builder()
         .cache(myCache)
         .addInterceptor(loggingInterceptor)
-        .addNetworkInterceptor(UserAgentInterceptor(context))
+        .addNetworkInterceptor(AndroidUserAgentInterceptor(context))
 //        .addNetworkInterceptor(CacheInterceptor(1, TimeUnit.MINUTES))
         .build()
 }
@@ -143,13 +140,12 @@ fun provideDM5HttpClient(
 ): OkHttpClient {
     val myCache = (Cache(context.cacheDir, DM5Service.CACHE_SIZE))
 
-    // HTTP FAILED: javax.net.ssl.SSLPeerUnverifiedException: Hostname dm5.com not verified:
     return OkHttpClient.Builder()
-        .hostnameVerifier { hostname, session -> true }
+        .hostnameVerifier { hostname, session -> true } // HTTP FAILED: javax.net.ssl.SSLPeerUnverifiedException: Hostname dm5.com not verified:
         .cache(myCache)
         .addInterceptor(loggingInterceptor)
-        .addNetworkInterceptor(UserAgentInterceptor(context))
         .addNetworkInterceptor(CacheInterceptor(1, TimeUnit.MINUTES))
+        .addNetworkInterceptor(PCUserAgentInterceptor()) // Prevent from redirecting to mobile site
         .build()
 }
 
@@ -163,6 +159,6 @@ fun provideDM5Service(httpClient: OkHttpClient): DM5Service {
 
 fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
     return HttpLoggingInterceptor(HttpLoggingInterceptor.Logger.DEFAULT).apply {
-        level = HttpLoggingInterceptor.Level.BODY
+        level = HttpLoggingInterceptor.Level.BASIC
     }
 }

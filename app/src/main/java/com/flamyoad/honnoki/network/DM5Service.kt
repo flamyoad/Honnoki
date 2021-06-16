@@ -24,4 +24,8 @@ interface DM5Service {
         @Field("page") page: Int = 1,
         @Field("pagesize") pageSize: Int = 139
     ): ResponseBody
+
+    @GET
+    @Headers(CACHE_CONTROL_MAX_AGE_60)
+    suspend fun getHtml(@Url url: String): ResponseBody
 }

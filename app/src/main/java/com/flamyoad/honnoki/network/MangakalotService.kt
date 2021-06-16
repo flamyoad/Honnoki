@@ -1,16 +1,7 @@
 package com.flamyoad.honnoki.network
 
-import android.content.Context
-import com.flamyoad.honnoki.network.interceptor.CacheInterceptor
-import com.flamyoad.honnoki.network.interceptor.RefererInterceptor
-import com.flamyoad.honnoki.network.interceptor.UserAgentInterceptor
-import okhttp3.Cache
-import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
 import retrofit2.http.*
-import java.util.concurrent.TimeUnit
 
 private const val CACHE_CONTROL_MAX_AGE_60 = "Cache-Control: max-age=60"
 private const val CACHE_CONTROL_NO_CACHE = "Cache-Control: no-cache"
