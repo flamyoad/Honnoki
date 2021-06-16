@@ -16,9 +16,10 @@
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/coverImage"
             android:layout_width="100dp"
-            android:layout_height="150dp"
+            android:layout_height="0dp"
             android:scaleType="centerCrop"
-            app:layout_constraintBottom_toBottomOf="@+id/txtLatestChapter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="3:4"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:shapeAppearanceOverlay="@style/read_history_item_corner"
