@@ -1,5 +1,6 @@
 package com.flamyoad.honnoki.network
 
+import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.http.*
 
@@ -24,13 +25,14 @@ interface ReadMangaService {
     suspend fun getHtml(@Url url: String): ResponseBody
 
     @POST("service/advanced_search")
+    @FormUrlEncoded
     @Headers(
-        "X-Requested-With:XMLHttpRequest",
-        "Content-Type:application/x-www-form-urlencoded; charset=UTF-8"
+        "X-Requested-With: XMLHttpRequest",
+        "content-type:application/x-www-form-urlencoded; charset=UTF-8"
     )
     suspend fun searchByKeyword(
         @Field("manga-name") query: String,
         @Field("type") type: String = "all",
-        @Field("status") status: String = "both"
+        @Field("status") status: String = "both",
     ): ResponseBody
 }

@@ -30,4 +30,11 @@ interface BookmarkDao {
 
     @Query("DELETE FROM bookmark WHERE mangaOverviewId = :overviewId")
     suspend fun deleteAllFrom(overviewId: Long): Int
+
+    @Query("""
+        UPDATE bookmark
+        SET bookmarkGroupId = :bookmarkGroupId
+        WHERE id IN (:bookmarkIds)
+    """)
+    suspend fun updateBookmarkGroup(bookmarkIds: List<Long>, bookmarkGroupId: Long)
 }

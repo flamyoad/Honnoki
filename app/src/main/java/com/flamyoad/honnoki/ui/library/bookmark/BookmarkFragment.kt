@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.GridLayoutManager
@@ -19,11 +20,13 @@ import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.adapter.BookmarkAdapter
 import com.flamyoad.honnoki.adapter.BookmarkDialogAdapter
 import com.flamyoad.honnoki.adapter.BookmarkGroupAdapter
+import com.flamyoad.honnoki.data.exception.NullEntityIdException
 import com.flamyoad.honnoki.databinding.FragmentBookmarkBinding
 import com.flamyoad.honnoki.dialog.AddBookmarkGroupDialog
 import com.flamyoad.honnoki.dialog.ChangeBookmarkGroupNameDialog
 import com.flamyoad.honnoki.dialog.DeleteBookmarkGroupDialog
 import com.flamyoad.honnoki.data.model.BookmarkWithOverview
+import com.flamyoad.honnoki.dialog.MoveBookmarkDialog
 import com.flamyoad.honnoki.ui.library.LibraryViewModel
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import kotlinx.coroutines.flow.collect
@@ -41,16 +44,13 @@ class BookmarkFragment : Fragment() {
     private val viewModel: BookmarkViewModel by viewModel()
     private val parentViewModel: LibraryViewModel by sharedViewModel()
 
-    private val dialogMoveBookmarksAdapter by lazy { BookmarkDialogAdapter({}) }
-
     private var listener: NavigationMenuListener? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         try {
             listener = context as NavigationMenuListener
-        } catch (ignored: ClassCastException) {
-        }
+        } catch (ignored: ClassCastException) { }
     }
 
     override fun onCreateView(
@@ -66,6 +66,10 @@ class BookmarkFragment : Fragment() {
         initUi()
         initBookmarkGroups()
         initBookmarkItems()
+
+        // Restore the dialog fragment callback on screen rotation, if exists
+        val moveBookmarkDialog = childFragmentManager.findFragmentByTag(MoveBookmarkDialog.TAG)
+        moveBookmarkDialog?.let { setMoveBookmarkDialogCallback(it as MoveBookmarkDialog) }
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
@@ -230,7 +234,35 @@ class BookmarkFragment : Fragment() {
     }
 
     private fun openMoveBookmarkDialog() {
+        val selectedBookmarkIds = viewModel.tickedItems().value
+            .map { it.id ?: throw NullEntityIdException() }
 
+        val dialog = MoveBookmarkDialog.newInstance(selectedBookmarkIds)
+        dialog.show(childFragmentManager, MoveBookmarkDialog.TAG)
+
+        dialog.setFragmentResultListener(MoveBookmarkDialog.REQUEST_KEY) { key, bundle ->
+            if (key == MoveBookmarkDialog.REQUEST_KEY) {
+                if (bundle.getBoolean(MoveBookmarkDialog.MOVED_SUCCESSFULLY)) {
+                    viewModel.clearTickedBookmarks()
+                }
+            }
+        }
+
+        setMoveBookmarkDialogCallback(dialog)
+    }
+
+    /**
+     * This method has to be invoked on dialog creation & screen rotation because the callback
+     * will only remain active until the LifecycleOwner reaches the Lifecycle.State.DESTROYED state
+     */
+    private fun setMoveBookmarkDialogCallback(dialog: MoveBookmarkDialog) {
+        dialog.setFragmentResultListener(MoveBookmarkDialog.REQUEST_KEY) { key, bundle ->
+            if (key == MoveBookmarkDialog.REQUEST_KEY) {
+                if (bundle.getBoolean(MoveBookmarkDialog.MOVED_SUCCESSFULLY)) {
+                    viewModel.clearTickedBookmarks()
+                }
+            }
+        }
     }
 
     private fun openDeleteBookmarkDialog() {

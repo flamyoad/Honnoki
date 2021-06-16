@@ -9,7 +9,9 @@ import com.flamyoad.honnoki.network.interceptor.CacheInterceptor
 import com.flamyoad.honnoki.network.interceptor.RefererInterceptor
 import com.flamyoad.honnoki.network.interceptor.UserAgentInterceptor
 import okhttp3.Cache
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
@@ -118,8 +120,8 @@ fun provideReadMangaHttpClient(
     return OkHttpClient.Builder()
         .cache(myCache)
         .addInterceptor(loggingInterceptor)
-        .addInterceptor(UserAgentInterceptor(context))
-        .addNetworkInterceptor(CacheInterceptor(1, TimeUnit.MINUTES))
+        .addNetworkInterceptor(UserAgentInterceptor(context))
+//        .addNetworkInterceptor(CacheInterceptor(1, TimeUnit.MINUTES))
         .build()
 }
 
@@ -133,6 +135,6 @@ fun provideReadMangaService(httpClient: OkHttpClient): ReadMangaService {
 
 fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
     return HttpLoggingInterceptor(HttpLoggingInterceptor.Logger.DEFAULT).apply {
-        level = HttpLoggingInterceptor.Level.BASIC
+        level = HttpLoggingInterceptor.Level.BODY
     }
 }

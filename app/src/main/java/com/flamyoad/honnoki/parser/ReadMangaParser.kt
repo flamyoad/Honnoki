@@ -162,4 +162,23 @@ class ReadMangaParser {
 
         return pages
     }
+
+    fun parseForSearchByKeyword(html: String?): List<SearchResult> {
+        if (html.isNullOrBlank()) {
+            return emptyList()
+        }
+
+        val document = Jsoup.parse(html)
+
+        val searchResult = document.select(".box")
+        return searchResult.map {
+            SearchResult(
+                coverImage = it.selectFirst(".left > a > img").attrNonNull("src"),
+                link = it.selectFirst(".left > a").attrNonNull("href"),
+                title = it.selectFirst(".title > h2").textNonNull(),
+                latestChapter = it.selectFirst("dd:nth-child(2)").textNonNull(), // Status
+                author = it.selectFirst("dd:nth-child(4)").textNonNull(), // Genre
+            )
+        }
+    }
 }

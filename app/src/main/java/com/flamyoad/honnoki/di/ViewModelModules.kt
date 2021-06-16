@@ -1,10 +1,7 @@
 package com.flamyoad.honnoki.di
 
 import androidx.paging.ExperimentalPagingApi
-import com.flamyoad.honnoki.dialog.AddBookmarkGroupDialogViewModel
-import com.flamyoad.honnoki.dialog.BookmarkDialogViewModel
-import com.flamyoad.honnoki.dialog.ChangeBookmarkGroupNameViewModel
-import com.flamyoad.honnoki.dialog.DeleteBookmarkGroupDialogViewModel
+import com.flamyoad.honnoki.dialog.*
 import com.flamyoad.honnoki.ui.home.mangalist.HomeListViewModel
 import com.flamyoad.honnoki.ui.home.HomeViewModel
 import com.flamyoad.honnoki.ui.library.LibraryViewModel
@@ -49,7 +46,7 @@ val viewModelModules = module {
         SimpleSearchViewModel(
             androidApplication(),
             get(),
-            get(named(KoinConstants.MANGAKALOT))
+            get(named(KoinConstants.READMANGA))
         )
     }
 
@@ -58,4 +55,5 @@ val viewModelModules = module {
     viewModel { BookmarkDialogViewModel(androidApplication(), get()) }
     viewModel { ChangeBookmarkGroupNameViewModel(androidApplication(), get()) }
     viewModel { DeleteBookmarkGroupDialogViewModel(androidApplication(), get()) }
+    viewModel { MoveBookmarkDialogViewModel(get(), get(), get(named(KoinConstants.APP_SCOPE))) }
 }

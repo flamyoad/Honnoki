@@ -87,10 +87,6 @@ class BookmarkViewModel(
         tickedItems.value = emptyList()
     }
 
-    fun moveBookmarks(bookmarkGroup: BookmarkGroup) {
-
-    }
-
     fun deleteBookmarks() {
         applicationScope.launch(Dispatchers.IO) {
             db.bookmarkDao().delete(tickedItems.value)

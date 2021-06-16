@@ -5,11 +5,16 @@ import com.flamyoad.honnoki.network.ReadMangaService
 import com.flamyoad.honnoki.parser.ReadMangaParser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+
 
 class ReadMangaApi(
     private val service: ReadMangaService,
     private val parser: ReadMangaParser
-): BaseApi() {
+) : BaseApi() {
 
     override suspend fun searchForLatestManga(index: Int): List<Manga> {
         println("search for latest")
@@ -106,6 +111,17 @@ class ReadMangaApi(
         return withContext(Dispatchers.Default) {
             val imageList = parser.parseForPageList(html)
             return@withContext State.Success(imageList)
+        }
+    }
+
+    override suspend fun searchByKeyword(keyword: String, index: Int): List<SearchResult> {
+        val response = service.searchByKeyword(keyword)
+
+        return withContext(Dispatchers.Default) {
+            val html = response.string()
+            val searchResultList = parser.parseForSearchByKeyword(html)
+
+            return@withContext searchResultList
         }
     }
 }
