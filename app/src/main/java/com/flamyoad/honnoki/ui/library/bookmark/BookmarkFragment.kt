@@ -12,6 +12,8 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.Slide
+import androidx.transition.TransitionManager
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
 import com.afollestad.materialdialogs.list.customListAdapter
@@ -201,6 +203,11 @@ class BookmarkFragment : Fragment() {
 
     private fun startActionMode() {
         viewModel.actionModeEnabled = true
+
+        val btmSlide = Slide(Gravity.BOTTOM).apply {
+            addTarget(binding.actionModeBar)
+        }
+        TransitionManager.beginDelayedTransition(binding.root, btmSlide)
 
         binding.actionModeBar.visibility = View.VISIBLE
         listener?.hideNavMenu()
