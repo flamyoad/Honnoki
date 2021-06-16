@@ -5,6 +5,8 @@ import com.flamyoad.honnoki.data.model.SearchResult
 import com.flamyoad.honnoki.data.GenreConstants
 
 abstract class BaseApi {
+    abstract val startingPageIndex: Int
+
     open suspend fun searchForLatestManga(index: Int): List<Manga> {
         return emptyList()
     }

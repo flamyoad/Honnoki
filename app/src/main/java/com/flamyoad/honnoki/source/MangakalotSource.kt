@@ -116,5 +116,4 @@ class MangakalotSource(db: AppDatabase, context: Context, private val api: Manga
         private const val LOW_PAGINATION_SIZE = 20
         private const val NORMAL_PAGINATION_SIZE = 30
     }
-
 }

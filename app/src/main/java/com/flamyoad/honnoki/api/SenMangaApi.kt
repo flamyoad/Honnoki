@@ -11,6 +11,9 @@ class SenMangaApi(
     private val parser: SenMangaParser
 ) : BaseApi() {
 
+    override val startingPageIndex: Int
+        get() = 1
+
     override suspend fun searchForLatestManga(index: Int): List<Manga> {
         val response = service.getLatestManga(index)
 

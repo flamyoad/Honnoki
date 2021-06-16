@@ -1,10 +1,7 @@
 package com.flamyoad.honnoki.di
 
 import android.content.Context
-import com.flamyoad.honnoki.network.MangaTownService
-import com.flamyoad.honnoki.network.MangakalotService
-import com.flamyoad.honnoki.network.ReadMangaService
-import com.flamyoad.honnoki.network.SenMangaService
+import com.flamyoad.honnoki.network.*
 import com.flamyoad.honnoki.network.interceptor.CacheInterceptor
 import com.flamyoad.honnoki.network.interceptor.RefererInterceptor
 import com.flamyoad.honnoki.network.interceptor.UserAgentInterceptor
@@ -18,12 +15,15 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
+import javax.net.ssl.HostnameVerifier
+import javax.net.ssl.SSLSession
 
 val networkModules = module {
     single { provideMangakalotService(get(named(KoinConstants.MANGAKALOT))) }
     single { provideSenmangaService(get(named(KoinConstants.SENMANGA))) }
     single { provideMangaTownService(get(named(KoinConstants.MANGATOWN))) }
     single { provideReadMangaService(get(named(KoinConstants.READMANGA))) }
+    single { provideDM5Service(get(named(KoinConstants.DM5))) }
 
     single<OkHttpClient>(named(KoinConstants.MANGAKALOT)) {
         provideMangakalotHttpClient(androidContext(), get())
@@ -39,6 +39,10 @@ val networkModules = module {
 
     single<OkHttpClient>(named(KoinConstants.READMANGA)) {
         provideReadMangaHttpClient(androidContext(), get())
+    }
+
+    single<OkHttpClient>(named(KoinConstants.DM5)) {
+        provideDM5HttpClient(androidContext(), get())
     }
 
     factory { provideHttpLoggingInterceptor() }
@@ -131,6 +135,30 @@ fun provideReadMangaService(httpClient: OkHttpClient): ReadMangaService {
         .client(httpClient)
         .build()
     return retrofit.create(ReadMangaService::class.java)
+}
+
+fun provideDM5HttpClient(
+    context: Context,
+    loggingInterceptor: HttpLoggingInterceptor
+): OkHttpClient {
+    val myCache = (Cache(context.cacheDir, DM5Service.CACHE_SIZE))
+
+    // HTTP FAILED: javax.net.ssl.SSLPeerUnverifiedException: Hostname dm5.com not verified:
+    return OkHttpClient.Builder()
+        .hostnameVerifier { hostname, session -> true }
+        .cache(myCache)
+        .addInterceptor(loggingInterceptor)
+        .addNetworkInterceptor(UserAgentInterceptor(context))
+        .addNetworkInterceptor(CacheInterceptor(1, TimeUnit.MINUTES))
+        .build()
+}
+
+fun provideDM5Service(httpClient: OkHttpClient): DM5Service {
+    val retrofit = Retrofit.Builder()
+        .baseUrl(DM5Service.BASE_URL)
+        .client(httpClient)
+        .build()
+    return retrofit.create(DM5Service::class.java)
 }
 
 fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {

@@ -16,6 +16,9 @@ class ReadMangaApi(
     private val parser: ReadMangaParser
 ) : BaseApi() {
 
+    override val startingPageIndex: Int
+        get() = 1
+
     override suspend fun searchForLatestManga(index: Int): List<Manga> {
         println("search for latest")
         val response = service.getLatestManga(index)

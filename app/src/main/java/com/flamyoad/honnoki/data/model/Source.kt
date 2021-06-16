@@ -14,6 +14,7 @@ enum class Source(
     MANGAKALOT("Mangakalot", R.drawable.mangakalot_logo, R.drawable.uk_logo),
     MANGATOWN("MangaTown", R.drawable.mangatown_logo, R.drawable.uk_logo, isEnabled = false),
     READMANGA("ReadManga", R.drawable.readmanga_logo, R.drawable.uk_logo),
+    DM5("DM5", R.drawable.mangatown_logo, R.drawable.uk_logo),
     SENMANGA("SenManga", R.drawable.senmanga_logo, R.drawable.jp_logo);
 
     fun getLogoDrawable(context: Context): Drawable? {
