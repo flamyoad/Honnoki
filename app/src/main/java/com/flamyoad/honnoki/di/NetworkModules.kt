@@ -7,7 +7,9 @@ import com.flamyoad.honnoki.network.interceptor.RefererInterceptor
 import com.flamyoad.honnoki.network.interceptor.AndroidUserAgentInterceptor
 import com.flamyoad.honnoki.network.interceptor.PCUserAgentInterceptor
 import okhttp3.Cache
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
@@ -144,8 +146,8 @@ fun provideDM5HttpClient(
         .hostnameVerifier { hostname, session -> true } // HTTP FAILED: javax.net.ssl.SSLPeerUnverifiedException: Hostname dm5.com not verified:
         .cache(myCache)
         .addInterceptor(loggingInterceptor)
-        .addNetworkInterceptor(CacheInterceptor(1, TimeUnit.MINUTES))
         .addNetworkInterceptor(PCUserAgentInterceptor()) // Prevent from redirecting to mobile site
+        .addNetworkInterceptor(CacheInterceptor(1, TimeUnit.MINUTES))
         .build()
 }
 

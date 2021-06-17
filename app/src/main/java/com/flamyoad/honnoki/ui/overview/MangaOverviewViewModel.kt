@@ -79,13 +79,9 @@ class MangaOverviewViewModel(private val db: AppDatabase, private val baseSource
                     val overviewId = db.mangaOverviewDao().insert(overview.value)
                     mangaOverviewId.value = overviewId
 
-                    // Run all three jobs at same time. Should not put strain on server
-                    // because we are using Cache-Control: 60 in OkHttpInterceptor
-                    val chapterJob = async { refreshChapterList(url, overviewId) }
-                    val genreJob = async { refreshGenres(url, overviewId) }
-                    val authorJob = async { refreshAuthors(url, overviewId) }
-
-                    awaitAll(chapterJob, genreJob, authorJob)
+                    refreshChapterList(url, overviewId)
+                    refreshGenres(url, overviewId)
+                    refreshAuthors(url, overviewId)
                 }
             }
         }
