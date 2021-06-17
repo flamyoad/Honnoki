@@ -153,12 +153,9 @@ class DM5Parser(
 
         val imageLinks = deObfuscator.getChapterImagesFromJs(obfuscatedJS)
 
-        val pages = document
-            .select("")
-            .mapIndexed { index, element ->
-                Page(number = index + 1, link = element.attrNonNull("src"))
-            }
-
-        return emptyList()
+        val pages = imageLinks.mapIndexed { index, s ->
+            Page(number = index + 1, link = s)
+        }
+        return pages
     }
 }
