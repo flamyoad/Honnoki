@@ -48,6 +48,10 @@ class DM5Source(db: AppDatabase, context: Context, private val api: DM5Api) :
         return api.searchForChapterList(urlPath)
     }
 
+    override suspend fun getImages(urlPath: String): State<List<Page>> {
+        return api.searchForImageList(urlPath)
+    }
+
     companion object {
         private const val NORMAL_PAGINATION_SIZE = 30
     }

@@ -5,11 +5,14 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.paging.ExperimentalPagingApi
+import app.cash.quickjs.QuickJs
 import com.flamyoad.honnoki.databinding.ActivityMainBinding
 import com.flamyoad.honnoki.ui.home.HomeFragment
 import com.flamyoad.honnoki.ui.library.LibraryFragment
 import com.flamyoad.honnoki.ui.search.SimpleSearchFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.lang.IllegalArgumentException
+import java.lang.NullPointerException
 
 @ExperimentalPagingApi
 class MainActivity : AppCompatActivity(), NavigationMenuListener {

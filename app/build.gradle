@@ -170,4 +170,6 @@ dependencies {
     def material_dialogs = "3.3.0"
     implementation "com.afollestad.material-dialogs:core:$material_dialogs"
     implementation "com.afollestad.material-dialogs:lifecycle:$material_dialogs"
+
+    implementation 'app.cash.quickjs:quickjs-android:0.9.0'
 }

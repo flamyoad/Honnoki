@@ -1,7 +1,9 @@
 package com.flamyoad.honnoki.di
 
+import app.cash.quickjs.QuickJs
 import com.flamyoad.honnoki.api.*
 import com.flamyoad.honnoki.parser.*
+import com.flamyoad.honnoki.parser.json.dm5.DM5Deobfuscator
 import com.flamyoad.honnoki.parser.json.dm5.DM5JsonAdapter
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -19,8 +21,11 @@ val apiModules = module {
     single { SenMangaParser() }
     single { MangaTownParser() }
     single { ReadMangaParser() }
-    single { DM5Parser(get()) }
+    single { DM5Parser(get(), get()) }
 
     // Moshi Adapter
     single { DM5JsonAdapter() }
+
+    // Deobfuscator
+    single { DM5Deobfuscator() }
 }

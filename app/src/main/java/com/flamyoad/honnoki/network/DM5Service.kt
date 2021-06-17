@@ -9,6 +9,7 @@ private const val CACHE_CONTROL_NO_CACHE = "Cache-Control: no-cache"
 interface DM5Service {
     companion object {
         const val BASE_URL = "https://dm5.com/"
+        const val BASE_MOBILE_URL = "https://m.dm5.com/"
         const val CACHE_SIZE = (2 * 1024 * 1024).toLong()
     }
 

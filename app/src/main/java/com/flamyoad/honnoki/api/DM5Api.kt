@@ -98,4 +98,21 @@ class DM5Api(
         }
     }
 
+    suspend fun searchForImageList(relativeLink: String): State<List<Page>> {
+        val absoluteLink = DM5Service.BASE_MOBILE_URL + relativeLink
+
+        val response = try {
+            service.getHtml(absoluteLink)
+        } catch (e: Exception) {
+            return State.Error(e)
+        }
+
+        return withContext(Dispatchers.Default) {
+            val html = response.string()
+
+            val imageList = parser.parseForImageList(html)
+            return@withContext State.Success(imageList)
+        }
+    }
+
 }

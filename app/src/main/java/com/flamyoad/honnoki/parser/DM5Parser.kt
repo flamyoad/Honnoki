@@ -2,13 +2,17 @@ package com.flamyoad.honnoki.parser
 
 import com.flamyoad.honnoki.data.model.*
 import com.flamyoad.honnoki.network.DM5Service
+import com.flamyoad.honnoki.parser.json.dm5.DM5Deobfuscator
 import com.flamyoad.honnoki.parser.json.dm5.DM5JsonAdapter
 import org.jsoup.Jsoup
 import java.time.LocalDateTime
 
 // Webtoon https://www.dm5.com/manhua-miaoshouxiaocunyi/
 // Manga https://www.dm5.com/manhua-nvpengyou-jiewoyixia/
-class DM5Parser(private val jsonAdapter: DM5JsonAdapter) {
+class DM5Parser(
+    private val jsonAdapter: DM5JsonAdapter,
+    private val deObfuscator: DM5Deobfuscator
+) {
 
     fun parseForRecentMangas(html: String?): List<Manga> {
         if (html.isNullOrBlank())
@@ -127,11 +131,34 @@ class DM5Parser(private val jsonAdapter: DM5JsonAdapter) {
             Chapter(
                 title = chapterLink.ownTextNonNull(),
                 number = (chapterList.size - (index + 1)).toDouble(),
-                link = chapterLink.attrNonNull("href"),
+                link = chapterLink.attrNonNull("href"), // It's relative link
                 date = "", // Does not have date
                 hasBeenRead = false,
                 hasBeenDownloaded = false
             )
         }
+    }
+
+    fun parseForImageList(html: String?): List<Page> {
+        if (html.isNullOrBlank()) {
+            return emptyList()
+        }
+
+        val document = Jsoup.parse(html)
+
+        val obfuscatedJS = document.select("script").toList()
+            .filter { it.attrNonNull("type") == "text/javascript" }
+            .firstOrNull { it.html().contains("eval") }
+            .htmlNonNull()
+
+        val imageLinks = deObfuscator.getChapterImagesFromJs(obfuscatedJS)
+
+        val pages = document
+            .select("")
+            .mapIndexed { index, element ->
+                Page(number = index + 1, link = element.attrNonNull("src"))
+            }
+
+        return emptyList()
     }
 }

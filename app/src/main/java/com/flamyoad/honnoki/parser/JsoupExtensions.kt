@@ -21,6 +21,11 @@ fun Element?.ownTextNonNull(): String {
     return this.ownText()
 }
 
+fun Element?.htmlNonNull(): String {
+    if (this == null) return ""
+    return this.html()
+}
+
 fun Element?.parentNonNull(): Element {
     if (this == null) return Element(EMPTY_TAG)
     if (this.hasParent()) {
