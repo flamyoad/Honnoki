@@ -40,8 +40,9 @@ class DM5Deobfuscator() {
             val arr = jsEngine.evaluate(modifiedJs).toString()
 
             val imageLinks = arr
-                .substring(arr.indexOf('[') + 1, arr.indexOf(']'))
-                .split(',')
+                .substring(arr.indexOf('[') + 1, arr.indexOf(']')) // Extract items in array
+                .split(',') // Split the array
+                .map { it.replace("'", "") } // Remove the unnecessary single quote in string
 
             return imageLinks
 

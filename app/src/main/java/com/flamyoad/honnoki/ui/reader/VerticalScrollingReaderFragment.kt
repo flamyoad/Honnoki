@@ -51,11 +51,6 @@ class VerticalScrollingReaderFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (savedInstanceState == null) {
-            val chapterId =
-                requireActivity().intent?.getLongExtra(ReaderActivity.CHAPTER_ID, -1) ?: -1
-            parentViewModel.fetchChapterImages(chapterId, LoadType.INITIAL)
-        }
         initUi()
         observeUi()
     }
@@ -73,8 +68,6 @@ class VerticalScrollingReaderFragment : Fragment() {
     }
 
     private fun initUi() {
-        parentViewModel.setSideKickVisibility(false)
-
         readerAdapter.stateRestorationPolicy =
             RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         concatAdapter.addAdapter(readerAdapter)
@@ -84,7 +77,7 @@ class VerticalScrollingReaderFragment : Fragment() {
         //
         // Don't bother using the commit callback from submitList() to scroll.
         // Because it doesn't work
-        readerAdapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver() {
+        readerAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 super.onItemRangeInserted(positionStart, itemCount)
                 if (itemCount != 0) {
@@ -223,7 +216,8 @@ class VerticalScrollingReaderFragment : Fragment() {
     private fun scrollToStartingPageNumber() {
         if (initialScrollDone) return
 
-        val startingPageNumber = requireActivity().intent.getIntExtra(ReaderActivity.START_AT_PAGE, 0)
+        val startingPageNumber =
+            requireActivity().intent.getIntExtra(ReaderActivity.START_AT_PAGE, 0)
         linearLayoutManager.scrollToPositionWithOffset(startingPageNumber - 1, 0)
 
         initialScrollDone = true
@@ -235,6 +229,8 @@ class VerticalScrollingReaderFragment : Fragment() {
     }
 
     companion object {
+        const val TAG = "vertical_scrolling_reader_fragment"
+
         private const val INITIAL_SCROLL_DONE = "initial_scroll_done"
 
         @JvmStatic

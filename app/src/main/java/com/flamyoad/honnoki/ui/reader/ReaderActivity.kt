@@ -17,11 +17,15 @@ import androidx.transition.TransitionManager
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.data.model.Source
 import com.flamyoad.honnoki.databinding.ActivityReaderBinding
+import com.flamyoad.honnoki.ui.reader.model.LoadType
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.util.concurrent.TimeUnit
+
+// Intent can survive process death
+// onCreate -> onRestoreInstanceState
 
 @ExperimentalPagingApi
 class ReaderActivity : AppCompatActivity() {
@@ -30,10 +34,11 @@ class ReaderActivity : AppCompatActivity() {
     val binding get() = requireNotNull(_binding)
 
     private val source: String by lazy {
-        intent.getStringExtra(MANGA_SOURCE) ?: ""
+        intent.getStringExtra(MANGA_SOURCE) ?: "fuck"
     }
 
     private val viewModel: ReaderViewModel by viewModel {
+        println(source)
         parametersOf(source)
     }
 
@@ -49,14 +54,24 @@ class ReaderActivity : AppCompatActivity() {
 
         initUi()
         observeUi()
+    }
 
-        if (savedInstanceState == null) {
+    override fun onResume() {
+        super.onResume()
+        // Helps to survive process death by checking whether the initial id is -1
+        // We can set the overviewId however many times we want because StateFlow is distinct by default
+        if (viewModel.overviewId == -1L) {
             val frameFragment = VerticalScrollingReaderFragment.newInstance()
             supportFragmentManager.beginTransaction()
-                .replace(R.id.container, frameFragment)
+                .replace(R.id.container, frameFragment, VerticalScrollingReaderFragment.TAG)
                 .commit()
         }
+        viewModel.fetchChapterList(intent.getLongExtra(OVERVIEW_ID, -1L))
+        viewModel.fetchChapterImages(intent.getLongExtra(CHAPTER_ID, -1) , LoadType.INITIAL)
+    }
 
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
         viewModel.fetchChapterList(intent.getLongExtra(OVERVIEW_ID, -1L))
     }
 

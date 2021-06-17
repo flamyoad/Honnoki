@@ -30,8 +30,10 @@ class ReaderViewModel(
 ) : ViewModel() {
 
     private val mangaOverviewId = MutableStateFlow(-1L)
+    val overviewId get() = mangaOverviewId.value
 
     val mangaOverview = mangaOverviewId
+        .onEach { println("mangaoverview is fetched from db") }
         .flatMapLatest { db.mangaOverviewDao().getById(it) }
         .flowOn(Dispatchers.IO)
 

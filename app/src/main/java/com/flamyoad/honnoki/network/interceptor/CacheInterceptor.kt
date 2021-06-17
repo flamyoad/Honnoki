@@ -21,7 +21,7 @@ class CacheInterceptor(val maxAge: Int, val timeUnit: TimeUnit) : Interceptor {
         // for cache in the first place.
         val emptyHeaderValue = request.header(CACHE_CONTROL_HEADER).isNullOrBlank()
         val noCache = request.header(CACHE_CONTROL_HEADER) == CACHE_CONTROL_NO_CACHE
-        if (emptyHeaderValue || noCache){
+        if (emptyHeaderValue || noCache) {
             return originalResponse
         }
 
