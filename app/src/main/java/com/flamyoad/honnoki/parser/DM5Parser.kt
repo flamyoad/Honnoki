@@ -126,10 +126,20 @@ class DM5Parser(
             .select("#chapterlistload > ul")
             .flatMap { it.select("li") }
 
-        return chapterList.mapIndexed { index, it ->
-            val chapterLink = it.selectFirst("a")
+        return chapterList.mapIndexed { index, div ->
+            val chapterLink = div.selectFirst("a")
+
+            // Fallback to webtoon title, if HTML tag for manga title is empty
+            val chapterTitle = chapterLink.ownTextNonNull().let {
+                if (it.isBlank()) {
+                    div.selectFirst(".title").ownTextNonNull()
+                } else {
+                    it
+                }
+            }
+
             Chapter(
-                title = chapterLink.ownTextNonNull(),
+                title = chapterTitle,
                 number = (chapterList.size - (index + 1)).toDouble(),
                 link = chapterLink.attrNonNull("href"), // It's relative link
                 date = "", // Does not have date
