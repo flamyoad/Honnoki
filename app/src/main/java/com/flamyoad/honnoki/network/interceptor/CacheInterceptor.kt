@@ -21,7 +21,7 @@ class CacheInterceptor(val maxAge: Int, val timeUnit: TimeUnit) : Interceptor {
         // for cache in the first place.
         val emptyHeaderValue = request.header(CACHE_CONTROL_HEADER).isNullOrBlank()
         val noCache = request.header(CACHE_CONTROL_HEADER) == CACHE_CONTROL_NO_CACHE
-        if (emptyHeaderValue && noCache){
+        if (emptyHeaderValue || noCache){
             return originalResponse
         }
 
@@ -29,7 +29,6 @@ class CacheInterceptor(val maxAge: Int, val timeUnit: TimeUnit) : Interceptor {
             .maxAge(maxAge, timeUnit)
             .build()
 
-        // Attach "Cache-Control: max-age" to the response
         return originalResponse.newBuilder()
             .header(CACHE_CONTROL_HEADER, cacheControl.toString())
             .removeHeader("Pragma") // Caching doesnt work if this header is not removed
