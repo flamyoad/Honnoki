@@ -37,7 +37,7 @@ class BookmarkViewModel(
     val selectedBookmarkGroup = selectedBookmarkGroupId
         .onEach { flowOf(BookmarkGroup.empty()) }
         .filter { it != -1L }
-        .flatMapLatest { return@flatMapLatest db.bookmarkGroupDao().getById(it) }
+        .flatMapLatest { db.bookmarkGroupDao().getById(it) }
 
     private val tickedItems = MutableStateFlow<List<Bookmark>>(emptyList())
     fun tickedItems() = tickedItems.asStateFlow()

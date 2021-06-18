@@ -24,9 +24,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.util.concurrent.TimeUnit
 
-// Intent can survive process death
-// onCreate -> onRestoreInstanceState
-
 @ExperimentalPagingApi
 class ReaderActivity : AppCompatActivity() {
 

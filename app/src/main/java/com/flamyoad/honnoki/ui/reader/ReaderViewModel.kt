@@ -10,7 +10,6 @@ import com.flamyoad.honnoki.data.model.State
 import com.flamyoad.honnoki.repository.ChapterRepository
 import com.flamyoad.honnoki.repository.OverviewRepository
 import com.flamyoad.honnoki.source.BaseSource
-import com.flamyoad.honnoki.source.SenMangaSource
 import com.flamyoad.honnoki.ui.reader.model.LoadType
 import com.flamyoad.honnoki.ui.reader.model.ReaderPage
 import kotlinx.coroutines.CoroutineScope
@@ -33,7 +32,6 @@ class ReaderViewModel(
     val overviewId get() = mangaOverviewId.value
 
     val mangaOverview = mangaOverviewId
-        .onEach { println("mangaoverview is fetched from db") }
         .flatMapLatest { db.mangaOverviewDao().getById(it) }
         .flowOn(Dispatchers.IO)
 
@@ -117,28 +115,28 @@ class ReaderViewModel(
     private fun processChapterImages(chapter: Chapter, pages: List<Page>, loadType: LoadType) {
         val chapterId = chapter.id ?: throw IllegalArgumentException("Chapter id is null")
 
-        val pagesWithoutChapterId = pages.map {
+        val pagesFromNetwork = pages.map {
             it.copy(chapterId = chapterId)
         }
 
-        db.pageDao().insertAll(pagesWithoutChapterId)
-        val pagesWithChapterId = db.pageDao().getAllFromChapter(chapterId)
+        db.pageDao().insertAll(pagesFromNetwork)
+        val pagesFromDb = db.pageDao().getAllFromChapter(chapterId)
 
         val existingList = pageList.value.toMutableList()
 
         when (loadType) {
             LoadType.INITIAL -> {
                 existingList.clear()
-                existingList.addAll(pagesWithChapterId.map { ReaderPage.Value(it) })
+                existingList.addAll(pagesFromDb.map { ReaderPage.Value(it) })
                 existingList.add(ReaderPage.Ads(chapterId))
             }
             LoadType.PREV -> {
-                val list = pagesWithChapterId.map { ReaderPage.Value(it) } as MutableList<ReaderPage>
+                val list = pagesFromDb.map { ReaderPage.Value(it) } as MutableList<ReaderPage>
                 list.add(ReaderPage.Ads(chapterId))
                 existingList.addAll(0, list)
             }
             LoadType.NEXT -> {
-                existingList.addAll(pagesWithChapterId.map { ReaderPage.Value(it) })
+                existingList.addAll(pagesFromDb.map { ReaderPage.Value(it) })
                 existingList.add(ReaderPage.Ads(chapterId))
             }
         }
@@ -159,7 +157,7 @@ class ReaderViewModel(
     }
 
     fun saveLastReadPage(pageNumber: Int) {
-        val overviewId = mangaOverviewId.value ?: return
+        val overviewId = mangaOverviewId.value
         applicationScope.launch(Dispatchers.IO) {
             overviewRepo.updateLastReadPage(pageNumber, overviewId)
         }

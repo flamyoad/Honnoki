@@ -49,7 +49,8 @@ class DM5Parser(
             .attrNonNull("src")
 
         val mainTitle = div.selectFirst(".title")
-            .textNonNull()
+            .ownTextNonNull()
+            .trim()
 
         val status = div.selectFirst(".tip > span:nth-child(1) > span")
             .textNonNull()
