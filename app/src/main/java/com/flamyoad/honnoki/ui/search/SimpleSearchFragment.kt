@@ -20,12 +20,14 @@ import com.flamyoad.honnoki.adapter.SimpleSearchResultAdapter
 import com.flamyoad.honnoki.databinding.FragmentSimpleSearchBinding
 import com.flamyoad.honnoki.data.model.SearchResult
 import com.flamyoad.honnoki.data.model.Source
+import com.flamyoad.honnoki.di.viewModelModules
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import com.flamyoad.honnoki.ui.search.model.SearchGenre
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
 import com.kennyc.view.MultiStateView
 import kotlinx.coroutines.flow.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.context.unloadKoinModules
 
 @ExperimentalPagingApi
 class SimpleSearchFragment : BaseFragment() {

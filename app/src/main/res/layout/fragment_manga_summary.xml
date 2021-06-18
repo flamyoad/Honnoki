@@ -7,7 +7,8 @@
     android:layout_height="match_parent"
     app:msv_errorView="@layout/recyclerview_error_layout"
     app:msv_loadingView="@layout/recyclerview_loading_layout"
-    tools:context=".ui.overview.MangaSummaryFragment">
+    tools:context=".ui.overview.MangaSummaryFragment"
+    android:background="?attr/colorBackgroundFloating">
 
     <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
         android:id="@+id/contentList"

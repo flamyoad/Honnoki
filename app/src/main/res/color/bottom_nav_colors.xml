@@ -4,10 +4,6 @@
         android:state_checked="true"
         android:color="@color/flower_petal_medium" />
 
-<!--    <item-->
-<!--        android:state_checked="true"-->
-<!--        android:color="#F86570" />-->
-
     <item
         android:state_checked="false"
         android:color="#BFBDBD" />

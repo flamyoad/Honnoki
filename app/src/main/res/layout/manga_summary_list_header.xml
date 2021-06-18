@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.tabs.TabLayout android:id="@+id/tabLayout"
+<com.google.android.material.tabs.TabLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/tabLayout"
     android:layout_width="match_parent"
     android:layout_height="?actionBarSize"
-    android:background="@drawable/test_gradient"
-    app:tabBackground="@drawable/test_gradient"
+    android:background="@drawable/overview_header_gradient"
+    app:tabBackground="@drawable/overview_header_gradient"
     app:tabGravity="fill"
     app:tabIndicatorColor="@null"
     app:tabIndicatorHeight="0dp"
     app:tabMode="fixed"
-    app:tabSelectedTextColor="@color/flower_petal_deep"
-    app:tabTextColor="@color/subTextColor"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    app:tabSelectedTextColor="@color/summary_header_text_color"
+    app:tabTextColor="?android:attr/textColorSecondary">
 
     <com.google.android.material.tabs.TabItem
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Summary"/>
+        android:text="Summary" />
 
 </com.google.android.material.tabs.TabLayout>

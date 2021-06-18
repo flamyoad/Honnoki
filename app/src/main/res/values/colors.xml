@@ -6,6 +6,9 @@
     <color name="colorAccent">#4ebdfa</color>
 <!--    <color name="colorAccent">#F9AA33</color>-->
 
+    <color name="bottom_nav_active_tint">#09203f</color>
+    <color name="summary_header_text_color">@color/flower_petal_deep</color>
+
     <color name="leafyGreen">#64dd17</color>
     <color name="deepGreen">#43A047</color>
 

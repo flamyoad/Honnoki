@@ -3,6 +3,7 @@ package com.flamyoad.honnoki
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.isVisible
 import androidx.paging.ExperimentalPagingApi
 import app.cash.quickjs.QuickJs
@@ -29,7 +30,7 @@ class MainActivity : AppCompatActivity(), NavigationMenuListener {
         if (savedInstanceState == null) {
             showFragment(HomeFragment.newInstance())
         }
-
+        
         binding.bottomNavigation.setOnNavigationItemSelectedListener {
             val fragment: BaseFragment = when (it.itemId) {
                 R.id.home -> HomeFragment.newInstance()

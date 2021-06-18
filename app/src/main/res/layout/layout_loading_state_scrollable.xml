@@ -12,7 +12,7 @@
         <ProgressBar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:indeterminateTint="@color/colorPrimary"/>
+            android:indeterminateTint="?attr/colorOnSurface"/>
 
     </LinearLayout>
 

@@ -1,8 +1,10 @@
 package com.flamyoad.honnoki.utils.ui
 
 import android.content.Context
+import android.content.res.Configuration
 import android.util.AttributeSet
 import android.view.View
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.AppCompatTextView
 import com.flamyoad.honnoki.R
 
@@ -32,19 +34,38 @@ class ExpandableTextView : AppCompatTextView, View.OnClickListener {
             // No need to do anything if text does not exceed line limit
             if (lineCount < LINE_LIMIT) return@post
 
-            setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.drawable.ic_arrow_drop_down_black_24dp)
+            val uiMode = context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)
+            val downArrow = when (uiMode) {
+                Configuration.UI_MODE_NIGHT_YES -> R.drawable.ic_baseline_arrow_drop_down_white_24
+                Configuration.UI_MODE_NIGHT_NO -> R.drawable.ic_arrow_drop_down_black_24dp
+                else -> R.drawable.ic_arrow_drop_down_black_24dp
+            }
+            
+            setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, downArrow)
             maxLines = LINE_LIMIT
         }
     }
 
     override fun onClick(v: View?) { /* Toggle between expanded collapsed states */
         post {
+            val uiMode = context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)
+
             if (maxLines == Int.MAX_VALUE) {
                 maxLines = LINE_LIMIT
-                setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.drawable.ic_arrow_drop_down_black_24dp)
+                val downArrow = when (uiMode) {
+                    Configuration.UI_MODE_NIGHT_YES -> R.drawable.ic_baseline_arrow_drop_down_white_24
+                    Configuration.UI_MODE_NIGHT_NO -> R.drawable.ic_arrow_drop_down_black_24dp
+                    else -> R.drawable.ic_arrow_drop_down_black_24dp
+                }
+                setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, downArrow)
             } else {
                 maxLines = Int.MAX_VALUE
-                setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.drawable.ic_arrow_drop_up_black_24dp)
+                val upArrow = when (uiMode) {
+                    Configuration.UI_MODE_NIGHT_YES -> R.drawable.ic_baseline_arrow_drop_up_white_24
+                    Configuration.UI_MODE_NIGHT_NO -> R.drawable.ic_arrow_drop_up_black_24dp
+                    else -> R.drawable.ic_arrow_drop_up_black_24dp
+                }
+                setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, upArrow)
             }
         }
     }

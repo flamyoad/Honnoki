@@ -11,7 +11,7 @@
     android:foreground="?android:selectableItemBackgroundBorderless"
     app:cardCornerRadius="4dp"
     app:cardElevation="8dp"
-    tools:cardBackgroundColor="?android:attr/colorBackground">
+    app:cardBackgroundColor="?attr/colorSurface">
 
     <!-- Rectangular Chip -->
     <TextView

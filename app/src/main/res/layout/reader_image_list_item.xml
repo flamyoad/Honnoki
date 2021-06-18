@@ -24,18 +24,18 @@
                 android:id="@+id/progressBar"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:indeterminateTint="@color/colorPrimary"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                android:indeterminateTint="@color/colorPrimary" />
 
             <TextView
                 android:id="@+id/txtPageNumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:textColor="@android:color/black"
                 android:textSize="24dp"
                 android:textStyle="bold"
-                android:textColor="@android:color/black"
-                tools:text="1"/>
+                tools:text="1" />
 
         </FrameLayout>
 
@@ -51,8 +51,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginEnd="16dp"
                 android:gravity="center"
                 android:text="Something went wrong!"
                 android:textColor="#777777" />
@@ -62,7 +62,8 @@
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="Retry" />
+                android:text="Retry"
+                android:textColor="@color/white" />
 
         </LinearLayout>
 

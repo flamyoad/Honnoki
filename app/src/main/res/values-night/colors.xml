@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bottom_nav_active_tint">#F2F2F2</color>
+    <color name="summary_header_text_color">@color/white</color>
+
+</resources>
