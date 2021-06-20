@@ -7,9 +7,11 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.flamyoad.honnoki.api.DM5Api
 import com.flamyoad.honnoki.api.MangakalotApi
+import com.flamyoad.honnoki.data.GenreConstants
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.model.*
 import com.flamyoad.honnoki.paging.MangaMediator
+import com.flamyoad.honnoki.paging.SimpleSearchResultMediator
 import kotlinx.coroutines.flow.Flow
 
 @ExperimentalPagingApi
@@ -50,6 +52,20 @@ class DM5Source(db: AppDatabase, context: Context, private val api: DM5Api) :
 
     override suspend fun getImages(urlPath: String): State<List<Page>> {
         return api.searchForImageList(urlPath)
+    }
+
+    override fun getSimpleSearch(query: String): Flow<PagingData<SearchResult>> {
+        return Pager(
+            config = PagingConfig(pageSize = NORMAL_PAGINATION_SIZE, enablePlaceholders = false),
+            remoteMediator = SimpleSearchResultMediator(
+                api,
+                db,
+                query,
+                GenreConstants.ALL,
+                getSourceType()
+            ),
+            pagingSourceFactory = { db.searchResultDao().getAll() }
+        ).flow
     }
 
     companion object {

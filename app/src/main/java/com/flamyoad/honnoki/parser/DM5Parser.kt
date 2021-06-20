@@ -169,4 +169,56 @@ class DM5Parser(
         }
         return pages
     }
+
+    fun parseForSearchByKeyword(html: String?, index: Int): List<SearchResult> {
+        if (html.isNullOrBlank()) {
+            return emptyList()
+        }
+
+        val document = Jsoup.parse(html)
+
+        // Check if there is item in the main banner (If none at first page, means no result)
+        // If at second page onwards, do nothing because it only appears at 1st page
+        if (index == 1 && document.selectFirst(".banner_detail_form") == null) {
+            return emptyList()
+        }
+
+        // Reached end of pagination
+        if (document.selectFirst(".box404") != null) {
+            return emptyList()
+        }
+
+        val firstItem = document.select(".banner_detail_form").map {
+            val authors = it.select(".subtitle > a")
+                .map { it.ownTextNonNull() }
+                .joinToString()
+
+            SearchResult(
+                coverImage = it.selectFirst(".cover > img").attrNonNull("src"),
+                link = it.selectFirst(".title > a").attrNonNull("href"),
+                title = it.selectFirst(".title > a").textNonNull(),
+                latestChapter = it.selectFirst(".chapter > a").ownTextNonNull(),
+                author = authors,
+            )
+        }
+
+        val itemList = document.select(".mh-list > li").map {
+            val coverImage = it.selectFirst(".mh-cover").attrNonNull("style")
+                .removePrefix("background-image: url(")
+                .removeSuffix(")")
+
+            val link = DM5Service.BASE_URL +
+                    it.selectFirst(".title > a").attrNonNull("href").removePrefix("/")
+
+            SearchResult(
+                coverImage = coverImage,
+                link = link,
+                title = it.selectFirst(".title > a").textNonNull(),
+                latestChapter = it.selectFirst(".chapter > a").ownTextNonNull(),
+                author = it.selectFirst(".author > span > a").ownTextNonNull(),
+            )
+        }
+
+        return (firstItem + itemList)
+    }
 }

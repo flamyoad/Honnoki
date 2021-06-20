@@ -115,4 +115,15 @@ class DM5Api(
         }
     }
 
+    override suspend fun searchByKeyword(keyword: String, index: Int): List<SearchResult> {
+        val response = service.searchByKeyword(keyword, index)
+
+        return withContext(Dispatchers.Default) {
+            val html = response.string()
+            val searchResultList = parser.parseForSearchByKeyword(html, index)
+
+            return@withContext searchResultList
+        }
+    }
+
 }

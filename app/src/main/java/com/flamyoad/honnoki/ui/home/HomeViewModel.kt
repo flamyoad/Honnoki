@@ -16,7 +16,7 @@ class HomeViewModel(private val sourcePref: SourcePreference) : ViewModel() {
     private val shouldShrinkFab = MutableLiveData(false)
     fun shouldShrinkFab(): LiveData<Boolean> = shouldShrinkFab
 
-    val chosenSource = sourcePref.source
+    val chosenSource = sourcePref.homeSource
         .distinctUntilChanged()
         .shareIn(viewModelScope, SharingStarted.Lazily, replay = 1)
 
@@ -26,7 +26,7 @@ class HomeViewModel(private val sourcePref: SourcePreference) : ViewModel() {
 
     fun switchSource(source: Source) {
         viewModelScope.launch {
-            sourcePref.editSource(source)
+            sourcePref.switchHomeSource(source)
         }
     }
 }

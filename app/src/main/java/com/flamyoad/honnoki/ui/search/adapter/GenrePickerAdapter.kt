@@ -1,4 +1,4 @@
-package com.flamyoad.honnoki.ui.search
+package com.flamyoad.honnoki.ui.search.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

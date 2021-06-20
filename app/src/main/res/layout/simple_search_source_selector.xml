@@ -4,9 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
     android:orientation="vertical">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewSourceSelector"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
@@ -25,16 +27,16 @@
             <ImageView
                 android:id="@+id/logo"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_marginHorizontal="8dp"
                 android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
                 android:src="@drawable/ic_sharp_public_24"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/lblTitle"
+                android:id="@+id/lblSource"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="8dp"
@@ -46,6 +48,7 @@
                 app:layout_constraintTop_toTopOf="@id/logo" />
 
             <TextView
+                android:id="@+id/txtSource"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
@@ -54,9 +57,9 @@
                 android:text="MangaNelo"
                 android:textColor="?android:attr/textColorSecondary"
                 android:textSize="12sp"
-                app:layout_constraintEnd_toEndOf="@id/lblTitle"
-                app:layout_constraintStart_toStartOf="@id/lblTitle"
-                app:layout_constraintTop_toBottomOf="@id/lblTitle" />
+                app:layout_constraintEnd_toEndOf="@id/lblSource"
+                app:layout_constraintStart_toStartOf="@id/lblSource"
+                app:layout_constraintTop_toBottomOf="@id/lblSource" />
 
             <ImageView
                 android:id="@+id/rightIcon"
@@ -64,9 +67,19 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:src="@drawable/ic_baseline_arrow_right_24"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/listSource"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                app:layout_constraintTop_toBottomOf="@id/txtSource"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:visibility="gone"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -1,0 +1,13 @@
+<com.google.android.material.chip.Chip xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/chip"
+    style="@style/Widget.MaterialComponents.Chip.Filter"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="5dp"
+    android:textColor="@color/search_genre_chip_text_color"
+    android:textAlignment="center"
+    app:checkedIconTint="@color/white"
+    app:chipBackgroundColor="@color/search_genre_chip_background_color"
+    tools:text="Mangakalot" />

@@ -39,7 +39,7 @@
             app:layout_constraintStart_toStartOf="parent">
 
             <TextView
-                android:id="@+id/txtTitle"
+                android:id="@+id/txtSource"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:maxLines="2"
@@ -59,8 +59,8 @@
                 android:textColor="#CFCFCF"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/txtTitle"
-                app:layout_constraintTop_toBottomOf="@+id/txtTitle"
+                app:layout_constraintStart_toStartOf="@+id/txtSource"
+                app:layout_constraintTop_toBottomOf="@+id/txtSource"
                 tools:text="120" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

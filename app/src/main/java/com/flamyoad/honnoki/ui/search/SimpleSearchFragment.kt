@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
-import androidx.fragment.app.viewModels
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
@@ -20,14 +20,18 @@ import com.flamyoad.honnoki.adapter.SimpleSearchResultAdapter
 import com.flamyoad.honnoki.databinding.FragmentSimpleSearchBinding
 import com.flamyoad.honnoki.data.model.SearchResult
 import com.flamyoad.honnoki.data.model.Source
-import com.flamyoad.honnoki.di.viewModelModules
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
+import com.flamyoad.honnoki.ui.search.adapter.GenrePickerAdapter
+import com.flamyoad.honnoki.ui.search.adapter.SearchResultEndOfListAdapter
+import com.flamyoad.honnoki.ui.search.adapter.SourcePickerAdapter
 import com.flamyoad.honnoki.ui.search.model.SearchGenre
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexWrap
+import com.google.android.flexbox.FlexboxLayoutManager
 import com.kennyc.view.MultiStateView
 import kotlinx.coroutines.flow.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.context.unloadKoinModules
 
 @ExperimentalPagingApi
 class SimpleSearchFragment : BaseFragment() {
@@ -35,7 +39,8 @@ class SimpleSearchFragment : BaseFragment() {
 
     private val binding by viewLifecycleLazy { FragmentSimpleSearchBinding.bind(requireView()) }
 
-    private val genreAdapter = GenrePickerAdapter(this::selectGenre)
+    private val genreAdapter by lazy { GenrePickerAdapter(viewModel::selectGenre) }
+    private val sourceAdapter by lazy { SourcePickerAdapter(viewModel::selectSource) }
     private val searchResultAdapter = SimpleSearchResultAdapter(this::openManga)
     private val searchResultEndOfListAdapter = SearchResultEndOfListAdapter()
 
@@ -53,6 +58,8 @@ class SimpleSearchFragment : BaseFragment() {
         initUi()
         initSearchResultList()
         initGenreList()
+        initSourceList()
+
         observeUi()
     }
 
@@ -65,6 +72,13 @@ class SimpleSearchFragment : BaseFragment() {
                 return true
             }
         })
+
+        with(binding.selectLayout) {
+            cardViewSourceSelector.setOnClickListener {
+                listSource.isVisible = !listSource.isVisible
+                txtSource.isVisible = !txtSource.isVisible
+            }
+        }
     }
 
     private fun initSearchResultList() {
@@ -92,16 +106,24 @@ class SimpleSearchFragment : BaseFragment() {
     }
 
     private fun initGenreList() {
-//        val flexLayoutManager = FlexboxLayoutManager(requireContext()).apply {
-//            flexDirection = FlexDirection.ROW
-//            flexWrap = FlexWrap.WRAP
-//        }
-
         val gridLayoutManager = GridLayoutManager(requireContext(), 3, GridLayoutManager.HORIZONTAL, false)
 
         with(binding.selectLayout.listGenres) {
             adapter = genreAdapter
             layoutManager = gridLayoutManager
+            itemAnimator = null
+        }
+    }
+
+    private fun initSourceList() {
+        val flexLayoutManager = FlexboxLayoutManager(requireContext()).apply {
+            flexDirection = FlexDirection.ROW
+            flexWrap = FlexWrap.WRAP
+        }
+
+        with(binding.selectLayout.listSource) {
+            adapter = sourceAdapter
+            layoutManager = flexLayoutManager
             itemAnimator = null
         }
     }
@@ -120,16 +142,18 @@ class SimpleSearchFragment : BaseFragment() {
                 genreAdapter.submitList(it)
             }
         }
-    }
 
-    private fun selectGenre(genre: SearchGenre) {
-        viewModel.selectGenre(genre)
+        lifecycleScope.launchWhenResumed {
+            viewModel.sourceList().collectLatest {
+                sourceAdapter.submitList(it)
+            }
+        }
     }
 
     private fun openManga(searchResult: SearchResult) {
         val intent = Intent(requireContext(), MangaOverviewActivity::class.java).apply {
             putExtra(MangaOverviewActivity.MANGA_URL, searchResult.link)
-            putExtra(MangaOverviewActivity.MANGA_SOURCE, Source.MANGAKALOT.toString())
+            putExtra(MangaOverviewActivity.MANGA_SOURCE, Source.DM5.toString())
             putExtra(MangaOverviewActivity.MANGA_TITLE, searchResult.title)
         }
         requireContext().startActivity(intent)

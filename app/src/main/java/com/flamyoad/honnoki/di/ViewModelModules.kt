@@ -46,7 +46,7 @@ val viewModelModules = module {
         SimpleSearchViewModel(
             androidApplication(),
             get(),
-            get(named(KoinConstants.MANGAKALOT))
+            get(named(KoinConstants.DM5))
         )
     }
 

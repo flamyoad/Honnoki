@@ -4,12 +4,10 @@ import android.content.Context
 import com.flamyoad.honnoki.network.*
 import com.flamyoad.honnoki.network.interceptor.CacheInterceptor
 import com.flamyoad.honnoki.network.interceptor.RefererInterceptor
-import com.flamyoad.honnoki.network.interceptor.AndroidUserAgentInterceptor
+import com.flamyoad.honnoki.network.interceptor.MobileUserAgentInterceptor
 import com.flamyoad.honnoki.network.interceptor.PCUserAgentInterceptor
 import okhttp3.Cache
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
@@ -64,7 +62,7 @@ fun provideMangakalotHttpClient(
     return OkHttpClient.Builder()
         .cache(myCache)
         .addInterceptor(loggingInterceptor)
-        .addInterceptor(AndroidUserAgentInterceptor(context))
+        .addInterceptor(MobileUserAgentInterceptor(context))
         .addInterceptor(RefererInterceptor(MangakalotService.BASE_URL))
         .addNetworkInterceptor(CacheInterceptor(1, TimeUnit.MINUTES))
         .build()
@@ -87,7 +85,7 @@ fun provideSenmangaHttpClient(
     return OkHttpClient.Builder()
         .cache(myCache)
         .addInterceptor(loggingInterceptor)
-        .addInterceptor(AndroidUserAgentInterceptor(context))
+        .addInterceptor(MobileUserAgentInterceptor(context))
         .addNetworkInterceptor(CacheInterceptor(1, TimeUnit.MINUTES))
         .build()
 }
@@ -109,7 +107,7 @@ fun provideMangaTownHttpClient(
     return OkHttpClient.Builder()
         .cache(myCache)
         .addInterceptor(loggingInterceptor)
-        .addInterceptor(AndroidUserAgentInterceptor(context))
+        .addInterceptor(MobileUserAgentInterceptor(context))
         .addNetworkInterceptor(CacheInterceptor(1, TimeUnit.MINUTES))
         .build()
 }
@@ -123,7 +121,7 @@ fun provideReadMangaHttpClient(
     return OkHttpClient.Builder()
         .cache(myCache)
         .addInterceptor(loggingInterceptor)
-        .addNetworkInterceptor(AndroidUserAgentInterceptor(context))
+        .addNetworkInterceptor(MobileUserAgentInterceptor(context))
 //        .addNetworkInterceptor(CacheInterceptor(1, TimeUnit.MINUTES))
         .build()
 }

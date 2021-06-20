@@ -16,7 +16,7 @@
         app:shapeAppearanceOverlay="@style/circle" />
 
     <TextView
-        android:id="@+id/txtTitle"
+        android:id="@+id/txtSource"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
@@ -36,9 +36,9 @@
         android:lines="1"
         android:text="Chapter 134"
         android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="@+id/txtTitle"
-        app:layout_constraintStart_toStartOf="@+id/txtTitle"
-        app:layout_constraintTop_toBottomOf="@+id/txtTitle" />
+        app:layout_constraintEnd_toEndOf="@+id/txtSource"
+        app:layout_constraintStart_toStartOf="@+id/txtSource"
+        app:layout_constraintTop_toBottomOf="@+id/txtSource" />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -49,7 +49,7 @@
         android:progress="30"
         app:layout_constraintBottom_toBottomOf="@id/image"
         app:layout_constraintEnd_toStartOf="@id/txtDownloadProgress"
-        app:layout_constraintStart_toStartOf="@id/txtTitle" />
+        app:layout_constraintStart_toStartOf="@id/txtSource" />
 
     <TextView
         android:id="@+id/txtDownloadProgress"

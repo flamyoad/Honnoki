@@ -41,7 +41,7 @@
             android:layout_marginTop="8dp"
             android:background="@color/subLightTextColor"
             android:scaleType="centerCrop"
-            tools:src="@drawable/rinze"
+            tools:src="@drawable/rinze_chibi"
             android:translationZ="2dp"
             app:shapeAppearanceOverlay="@style/roundedCorners4dp"
             app:strokeColor="@color/subLightTextColor"

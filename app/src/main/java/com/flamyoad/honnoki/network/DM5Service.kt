@@ -27,6 +27,12 @@ interface DM5Service {
         @Field("pagesize") pageSize: Int = 139
     ): ResponseBody
 
+    @GET("search")
+    suspend fun searchByKeyword(
+        @Query("title") keyword: String,
+        @Query("page") index: Int,
+        @Query("language") language: Int = 1
+    ): ResponseBody
     @GET
     @Headers(CACHE_CONTROL_MAX_AGE_60)
     suspend fun getHtml(@Url url: String): ResponseBody

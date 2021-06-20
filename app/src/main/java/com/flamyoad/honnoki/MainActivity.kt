@@ -10,6 +10,7 @@ import app.cash.quickjs.QuickJs
 import com.flamyoad.honnoki.databinding.ActivityMainBinding
 import com.flamyoad.honnoki.ui.home.HomeFragment
 import com.flamyoad.honnoki.ui.library.LibraryFragment
+import com.flamyoad.honnoki.ui.options.MoreOptionsFragment
 import com.flamyoad.honnoki.ui.search.SimpleSearchFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.lang.IllegalArgumentException
@@ -36,7 +37,8 @@ class MainActivity : AppCompatActivity(), NavigationMenuListener {
                 R.id.home -> HomeFragment.newInstance()
                 R.id.library -> LibraryFragment.newInstance()
                 R.id.search -> SimpleSearchFragment.newInstance()
-                else -> throw NotImplementedError("")
+                R.id.more -> MoreOptionsFragment.newInstance()
+                else -> throw IllegalArgumentException("No such fragment")
             }
 
             showFragment(fragment)

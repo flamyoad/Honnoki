@@ -17,8 +17,8 @@
         android:title="Library" />
 
     <item
-        android:id="@+id/settings"
-        android:icon="@drawable/ic_android_white_24dp"
-        android:title="Settings" />
+        android:id="@+id/more"
+        android:icon="@drawable/ic_baseline_more_24"
+        android:title="More" />
 
 </menu>
