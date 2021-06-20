@@ -16,13 +16,14 @@ import com.flamyoad.honnoki.ui.search.model.SearchSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.qualifier.named
 
 @ExperimentalPagingApi
 class SimpleSearchViewModel(
     private val app: Application,
     private val db: AppDatabase,
-    private val baseSource: BaseSource,
-) : ViewModel() {
+) : ViewModel(), KoinComponent {
 
     private val genreList = MutableStateFlow(initializeGenreList())
     fun genreList() = genreList.asStateFlow()
@@ -35,26 +36,26 @@ class SimpleSearchViewModel(
     private val selectedGenre = MutableStateFlow(GenreConstants.ALL)
 
     private val selectedSource = MutableStateFlow(Source.MANGAKALOT)
+    fun selectedSource() = selectedSource.asStateFlow()
 
     val searchResult: Flow<PagingData<SearchResult>> = searchQuery
         .debounce(500)
-        .combine(selectedGenre) { query, genreConstant ->
-            return@combine Pair(
-                query,
-                genreConstant
-            )
-        }
-        .flatMapLatest { (query, genre) ->
+        .combine(selectedGenre) { query, genre -> Pair(query, genre) }
+        .combine(selectedSource) { (query, genre), source -> Triple(query, genre, source) }
+        .flatMapLatest { (query, genre, source) ->
+            // Get the BaseSource from Koin container
+            val sourceImpl: BaseSource = getKoin().get(named(source.name))
+
             if (query.isBlank() && genre == GenreConstants.ALL) {
                 return@flatMapLatest flowOf(PagingData.empty())
             }
 
             if (genre == GenreConstants.ALL) {
-                return@flatMapLatest baseSource.getSimpleSearch(query)
+                return@flatMapLatest sourceImpl.getSimpleSearch(query)
                     .cachedIn(viewModelScope)
 
             } else {
-                return@flatMapLatest baseSource.getSimpleSearchWithGenre(query, genre)
+                return@flatMapLatest sourceImpl.getSimpleSearchWithGenre(query, genre)
                     .cachedIn(viewModelScope)
             }
         }

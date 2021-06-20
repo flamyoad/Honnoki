@@ -42,13 +42,7 @@ val viewModelModules = module {
 
     viewModel { VerticalScrollingReaderViewModel() }
 
-    viewModel {
-        SimpleSearchViewModel(
-            androidApplication(),
-            get(),
-            get(named(KoinConstants.DM5))
-        )
-    }
+    viewModel { SimpleSearchViewModel(androidApplication(), get()) }
 
     // Dialogs
     viewModel { AddBookmarkGroupDialogViewModel(androidApplication(), get()) }

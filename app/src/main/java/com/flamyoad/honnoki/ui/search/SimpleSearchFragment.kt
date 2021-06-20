@@ -111,7 +111,6 @@ class SimpleSearchFragment : BaseFragment() {
         with(binding.selectLayout.listGenres) {
             adapter = genreAdapter
             layoutManager = gridLayoutManager
-            itemAnimator = null
         }
     }
 
@@ -124,7 +123,6 @@ class SimpleSearchFragment : BaseFragment() {
         with(binding.selectLayout.listSource) {
             adapter = sourceAdapter
             layoutManager = flexLayoutManager
-            itemAnimator = null
         }
     }
 
@@ -146,6 +144,12 @@ class SimpleSearchFragment : BaseFragment() {
         lifecycleScope.launchWhenResumed {
             viewModel.sourceList().collectLatest {
                 sourceAdapter.submitList(it)
+            }
+        }
+
+        lifecycleScope.launchWhenResumed {
+            viewModel.selectedSource().collectLatest {
+                binding.selectLayout.txtSource.text = it.title
             }
         }
     }

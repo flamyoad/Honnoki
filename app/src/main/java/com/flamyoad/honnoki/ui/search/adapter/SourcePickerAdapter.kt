@@ -15,6 +15,7 @@ class SourcePickerAdapter(private val onSourceClick: (SearchSource) -> Unit)
     override fun onBind(holder: BaseViewHolder, item: SearchSource) {
         with(holder.binding) {
             chip.text = item.name
+            chip.isChecked = item.isSelected
         }
     }
 
