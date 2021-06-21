@@ -5,8 +5,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.RewriteQueriesToDropUnusedColumns
 import androidx.room.Transaction
-import com.flamyoad.honnoki.data.model.ReadHistory
-import kotlinx.coroutines.flow.Flow
+import com.flamyoad.honnoki.data.entities.ReadHistory
 
 @Dao
 interface ReadHistoryDao {

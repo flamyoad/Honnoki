@@ -12,13 +12,13 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.flamyoad.honnoki.R
-import com.flamyoad.honnoki.adapter.MangaLoadStateAdapter
-import com.flamyoad.honnoki.adapter.RecentMangaHeaderAdapter
-import com.flamyoad.honnoki.adapter.RecentMangaListAdapter
-import com.flamyoad.honnoki.adapter.TrendingMangaAdapter
+import com.flamyoad.honnoki.ui.home.adapter.MangaLoadStateAdapter
+import com.flamyoad.honnoki.ui.home.adapter.SingleMangaHeaderAdapter
+import com.flamyoad.honnoki.ui.home.adapter.SingleMangaListAdapter
+import com.flamyoad.honnoki.ui.home.adapter.MultipleMangaAdapter
 import com.flamyoad.honnoki.databinding.FragmentDetailedMangaListBinding
-import com.flamyoad.honnoki.data.model.Manga
-import com.flamyoad.honnoki.data.model.Source
+import com.flamyoad.honnoki.data.entities.Manga
+import com.flamyoad.honnoki.data.entities.Source
 import com.flamyoad.honnoki.ui.home.HomeViewModel
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
@@ -70,13 +70,13 @@ class DetailedMangaListFragment : Fragment() {
     }
 
     private fun initRecyclerView() {
-        val trendingMangaAdapter = TrendingMangaAdapter(requireContext(), this::openManga)
+        val trendingMangaAdapter = MultipleMangaAdapter(requireContext(), this::openManga)
         trendingMangaAdapter.stateRestorationPolicy =
             RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
 
-        val recentMangaHeaderAdapter = RecentMangaHeaderAdapter({})
+        val recentMangaHeaderAdapter = SingleMangaHeaderAdapter({})
 
-        val recentMangaAdapter = RecentMangaListAdapter(this::openManga).apply {
+        val recentMangaAdapter = SingleMangaListAdapter(this::openManga).apply {
             withLoadStateFooter(MangaLoadStateAdapter { this.retry() })
             stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         }

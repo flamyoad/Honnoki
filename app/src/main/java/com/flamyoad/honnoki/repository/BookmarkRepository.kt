@@ -3,8 +3,7 @@ package com.flamyoad.honnoki.repository
 import androidx.room.withTransaction
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.exception.NullEntityIdException
-import com.flamyoad.honnoki.data.model.Bookmark
-import com.flamyoad.honnoki.data.model.BookmarkGroup
+import com.flamyoad.honnoki.data.entities.BookmarkGroup
 
 class BookmarkRepository(private val db: AppDatabase) {
 

@@ -10,8 +10,8 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.room.withTransaction
 import com.flamyoad.honnoki.MyApplication
 import com.flamyoad.honnoki.data.db.AppDatabase
-import com.flamyoad.honnoki.data.model.Bookmark
-import com.flamyoad.honnoki.data.model.BookmarkGroup
+import com.flamyoad.honnoki.data.entities.Bookmark
+import com.flamyoad.honnoki.data.entities.BookmarkGroup
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

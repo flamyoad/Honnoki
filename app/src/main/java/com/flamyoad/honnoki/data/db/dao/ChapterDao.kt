@@ -1,7 +1,7 @@
 package com.flamyoad.honnoki.data.db.dao
 
 import androidx.room.*
-import com.flamyoad.honnoki.data.model.Chapter
+import com.flamyoad.honnoki.data.entities.Chapter
 import kotlinx.coroutines.flow.Flow
 
 @Dao

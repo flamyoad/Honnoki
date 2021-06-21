@@ -1,7 +1,7 @@
 package com.flamyoad.honnoki.data.db.typeconverters
 
 import androidx.room.TypeConverter
-import com.flamyoad.honnoki.data.model.MangaType
+import com.flamyoad.honnoki.data.entities.MangaType
 
 class MangaTypeConverter {
     @TypeConverter

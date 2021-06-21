@@ -1,8 +1,8 @@
 package com.flamyoad.honnoki.data.db.dao
 
 import androidx.room.*
-import com.flamyoad.honnoki.data.model.Page
-import com.flamyoad.honnoki.data.model.PageWithChapterInfo
+import com.flamyoad.honnoki.data.entities.Page
+import com.flamyoad.honnoki.data.entities.PageWithChapterInfo
 
 @Dao
 interface PageDao {

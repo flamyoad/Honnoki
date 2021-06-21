@@ -10,10 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.databinding.ChapterListItemBinding
-import com.flamyoad.honnoki.data.model.Chapter
 import com.flamyoad.honnoki.ui.overview.model.ReaderChapter
 import com.flamyoad.honnoki.utils.ColorUtils
-import java.time.LocalDateTime
 
 class ChapterListAdapter(private val onChapterClick: (ReaderChapter) -> Unit) :
     ListAdapter<ReaderChapter, ChapterListAdapter.ChapterViewHolder>(ChapterDiffUtil()) {

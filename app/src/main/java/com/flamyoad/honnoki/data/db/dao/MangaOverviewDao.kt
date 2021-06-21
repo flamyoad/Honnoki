@@ -5,7 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.flamyoad.honnoki.data.model.MangaOverview
+import com.flamyoad.honnoki.data.entities.MangaOverview
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDateTime
 

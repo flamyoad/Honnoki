@@ -6,9 +6,9 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.db.dao.MangaDao
-import com.flamyoad.honnoki.data.model.Manga
-import com.flamyoad.honnoki.data.model.MangaType
-import com.flamyoad.honnoki.data.model.Source
+import com.flamyoad.honnoki.data.entities.Manga
+import com.flamyoad.honnoki.data.entities.MangaType
+import com.flamyoad.honnoki.data.entities.Source
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before

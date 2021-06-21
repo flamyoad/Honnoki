@@ -7,8 +7,8 @@ import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.flamyoad.honnoki.api.BaseApi
 import com.flamyoad.honnoki.data.db.AppDatabase
-import com.flamyoad.honnoki.data.model.SearchResult
-import com.flamyoad.honnoki.data.model.Source
+import com.flamyoad.honnoki.data.entities.SearchResult
+import com.flamyoad.honnoki.data.entities.Source
 import com.flamyoad.honnoki.data.GenreConstants
 import retrofit2.HttpException
 import java.io.IOException

@@ -1,13 +1,11 @@
 package com.flamyoad.honnoki.ui.library.bookmark
 
-import android.app.Application
 import androidx.lifecycle.*
-import androidx.room.withTransaction
 import com.flamyoad.honnoki.data.db.AppDatabase
-import com.flamyoad.honnoki.data.model.Bookmark
-import com.flamyoad.honnoki.data.model.BookmarkGroup
-import com.flamyoad.honnoki.data.model.BookmarkGroupWithInfo
-import com.flamyoad.honnoki.data.model.BookmarkWithOverview
+import com.flamyoad.honnoki.data.entities.Bookmark
+import com.flamyoad.honnoki.data.entities.BookmarkGroup
+import com.flamyoad.honnoki.data.entities.BookmarkGroupWithInfo
+import com.flamyoad.honnoki.data.entities.BookmarkWithOverview
 import com.flamyoad.honnoki.repository.BookmarkRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

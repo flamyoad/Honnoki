@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
 import com.flamyoad.honnoki.data.db.AppDatabase
-import com.flamyoad.honnoki.data.model.Chapter
-import com.flamyoad.honnoki.data.model.Page
-import com.flamyoad.honnoki.data.model.State
+import com.flamyoad.honnoki.data.entities.Chapter
+import com.flamyoad.honnoki.data.entities.Page
+import com.flamyoad.honnoki.data.entities.State
 import com.flamyoad.honnoki.repository.ChapterRepository
 import com.flamyoad.honnoki.repository.OverviewRepository
 import com.flamyoad.honnoki.source.BaseSource

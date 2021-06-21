@@ -1,7 +1,7 @@
 package com.flamyoad.honnoki.data.db.dao
 
 import androidx.room.*
-import com.flamyoad.honnoki.data.model.BookmarkGroup
+import com.flamyoad.honnoki.data.entities.BookmarkGroup
 import kotlinx.coroutines.flow.Flow
 
 @Dao

@@ -1,7 +1,7 @@
 package com.flamyoad.honnoki.api
 
-import com.flamyoad.honnoki.data.model.Manga
-import com.flamyoad.honnoki.data.model.SearchResult
+import com.flamyoad.honnoki.data.entities.Manga
+import com.flamyoad.honnoki.data.entities.SearchResult
 import com.flamyoad.honnoki.data.GenreConstants
 
 abstract class BaseApi {

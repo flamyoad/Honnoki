@@ -1,11 +1,10 @@
 package com.flamyoad.honnoki.ui.overview
 
-import android.app.Application
 import androidx.lifecycle.*
 import androidx.paging.ExperimentalPagingApi
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.mapper.mapToDomain
-import com.flamyoad.honnoki.data.model.*
+import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.source.BaseSource
 import com.flamyoad.honnoki.ui.overview.model.ChapterListSort
 import com.flamyoad.honnoki.ui.overview.model.ReaderChapter

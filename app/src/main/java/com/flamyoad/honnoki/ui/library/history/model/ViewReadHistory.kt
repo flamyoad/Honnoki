@@ -1,6 +1,6 @@
 package com.flamyoad.honnoki.ui.library.history.model
 
-import com.flamyoad.honnoki.data.model.ReadHistory
+import com.flamyoad.honnoki.data.entities.ReadHistory
 import java.time.LocalDate
 
 /**

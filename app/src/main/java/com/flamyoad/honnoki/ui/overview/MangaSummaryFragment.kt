@@ -1,20 +1,17 @@
 package com.flamyoad.honnoki.ui.overview
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.databinding.FragmentMangaSummaryBinding
-import com.flamyoad.honnoki.data.model.Chapter
-import com.flamyoad.honnoki.data.model.State
+import com.flamyoad.honnoki.data.entities.State
 import com.flamyoad.honnoki.ui.overview.adapter.*
 import com.flamyoad.honnoki.ui.overview.model.ReaderChapter
 import com.flamyoad.honnoki.ui.reader.ReaderActivity

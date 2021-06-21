@@ -16,15 +16,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.flamyoad.honnoki.BaseFragment
 
 import com.flamyoad.honnoki.R
-import com.flamyoad.honnoki.adapter.SimpleSearchResultAdapter
+import com.flamyoad.honnoki.ui.search.adapter.SimpleSearchResultAdapter
 import com.flamyoad.honnoki.databinding.FragmentSimpleSearchBinding
-import com.flamyoad.honnoki.data.model.SearchResult
-import com.flamyoad.honnoki.data.model.Source
+import com.flamyoad.honnoki.data.entities.SearchResult
+import com.flamyoad.honnoki.data.entities.Source
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import com.flamyoad.honnoki.ui.search.adapter.GenrePickerAdapter
 import com.flamyoad.honnoki.ui.search.adapter.SearchResultEndOfListAdapter
 import com.flamyoad.honnoki.ui.search.adapter.SourcePickerAdapter
-import com.flamyoad.honnoki.ui.search.model.SearchGenre
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap

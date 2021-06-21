@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.flamyoad.honnoki.data.model.Genre
+import com.flamyoad.honnoki.data.entities.Genre
 import kotlinx.coroutines.flow.Flow
 
 @Dao

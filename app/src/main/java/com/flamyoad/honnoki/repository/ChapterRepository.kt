@@ -2,9 +2,7 @@ package com.flamyoad.honnoki.repository
 
 import androidx.room.withTransaction
 import com.flamyoad.honnoki.data.db.AppDatabase
-import com.flamyoad.honnoki.data.exception.NullEntityIdException
-import com.flamyoad.honnoki.data.model.Chapter
-import java.time.LocalDateTime
+import com.flamyoad.honnoki.data.entities.Chapter
 
 class ChapterRepository(private val db: AppDatabase) {
 

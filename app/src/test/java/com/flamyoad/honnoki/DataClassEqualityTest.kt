@@ -1,8 +1,8 @@
 package com.flamyoad.honnoki
 
-import com.flamyoad.honnoki.adapter.BookmarkGroupAdapter
-import com.flamyoad.honnoki.data.model.BookmarkGroup
-import com.flamyoad.honnoki.data.model.BookmarkGroupWithInfo
+import com.flamyoad.honnoki.ui.library.bookmark.adapter.BookmarkGroupAdapter
+import com.flamyoad.honnoki.data.entities.BookmarkGroup
+import com.flamyoad.honnoki.data.entities.BookmarkGroupWithInfo
 import org.junit.Assert
 import org.junit.Test
 

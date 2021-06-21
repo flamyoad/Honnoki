@@ -1,7 +1,7 @@
 package com.flamyoad.honnoki.data.mapper
 
-import com.flamyoad.honnoki.data.model.Chapter
-import com.flamyoad.honnoki.data.model.MangaOverview
+import com.flamyoad.honnoki.data.entities.Chapter
+import com.flamyoad.honnoki.data.entities.MangaOverview
 import com.flamyoad.honnoki.ui.overview.model.ReaderChapter
 
 fun Chapter.mapToDomain(mangaOverview: MangaOverview): ReaderChapter {

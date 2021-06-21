@@ -3,8 +3,7 @@ package com.flamyoad.honnoki.repository
 import androidx.paging.*
 import androidx.room.withTransaction
 import com.flamyoad.honnoki.data.db.AppDatabase
-import com.flamyoad.honnoki.data.model.ReadHistory
-import kotlinx.coroutines.CoroutineScope
+import com.flamyoad.honnoki.data.entities.ReadHistory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext

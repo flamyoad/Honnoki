@@ -1,6 +1,6 @@
 package com.flamyoad.honnoki.api
 
-import com.flamyoad.honnoki.data.model.*
+import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.network.MangaTownService
 import com.flamyoad.honnoki.parser.MangaTownParser
 import kotlinx.coroutines.Dispatchers

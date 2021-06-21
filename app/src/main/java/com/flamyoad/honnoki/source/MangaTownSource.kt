@@ -7,7 +7,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.flamyoad.honnoki.api.MangaTownApi
 import com.flamyoad.honnoki.data.db.AppDatabase
-import com.flamyoad.honnoki.data.model.*
+import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.paging.MangaMediator
 import kotlinx.coroutines.flow.Flow
 import java.io.IOException

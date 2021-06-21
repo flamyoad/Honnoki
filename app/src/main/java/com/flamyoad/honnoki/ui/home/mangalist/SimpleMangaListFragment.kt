@@ -11,12 +11,12 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-import com.flamyoad.honnoki.adapter.MangaLoadStateAdapter
-import com.flamyoad.honnoki.adapter.RecentMangaListAdapter
+import com.flamyoad.honnoki.ui.home.adapter.MangaLoadStateAdapter
+import com.flamyoad.honnoki.ui.home.adapter.SingleMangaListAdapter
 import com.flamyoad.honnoki.databinding.FragmentSimpleMangaListBinding
-import com.flamyoad.honnoki.data.model.Manga
-import com.flamyoad.honnoki.data.model.MangaType
-import com.flamyoad.honnoki.data.model.Source
+import com.flamyoad.honnoki.data.entities.Manga
+import com.flamyoad.honnoki.data.entities.MangaType
+import com.flamyoad.honnoki.data.entities.Source
 import com.flamyoad.honnoki.ui.home.HomeViewModel
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import kotlinx.coroutines.flow.collectLatest
@@ -64,7 +64,7 @@ class SimpleMangaListFragment : Fragment() {
     }
 
     private fun initRecyclerView() {
-        val mangaAdapter = RecentMangaListAdapter(this::openManga).apply {
+        val mangaAdapter = SingleMangaListAdapter(this::openManga).apply {
             withLoadStateFooter(MangaLoadStateAdapter { this.retry() })
             stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         }

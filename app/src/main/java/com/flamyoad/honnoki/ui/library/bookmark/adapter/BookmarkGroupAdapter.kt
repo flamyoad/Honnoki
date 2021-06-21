@@ -1,4 +1,4 @@
-package com.flamyoad.honnoki.adapter
+package com.flamyoad.honnoki.ui.library.bookmark.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.flamyoad.honnoki.databinding.BookmarkGroupItemStackedBinding
 import com.flamyoad.honnoki.databinding.ButtonAddBookmarkGroupBinding
-import com.flamyoad.honnoki.data.model.BookmarkGroup
-import com.flamyoad.honnoki.data.model.BookmarkGroupWithInfo
+import com.flamyoad.honnoki.data.entities.BookmarkGroup
+import com.flamyoad.honnoki.data.entities.BookmarkGroupWithInfo
 
 private const val BTN_ADD_NEW_GROUP = 0
 private const val GROUP_ITEM = 1

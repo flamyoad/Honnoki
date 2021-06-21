@@ -11,7 +11,7 @@ import com.flamyoad.honnoki.BaseFragment
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.databinding.FragmentHomeBinding
 import com.flamyoad.honnoki.dialog.SourceSwitcherDialog
-import com.flamyoad.honnoki.data.model.Source
+import com.flamyoad.honnoki.data.entities.Source
 import com.flamyoad.honnoki.ui.home.adapter.MangaListFragmentAdapter
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
 import com.flamyoad.honnoki.utils.ui.DepthPageTransformer
@@ -19,7 +19,6 @@ import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.lang.IllegalArgumentException
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @ExperimentalPagingApi
 class HomeFragment : BaseFragment(), SourceSwitcherDialog.Listener {

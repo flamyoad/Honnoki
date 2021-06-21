@@ -1,7 +1,7 @@
 package com.flamyoad.honnoki.ui.home.model
 
-import com.flamyoad.honnoki.data.model.MangaType
-import com.flamyoad.honnoki.data.model.Source
+import com.flamyoad.honnoki.data.entities.MangaType
+import com.flamyoad.honnoki.data.entities.Source
 
 data class TabItem(
     val source: Source,

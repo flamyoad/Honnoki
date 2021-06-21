@@ -6,7 +6,7 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.flamyoad.honnoki.data.model.ReadHistory
+import com.flamyoad.honnoki.data.entities.ReadHistory
 import com.flamyoad.honnoki.databinding.ReadHistoryListHeaderBinding
 import com.flamyoad.honnoki.databinding.ReadHistoryListItemBinding
 import com.flamyoad.honnoki.ui.library.history.model.ViewReadHistory

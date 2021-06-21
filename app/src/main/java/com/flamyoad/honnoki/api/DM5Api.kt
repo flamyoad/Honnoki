@@ -1,6 +1,6 @@
 package com.flamyoad.honnoki.api
 
-import com.flamyoad.honnoki.data.model.*
+import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.network.DM5Service
 import com.flamyoad.honnoki.parser.DM5Parser
 import kotlinx.coroutines.Dispatchers

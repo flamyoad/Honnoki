@@ -1,4 +1,4 @@
-package com.flamyoad.honnoki.adapter
+package com.flamyoad.honnoki.ui.library
 
 import androidx.fragment.app.Fragment
 import androidx.paging.ExperimentalPagingApi
@@ -8,7 +8,7 @@ import com.flamyoad.honnoki.ui.library.downloads.DownloadFragment
 import com.flamyoad.honnoki.ui.library.history.ReadHistoryFragment
 import java.lang.IllegalArgumentException
 
-class LibraryTabsAdapter(fragment: Fragment) :
+class LibraryTabFragmentAdapter(fragment: Fragment) :
     FragmentStateAdapter(fragment) {
     override fun getItemCount(): Int {
         return 3

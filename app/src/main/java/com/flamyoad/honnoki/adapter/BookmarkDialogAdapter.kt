@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import com.flamyoad.honnoki.databinding.DialogBookmarkGroupListItemBinding
-import com.flamyoad.honnoki.data.model.BookmarkGroup
+import com.flamyoad.honnoki.data.entities.BookmarkGroup
 
 class BookmarkDialogAdapter(private val onGroupClick: (BookmarkGroup) -> Unit)
     : BaseListAdapter<BookmarkGroup, DialogBookmarkGroupListItemBinding>(COMPARATOR) {

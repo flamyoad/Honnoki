@@ -1,4 +1,4 @@
-package com.flamyoad.honnoki.data.model
+package com.flamyoad.honnoki.data.entities
 
 import androidx.room.*
 import java.time.LocalDateTime

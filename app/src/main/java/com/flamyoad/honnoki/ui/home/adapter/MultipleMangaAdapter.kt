@@ -1,4 +1,4 @@
-package com.flamyoad.honnoki.adapter
+package com.flamyoad.honnoki.ui.home.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -8,12 +8,12 @@ import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.flamyoad.honnoki.databinding.MangaTrendingListBinding
-import com.flamyoad.honnoki.data.model.Manga
+import com.flamyoad.honnoki.data.entities.Manga
 
-class TrendingMangaAdapter(context: Context, onItemClick: (Manga) -> Unit) :
-    RecyclerView.Adapter<TrendingMangaAdapter.ListViewHolder>() {
+class MultipleMangaAdapter(context: Context, onItemClick: (Manga) -> Unit) :
+    RecyclerView.Adapter<MultipleMangaAdapter.ListViewHolder>() {
 
-    private val listAdapter = TrendingMangaListAdapter(onItemClick)
+    private val listAdapter = MultipleMangaListAdapter(onItemClick)
     private val linearLayoutManager =
         LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 

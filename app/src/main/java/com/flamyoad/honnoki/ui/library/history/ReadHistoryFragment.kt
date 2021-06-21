@@ -9,13 +9,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.flamyoad.honnoki.data.model.ReadHistory
-import com.flamyoad.honnoki.data.model.State
+import com.flamyoad.honnoki.data.entities.ReadHistory
 import com.flamyoad.honnoki.databinding.FragmentReadHistoryBinding
-import com.flamyoad.honnoki.ui.library.history.model.ViewReadHistory
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import com.flamyoad.honnoki.ui.reader.ReaderActivity
-import com.flamyoad.honnoki.utils.ui.ToggleState
 import com.kennyc.view.MultiStateView
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.viewmodel.ext.android.viewModel

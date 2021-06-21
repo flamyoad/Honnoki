@@ -11,7 +11,7 @@ import com.bumptech.glide.load.model.GlideUrl
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.flamyoad.honnoki.databinding.ReaderImageListAdsBinding
 import com.flamyoad.honnoki.databinding.ReaderImageListItemBinding
-import com.flamyoad.honnoki.data.model.Page
+import com.flamyoad.honnoki.data.entities.Page
 import com.flamyoad.honnoki.ui.reader.model.ReaderPage
 import com.flamyoad.honnoki.utils.ui.MangaImageViewTarget
 

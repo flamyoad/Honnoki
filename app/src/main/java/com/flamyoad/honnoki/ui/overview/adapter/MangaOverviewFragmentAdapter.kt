@@ -1,4 +1,4 @@
-package com.flamyoad.honnoki.adapter
+package com.flamyoad.honnoki.ui.overview.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity

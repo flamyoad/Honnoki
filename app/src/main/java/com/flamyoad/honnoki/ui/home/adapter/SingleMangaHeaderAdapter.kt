@@ -1,12 +1,12 @@
-package com.flamyoad.honnoki.adapter
+package com.flamyoad.honnoki.ui.home.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.flamyoad.honnoki.databinding.MangaRecentListHeaderBinding
 
-class RecentMangaHeaderAdapter(private val onMoreButtonClick: () -> Unit) :
-    RecyclerView.Adapter<RecentMangaHeaderAdapter.HeaderViewHolder>() {
+class SingleMangaHeaderAdapter(private val onMoreButtonClick: () -> Unit) :
+    RecyclerView.Adapter<SingleMangaHeaderAdapter.HeaderViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HeaderViewHolder {
         val layout = MangaRecentListHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false)

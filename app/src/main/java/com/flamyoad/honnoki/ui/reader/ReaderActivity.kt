@@ -15,14 +15,13 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.transition.Slide
 import androidx.transition.TransitionManager
 import com.flamyoad.honnoki.R
-import com.flamyoad.honnoki.data.model.Source
+import com.flamyoad.honnoki.data.entities.Source
 import com.flamyoad.honnoki.databinding.ActivityReaderBinding
 import com.flamyoad.honnoki.ui.reader.model.LoadType
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import java.util.concurrent.TimeUnit
 
 @ExperimentalPagingApi
 class ReaderActivity : AppCompatActivity() {

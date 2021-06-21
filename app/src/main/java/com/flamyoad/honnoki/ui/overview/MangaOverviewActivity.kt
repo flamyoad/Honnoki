@@ -4,7 +4,6 @@ import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.WindowManager
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
@@ -12,11 +11,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
 import com.bumptech.glide.Glide
 import com.flamyoad.honnoki.R
-import com.flamyoad.honnoki.adapter.MangaOverviewFragmentAdapter
+import com.flamyoad.honnoki.ui.overview.adapter.MangaOverviewFragmentAdapter
 import com.flamyoad.honnoki.databinding.ActivityMangaOverviewBinding
 import com.flamyoad.honnoki.dialog.BookmarkDialog
-import com.flamyoad.honnoki.data.model.MangaOverview
-import com.flamyoad.honnoki.di.KoinConstants
+import com.flamyoad.honnoki.data.entities.MangaOverview
 import com.flamyoad.honnoki.ui.reader.ReaderActivity
 import com.flamyoad.honnoki.utils.ViewUtils
 import com.flamyoad.honnoki.utils.ui.AppBarStateChangeListener

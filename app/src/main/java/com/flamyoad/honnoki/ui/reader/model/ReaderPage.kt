@@ -1,6 +1,6 @@
 package com.flamyoad.honnoki.ui.reader.model
 
-import com.flamyoad.honnoki.data.model.PageWithChapterInfo
+import com.flamyoad.honnoki.data.entities.PageWithChapterInfo
 
 sealed class ReaderPage {
     data class Value (val pageWithChapterInfo: PageWithChapterInfo): ReaderPage() {

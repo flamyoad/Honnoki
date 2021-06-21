@@ -4,9 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.flamyoad.honnoki.databinding.MangaSummaryItemBinding
-import com.flamyoad.honnoki.data.model.Genre
-import com.flamyoad.honnoki.data.model.MangaOverview
-import com.flamyoad.honnoki.data.model.State
+import com.flamyoad.honnoki.data.entities.Genre
+import com.flamyoad.honnoki.data.entities.MangaOverview
+import com.flamyoad.honnoki.data.entities.State
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager

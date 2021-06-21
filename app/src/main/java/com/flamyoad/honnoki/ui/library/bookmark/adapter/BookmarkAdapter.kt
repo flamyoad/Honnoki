@@ -1,12 +1,13 @@
-package com.flamyoad.honnoki.adapter
+package com.flamyoad.honnoki.ui.library.bookmark.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.Glide
 import com.flamyoad.honnoki.R
+import com.flamyoad.honnoki.adapter.BaseListAdapter
 import com.flamyoad.honnoki.databinding.BookmarkListItemBinding
-import com.flamyoad.honnoki.data.model.BookmarkWithOverview
+import com.flamyoad.honnoki.data.entities.BookmarkWithOverview
 
 class BookmarkAdapter(
     private val onBookmarkClick: (BookmarkWithOverview) -> Unit,

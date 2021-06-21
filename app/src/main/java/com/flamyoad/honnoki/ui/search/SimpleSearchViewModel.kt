@@ -7,11 +7,11 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.flamyoad.honnoki.data.db.AppDatabase
-import com.flamyoad.honnoki.data.model.SearchResult
+import com.flamyoad.honnoki.data.entities.SearchResult
 import com.flamyoad.honnoki.source.BaseSource
 import com.flamyoad.honnoki.ui.search.model.SearchGenre
 import com.flamyoad.honnoki.data.GenreConstants
-import com.flamyoad.honnoki.data.model.Source
+import com.flamyoad.honnoki.data.entities.Source
 import com.flamyoad.honnoki.ui.search.model.SearchSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*

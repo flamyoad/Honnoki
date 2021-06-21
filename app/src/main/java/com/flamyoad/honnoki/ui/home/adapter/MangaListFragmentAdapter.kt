@@ -3,8 +3,8 @@ package com.flamyoad.honnoki.ui.home.adapter
 import androidx.fragment.app.Fragment
 import androidx.paging.ExperimentalPagingApi
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.flamyoad.honnoki.data.model.MangaType
-import com.flamyoad.honnoki.data.model.Source
+import com.flamyoad.honnoki.data.entities.MangaType
+import com.flamyoad.honnoki.data.entities.Source
 import com.flamyoad.honnoki.ui.home.mangalist.DetailedMangaListFragment
 import com.flamyoad.honnoki.ui.home.mangalist.SimpleMangaListFragment
 import com.flamyoad.honnoki.ui.home.model.TabItem

@@ -1,4 +1,4 @@
-package com.flamyoad.honnoki.data.model
+package com.flamyoad.honnoki.data.entities
 
 import java.lang.IllegalArgumentException
 

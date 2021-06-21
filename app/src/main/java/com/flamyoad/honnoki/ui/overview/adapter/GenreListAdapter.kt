@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.databinding.GenreListItemBinding
-import com.flamyoad.honnoki.data.model.Genre
+import com.flamyoad.honnoki.data.entities.Genre
 
 class GenreListAdapter()
     : RecyclerView.Adapter<GenreListAdapter.GenreViewHolder>() {
