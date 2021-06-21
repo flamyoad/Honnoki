@@ -50,7 +50,8 @@ class BookmarkFragment : Fragment() {
         super.onAttach(context)
         try {
             listener = context as NavigationMenuListener
-        } catch (ignored: ClassCastException) { }
+        } catch (ignored: ClassCastException) {
+        }
     }
 
     override fun onCreateView(
@@ -94,15 +95,22 @@ class BookmarkFragment : Fragment() {
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
         val selectedGroupId = viewModel.getSelectedBookmarkGroupId()
+        val selectedGroupName = viewModel.bookmarkGroupName ?: ""
 
         val dialog: DialogFragment =
             when (item.title) {
                 MENU_CHANGE_GROUP_NAME -> ChangeBookmarkGroupNameDialog.newInstance(selectedGroupId)
-                MENU_DELETE_GROUP -> DeleteBookmarkGroupDialog.newInstance(selectedGroupId)
+                MENU_DELETE_GROUP -> DeleteBookmarkGroupDialog.newInstance(selectedGroupId, selectedGroupName)
                 else -> throw IllegalArgumentException("Invalid menu option!")
             }
 
-        dialog.show(childFragmentManager, "dialog")
+        val dialogTag = when (item.title) {
+            MENU_CHANGE_GROUP_NAME -> ChangeBookmarkGroupNameDialog.TAG
+            MENU_DELETE_GROUP -> DeleteBookmarkGroupDialog.TAG
+            else -> throw IllegalArgumentException("Invalid menu option!")
+        }
+
+        dialog.show(childFragmentManager, dialogTag)
         return true
     }
 

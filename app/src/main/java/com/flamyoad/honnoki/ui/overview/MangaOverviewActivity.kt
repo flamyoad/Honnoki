@@ -1,22 +1,32 @@
 package com.flamyoad.honnoki.ui.overview
 
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.CharacterStyle
+import android.text.style.ClickableSpan
 import android.view.MenuItem
+import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.text.set
+import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
 import com.bumptech.glide.Glide
 import com.flamyoad.honnoki.R
+import com.flamyoad.honnoki.data.entities.Author
 import com.flamyoad.honnoki.ui.overview.adapter.MangaOverviewFragmentAdapter
 import com.flamyoad.honnoki.databinding.ActivityMangaOverviewBinding
 import com.flamyoad.honnoki.dialog.BookmarkDialog
 import com.flamyoad.honnoki.data.entities.MangaOverview
 import com.flamyoad.honnoki.ui.reader.ReaderActivity
 import com.flamyoad.honnoki.utils.ViewUtils
+import com.flamyoad.honnoki.utils.extensions.toast
 import com.flamyoad.honnoki.utils.ui.AppBarStateChangeListener
 import com.flamyoad.honnoki.utils.ui.DepthPageTransformer
 import com.google.android.material.appbar.AppBarLayout
@@ -162,13 +172,38 @@ class MangaOverviewActivity : AppCompatActivity() {
         }
 
         viewModel.authorList.observe(this) { authors ->
-            binding.txtAuthor.text = authors.joinToString { it.name }
+            buildAuthorSpannableString(authors)
         }
 
         lifecycleScope.launchWhenResumed {
             viewModel.mangaOverview.collectLatest {
                 showMangaOverview(it)
             }
+        }
+    }
+
+    private fun buildAuthorSpannableString(authors: List<Author>) {
+        val authorText = authors.joinToString { it.name }
+            .toSpannable()
+
+        for (author in authors) {
+            val start = authorText.indexOf(author.name)
+            val end = start + (author.name.length)
+            authorText[start..end] = object: ClickableSpan() {
+                override fun onClick(widget: View) {
+                    toast(author.name)
+                }
+
+                override fun updateDrawState(ds: TextPaint) {
+                    super.updateDrawState(ds)
+                    ds.color = Color.WHITE
+                }
+            }
+        }
+
+        with(binding.txtAuthor) {
+            text = authorText
+            movementMethod = LinkMovementMethod.getInstance()
         }
     }
 

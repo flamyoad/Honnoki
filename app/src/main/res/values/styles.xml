@@ -15,6 +15,11 @@
         <item name="android:windowTranslucentStatus">true</item>
     </style>
 
+    <!-- Resets the cursor color of TextInputEditText (Default is colorPrimary)-->
+    <style name="ThemeOverlay.AppTheme.TextInputEditText.Outlined" parent="">
+        <item name="colorControlActivated">?android:attr/textColorPrimary</item>
+    </style>
+
     <!-- https://stackoverflow.com/questions/26455919/material-design-not-styling-alert-dialogs -->
     <!-- Resets text color to white instead of colorPrimary -->
     <style name="customAlertDialogTheme" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">

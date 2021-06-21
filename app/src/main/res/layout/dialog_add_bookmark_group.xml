@@ -1,22 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="12dp">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/fieldNameLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        app:errorEnabled="true">
+        android:theme="@style/ThemeOverlay.AppTheme.TextInputEditText.Outlined"
+        app:boxStrokeColor="?android:attr/textColorHint"
+        app:errorEnabled="true"
+        app:hintTextColor="?android:attr/textColorHint">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/fieldName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Name of collection"/>
+            android:hint="Name of collection" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
