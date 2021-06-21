@@ -25,14 +25,14 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center"
-                android:indeterminateTint="@color/colorPrimary" />
+                android:indeterminateTint="@color/reader_progress_bar_color" />
 
             <TextView
                 android:id="@+id/txtPageNumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:textColor="@android:color/black"
+                android:textColor="?android:attr/textColorTertiary"
                 android:textSize="24dp"
                 android:textStyle="bold"
                 tools:text="1" />
@@ -55,7 +55,7 @@
                 android:layout_marginEnd="16dp"
                 android:gravity="center"
                 android:text="Something went wrong!"
-                android:textColor="#777777" />
+                android:textColor="?android:attr/textColorTertiary" />
 
             <Button
                 android:id="@+id/btnRetry"

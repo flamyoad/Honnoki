@@ -12,12 +12,13 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.paging.ExperimentalPagingApi
+import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.databinding.DialogAddBookmarkGroupBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @ExperimentalPagingApi
-class AddBookmarkGroupDialog: DialogFragment() {
+class AddBookmarkGroupDialog : DialogFragment() {
     private val viewModel: AddBookmarkGroupDialogViewModel by viewModel()
 
     private var _binding: DialogAddBookmarkGroupBinding? = null
@@ -32,7 +33,7 @@ class AddBookmarkGroupDialog: DialogFragment() {
             setPositiveButton("Ok") { dialogInterface: DialogInterface, i: Int ->
                 viewModel.createNewGroup()
             }
-            .setNegativeButton("Return") { dialogInterface: DialogInterface, i: Int ->
+            setNegativeButton("Return") { dialogInterface: DialogInterface, i: Int ->
 
             }
         }
@@ -40,14 +41,18 @@ class AddBookmarkGroupDialog: DialogFragment() {
         return builder.create()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.fieldName.addTextChangedListener(object: TextWatcher {
+        binding.fieldName.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun afterTextChanged(p0: Editable?) {}
