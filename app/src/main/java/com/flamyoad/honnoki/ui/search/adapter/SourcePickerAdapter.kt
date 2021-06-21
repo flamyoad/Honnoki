@@ -4,10 +4,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import com.flamyoad.honnoki.adapter.BaseListAdapter
+import com.flamyoad.honnoki.data.entities.Source
 import com.flamyoad.honnoki.databinding.SearchSourceListItemBinding
 import com.flamyoad.honnoki.ui.search.model.SearchSource
 
-class SourcePickerAdapter(private val onSourceClick: (SearchSource) -> Unit)
+class SourcePickerAdapter(private val onSourceClick: (Source) -> Unit)
     : BaseListAdapter<SearchSource, SearchSourceListItemBinding>(COMPARATOR) {
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> SearchSourceListItemBinding
         get() = SearchSourceListItemBinding::inflate
@@ -22,7 +23,7 @@ class SourcePickerAdapter(private val onSourceClick: (SearchSource) -> Unit)
     override fun onItemClick(item: SearchSource?) {
         super.onItemClick(item)
         if (item != null) {
-            onSourceClick.invoke(item)
+            onSourceClick.invoke(item.source)
         }
     }
 

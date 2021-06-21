@@ -7,6 +7,8 @@ import com.flamyoad.honnoki.data.preference.UiPreference
 import com.flamyoad.honnoki.di.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
@@ -14,7 +16,7 @@ import org.koin.android.ext.koin.androidLogger
 import org.koin.core.component.inject
 import org.koin.core.context.startKoin
 
-class MyApplication: Application() {
+class MyApplication : Application() {
 
     private val uiPrefs: UiPreference by inject()
 
@@ -42,14 +44,12 @@ class MyApplication: Application() {
         }
 
         applicationScope.launch {
-            uiPrefs.nightModeEnabled.collectLatest {
-                if (it) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                } else {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                }
+            val nightModeEnabled = uiPrefs.nightModeEnabled.single()
+            if (nightModeEnabled) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
         }
-
     }
 }

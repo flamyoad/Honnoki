@@ -1,6 +1,7 @@
 package com.flamyoad.honnoki.di
 
 import android.content.Context
+import com.flamyoad.honnoki.BuildConfig
 import com.flamyoad.honnoki.network.*
 import com.flamyoad.honnoki.network.interceptor.CacheInterceptor
 import com.flamyoad.honnoki.network.interceptor.RefererInterceptor
@@ -158,7 +159,12 @@ fun provideDM5Service(httpClient: OkHttpClient): DM5Service {
 }
 
 fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
-    return HttpLoggingInterceptor(HttpLoggingInterceptor.Logger.DEFAULT).apply {
-        level = HttpLoggingInterceptor.Level.BASIC
-    }
+    val httpLoggingInterceptor = HttpLoggingInterceptor()
+    if (BuildConfig.DEBUG)
+        httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+    else
+        httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.NONE
+
+    return httpLoggingInterceptor
+
 }

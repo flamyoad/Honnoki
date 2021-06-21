@@ -90,6 +90,18 @@ class MangaOverviewActivity : AppCompatActivity() {
         return true
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(OVERVIEW_URL, viewModel.overview.link)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        savedInstanceState.getString(OVERVIEW_URL)?.let {
+            viewModel.loadMangaOverview(it)
+        }
+    }
+
     private fun initUi() {
         binding.appbarLayout.addOnOffsetChangedListener(object : AppBarStateChangeListener() {
             override fun onStateChanged(appBarLayout: AppBarLayout?, state: State?) {
@@ -288,6 +300,10 @@ class MangaOverviewActivity : AppCompatActivity() {
         const val TAB_NAME_SUMMARY = "Summary"
         const val TAB_NAME_CHAPTERS = "Chapters"
 
+        // For restoring state across process death
+        const val OVERVIEW_URL = "overview_url"
+
+        // For intents
         const val MANGA_URL = "manga_url"
         const val MANGA_SOURCE = "manga_source"
         const val MANGA_TITLE = "manga_title"

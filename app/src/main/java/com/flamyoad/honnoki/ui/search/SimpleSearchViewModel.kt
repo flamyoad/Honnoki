@@ -1,6 +1,7 @@
 package com.flamyoad.honnoki.ui.search
 
 import android.app.Application
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
@@ -25,18 +26,35 @@ class SimpleSearchViewModel(
     private val db: AppDatabase,
 ) : ViewModel(), KoinComponent {
 
-    private val genreList = MutableStateFlow(initializeGenreList())
-    fun genreList() = genreList.asStateFlow()
-
-    private val sourceList = MutableStateFlow(initializeSourceList())
-    fun sourceList() = sourceList.asStateFlow()
-
-    private val searchQuery = MutableStateFlow("")
-
     private val selectedGenre = MutableStateFlow(GenreConstants.ALL)
+    fun selectedGenre() = selectedGenre.asStateFlow()
 
     private val selectedSource = MutableStateFlow(Source.MANGAKALOT)
     fun selectedSource() = selectedSource.asStateFlow()
+
+    private val genreList = MutableStateFlow(initializeGenreList())
+    fun genreList() = genreList
+        .filter { it.isNotEmpty() }
+        .combineTransform(selectedGenre) { list, selectedGenre ->
+            val newList = list.map {
+                it.copy(isSelected = it.genre == selectedGenre)
+            }
+            emit(newList)
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
+    private val sourceList = MutableStateFlow(initializeSourceList())
+    fun sourceList() = sourceList
+        .filter { it.isNotEmpty() }
+        .combineTransform(selectedSource) { list, selectedSource ->
+            val newList = list.map {
+                it.copy(isSelected = it.source == selectedSource)
+            }
+            emit(newList)
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
+    private val searchQuery = MutableStateFlow("")
 
     val searchResult: Flow<PagingData<SearchResult>> = searchQuery
         .debounce(500)
@@ -75,29 +93,17 @@ class SimpleSearchViewModel(
         }
     }
 
-    fun selectGenre(searchGenre: SearchGenre) {
-        selectedGenre.value = searchGenre.genre
-
-        val prevList = genreList.value
-        val newList = prevList.map {
-            it.copy(isSelected = it == searchGenre)
-        }
-        genreList.value = newList
-    }
-
     private fun initializeSourceList(): List<SearchSource> {
         return Source.values()
             .filter { it.isEnabled }
             .map { SearchSource(source = it, isSelected = it == Source.MANGAKALOT) }
     }
 
-    fun selectSource(searchSource: SearchSource) {
-        selectedSource.value = searchSource.source
+    fun selectGenre(genre: GenreConstants) {
+        selectedGenre.value = genre
+    }
 
-        val prevList = sourceList.value
-        val newList = prevList.map {
-            it.copy(isSelected = it == searchSource)
-        }
-        sourceList.value = newList
+    fun selectSource(source: Source) {
+        selectedSource.value = source
     }
 }

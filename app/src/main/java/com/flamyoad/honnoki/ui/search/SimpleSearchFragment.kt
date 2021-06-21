@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.flamyoad.honnoki.BaseFragment
 
 import com.flamyoad.honnoki.R
+import com.flamyoad.honnoki.data.GenreConstants
 import com.flamyoad.honnoki.ui.search.adapter.SimpleSearchResultAdapter
 import com.flamyoad.honnoki.databinding.FragmentSimpleSearchBinding
 import com.flamyoad.honnoki.data.entities.SearchResult
@@ -59,11 +60,28 @@ class SimpleSearchFragment : BaseFragment() {
         initSourceList()
 
         observeUi()
+
+        savedInstanceState?.let {
+            it.getParcelable<Source>(SELECTED_SOURCE)?.let { src ->
+                viewModel.selectSource(src)
+            }
+            it.getParcelable<GenreConstants>(SELECTED_GENRE)?.let { genre ->
+                viewModel.selectGenre(genre)
+            }
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(SELECTED_SOURCE, viewModel.selectedSource().value)
+        outState.putParcelable(SELECTED_GENRE, viewModel.selectedGenre().value)
     }
 
     private fun initUi() {
-        binding.searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean { return true }
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return true
+            }
 
             override fun onQueryTextChange(query: String?): Boolean {
                 viewModel.submitQuery(query ?: "")
@@ -93,9 +111,12 @@ class SimpleSearchFragment : BaseFragment() {
 
         searchResultAdapter.addLoadStateListener {
             when (it.mediator?.refresh) {
-                is LoadState.Error -> binding.listSearchResultView.viewState = MultiStateView.ViewState.ERROR
-                is LoadState.Loading -> binding.listSearchResultView.viewState = MultiStateView.ViewState.LOADING
-                is LoadState.NotLoading -> binding.listSearchResultView.viewState = MultiStateView.ViewState.CONTENT
+                is LoadState.Error -> binding.listSearchResultView.viewState =
+                    MultiStateView.ViewState.ERROR
+                is LoadState.Loading -> binding.listSearchResultView.viewState =
+                    MultiStateView.ViewState.LOADING
+                is LoadState.NotLoading -> binding.listSearchResultView.viewState =
+                    MultiStateView.ViewState.CONTENT
             }
             when (it.mediator?.append) {
                 is LoadState.NotLoading -> concatAdapter.addAdapter(searchResultEndOfListAdapter)
@@ -104,7 +125,8 @@ class SimpleSearchFragment : BaseFragment() {
     }
 
     private fun initGenreList() {
-        val gridLayoutManager = GridLayoutManager(requireContext(), 3, GridLayoutManager.HORIZONTAL, false)
+        val gridLayoutManager =
+            GridLayoutManager(requireContext(), 3, GridLayoutManager.HORIZONTAL, false)
 
         with(binding.selectLayout.listGenres) {
             adapter = genreAdapter
@@ -166,6 +188,9 @@ class SimpleSearchFragment : BaseFragment() {
     }
 
     companion object {
+        private const val SELECTED_GENRE = "selected_genre"
+        private const val SELECTED_SOURCE = "selected_source"
+
         @JvmStatic
         fun newInstance() = SimpleSearchFragment()
     }

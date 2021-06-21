@@ -9,6 +9,8 @@ import com.flamyoad.honnoki.ui.home.HomeFragment
 import com.flamyoad.honnoki.ui.library.LibraryFragment
 import com.flamyoad.honnoki.ui.options.OptionsFragment
 import com.flamyoad.honnoki.ui.search.SimpleSearchFragment
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.onEach
 import java.lang.IllegalArgumentException
 
 @ExperimentalPagingApi

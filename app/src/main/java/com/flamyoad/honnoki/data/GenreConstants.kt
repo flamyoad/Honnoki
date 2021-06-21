@@ -1,9 +1,12 @@
 package com.flamyoad.honnoki.data
 
 import android.content.Context
+import android.os.Parcelable
 import com.flamyoad.honnoki.R
+import kotlinx.android.parcel.Parcelize
 
-enum class GenreConstants(val stringResource: Int) {
+@Parcelize
+enum class GenreConstants(val stringResource: Int): Parcelable {
     ALL(R.string.genre_all),
     ACTION(R.string.genre_action),
     ADULT(R.string.genre_adult),
