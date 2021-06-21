@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.flamyoad.honnoki.adapter.BookmarkDialogAdapter
 import com.flamyoad.honnoki.databinding.DialogAddBookmarkGroupBinding
 import com.flamyoad.honnoki.databinding.DialogMoveBookmarksBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -30,7 +31,7 @@ class MoveBookmarkDialog: DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         _binding = DialogMoveBookmarksBinding.inflate(layoutInflater, null, false)
 
-        val builder = AlertDialog.Builder(requireContext()).apply {
+        val builder = MaterialAlertDialogBuilder(requireContext()).apply {
             setTitle("Move bookmarks to")
             setView(binding.root)
         }

@@ -10,10 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.flamyoad.honnoki.databinding.MangaTrendingListBinding
 import com.flamyoad.honnoki.data.entities.Manga
 
-class MultipleMangaAdapter(context: Context, onItemClick: (Manga) -> Unit) :
-    RecyclerView.Adapter<MultipleMangaAdapter.ListViewHolder>() {
+class HorizontalMangaAdapter(context: Context, onItemClick: (Manga) -> Unit) :
+    RecyclerView.Adapter<HorizontalMangaAdapter.ListViewHolder>() {
 
-    private val listAdapter = MultipleMangaListAdapter(onItemClick)
+    private val listAdapter = HorizontalMangaListAdapter(onItemClick)
     private val linearLayoutManager =
         LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 

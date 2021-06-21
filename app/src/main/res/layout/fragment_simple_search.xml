@@ -62,6 +62,7 @@
             android:id="@+id/listSearchResultView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="?android:attr/colorBackground"
             android:scrollbars="vertical"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
             app:msv_emptyView="@layout/layout_empty_search_result"
@@ -72,6 +73,7 @@
                 android:id="@+id/listSearchResult"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="?android:attr/colorBackground"
                 android:paddingVertical="2dp"
                 tools:listitem="@layout/simple_search_result_item" />
 

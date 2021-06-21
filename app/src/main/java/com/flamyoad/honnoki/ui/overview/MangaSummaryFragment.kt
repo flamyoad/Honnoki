@@ -15,12 +15,15 @@ import com.flamyoad.honnoki.data.entities.State
 import com.flamyoad.honnoki.ui.overview.adapter.*
 import com.flamyoad.honnoki.ui.overview.model.ReaderChapter
 import com.flamyoad.honnoki.ui.reader.ReaderActivity
+import com.flamyoad.honnoki.utils.ViewUtils
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
 import jp.wasabeef.recyclerview.animators.FadeInAnimator
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.parameter.parametersOf
 
+@ExperimentalCoroutinesApi
 @ExperimentalPagingApi
 class MangaSummaryFragment : Fragment() {
     private val mangaSource: String by lazy {
@@ -36,7 +39,6 @@ class MangaSummaryFragment : Fragment() {
     private val mainHeaderAdapter by lazy { MainHeaderAdapter() }
     private val mangaSummaryAdapter by lazy { MangaSummaryAdapter() }
     private val chapterListHeaderAdapter by lazy { ChapterListHeaderAdapter(viewModel::toggleChapterListSort) }
-
     private val chapterListLoadingAdapter by lazy { ChapterListLoadingAdapter() }
     private val chapterListAdapter by lazy { ChapterListAdapter(this::onChapterClick) }
 

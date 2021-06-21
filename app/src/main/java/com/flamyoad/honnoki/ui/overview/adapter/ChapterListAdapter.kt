@@ -13,7 +13,7 @@ import com.flamyoad.honnoki.databinding.ChapterListItemBinding
 import com.flamyoad.honnoki.ui.overview.model.ReaderChapter
 import com.flamyoad.honnoki.utils.ColorUtils
 
-class ChapterListAdapter(private val onChapterClick: (ReaderChapter) -> Unit) :
+class ChapterListAdapter(private val onChapterClick: (ReaderChapter) -> Unit, ) :
     ListAdapter<ReaderChapter, ChapterListAdapter.ChapterViewHolder>(ChapterDiffUtil()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChapterViewHolder {

@@ -3,13 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="?attr/colorBackgroundFloating">
+    android:background="?android:attr/colorBackground">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/listManga"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/manga_recent_list_item"
+        tools:listitem="@layout/vertical_manga_list_item"
         tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         tools:spanCount="3"/>
 

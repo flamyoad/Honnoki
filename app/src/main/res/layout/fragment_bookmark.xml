@@ -9,13 +9,13 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary">
+        android:background="?attr/colorPrimarySurface">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/listGroups"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#546973"
+            android:background="@color/colorPrimaryLight"
             app:layout_scrollFlags="scroll|enterAlwaysCollapsed" />
 
         <LinearLayout
@@ -55,6 +55,7 @@
         android:id="@+id/listItems"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="?android:attr/colorBackground"
         app:fastScrollPopupBgColor="@color/colorAccent"
         app:fastScrollPopupTextColor="@android:color/primary_text_dark"
         app:fastScrollThumbColor="@color/colorAccent"

@@ -7,6 +7,7 @@ import com.flamyoad.honnoki.ui.home.HomeViewModel
 import com.flamyoad.honnoki.ui.library.LibraryViewModel
 import com.flamyoad.honnoki.ui.library.bookmark.BookmarkViewModel
 import com.flamyoad.honnoki.ui.library.history.ReadHistoryViewModel
+import com.flamyoad.honnoki.ui.options.OptionsViewModel
 import com.flamyoad.honnoki.ui.overview.MangaOverviewViewModel
 import com.flamyoad.honnoki.ui.reader.VerticalScrollingReaderViewModel
 import com.flamyoad.honnoki.ui.reader.ReaderViewModel
@@ -43,6 +44,8 @@ val viewModelModules = module {
     viewModel { VerticalScrollingReaderViewModel() }
 
     viewModel { SimpleSearchViewModel(androidApplication(), get()) }
+
+    viewModel { OptionsViewModel(get()) }
 
     // Dialogs
     viewModel { AddBookmarkGroupDialogViewModel(androidApplication(), get()) }

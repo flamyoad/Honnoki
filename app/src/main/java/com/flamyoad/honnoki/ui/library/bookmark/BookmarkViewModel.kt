@@ -29,13 +29,13 @@ class BookmarkViewModel(
             .flatMapLatest { flowOf(attachCoverImagesToGroups(it)) }
             .asLiveData()
 
-    var bookmarkGroupName: String = ""
-        private set
-
     val selectedBookmarkGroup = selectedBookmarkGroupId
         .onEach { flowOf(BookmarkGroup.empty()) }
         .filter { it != -1L }
         .flatMapLatest { db.bookmarkGroupDao().getById(it) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), BookmarkGroup.empty())
+
+    val bookmarkGroupName get() = selectedBookmarkGroup.value?.name
 
     private val tickedItems = MutableStateFlow<List<Bookmark>>(emptyList())
     fun tickedItems() = tickedItems.asStateFlow()

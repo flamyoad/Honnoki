@@ -52,14 +52,12 @@ class SimpleSearchViewModel(
 
             if (genre == GenreConstants.ALL) {
                 return@flatMapLatest sourceImpl.getSimpleSearch(query)
-                    .cachedIn(viewModelScope)
-
             } else {
                 return@flatMapLatest sourceImpl.getSimpleSearchWithGenre(query, genre)
-                    .cachedIn(viewModelScope)
             }
         }
         .flowOn(Dispatchers.IO)
+        .cachedIn(viewModelScope)
 
     fun submitQuery(query: String) {
         viewModelScope.launch(Dispatchers.IO) {

@@ -5,7 +5,7 @@
     style="@style/Widget.MaterialComponents.Chip.Filter"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="5dp"
+    android:layout_marginStart="8dp"
     android:textColor="@color/search_genre_chip_text_color"
     android:textAlignment="center"
     app:checkedIconTint="@color/white"

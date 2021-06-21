@@ -1,20 +1,15 @@
 package com.flamyoad.honnoki
 
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.isVisible
 import androidx.paging.ExperimentalPagingApi
-import app.cash.quickjs.QuickJs
 import com.flamyoad.honnoki.databinding.ActivityMainBinding
 import com.flamyoad.honnoki.ui.home.HomeFragment
 import com.flamyoad.honnoki.ui.library.LibraryFragment
-import com.flamyoad.honnoki.ui.options.MoreOptionsFragment
+import com.flamyoad.honnoki.ui.options.OptionsFragment
 import com.flamyoad.honnoki.ui.search.SimpleSearchFragment
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.lang.IllegalArgumentException
-import java.lang.NullPointerException
 
 @ExperimentalPagingApi
 class MainActivity : AppCompatActivity(), NavigationMenuListener {
@@ -37,7 +32,7 @@ class MainActivity : AppCompatActivity(), NavigationMenuListener {
                 R.id.home -> HomeFragment.newInstance()
                 R.id.library -> LibraryFragment.newInstance()
                 R.id.search -> SimpleSearchFragment.newInstance()
-                R.id.more -> MoreOptionsFragment.newInstance()
+                R.id.more -> OptionsFragment.newInstance()
                 else -> throw IllegalArgumentException("No such fragment")
             }
 

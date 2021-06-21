@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/colorBackgroundFloating">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="?android:attr/colorBackground">
 
     <ImageView
         android:id="@+id/logo"
@@ -41,6 +42,8 @@
         android:src="@drawable/ic_navigate_next_blue_24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
+        tools:visibility="visible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

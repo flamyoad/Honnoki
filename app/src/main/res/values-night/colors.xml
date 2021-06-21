@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="colorPrimary">#161E22</color>
+    <color name="colorPrimaryDark">#040D19</color>
+    <color name="colorPrimaryLight">#252D32</color>
+    <color name="colorAccent">#4ebdfa</color>
+
+    <color name="horizontal_manga_item_color">#6E6D6D</color>
     <color name="bottom_nav_active_tint">#F2F2F2</color>
     <color name="summary_header_text_color">@color/white</color>
+    <color name="chapter_last_read">@color/flower_petal_deep</color>
 
 </resources>

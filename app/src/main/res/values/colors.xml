@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--    <color name="colorPrimary">#880e4f</color>-->
     <color name="colorPrimary">#364952</color>
     <color name="colorPrimaryDark">#09203f</color>
+    <color name="colorPrimaryLight">#546973</color>
     <color name="colorAccent">#4ebdfa</color>
-<!--    <color name="colorAccent">#F9AA33</color>-->
 
+    <color name="horizontal_manga_item_color">#E6E6E6</color>
     <color name="bottom_nav_active_tint">#09203f</color>
     <color name="summary_header_text_color">@color/flower_petal_deep</color>
+    <color name="chapter_last_read">#FFEBEE</color>
 
     <color name="leafyGreen">#64dd17</color>
     <color name="deepGreen">#43A047</color>
@@ -43,6 +44,4 @@
 
     <color name="secondaryPink">#F05A66</color>
     <color name="sea_blue">#09203f</color>
-
-    <color name="chapter_last_read">#FFEBEE</color>
 </resources>

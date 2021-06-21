@@ -5,19 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?android:attr/colorBackground"
-    tools:context=".ui.options.MoreOptionsFragment">
-
+    tools:context=".ui.options.OptionsFragment">
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/logo"
         android:layout_width="160dp"
         android:layout_height="160dp"
         android:layout_marginTop="8dp"
-        android:src="@drawable/rinze_chibi"
         android:scaleType="centerCrop"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:src="@drawable/rinze"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:shapeAppearanceOverlay="@style/circle" />
 
     <TextView
@@ -25,12 +24,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="Thanks for instaling!"
-        app:layout_constraintTop_toBottomOf="@id/logo"
-        app:layout_constraintStart_toStartOf="@id/logo"
+        android:text="Thanks for installing!"
+        android:textColor="?attr/colorOnSurface"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="@id/logo"
-        android:textColor="@color/white"
-        android:textSize="14sp" />
+        app:layout_constraintStart_toStartOf="@id/logo"
+        app:layout_constraintTop_toBottomOf="@id/logo" />
 
     <TextView
         android:id="@+id/txtAppVersion"
@@ -39,9 +38,31 @@
         android:layout_marginTop="4dp"
         android:text="Honnoki (App Version: v1.0.0)"
         android:textColor="@color/subLightTextColor"
-        app:layout_constraintTop_toBottomOf="@id/lblThanks"
-        app:layout_constraintStart_toStartOf="@id/lblThanks"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="@id/lblThanks"
-        android:textSize="14sp" />
+        app:layout_constraintStart_toStartOf="@id/lblThanks"
+        app:layout_constraintTop_toBottomOf="@id/lblThanks" />
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="0dp"
+        android:layout_height="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtAppVersion" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/swNightMode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="12dp"
+        android:text="Use dark theme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

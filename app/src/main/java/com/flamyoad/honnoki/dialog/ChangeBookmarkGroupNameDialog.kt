@@ -13,6 +13,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.paging.ExperimentalPagingApi
 import com.flamyoad.honnoki.databinding.DialogChangeBookmarkGroupNameBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @ExperimentalPagingApi
@@ -25,7 +26,7 @@ class ChangeBookmarkGroupNameDialog: DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         _binding = DialogChangeBookmarkGroupNameBinding.inflate(layoutInflater, null, false)
 
-        val builder = AlertDialog.Builder(requireContext()).apply {
+        val builder = MaterialAlertDialogBuilder(requireContext()).apply {
             setTitle("Create new group")
             setView(binding.root)
             setPositiveButton("Ok") { dialogInterface: DialogInterface, i: Int ->

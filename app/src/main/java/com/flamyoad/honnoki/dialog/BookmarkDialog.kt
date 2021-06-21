@@ -12,6 +12,7 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.flamyoad.honnoki.adapter.BookmarkDialogAdapter
 import com.flamyoad.honnoki.databinding.DialogBookmarkGroupBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @ExperimentalPagingApi
@@ -24,7 +25,7 @@ class BookmarkDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         _binding = DialogBookmarkGroupBinding.inflate(layoutInflater, null, false)
 
-        val dialogBuilder = AlertDialog.Builder(requireContext()).apply {
+        val dialogBuilder = MaterialAlertDialogBuilder(requireContext()).apply {
             setView(binding.root)
             setTitle("Bookmark to")
         }

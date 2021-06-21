@@ -13,9 +13,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.ui.home.adapter.MangaLoadStateAdapter
-import com.flamyoad.honnoki.ui.home.adapter.SingleMangaHeaderAdapter
-import com.flamyoad.honnoki.ui.home.adapter.SingleMangaListAdapter
-import com.flamyoad.honnoki.ui.home.adapter.MultipleMangaAdapter
+import com.flamyoad.honnoki.ui.home.adapter.VerticalMangaHeaderAdapter
+import com.flamyoad.honnoki.ui.home.adapter.VerticalMangaListAdapter
+import com.flamyoad.honnoki.ui.home.adapter.HorizontalMangaAdapter
 import com.flamyoad.honnoki.databinding.FragmentDetailedMangaListBinding
 import com.flamyoad.honnoki.data.entities.Manga
 import com.flamyoad.honnoki.data.entities.Source
@@ -70,13 +70,13 @@ class DetailedMangaListFragment : Fragment() {
     }
 
     private fun initRecyclerView() {
-        val trendingMangaAdapter = MultipleMangaAdapter(requireContext(), this::openManga)
+        val trendingMangaAdapter = HorizontalMangaAdapter(requireContext(), this::openManga)
         trendingMangaAdapter.stateRestorationPolicy =
             RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
 
-        val recentMangaHeaderAdapter = SingleMangaHeaderAdapter({})
+        val recentMangaHeaderAdapter = VerticalMangaHeaderAdapter({})
 
-        val recentMangaAdapter = SingleMangaListAdapter(this::openManga).apply {
+        val recentMangaAdapter = VerticalMangaListAdapter(this::openManga).apply {
             withLoadStateFooter(MangaLoadStateAdapter { this.retry() })
             stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         }
