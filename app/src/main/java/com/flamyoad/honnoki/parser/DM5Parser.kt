@@ -33,6 +33,44 @@ class DM5Parser(
         }
     }
 
+    // Weekly trending
+    fun parseForTrendingManga(html: String?): List<Manga> {
+        val document = Jsoup.parse(html)
+        val mangaDivs =
+            document.select("body > section.box.container.pb40.overflow-Show.js_top_container > div > ul:nth-child(2) > li")
+
+        val mangaList = mutableListOf<Manga>()
+        for (div in mangaDivs) {
+            val title = div.selectFirst(".title").textNonNull()
+
+            val relativeLink = div.selectFirst(".title > a")
+                .attrNonNull("href")
+                .removePrefix("/")
+
+            val absoluteLink = DM5Service.BASE_URL + relativeLink
+            
+            val coverImage = div.selectFirst("div.mh-tip-wrap > div > a > p")
+                .attrNonNull("style")
+                .removePrefix("background-image: url(")
+                .removeSuffix(")")
+
+            val latestChapter = div.selectFirst(".chapter > a").ownTextNonNull()
+
+            mangaList.add(
+                Manga(
+                    title = title,
+                    link = absoluteLink,
+                    latestChapter = latestChapter,
+                    coverImage = coverImage,
+                    viewCount = 0,
+                    source = Source.DM5,
+                    type = MangaType.TRENDING
+                )
+            )
+        }
+        return mangaList
+    }
+
     fun parseForMangaOverview(html: String?, link: String): MangaOverview {
         if (html.isNullOrBlank()) {
             return MangaOverview.empty()

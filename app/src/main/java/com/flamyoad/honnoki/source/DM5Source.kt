@@ -31,7 +31,11 @@ class DM5Source(db: AppDatabase, context: Context, private val api: DM5Api) :
     }
 
     override fun getTrendingManga(): Flow<PagingData<Manga>> {
-        return super.getTrendingManga()
+        return Pager(
+            config = PagingConfig(pageSize = NORMAL_PAGINATION_SIZE, enablePlaceholders = true),
+            remoteMediator = MangaMediator(api, db, getSourceType(), MangaType.TRENDING),
+            pagingSourceFactory = { db.mangaDao().getFrom(getSourceType(), MangaType.TRENDING) }
+        ).flow
     }
 
     override suspend fun getMangaOverview(urlPath: String): State<MangaOverview> {

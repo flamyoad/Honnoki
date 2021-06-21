@@ -27,6 +27,9 @@ interface DM5Service {
         @Field("pagesize") pageSize: Int = 139
     ): ResponseBody
 
+    @GET("manhua-rank/")
+    suspend fun getTrendingManga(@Query("t") type: Int): ResponseBody
+
     @GET("search")
     suspend fun searchByKeyword(
         @Query("title") keyword: String,

@@ -38,6 +38,22 @@ class DM5Api(
         }
     }
 
+    override suspend fun searchForTrendingManga(index: Int): List<Manga> {
+        // Only have first page, otherwise return empty list
+        if (index > 1) {
+            return emptyList()
+        }
+
+        val response = service.getTrendingManga(2) // Japanese manga category only
+
+        return withContext(Dispatchers.Default) {
+            val html = response.string()
+            val mangaList = parser.parseForTrendingManga(html)
+
+            return@withContext mangaList
+        }
+    }
+
     suspend fun searchForMangaOverview(link: String): State<MangaOverview> {
         val response = try {
             service.getHtml(link)
