@@ -199,4 +199,29 @@ class SenMangaParser(
             )
         }
     }
+
+    fun parseForSearchByKeywordAndGenre(html: String?): List<SearchResult> {
+        if (html.isNullOrBlank()) {
+            return emptyList()
+        }
+
+        val document = Jsoup.parse(html)
+
+        val searchResult = document.select(".listupd > .upd")
+
+        // Reached end of pagination or error occured
+        if (searchResult == null) {
+            return emptyList()
+        }
+
+        return searchResult.map {
+            SearchResult(
+                coverImage = it.selectFirst(".cover > img").attrNonNull("src"),
+                link = it.selectFirst(".item > a").attrNonNull("href"),
+                title = it.selectFirst(".series-title").textNonNull(),
+                latestChapter = it.selectFirst(".chapter").textNonNull(),
+                author = "" // Non existent
+            )
+        }
+    }
 }

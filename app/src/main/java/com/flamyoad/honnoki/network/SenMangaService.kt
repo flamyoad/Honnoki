@@ -27,4 +27,12 @@ interface SenMangaService {
         @Query("s") keyword: String,
         @Query("page") index: Int
     ): ResponseBody
+
+    @GET("search")
+    suspend fun searchByKeywordAndGenres(
+        @Query("title") keyword: String,
+        @Query("genre[0]") genre: String,
+        @Query("index") index: Int,
+        @Query("order") order: String = "titleasc"
+    ): ResponseBody
 }

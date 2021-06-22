@@ -1,5 +1,7 @@
 package com.flamyoad.honnoki.api
 
+import com.flamyoad.honnoki.api.exception.InvalidGenreException
+import com.flamyoad.honnoki.data.GenreConstants
 import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.network.SenMangaService
 import com.flamyoad.honnoki.parser.SenMangaParser
@@ -89,6 +91,86 @@ class SenMangaApi(
             val searchResultList = parser.parseForSearchByKeyword(html)
 
             return@withContext searchResultList
+        }
+    }
+
+    override suspend fun searchByKeywordAndGenres(
+        keyword: String,
+        genre: GenreConstants,
+        index: Int
+    ): List<SearchResult> {
+
+        if (genre == GenreConstants.ALL) {
+            throw InvalidGenreException("There is no id for `All` genres! Use searchByKeyword() instead of searchByKeywordAndGenres()")
+        }
+
+        val genreString = getSenmangaGenreString(genre)
+        if (genreString == "") {
+            return emptyList()
+        }
+
+        val response = service.searchByKeywordAndGenres(
+            genre = genreString,
+            keyword = keyword,
+            index = index
+        )
+
+        return withContext(Dispatchers.Default) {
+            val html = response.string()
+            val searchResultList = parser.parseForSearchByKeywordAndGenre(html)
+
+            return@withContext searchResultList
+        }
+    }
+
+    companion object {
+        /**
+         * Get the name of genre in Senmanga's database
+         */
+        fun getSenmangaGenreString(genre: GenreConstants): String {
+            return when (genre) {
+                GenreConstants.ALL -> throw InvalidGenreException()
+                GenreConstants.ACTION -> "Action"
+                GenreConstants.ADULT -> "Adult"
+                GenreConstants.ADVENTURE -> "Adventure"
+                GenreConstants.COMEDY -> "Comedy"
+                GenreConstants.COOKING -> "Cooking"
+                GenreConstants.DOUJINSHI -> ""
+                GenreConstants.DRAMA -> "Drama"
+                GenreConstants.ECCHI -> "Ecchi"
+                GenreConstants.FANTASY -> "Fantasy"
+                GenreConstants.GENDER_BENDER -> "Gender Bender"
+                GenreConstants.HAREM -> "Harem"
+                GenreConstants.HISTORICAL -> "Historical"
+                GenreConstants.HORROR -> "Horror"
+                GenreConstants.ISEKAI -> ""
+                GenreConstants.JOSEI -> "Josei"
+                GenreConstants.MANHUA -> ""
+                GenreConstants.MANHWA -> ""
+                GenreConstants.MARTIAL_ARTS -> "Martial Arts"
+                GenreConstants.MATURE -> "Mature"
+                GenreConstants.MECHA -> ""
+                GenreConstants.MEDICAL -> ""
+                GenreConstants.MYSTERY -> "Mystery"
+                GenreConstants.ONE_SHOT -> ""
+                GenreConstants.PSYCHOLOGICAL -> "Psychological"
+                GenreConstants.ROMANCE -> "Romance"
+                GenreConstants.SCHOOL_LIFE -> "School Life"
+                GenreConstants.SCIFI -> "Sci-Fi"
+                GenreConstants.SEINEN -> "Seinen"
+                GenreConstants.SHOUJO -> "Shoujo"
+                GenreConstants.SHOUJO_AI -> "Shoujo Ai"
+                GenreConstants.SHOUNEN -> "Shounen"
+                GenreConstants.SHOUNEN_AI -> "Shounen Ai"
+                GenreConstants.SLICE_OF_LIFE -> "Slice of Life"
+                GenreConstants.SMUT -> "Smut"
+                GenreConstants.SPORTS -> "Sports"
+                GenreConstants.SUPERNATURAL -> "Supernatural"
+                GenreConstants.TRAGEDY -> "Tragedy"
+                GenreConstants.WEBTOONS -> "Webtoons"
+                GenreConstants.YAOI -> "Yaoi"
+                GenreConstants.YURI -> "Yuri"
+            }
         }
     }
 }

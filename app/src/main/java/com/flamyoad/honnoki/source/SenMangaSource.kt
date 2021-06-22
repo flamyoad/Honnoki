@@ -64,6 +64,23 @@ class SenMangaSource(db: AppDatabase, context: Context, private val api: SenMang
         ).flow
     }
 
+    override fun getSimpleSearchWithGenre(
+        query: String,
+        genre: GenreConstants
+    ): Flow<PagingData<SearchResult>> {
+        return Pager(
+            config = PagingConfig(pageSize = PAGINATION_SIZE, enablePlaceholders = false),
+            remoteMediator = SimpleSearchResultMediator(
+                api,
+                db,
+                query,
+                genre,
+                getSourceType()
+            ),
+            pagingSourceFactory = { db.searchResultDao().getAll() }
+        ).flow
+    }
+
     companion object {
         private const val PAGINATION_SIZE = 40
     }
