@@ -33,7 +33,8 @@ class SenMangaApi(
             val mangaList = parser.parseForTrendingMangas(url)
 
             return@withContext mangaList
-        }    }
+        }
+    }
 
     suspend fun searchForOverview(link: String): State<MangaOverview> {
         val response = try {
@@ -77,6 +78,17 @@ class SenMangaApi(
 
             val imageList = parser.parseForImageList(html)
             return@withContext State.Success(imageList)
+        }
+    }
+
+    override suspend fun searchByKeyword(keyword: String, index: Int): List<SearchResult> {
+        val response = service.searchByKeyword(keyword, index)
+
+        return withContext(Dispatchers.Default) {
+            val html = response.string()
+            val searchResultList = parser.parseForSearchByKeyword(html)
+
+            return@withContext searchResultList
         }
     }
 }

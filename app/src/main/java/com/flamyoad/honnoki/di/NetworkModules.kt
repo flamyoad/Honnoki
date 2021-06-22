@@ -64,8 +64,8 @@ fun provideMangakalotHttpClient(
     return OkHttpClient.Builder()
         .cache(myCache)
         .addInterceptor(loggingInterceptor)
-        .addInterceptor(MobileUserAgentInterceptor(context))
-        .addInterceptor(RefererInterceptor(MangakalotService.BASE_URL))
+        .addNetworkInterceptor(MobileUserAgentInterceptor(context))
+        .addNetworkInterceptor(RefererInterceptor(MangakalotService.BASE_URL))
         .addNetworkInterceptor(CacheInterceptor(1, TimeUnit.MINUTES))
         .build()
 }
@@ -88,7 +88,7 @@ fun provideSenmangaHttpClient(
         .cache(myCache)
         .cookieJar(SenmangaCookieJar())
         .addInterceptor(loggingInterceptor)
-        .addInterceptor(MobileUserAgentInterceptor(context))
+        .addNetworkInterceptor(MobileUserAgentInterceptor(context))
         .addNetworkInterceptor(CacheInterceptor(1, TimeUnit.MINUTES))
         .build()
 }

@@ -6,9 +6,11 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.flamyoad.honnoki.api.SenMangaApi
+import com.flamyoad.honnoki.data.GenreConstants
 import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.paging.MangaMediator
+import com.flamyoad.honnoki.paging.SimpleSearchResultMediator
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
@@ -44,12 +46,22 @@ class SenMangaSource(db: AppDatabase, context: Context, private val api: SenMang
         return api.searchForImageList(urlPath)
     }
 
-    override fun getSimpleSearch(query: String): Flow<PagingData<SearchResult>> {
-        return emptyFlow()
-    }
-
     override suspend fun getMangaOverview(urlPath: String): State<MangaOverview> {
         return api.searchForOverview(urlPath)
+    }
+
+    override fun getSimpleSearch(query: String): Flow<PagingData<SearchResult>> {
+        return Pager(
+            config = PagingConfig(pageSize = PAGINATION_SIZE, enablePlaceholders = false),
+            remoteMediator = SimpleSearchResultMediator(
+                api,
+                db,
+                query,
+                GenreConstants.ALL,
+                getSourceType()
+            ),
+            pagingSourceFactory = { db.searchResultDao().getAll() }
+        ).flow
     }
 
     companion object {

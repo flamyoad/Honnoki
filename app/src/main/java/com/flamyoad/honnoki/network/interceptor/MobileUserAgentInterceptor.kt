@@ -7,6 +7,7 @@ import okhttp3.Response
 
 class MobileUserAgentInterceptor(private val context: Context) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
+        println("attached user agent to " + chain.request().url)
         val request = chain.request()
             .newBuilder()
             .removeHeader("User-Agent")
