@@ -50,8 +50,4 @@ enum class GenreConstants(val stringResource: Int): Parcelable {
     YURI(R.string.genre_yuri);
 
     fun toReadableName(context: Context): String = context.resources.getString(this.stringResource)
-
-    companion object {
-        fun getByOrdinal(ordinal: Int): GenreConstants? = values().getOrNull(ordinal)
-    }
 }

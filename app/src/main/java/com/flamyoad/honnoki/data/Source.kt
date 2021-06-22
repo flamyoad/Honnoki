@@ -1,4 +1,4 @@
-package com.flamyoad.honnoki.data.entities
+package com.flamyoad.honnoki.data
 
 import android.content.Context
 import android.graphics.drawable.Drawable

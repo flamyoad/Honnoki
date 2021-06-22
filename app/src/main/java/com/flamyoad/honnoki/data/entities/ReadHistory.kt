@@ -1,6 +1,7 @@
 package com.flamyoad.honnoki.data.entities
 
 import androidx.room.Relation
+import com.flamyoad.honnoki.data.Source
 import java.time.LocalDateTime
 
 data class ReadHistory(

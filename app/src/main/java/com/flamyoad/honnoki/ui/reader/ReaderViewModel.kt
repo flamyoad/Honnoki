@@ -6,7 +6,7 @@ import androidx.paging.ExperimentalPagingApi
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.entities.Chapter
 import com.flamyoad.honnoki.data.entities.Page
-import com.flamyoad.honnoki.data.entities.State
+import com.flamyoad.honnoki.data.State
 import com.flamyoad.honnoki.repository.ChapterRepository
 import com.flamyoad.honnoki.repository.OverviewRepository
 import com.flamyoad.honnoki.source.BaseSource

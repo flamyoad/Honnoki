@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.flamyoad.honnoki.data.entities.Source
+import com.flamyoad.honnoki.data.Source
 import com.flamyoad.honnoki.data.preference.SourcePreference
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.distinctUntilChanged

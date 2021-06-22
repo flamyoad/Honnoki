@@ -4,6 +4,7 @@ import com.flamyoad.honnoki.api.exception.InvalidGenreException
 import com.flamyoad.honnoki.network.MangakalotService
 import com.flamyoad.honnoki.parser.MangakalotParser
 import com.flamyoad.honnoki.data.GenreConstants
+import com.flamyoad.honnoki.data.State
 import com.flamyoad.honnoki.data.entities.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

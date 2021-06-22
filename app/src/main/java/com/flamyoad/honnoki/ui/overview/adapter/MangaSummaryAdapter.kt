@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.flamyoad.honnoki.databinding.MangaSummaryItemBinding
 import com.flamyoad.honnoki.data.entities.Genre
 import com.flamyoad.honnoki.data.entities.MangaOverview
-import com.flamyoad.honnoki.data.entities.State
+import com.flamyoad.honnoki.data.State
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager

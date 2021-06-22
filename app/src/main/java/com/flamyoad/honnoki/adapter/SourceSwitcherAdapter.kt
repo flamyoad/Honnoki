@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.databinding.SourceSwitcherListItemBinding
-import com.flamyoad.honnoki.data.entities.Source
+import com.flamyoad.honnoki.data.Source
 
 class SourceSwitcherAdapter(
     private val itemList: List<Source>,

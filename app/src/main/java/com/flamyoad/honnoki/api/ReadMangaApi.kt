@@ -1,5 +1,6 @@
 package com.flamyoad.honnoki.api
 
+import com.flamyoad.honnoki.data.State
 import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.network.ReadMangaService
 import com.flamyoad.honnoki.parser.ReadMangaParser

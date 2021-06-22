@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import com.flamyoad.honnoki.adapter.BaseListAdapter
-import com.flamyoad.honnoki.data.entities.Source
+import com.flamyoad.honnoki.data.Source
 import com.flamyoad.honnoki.databinding.SearchSourceListItemBinding
 import com.flamyoad.honnoki.ui.search.model.SearchSource
 

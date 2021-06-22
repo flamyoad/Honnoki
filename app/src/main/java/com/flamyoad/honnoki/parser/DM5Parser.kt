@@ -1,5 +1,6 @@
 package com.flamyoad.honnoki.parser
 
+import com.flamyoad.honnoki.data.Source
 import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.network.DM5Service
 import com.flamyoad.honnoki.parser.json.dm5.DM5Deobfuscator

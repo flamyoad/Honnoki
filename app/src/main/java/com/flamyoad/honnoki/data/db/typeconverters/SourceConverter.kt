@@ -1,7 +1,7 @@
 package com.flamyoad.honnoki.data.db.typeconverters
 
 import androidx.room.TypeConverter
-import com.flamyoad.honnoki.data.entities.Source
+import com.flamyoad.honnoki.data.Source
 
 class SourceConverter {
     @TypeConverter

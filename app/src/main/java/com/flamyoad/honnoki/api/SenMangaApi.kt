@@ -2,6 +2,7 @@ package com.flamyoad.honnoki.api
 
 import com.flamyoad.honnoki.api.exception.InvalidGenreException
 import com.flamyoad.honnoki.data.GenreConstants
+import com.flamyoad.honnoki.data.State
 import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.network.SenMangaService
 import com.flamyoad.honnoki.parser.SenMangaParser

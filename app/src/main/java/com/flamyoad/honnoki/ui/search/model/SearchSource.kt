@@ -1,6 +1,6 @@
 package com.flamyoad.honnoki.ui.search.model
 
-import com.flamyoad.honnoki.data.entities.Source
+import com.flamyoad.honnoki.data.Source
 
 data class SearchSource(
     val source: Source,

@@ -11,7 +11,7 @@ import com.flamyoad.honnoki.BaseFragment
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.databinding.FragmentHomeBinding
 import com.flamyoad.honnoki.dialog.SourceSwitcherDialog
-import com.flamyoad.honnoki.data.entities.Source
+import com.flamyoad.honnoki.data.Source
 import com.flamyoad.honnoki.ui.home.adapter.MangaListFragmentAdapter
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
 import com.flamyoad.honnoki.utils.ui.DepthPageTransformer

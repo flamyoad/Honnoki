@@ -11,11 +11,10 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.databinding.FragmentMangaSummaryBinding
-import com.flamyoad.honnoki.data.entities.State
+import com.flamyoad.honnoki.data.State
 import com.flamyoad.honnoki.ui.overview.adapter.*
 import com.flamyoad.honnoki.ui.overview.model.ReaderChapter
 import com.flamyoad.honnoki.ui.reader.ReaderActivity
-import com.flamyoad.honnoki.utils.ViewUtils
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
 import jp.wasabeef.recyclerview.animators.FadeInAnimator
 import kotlinx.coroutines.ExperimentalCoroutinesApi

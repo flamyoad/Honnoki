@@ -18,7 +18,7 @@ import com.flamyoad.honnoki.ui.home.adapter.VerticalMangaListAdapter
 import com.flamyoad.honnoki.ui.home.adapter.HorizontalMangaAdapter
 import com.flamyoad.honnoki.databinding.FragmentDetailedMangaListBinding
 import com.flamyoad.honnoki.data.entities.Manga
-import com.flamyoad.honnoki.data.entities.Source
+import com.flamyoad.honnoki.data.Source
 import com.flamyoad.honnoki.ui.home.HomeViewModel
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy

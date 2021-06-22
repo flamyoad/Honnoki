@@ -7,12 +7,13 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.flamyoad.honnoki.api.SenMangaApi
 import com.flamyoad.honnoki.data.GenreConstants
+import com.flamyoad.honnoki.data.Source
+import com.flamyoad.honnoki.data.State
 import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.paging.MangaMediator
 import com.flamyoad.honnoki.paging.SimpleSearchResultMediator
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
 
 
 @ExperimentalPagingApi

@@ -1,4 +1,4 @@
-package com.flamyoad.honnoki.data.entities
+package com.flamyoad.honnoki.data
 
 sealed class State<out T : Any> {
     data class Success<out T : Any>(val value: T) : State<T>()
