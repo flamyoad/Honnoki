@@ -9,8 +9,6 @@ import com.flamyoad.honnoki.ui.home.HomeFragment
 import com.flamyoad.honnoki.ui.library.LibraryFragment
 import com.flamyoad.honnoki.ui.options.OptionsFragment
 import com.flamyoad.honnoki.ui.search.SimpleSearchFragment
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.onEach
 import java.lang.IllegalArgumentException
 
 @ExperimentalPagingApi
@@ -58,12 +56,13 @@ class MainActivity : AppCompatActivity(), NavigationMenuListener {
         val baseFragment = supportFragmentManager.primaryNavigationFragment as? BaseFragment
 
         baseFragment?.let {
-            if (it.ignoreBackPressDefaultAction) {
+            if (it.ignoreDefaultBackPressAction) {
                 baseFragment.onBackPressAction()
                 return
             }
         }
 
+        super.onBackPressed()
         finish()
     }
 

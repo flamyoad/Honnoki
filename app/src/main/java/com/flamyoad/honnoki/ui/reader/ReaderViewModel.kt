@@ -3,10 +3,12 @@ package com.flamyoad.honnoki.ui.reader
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
+import androidx.room.withTransaction
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.entities.Chapter
 import com.flamyoad.honnoki.data.entities.Page
 import com.flamyoad.honnoki.data.State
+import com.flamyoad.honnoki.data.preference.ReaderPreference
 import com.flamyoad.honnoki.repository.ChapterRepository
 import com.flamyoad.honnoki.repository.OverviewRepository
 import com.flamyoad.honnoki.source.BaseSource
@@ -25,7 +27,8 @@ class ReaderViewModel(
     private val chapterRepo: ChapterRepository,
     private val overviewRepo: OverviewRepository,
     private val applicationScope: CoroutineScope,
-    private val baseSource: BaseSource
+    private val baseSource: BaseSource,
+    private val readerPrefs: ReaderPreference
 ) : ViewModel() {
 
     private val mangaOverviewId = MutableStateFlow(-1L)
@@ -55,7 +58,7 @@ class ReaderViewModel(
         .filter { it.id != null }
         .flatMapLatest { db.chapterDao().getTotalPages(requireNotNull(it.id)) }
         .flowOn(Dispatchers.IO)
-        .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), 0)
 
     val currentPageIndicator = currentPageNumber.combine(totalPageNumber) { current, total ->
         "$current / $total"
@@ -65,6 +68,7 @@ class ReaderViewModel(
         replay = 0,
         extraBufferCapacity = 1
     )
+
     fun pageNumberScrolledBySeekbar() = pageNumberScrolledBySeekbar.asSharedFlow()
 
     private val pageList = MutableStateFlow<List<ReaderPage>>(emptyList())
@@ -111,14 +115,17 @@ class ReaderViewModel(
         }
     }
 
-    private fun processChapterImages(chapter: Chapter, pages: List<Page>, loadType: LoadType) {
+    private suspend fun processChapterImages(chapter: Chapter, pages: List<Page>, loadType: LoadType) {
         val chapterId = chapter.id ?: throw IllegalArgumentException("Chapter id is null")
 
         val pagesFromNetwork = pages.map {
             it.copy(chapterId = chapterId)
         }
 
-        db.pageDao().insertAll(pagesFromNetwork)
+        db.withTransaction {
+            db.pageDao().insertAll(pagesFromNetwork)
+        }
+        
         val pagesFromDb = db.pageDao().getAllFromChapter(chapterId)
 
         val existingList = pageList.value.toMutableList()

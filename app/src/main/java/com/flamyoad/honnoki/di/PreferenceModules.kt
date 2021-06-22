@@ -5,6 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
+import com.flamyoad.honnoki.data.preference.ReaderPreference
 import com.flamyoad.honnoki.data.preference.SourcePreference
 import com.flamyoad.honnoki.data.preference.UiPreference
 import org.koin.android.ext.koin.androidContext
@@ -14,6 +15,7 @@ val preferenceModules = module {
     single { provideDataStore(androidContext()) }
     single { SourcePreference(get()) }
     single { UiPreference(get()) }
+    single { ReaderPreference(get()) }
 }
 
 fun provideDataStore(context: Context): DataStore<Preferences> {

@@ -67,7 +67,7 @@ class LibraryFragment : BaseFragment() {
         viewModel.notifyCancelActionMode()
     }
 
-    override val ignoreBackPressDefaultAction: Boolean
+    override val ignoreDefaultBackPressAction: Boolean
         get() = viewModel.actionModeEnabled
 
     override val bottomBarTitle: String

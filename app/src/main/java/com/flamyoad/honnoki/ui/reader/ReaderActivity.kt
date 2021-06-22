@@ -3,10 +3,7 @@ package com.flamyoad.honnoki.ui.reader
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.Gravity
-import android.view.Menu
-import android.view.MenuItem
-import android.view.WindowManager
+import android.view.*
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -20,6 +17,7 @@ import com.flamyoad.honnoki.databinding.ActivityReaderBinding
 import com.flamyoad.honnoki.ui.reader.model.LoadType
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
+import org.koin.android.ext.android.getKoin
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -29,13 +27,11 @@ class ReaderActivity : AppCompatActivity() {
     private var _binding: ActivityReaderBinding? = null
     val binding get() = requireNotNull(_binding)
 
-    private val source: String by lazy {
-        intent.getStringExtra(MANGA_SOURCE) ?: ""
-    }
+    private val source: String by lazy { intent.getStringExtra(MANGA_SOURCE) ?: "" }
 
-    private val viewModel: ReaderViewModel by viewModel {
-        parametersOf(source)
-    }
+    private val viewModel: ReaderViewModel by viewModel { parametersOf(source) }
+
+    private var volumeButtonScroller: VolumeButtonScroller? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,10 +55,27 @@ class ReaderActivity : AppCompatActivity() {
             val frameFragment = VerticalScrollingReaderFragment.newInstance()
             supportFragmentManager.beginTransaction()
                 .replace(R.id.container, frameFragment, VerticalScrollingReaderFragment.TAG)
-                .commit()
+                .commitNow()
         }
+
+        val listener =
+            supportFragmentManager.findFragmentById(R.id.container) as VolumeButtonScroller.Listener
+        volumeButtonScroller = VolumeButtonScroller(listener, getKoin().get())
+
         viewModel.fetchChapterList(intent.getLongExtra(OVERVIEW_ID, -1L))
-        viewModel.fetchChapterImages(intent.getLongExtra(CHAPTER_ID, -1) , LoadType.INITIAL)
+        viewModel.fetchChapterImages(intent.getLongExtra(CHAPTER_ID, -1), LoadType.INITIAL)
+    }
+
+    override fun dispatchKeyEvent(event: KeyEvent?): Boolean {
+        volumeButtonScroller?.let {
+            val shouldSwallowKeyEvent = it.sendKeyEvent(event)
+            if (shouldSwallowKeyEvent) {
+                return true
+            } else {
+                return super.dispatchKeyEvent(event)
+            }
+        }
+        return super.dispatchKeyEvent(event)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

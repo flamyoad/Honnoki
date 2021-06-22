@@ -22,7 +22,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 @ExperimentalPagingApi
-class VerticalScrollingReaderFragment : Fragment() {
+class VerticalScrollingReaderFragment : Fragment(), VolumeButtonScroller.Listener {
 
     private var _binding: FragmentVerticalScrollingReaderBinding? = null
     private val binding get() = requireNotNull(_binding)
@@ -226,6 +226,21 @@ class VerticalScrollingReaderFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+
+    override fun onNextPage() {
+        val position = linearLayoutManager.findLastVisibleItemPosition()
+        linearLayoutManager.scrollToPosition(position + 1)
+    }
+
+    override fun onPrevPage() {
+        val position = linearLayoutManager.findFirstVisibleItemPosition()
+        if (position <= 0) return
+        linearLayoutManager.scrollToPosition(position - 1)
+    }
+
+    override fun scrollByFixedDistance(distance: Int) {
+        TODO("Not yet implemented")
     }
 
     companion object {

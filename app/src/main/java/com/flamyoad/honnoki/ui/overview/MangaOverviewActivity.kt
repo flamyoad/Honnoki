@@ -5,7 +5,6 @@ import android.os.Build
 import android.os.Bundle
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
-import android.text.style.CharacterStyle
 import android.text.style.ClickableSpan
 import android.view.MenuItem
 import android.view.View
@@ -117,8 +116,7 @@ class MangaOverviewActivity : AppCompatActivity() {
                             showToolbarArea(ToolbarState.COLLAPSED)
                             swipeRefreshLayout.isEnabled = true
                         }
-                        State.IDLE -> {
-                        }
+                        State.IDLE -> { }
                     }
                 }
             }
