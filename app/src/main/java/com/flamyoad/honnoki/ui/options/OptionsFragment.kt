@@ -60,7 +60,8 @@ class OptionsFragment : BaseFragment() {
         _binding = null
     }
 
-    override fun getTitle(): String = "More"
+    override val bottomBarTitle: String
+        get() = "More"
 
     companion object {
         @JvmStatic

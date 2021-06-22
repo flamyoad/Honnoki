@@ -44,7 +44,7 @@ class LibraryFragment : BaseFragment() {
         }
 
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
-            tab.text = when(position) {
+            tab.text = when (position) {
                 0 -> "Bookmarks"
                 1 -> "Read History"
                 2 -> "Downloads"
@@ -52,18 +52,26 @@ class LibraryFragment : BaseFragment() {
             }
         }.attach()
 
-        binding.tabLayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
+        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 viewModel.notifyCancelActionMode()
             }
+
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
             override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
     }
 
-    override fun getTitle(): String {
-        return "Library"
+    override fun onBackPressAction() {
+        super.onBackPressAction()
+        viewModel.notifyCancelActionMode()
     }
+
+    override val ignoreBackPressDefaultAction: Boolean
+        get() = viewModel.actionModeEnabled
+
+    override val bottomBarTitle: String
+        get() = "Library"
 
     companion object {
         @JvmStatic

@@ -55,10 +55,16 @@ class MainActivity : AppCompatActivity(), NavigationMenuListener {
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
-        if (supportFragmentManager.backStackEntryCount == 0) {
-            finish()
+        val baseFragment = supportFragmentManager.primaryNavigationFragment as? BaseFragment
+
+        baseFragment?.let {
+            if (it.ignoreBackPressDefaultAction) {
+                baseFragment.onBackPressAction()
+                return
+            }
         }
+
+        finish()
     }
 
     private fun showFragment(fragment: BaseFragment) {
@@ -69,10 +75,10 @@ class MainActivity : AppCompatActivity(), NavigationMenuListener {
             fragmentTransaction.hide(currentFragment)
         }
 
-        var fragmentTemp = supportFragmentManager.findFragmentByTag(fragment.getTitle())
+        var fragmentTemp = supportFragmentManager.findFragmentByTag(fragment.bottomBarTitle)
         if (fragmentTemp == null) {
             fragmentTemp = fragment
-            fragmentTransaction.add(R.id.fragmentContainerView, fragmentTemp, fragment.getTitle())
+            fragmentTransaction.add(R.id.fragmentContainerView, fragmentTemp, fragment.bottomBarTitle)
         } else {
             fragmentTransaction.show(fragmentTemp)
         }

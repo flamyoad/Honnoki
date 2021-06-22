@@ -7,10 +7,7 @@ import androidx.paging.ExperimentalPagingApi
 import com.flamyoad.honnoki.MyApplication
 import com.flamyoad.honnoki.data.db.AppDatabase
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 @ExperimentalPagingApi
@@ -22,10 +19,8 @@ class ChangeBookmarkGroupNameViewModel(application: Application, private val db:
     private val bookmarkGroupId = MutableStateFlow(-1L)
 
     val bookmarkGroup = bookmarkGroupId
-        .flatMapLatest {
-            if (it == -1L) return@flatMapLatest emptyFlow()
-            return@flatMapLatest db.bookmarkGroupDao().getById(it)
-        }
+        .filter { it != -1L }
+        .flatMapLatest { db.bookmarkGroupDao().getById(it) }
         .asLiveData()
 
     val nameAlreadyExists = nameInputByUser
@@ -47,7 +42,7 @@ class ChangeBookmarkGroupNameViewModel(application: Application, private val db:
 
     fun changeGroupName() {
         applicationScope.launch(Dispatchers.IO) {
-            val oldBookmarkGroup = requireNotNull(bookmarkGroup.value)
+            val oldBookmarkGroup = bookmarkGroup.value ?: return@launch
 
             val newBookmarkGroup = oldBookmarkGroup.copy(name = nameInputByUser.value)
 

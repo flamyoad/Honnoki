@@ -183,9 +183,8 @@ class SimpleSearchFragment : BaseFragment() {
         requireContext().startActivity(intent)
     }
 
-    override fun getTitle(): String {
-        return "Search"
-    }
+    override val bottomBarTitle: String
+        get() = "Search"
 
     companion object {
         private const val SELECTED_GENRE = "selected_genre"

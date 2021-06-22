@@ -50,8 +50,7 @@ class BookmarkFragment : Fragment() {
         super.onAttach(context)
         try {
             listener = context as NavigationMenuListener
-        } catch (ignored: ClassCastException) {
-        }
+        } catch (ignored: ClassCastException) { }
     }
 
     override fun onCreateView(
@@ -209,6 +208,7 @@ class BookmarkFragment : Fragment() {
 
     private fun startActionMode() {
         viewModel.actionModeEnabled = true
+        parentViewModel.actionModeEnabled = true
 
         val btmSlide = Slide(Gravity.BOTTOM).apply {
             addTarget(binding.actionModeBar)
@@ -221,6 +221,7 @@ class BookmarkFragment : Fragment() {
 
     private fun exitActionMode() {
         viewModel.actionModeEnabled = false
+        parentViewModel.actionModeEnabled = false
 
         binding.actionModeBar.visibility = View.GONE
         listener?.showNavMenu()

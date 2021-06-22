@@ -7,8 +7,10 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class LibraryViewModel: ViewModel() {
+    var actionModeEnabled: Boolean = false
+
     private val shouldCancelActionMode = MutableSharedFlow<Boolean>(
-        replay = 1,
+        replay = 0,
         extraBufferCapacity = 1
     )
     fun shouldCancelActionMode() = shouldCancelActionMode.asSharedFlow()

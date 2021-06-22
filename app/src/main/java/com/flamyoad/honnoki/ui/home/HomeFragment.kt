@@ -96,9 +96,8 @@ class HomeFragment : BaseFragment(), SourceSwitcherDialog.Listener {
         }
     }
 
-    override fun getTitle(): String {
-        return "Home"
-    }
+    override val bottomBarTitle: String
+        get() = "Home"
 
     companion object {
         @JvmStatic
