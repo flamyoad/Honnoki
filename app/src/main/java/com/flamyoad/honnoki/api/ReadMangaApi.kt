@@ -78,8 +78,8 @@ class ReadMangaApi(
         return withContext(Dispatchers.Default) {
             val html = response.string()
 
-            val genres = parser.parseForAuthors(html)
-            return@withContext State.Success(genres)
+            val authors = parser.parseForAuthors(html)
+            return@withContext State.Success(authors)
         }
     }
 

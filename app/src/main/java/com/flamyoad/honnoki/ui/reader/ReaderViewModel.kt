@@ -65,7 +65,6 @@ class ReaderViewModel(
         replay = 0,
         extraBufferCapacity = 1
     )
-
     fun pageNumberScrolledBySeekbar() = pageNumberScrolledBySeekbar.asSharedFlow()
 
     private val pageList = MutableStateFlow<List<ReaderPage>>(emptyList())

@@ -1,10 +1,15 @@
 package com.flamyoad.honnoki.parser
 
 import com.flamyoad.honnoki.data.entities.*
+import com.flamyoad.honnoki.parser.json.senmanga.SenmangaJsonAdapter
 import org.jsoup.Jsoup
+import java.io.IOException
+import java.lang.NullPointerException
 import java.time.LocalDateTime
 
-class SenMangaParser {
+class SenMangaParser(
+    private val jsonAdapter: SenmangaJsonAdapter
+) {
 
     fun parseForRecentMangas(html: String?): List<Manga> {
         if (html == null) return emptyList()
@@ -139,23 +144,34 @@ class SenMangaParser {
 
         val document = Jsoup.parse(html)
 
-        val divs = document.select("script")
+        try {
+            val scriptTag = document.select("script").toList()
+                .filter { it.attrNonNull("type") == "text/javascript" }
+                .firstOrNull { it.htmlNonNull().contains("chapter_url") }
 
-        // Senmanga loads the images at runtime with JS code
-        val div = document.select("script").toList()
-            .filter { it.attrNonNull("type") == "text/javascript" }
-            .filter { it.textNonNull().contains("imglist") }
-            .firstOrNull()
+            val javaScript = scriptTag.htmlNonNull()
 
-        val javascript = div!!.text()
+            val startIndex = javaScript.indexOf("var imglist =")
+            val endIndex = javaScript.indexOf(";", startIndex)
 
-        return emptyList()
+            val jsonString = javaScript.substring(startIndex, endIndex)
+                .removePrefix("var imglist =")
 
-//        return imageList.mapIndexed { index, element ->
-//            Page(
-//                link = element.attrNonNull("src"),
-//                number = index + 1 // Add 1 to change the value into one-based numbering
-//            )
-//        }
+            val imageJson = jsonAdapter.imageConverter.fromJson(jsonString) ?: emptyList()
+            return imageJson.map {
+                Page(
+                    link = it.url,
+                    number = it.id
+                )
+            }
+
+        } catch(e: Exception) {
+            when (e) {
+                is NullPointerException -> { }// Jsoup can't find the tag
+                is StringIndexOutOfBoundsException -> { }// Script tag has changed}
+                is IOException -> { } // JsonAdapter string parsing error
+            }
+            return emptyList()
+        }
     }
 }

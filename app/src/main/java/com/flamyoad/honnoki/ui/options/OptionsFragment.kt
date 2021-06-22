@@ -35,14 +35,23 @@ class OptionsFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.swNightMode.setOnCheckedChangeListener { buttonView, isChecked ->
+            viewModel.setNightMode(isChecked)
+        }
+
         lifecycleScope.launchWhenResumed {
             viewModel.nightModeEnabled.collectLatest {
                 binding.swNightMode.isChecked = it
+                enableNightMode(it)
             }
         }
+    }
 
-        binding.swNightMode.setOnCheckedChangeListener { buttonView, isChecked ->
-            viewModel.setNightMode(isChecked)
+    private fun enableNightMode(yes: Boolean) {
+        if (yes) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         }
     }
 

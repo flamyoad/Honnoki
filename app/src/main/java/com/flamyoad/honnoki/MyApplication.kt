@@ -6,9 +6,7 @@ import androidx.paging.ExperimentalPagingApi
 import com.flamyoad.honnoki.data.preference.UiPreference
 import com.flamyoad.honnoki.di.*
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.single
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
@@ -44,7 +42,7 @@ class MyApplication : Application() {
         }
 
         applicationScope.launch {
-            val nightModeEnabled = uiPrefs.nightModeEnabled.single()
+            val nightModeEnabled = uiPrefs.nightModeEnabled.firstOrNull() ?: return@launch
             if (nightModeEnabled) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             } else {

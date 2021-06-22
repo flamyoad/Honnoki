@@ -30,11 +30,10 @@ class ReaderActivity : AppCompatActivity() {
     val binding get() = requireNotNull(_binding)
 
     private val source: String by lazy {
-        intent.getStringExtra(MANGA_SOURCE) ?: "fuck"
+        intent.getStringExtra(MANGA_SOURCE) ?: ""
     }
 
     private val viewModel: ReaderViewModel by viewModel {
-        println(source)
         parametersOf(source)
     }
 
@@ -64,11 +63,6 @@ class ReaderActivity : AppCompatActivity() {
         }
         viewModel.fetchChapterList(intent.getLongExtra(OVERVIEW_ID, -1L))
         viewModel.fetchChapterImages(intent.getLongExtra(CHAPTER_ID, -1) , LoadType.INITIAL)
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        viewModel.fetchChapterList(intent.getLongExtra(OVERVIEW_ID, -1L))
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

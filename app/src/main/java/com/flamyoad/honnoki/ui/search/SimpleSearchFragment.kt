@@ -61,11 +61,11 @@ class SimpleSearchFragment : BaseFragment() {
 
         observeUi()
 
-        savedInstanceState?.let {
-            it.getParcelable<Source>(SELECTED_SOURCE)?.let { src ->
+        savedInstanceState?.let { bundle ->
+            bundle.getParcelable<Source>(SELECTED_SOURCE)?.let { src ->
                 viewModel.selectSource(src)
             }
-            it.getParcelable<GenreConstants>(SELECTED_GENRE)?.let { genre ->
+            bundle.getParcelable<GenreConstants>(SELECTED_GENRE)?.let { genre ->
                 viewModel.selectGenre(genre)
             }
         }

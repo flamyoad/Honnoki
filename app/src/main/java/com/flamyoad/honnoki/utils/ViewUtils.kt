@@ -2,14 +2,23 @@ package com.flamyoad.honnoki.utils
 
 import android.content.Context
 import android.content.res.Configuration
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
+import com.flamyoad.honnoki.R
 
 object ViewUtils {
     fun getLoadingIndicator(context: Context): Drawable {
+        val ringColor = if (isNightModeEnabled(context)) {
+            Color.WHITE
+        } else {
+            R.color.colorPrimary
+        }
+
         val circularProgressDrawable = CircularProgressDrawable(context).apply {
             strokeWidth = 10f
             centerRadius = 75f
+            setColorSchemeColors(ringColor)
         }
         circularProgressDrawable.start()
         return circularProgressDrawable

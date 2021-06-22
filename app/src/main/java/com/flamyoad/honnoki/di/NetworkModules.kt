@@ -3,6 +3,7 @@ package com.flamyoad.honnoki.di
 import android.content.Context
 import com.flamyoad.honnoki.BuildConfig
 import com.flamyoad.honnoki.network.*
+import com.flamyoad.honnoki.network.cookie.SenmangaCookieJar
 import com.flamyoad.honnoki.network.interceptor.CacheInterceptor
 import com.flamyoad.honnoki.network.interceptor.RefererInterceptor
 import com.flamyoad.honnoki.network.interceptor.MobileUserAgentInterceptor
@@ -85,6 +86,7 @@ fun provideSenmangaHttpClient(
 
     return OkHttpClient.Builder()
         .cache(myCache)
+        .cookieJar(SenmangaCookieJar())
         .addInterceptor(loggingInterceptor)
         .addInterceptor(MobileUserAgentInterceptor(context))
         .addNetworkInterceptor(CacheInterceptor(1, TimeUnit.MINUTES))
@@ -123,7 +125,7 @@ fun provideReadMangaHttpClient(
         .cache(myCache)
         .addInterceptor(loggingInterceptor)
         .addNetworkInterceptor(MobileUserAgentInterceptor(context))
-//        .addNetworkInterceptor(CacheInterceptor(1, TimeUnit.MINUTES))
+        .addNetworkInterceptor(CacheInterceptor(1, TimeUnit.MINUTES))
         .build()
 }
 
@@ -161,7 +163,7 @@ fun provideDM5Service(httpClient: OkHttpClient): DM5Service {
 fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
     val httpLoggingInterceptor = HttpLoggingInterceptor()
     if (BuildConfig.DEBUG)
-        httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+        httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.HEADERS
     else
         httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.NONE
 
