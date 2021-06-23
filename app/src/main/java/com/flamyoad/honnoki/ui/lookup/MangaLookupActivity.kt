@@ -12,15 +12,12 @@ import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.data.Source
 import com.flamyoad.honnoki.data.entities.SearchResult
 import com.flamyoad.honnoki.databinding.ActivityMangaLookupBinding
-import com.flamyoad.honnoki.di.viewModelModules
 import com.flamyoad.honnoki.ui.lookup.adapter.MangaLookupAdapter
 import com.flamyoad.honnoki.ui.lookup.model.LookupType
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.context.loadKoinModules
-import org.koin.core.context.unloadKoinModules
 import org.koin.core.parameter.parametersOf
 
 @ExperimentalCoroutinesApi
@@ -30,10 +27,26 @@ class MangaLookupActivity : AppCompatActivity() {
     private var _binding: ActivityMangaLookupBinding? = null
     private val binding get() = requireNotNull(_binding)
 
+    /**
+     * Parameter of the API. It could be an API parameter or full website URL depending on the source
+     */
     private val params: String by lazy { intent.getStringExtra(API_PARAMS) ?: "" }
-    private val name: String by lazy { intent.getStringExtra(PARAMS_NAME) ?: "" }
+
+    /**
+     * Value could be author's name or genre's name depending on the lookup type.
+     * Basically it's just a dumb string being shown in the toolbar and it is not being used
+     * in ViewModel
+     */
+    private val paramsName: String by lazy { intent.getStringExtra(PARAMS_NAME) ?: "" }
+
+    /**
+     * String value of the Source enum. Used as constructor parameter when injecting ViewModel
+     */
     private val sourceName: String by lazy { intent.getStringExtra(SOURCE_NAME) ?: "" }
 
+    /**
+     * Lookup types include Genre, Author. Future possibilities might include Groups etc.
+     */
     private val lookupType: LookupType by lazy {
         val value = intent.getStringExtra(LOOKUP_TYPE) ?: ""
         LookupType.valueOf(value)
@@ -64,7 +77,7 @@ class MangaLookupActivity : AppCompatActivity() {
 
     private fun initUi() {
         with(binding) {
-            txtToolbarPrimary.text = "${lookupType.readableName}: $name"
+            txtToolbarPrimary.text = "${lookupType.readableName}: $paramsName"
             txtToolbarSecondary.text = Source.valueOf(sourceName).title
         }
     }

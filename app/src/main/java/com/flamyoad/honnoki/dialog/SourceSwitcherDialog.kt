@@ -67,6 +67,6 @@ class SourceSwitcherDialog: BottomSheetDialogFragment() {
             }
         }
 
-        const val NAME = "SourceSwitcherDialog"
+        const val TAG = "SourceSwitcherDialog"
     }
 }

@@ -24,6 +24,10 @@ class HomeViewModel(private val sourcePref: SourcePreference) : ViewModel() {
         shouldShrinkFab.value = boolean
     }
 
+    fun getSource(): Source? {
+        return chosenSource.replayCache.firstOrNull()
+    }
+
     fun switchSource(source: Source) {
         viewModelScope.launch {
             sourcePref.switchHomeSource(source)

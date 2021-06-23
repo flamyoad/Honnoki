@@ -13,6 +13,7 @@ import com.flamyoad.honnoki.databinding.FragmentHomeBinding
 import com.flamyoad.honnoki.dialog.SourceSwitcherDialog
 import com.flamyoad.honnoki.data.Source
 import com.flamyoad.honnoki.ui.home.adapter.MangaListFragmentAdapter
+import com.flamyoad.honnoki.ui.home.dialog.GenrePickerDialog
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
 import com.flamyoad.honnoki.utils.ui.DepthPageTransformer
 import com.google.android.material.tabs.TabLayoutMediator
@@ -65,7 +66,13 @@ class HomeFragment : BaseFragment(), SourceSwitcherDialog.Listener {
 
         binding.fab.setOnClickListener {
             val dialog = SourceSwitcherDialog.newInstance(this@HomeFragment)
-            dialog.show(childFragmentManager, SourceSwitcherDialog.NAME)
+            dialog.show(childFragmentManager, SourceSwitcherDialog.TAG)
+        }
+
+        binding.btnGenre.setOnClickListener {
+            val source = viewModel.getSource() ?: return@setOnClickListener
+            val dialog = GenrePickerDialog.newInstance(source)
+            dialog.show(childFragmentManager, GenrePickerDialog.TAG)
         }
     }
 
@@ -89,7 +96,7 @@ class HomeFragment : BaseFragment(), SourceSwitcherDialog.Listener {
         viewModel.switchSource(source)
 
         // Dismiss the dialog
-        childFragmentManager.findFragmentByTag(SourceSwitcherDialog.NAME).let {
+        childFragmentManager.findFragmentByTag(SourceSwitcherDialog.TAG).let {
             if (it is DialogFragment) {
                 it.dismiss()
             }

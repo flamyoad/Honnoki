@@ -1,8 +1,10 @@
 package com.flamyoad.honnoki.api
 
+import com.flamyoad.honnoki.data.GenreConstants
 import com.flamyoad.honnoki.data.State
 import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.network.DM5Service
+import com.flamyoad.honnoki.network.MangakalotService
 import com.flamyoad.honnoki.parser.DM5Parser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -12,10 +14,6 @@ class DM5Api(
     private val service: DM5Service,
     private val parser: DM5Parser
 ) : BaseApi() {
-
-    companion object {
-        const val MAXIMUM_DATE_INDEX = 6
-    }
 
     /**
      * DM5 uses epoch time (13 digits) to fetch recently updated manga from their server
@@ -171,6 +169,51 @@ class DM5Api(
             val searchResultList = parser.parseForSearchByKeyword(html, index)
 
             return@withContext searchResultList
+        }
+    }
+
+    companion object {
+        const val MAXIMUM_DATE_INDEX = 6
+
+        /**
+         * Constructs an URL pointing to the website that contains manga of selected genre
+         * Example: https://www.dm5.com/manhua-list-tag1/
+         */
+        fun getDm5GenreUrl(genre: GenreConstants): String {
+            val genreId = getDm5GenreId(genre)
+            if (genreId == -1) return ""
+
+            return DM5Service.BASE_URL + "manhua-list-tag$genreId/"
+        }
+        /**
+         * Get the id of genre in DM5's database
+         */
+        fun getDm5GenreId(genre: GenreConstants): Int {
+            return when (genre) {
+                GenreConstants.ACTION -> 31 // 热血
+                GenreConstants.ROMANCE -> 26 // 恋爱
+                GenreConstants.SCHOOL_LIFE -> 1 // 校园
+                GenreConstants.YURI -> 3 // 百合
+                GenreConstants.YAOI -> 27 // 彩虹
+                GenreConstants.ADVENTURE -> 2 // 冒险
+                GenreConstants.HAREM -> 8 // 后宫
+                GenreConstants.SCIFI -> 25 // 科幻
+                GenreConstants.MARTIAL_ARTS -> 12 // 战争
+                GenreConstants.PSYCHOLOGICAL -> 17 // 悬疑
+                GenreConstants.MYSTERY -> 33 // 推理
+                GenreConstants.COMEDY -> 37 // 搞笑
+                GenreConstants.FANTASY -> 14 // 奇幻
+                GenreConstants.SUPERNATURAL -> 15 // 魔法
+                GenreConstants.HORROR -> 29 // 恐怖
+                GenreConstants.SEINEN -> 20 // 神鬼 ：）
+                GenreConstants.HISTORICAL -> 4 // 历史
+                GenreConstants.DOUJINSHI -> 30 // 同人
+                GenreConstants.SPORTS -> 34 // 运动
+                GenreConstants.ECCHI -> 36 // 绅士
+                GenreConstants.MECHA -> 40 // 机甲
+                GenreConstants.ADULT -> 61 // 限制级
+                else -> -1
+            }
         }
     }
 }

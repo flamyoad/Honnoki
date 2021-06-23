@@ -17,7 +17,6 @@ class ReadMangaApi(
         get() = 1
 
     override suspend fun searchForLatestManga(index: Int): List<Manga> {
-        println("search for latest")
         val response = service.getLatestManga(index)
 
         return withContext(Dispatchers.Default) {

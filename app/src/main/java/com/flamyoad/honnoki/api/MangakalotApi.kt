@@ -198,6 +198,15 @@ class MangakalotApi(
 
     companion object {
         /**
+         * Constructs an URL pointing to the website that contains manga of selected genre
+         * Example: https://manganato.com/genre-32
+         */
+        fun getMangakalotGenreUrl(genre: GenreConstants): String {
+            val genreId = getMangakalotGenreId(genre)
+            return MangakalotService.BASE_URL + "genre-$genreId"
+        }
+
+        /**
          * Get the id of genre in Mangakalot's database
          */
         fun getMangakalotGenreId(genre: GenreConstants): Int {

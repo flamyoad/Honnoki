@@ -28,26 +28,10 @@
                 app:tabMode="scrollable"
                 app:tabRippleColor="@null"
                 app:tabSelectedTextColor="@color/white"
-                app:tabTextColor="@color/subLightTextColor">
-
-<!--                <com.google.android.material.tabs.TabItem-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:text="All" />-->
-
-<!--                <com.google.android.material.tabs.TabItem-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:text="Shounen" />-->
-
-<!--                <com.google.android.material.tabs.TabItem-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:text="Adventure" />-->
-
-            </com.google.android.material.tabs.TabLayout>
+                app:tabTextColor="@color/subLightTextColor" />
 
             <ImageButton
+                android:id="@+id/btnGenre"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:background="@color/colorPrimary"

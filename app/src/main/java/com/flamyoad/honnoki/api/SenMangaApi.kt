@@ -4,6 +4,7 @@ import com.flamyoad.honnoki.api.exception.InvalidGenreException
 import com.flamyoad.honnoki.data.GenreConstants
 import com.flamyoad.honnoki.data.State
 import com.flamyoad.honnoki.data.entities.*
+import com.flamyoad.honnoki.network.MangakalotService
 import com.flamyoad.honnoki.network.SenMangaService
 import com.flamyoad.honnoki.parser.SenMangaParser
 import kotlinx.coroutines.Dispatchers
@@ -179,6 +180,17 @@ class SenMangaApi(
     }
 
     companion object {
+        /**
+         * Constructs an URL pointing to the website that contains manga of selected genre
+         * Example: https://raw.senmanga.com/search/genre/Comedy
+         */
+        fun getSenmangaGenreUrl(genre: GenreConstants): String {
+            val genreString = getSenmangaGenreString(genre)
+            if (genreString.isBlank()) return ""
+
+            return SenMangaService.BASE_URL + "/search/genre/$genreString"
+        }
+
         /**
          * Get the name of genre in Senmanga's database
          */
