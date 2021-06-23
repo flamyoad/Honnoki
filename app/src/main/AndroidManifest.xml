@@ -11,10 +11,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.lookup.MangaLookupActivity"></activity>
+        <activity
+            android:name=".ui.lookup.MangaLookupActivity" />
         <activity android:name=".ui.search.result.AdvancedSearchResultActivity" />
         <activity android:name=".ui.reader.ReaderActivity" />
-        <activity android:name=".ui.overview.MangaOverviewActivity" />
+        <activity
+            android:name=".ui.overview.MangaOverviewActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

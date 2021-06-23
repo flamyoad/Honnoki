@@ -12,13 +12,14 @@ import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.kennyc.view.MultiStateView
 
-class MangaSummaryAdapter: RecyclerView.Adapter<MangaSummaryAdapter.SummaryViewHolder>() {
+class MangaSummaryAdapter(onGenreClick: (Genre) -> Unit)
+    : RecyclerView.Adapter<MangaSummaryAdapter.SummaryViewHolder>() {
 
     private var mangaOverviewState: State<MangaOverview> = State.Loading
 
     private var genreListState: State<List<Genre>> = State.Loading
 
-    private val genreListAdapter = GenreListAdapter()
+    private val genreListAdapter = GenreListAdapter(onGenreClick)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SummaryViewHolder {
         val binding = MangaSummaryItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)

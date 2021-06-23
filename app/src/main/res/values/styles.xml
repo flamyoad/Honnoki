@@ -10,6 +10,10 @@
         <item name="materialAlertDialogTheme">@style/customAlertDialogTheme</item>
     </style>
 
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
+        <item name="android:background">?colorPrimary</item>
+    </style>
+
     <style name="AppTheme.Transparent" parent="AppTheme">
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:windowTranslucentStatus">true</item>

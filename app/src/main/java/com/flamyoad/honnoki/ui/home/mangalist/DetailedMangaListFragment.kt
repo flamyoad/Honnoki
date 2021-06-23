@@ -19,6 +19,7 @@ import com.flamyoad.honnoki.ui.home.adapter.HorizontalMangaAdapter
 import com.flamyoad.honnoki.databinding.FragmentDetailedMangaListBinding
 import com.flamyoad.honnoki.data.entities.Manga
 import com.flamyoad.honnoki.data.Source
+import com.flamyoad.honnoki.data.entities.SearchResult
 import com.flamyoad.honnoki.ui.home.HomeViewModel
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
@@ -133,12 +134,12 @@ class DetailedMangaListFragment : Fragment() {
     }
 
     private fun openManga(manga: Manga) {
-        val intent = Intent(requireContext(), MangaOverviewActivity::class.java).apply {
-            putExtra(MangaOverviewActivity.MANGA_URL, manga.link)
-            putExtra(MangaOverviewActivity.MANGA_SOURCE, manga.source.toString())
-            putExtra(MangaOverviewActivity.MANGA_TITLE, manga.title)
-        }
-        requireContext().startActivity(intent)
+        MangaOverviewActivity.startActivity(
+            context = requireContext(),
+            mangaUrl = manga.link,
+            mangaSource = manga.source,
+            mangaTitle = manga.title
+        )
     }
 
     companion object {

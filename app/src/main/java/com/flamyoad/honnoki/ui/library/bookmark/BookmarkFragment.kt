@@ -233,12 +233,12 @@ class BookmarkFragment : Fragment() {
         if (viewModel.actionModeEnabled) {
             viewModel.tickBookmark(bookmark)
         } else {
-            val intent = Intent(requireContext(), MangaOverviewActivity::class.java).apply {
-                putExtra(MangaOverviewActivity.MANGA_URL, bookmark.overview.link)
-                putExtra(MangaOverviewActivity.MANGA_SOURCE, bookmark.overview.source.toString())
-                putExtra(MangaOverviewActivity.MANGA_TITLE, bookmark.overview.mainTitle)
-            }
-            requireContext().startActivity(intent)
+            MangaOverviewActivity.startActivity(
+                context = requireContext(),
+                mangaUrl = bookmark.overview.link,
+                mangaSource = bookmark.overview.source!!,
+                mangaTitle = bookmark.overview.mainTitle
+            )
         }
     }
 

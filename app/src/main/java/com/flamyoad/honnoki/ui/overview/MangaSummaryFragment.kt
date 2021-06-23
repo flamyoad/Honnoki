@@ -10,8 +10,12 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import com.flamyoad.honnoki.R
+import com.flamyoad.honnoki.data.Source
 import com.flamyoad.honnoki.databinding.FragmentMangaSummaryBinding
 import com.flamyoad.honnoki.data.State
+import com.flamyoad.honnoki.data.entities.Genre
+import com.flamyoad.honnoki.ui.lookup.MangaLookupActivity
+import com.flamyoad.honnoki.ui.lookup.model.LookupType
 import com.flamyoad.honnoki.ui.overview.adapter.*
 import com.flamyoad.honnoki.ui.overview.model.ReaderChapter
 import com.flamyoad.honnoki.ui.reader.ReaderActivity
@@ -36,7 +40,7 @@ class MangaSummaryFragment : Fragment() {
     private val binding by viewLifecycleLazy { FragmentMangaSummaryBinding.bind(requireView()) }
 
     private val mainHeaderAdapter by lazy { MainHeaderAdapter() }
-    private val mangaSummaryAdapter by lazy { MangaSummaryAdapter() }
+    private val mangaSummaryAdapter by lazy { MangaSummaryAdapter(this::lookupMangaByGenre) }
     private val chapterListHeaderAdapter by lazy { ChapterListHeaderAdapter(viewModel::toggleChapterListSort) }
     private val chapterListLoadingAdapter by lazy { ChapterListLoadingAdapter() }
     private val chapterListAdapter by lazy { ChapterListAdapter(this::onChapterClick) }
@@ -127,6 +131,20 @@ class MangaSummaryFragment : Fragment() {
         }
 
         ReaderActivity.start(requireContext(), chapterId, overviewId, startAtPage, source)
+    }
+
+    private fun lookupMangaByGenre(genre: Genre) {
+        val sourceName = requireActivity().intent
+            .getStringExtra(MangaOverviewActivity.MANGA_SOURCE) ?: ""
+        val source = Source.valueOf(sourceName)
+
+        MangaLookupActivity.startActivity(
+            requireContext(),
+            genre.link,
+            genre.name,
+            source,
+            LookupType.GENRE
+        )
     }
 
     companion object {

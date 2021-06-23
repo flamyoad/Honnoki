@@ -175,12 +175,12 @@ class SimpleSearchFragment : BaseFragment() {
     }
 
     private fun openManga(searchResult: SearchResult) {
-        val intent = Intent(requireContext(), MangaOverviewActivity::class.java).apply {
-            putExtra(MangaOverviewActivity.MANGA_URL, searchResult.link)
-            putExtra(MangaOverviewActivity.MANGA_SOURCE, viewModel.selectedSource().value.toString())
-            putExtra(MangaOverviewActivity.MANGA_TITLE, searchResult.title)
-        }
-        requireContext().startActivity(intent)
+        MangaOverviewActivity.startActivity(
+            context = requireContext(),
+            mangaUrl = searchResult.link,
+            mangaSource = viewModel.selectedSource().value,
+            mangaTitle =searchResult.title
+        )
     }
 
     override val bottomBarTitle: String

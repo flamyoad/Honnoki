@@ -6,19 +6,19 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.flamyoad.honnoki.api.BaseApi
+import com.flamyoad.honnoki.data.GenreConstants
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.entities.SearchResult
-import com.flamyoad.honnoki.data.Source
-import com.flamyoad.honnoki.data.GenreConstants
+import com.flamyoad.honnoki.ui.lookup.model.LookupType
 import retrofit2.HttpException
 import java.io.IOException
 
 @ExperimentalPagingApi
-class SimpleSearchResultMediator(
+class LookupSearchMediator(
     private val api: BaseApi,
     private val db: AppDatabase,
-    private val keyword: String,
-    private val genre: GenreConstants,
+    private val params: String,
+    private val lookupType: LookupType,
 ) : RemoteMediator<Int, SearchResult>() {
 
     override suspend fun load(
@@ -31,11 +31,6 @@ class SimpleSearchResultMediator(
             LoadType.REFRESH -> STARTING_PAGE_INDEX
             LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
             LoadType.APPEND -> {
-                // If remoteKeys is null, that means the refresh result is not in the database yet.
-                // We can return Success with `endOfPaginationReached = false` because Paging
-                // will call this method again if RemoteKeys becomes non-null.
-                // If remoteKeys is NOT NULL but its nextKey is null, that means we've reached
-                // the end of pagination for append.
                 if (lastItem == null) {
                     return MediatorResult.Success(endOfPaginationReached = false)
                 }
@@ -47,13 +42,13 @@ class SimpleSearchResultMediator(
         }
 
         try {
-            val searchedResults = if (genre == GenreConstants.ALL) {
-                api.searchByKeyword(keyword, pageNumber)
-            } else {
-                api.searchByKeywordAndGenres(keyword, genre, pageNumber)
+            val searchResults = when (lookupType) {
+                LookupType.GENRE -> api.searchMangaByGenre(params, pageNumber)
+                LookupType.AUTHOR -> api.searchMangaByAuthor(params, pageNumber)
+                else -> emptyList()
             }
 
-            val endOfPaginationReached = searchedResults.isEmpty()
+            val endOfPaginationReached = searchResults.isEmpty()
 
             db.withTransaction {
                 if (loadType == LoadType.REFRESH) {
@@ -63,9 +58,9 @@ class SimpleSearchResultMediator(
                 val prevKey = if (pageNumber == STARTING_PAGE_INDEX) null else pageNumber - 1
                 val nextKey = if (endOfPaginationReached) null else pageNumber + 1
 
-                val searchedResultsWithKeys =
-                    searchedResults.map { it.copy(prevKey = prevKey, nextKey = nextKey) }
-                db.searchResultDao().insertAll(searchedResultsWithKeys)
+                val searchResultsWithKeys =
+                    searchResults.map { it.copy(prevKey = prevKey, nextKey = nextKey) }
+                db.searchResultDao().insertAll(searchResultsWithKeys)
             }
             return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
 

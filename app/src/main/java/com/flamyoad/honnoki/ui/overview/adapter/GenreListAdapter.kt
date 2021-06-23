@@ -8,16 +8,22 @@ import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.databinding.GenreListItemBinding
 import com.flamyoad.honnoki.data.entities.Genre
 
-class GenreListAdapter()
-    : RecyclerView.Adapter<GenreListAdapter.GenreViewHolder>() {
+class GenreListAdapter(private val onGenreClick: (Genre) -> Unit) :
+    RecyclerView.Adapter<GenreListAdapter.GenreViewHolder>() {
 
     private var list: List<Genre> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GenreViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.genre_list_item, parent, false)
+        val inflater = LayoutInflater.from(parent.context)
 
-        val holder = GenreViewHolder(view)
+        val binding = GenreListItemBinding.inflate(inflater, parent, false)
+        val holder = GenreViewHolder(binding)
+
+        binding.chip.setOnClickListener {
+            val item = list[holder.bindingAdapterPosition]
+            onGenreClick.invoke(item)
+        }
+
         return holder
     }
 
@@ -34,9 +40,8 @@ class GenreListAdapter()
         notifyDataSetChanged()
     }
 
-    inner class GenreViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val binding = GenreListItemBinding.bind(itemView)
-
+    inner class GenreViewHolder(val binding: GenreListItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(genre: Genre) {
             binding.chip.text = genre.name
         }

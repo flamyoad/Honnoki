@@ -1,5 +1,7 @@
 package com.flamyoad.honnoki.ui.overview
 
+import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -18,11 +20,15 @@ import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
 import com.bumptech.glide.Glide
 import com.flamyoad.honnoki.R
+import com.flamyoad.honnoki.data.Source
 import com.flamyoad.honnoki.data.entities.Author
 import com.flamyoad.honnoki.ui.overview.adapter.MangaOverviewFragmentAdapter
 import com.flamyoad.honnoki.databinding.ActivityMangaOverviewBinding
 import com.flamyoad.honnoki.dialog.BookmarkDialog
 import com.flamyoad.honnoki.data.entities.MangaOverview
+import com.flamyoad.honnoki.source.BaseSource
+import com.flamyoad.honnoki.ui.lookup.MangaLookupActivity
+import com.flamyoad.honnoki.ui.lookup.model.LookupType
 import com.flamyoad.honnoki.ui.reader.ReaderActivity
 import com.flamyoad.honnoki.utils.ViewUtils
 import com.flamyoad.honnoki.utils.extensions.toast
@@ -32,6 +38,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -43,13 +50,13 @@ class MangaOverviewActivity : AppCompatActivity() {
     private var _binding: ActivityMangaOverviewBinding? = null
     val binding get() = requireNotNull(_binding)
 
-    private val mangaSource: String by lazy {
-        intent.getStringExtra(MANGA_SOURCE) ?: ""
-    }
+    private val mangaSource: String by lazy { intent.getStringExtra(MANGA_SOURCE) ?: "" }
 
     private val viewModel: MangaOverviewViewModel by viewModel {
         parametersOf(mangaSource)
     }
+
+    private var ioJob: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -116,7 +123,8 @@ class MangaOverviewActivity : AppCompatActivity() {
                             showToolbarArea(ToolbarState.COLLAPSED)
                             swipeRefreshLayout.isEnabled = true
                         }
-                        State.IDLE -> { }
+                        State.IDLE -> {
+                        }
                     }
                 }
             }
@@ -199,9 +207,9 @@ class MangaOverviewActivity : AppCompatActivity() {
         for (author in authors) {
             val start = authorText.indexOf(author.name)
             val end = start + (author.name.length)
-            authorText[start..end] = object: ClickableSpan() {
+            authorText[start..end] = object : ClickableSpan() {
                 override fun onClick(widget: View) {
-                    toast(author.name)
+                    lookupMangaByAuthor(author)
                 }
 
                 override fun updateDrawState(ds: TextPaint) {
@@ -260,11 +268,18 @@ class MangaOverviewActivity : AppCompatActivity() {
         dialog.show(supportFragmentManager, "bookmark_dialog")
     }
 
+    private fun lookupMangaByAuthor(author: Author) {
+        val source = Source.valueOf(mangaSource)
+        MangaLookupActivity.startActivity(this, author.link, author.name, source, LookupType.AUTHOR)
+    }
+
     private fun startReading() {
+        if (ioJob != null) return
+
         val overview = viewModel.overview
         val overviewId = overview.id ?: return
 
-        lifecycleScope.launch(Dispatchers.IO) {
+        ioJob = lifecycleScope.launch(Dispatchers.IO) {
             val chapterId = if (overview.lastReadChapterId == -1L) {
                 viewModel.getFirstChapter(overviewId)?.id
             } else {
@@ -296,7 +311,6 @@ class MangaOverviewActivity : AppCompatActivity() {
 
     companion object {
         const val TAB_NAME_SUMMARY = "Summary"
-        const val TAB_NAME_CHAPTERS = "Chapters"
 
         // For restoring state across process death
         const val OVERVIEW_URL = "overview_url"
@@ -305,5 +319,21 @@ class MangaOverviewActivity : AppCompatActivity() {
         const val MANGA_URL = "manga_url"
         const val MANGA_SOURCE = "manga_source"
         const val MANGA_TITLE = "manga_title"
+
+        fun startActivity(
+            context: Context,
+            mangaUrl: String,
+            mangaSource: Source,
+            mangaTitle: String
+        ) {
+            val intent = Intent(context, MangaOverviewActivity::class.java)
+            intent.apply {
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                putExtra(MANGA_URL, mangaUrl)
+                putExtra(MANGA_SOURCE, mangaSource.toString())
+                putExtra(MANGA_TITLE, mangaTitle)
+            }
+            context.startActivity(intent)
+        }
     }
 }

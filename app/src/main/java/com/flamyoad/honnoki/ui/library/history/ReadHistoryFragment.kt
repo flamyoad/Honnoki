@@ -59,12 +59,12 @@ class ReadHistoryFragment : Fragment() {
     }
 
     private fun openOverviewScreen(history: ReadHistory) {
-        val intent = Intent(requireContext(), MangaOverviewActivity::class.java).apply {
-            putExtra(MangaOverviewActivity.MANGA_URL, history.overviewLink)
-            putExtra(MangaOverviewActivity.MANGA_SOURCE, history.source.toString())
-            putExtra(MangaOverviewActivity.MANGA_TITLE, history.mainTitle)
-        }
-        requireContext().startActivity(intent)
+        MangaOverviewActivity.startActivity(
+            context = requireContext(),
+            mangaUrl = history.overviewLink,
+            mangaSource = history.source,
+            mangaTitle = history.mainTitle
+        )
     }
 
     private fun openReaderScreen(history: ReadHistory) {

@@ -13,6 +13,8 @@ import com.flamyoad.honnoki.data.GenreConstants
 import com.flamyoad.honnoki.data.Source
 import com.flamyoad.honnoki.data.State
 import com.flamyoad.honnoki.data.entities.*
+import com.flamyoad.honnoki.paging.LookupSearchMediator
+import com.flamyoad.honnoki.ui.lookup.model.LookupType
 import kotlinx.coroutines.flow.Flow
 
 @ExperimentalPagingApi
@@ -86,6 +88,32 @@ class MangakalotSource(db: AppDatabase, context: Context, private val api: Manga
                 db,
                 encodedQuery,
                 genre
+            ),
+            pagingSourceFactory = { db.searchResultDao().getAll() }
+        ).flow
+    }
+
+    override fun getMangaByAuthors(params: String): Flow<PagingData<SearchResult>> {
+        return Pager(
+            config = PagingConfig(pageSize = LOW_PAGINATION_SIZE, enablePlaceholders = false),
+            remoteMediator = LookupSearchMediator(
+                api,
+                db,
+                params,
+                LookupType.AUTHOR
+            ),
+            pagingSourceFactory = { db.searchResultDao().getAll() }
+        ).flow
+    }
+
+    override fun getMangaByGenres(params: String): Flow<PagingData<SearchResult>> {
+        return Pager(
+            config = PagingConfig(pageSize = LOW_PAGINATION_SIZE, enablePlaceholders = false),
+            remoteMediator = LookupSearchMediator(
+                api,
+                db,
+                params,
+                LookupType.GENRE
             ),
             pagingSourceFactory = { db.searchResultDao().getAll() }
         ).flow
