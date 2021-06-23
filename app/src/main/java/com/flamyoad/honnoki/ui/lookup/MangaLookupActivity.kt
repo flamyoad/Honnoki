@@ -57,12 +57,6 @@ class MangaLookupActivity : AppCompatActivity() {
         initRecyclerView()
     }
 
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        unloadKoinModules(viewModelModules)
-        loadKoinModules(viewModelModules)
-    }
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.activity_manga_lookup_menu, menu)
         return super.onCreateOptionsMenu(menu)

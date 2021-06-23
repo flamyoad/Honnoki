@@ -6,11 +6,12 @@ import com.flamyoad.honnoki.network.DM5Service
 import com.flamyoad.honnoki.parser.DM5Parser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.lang.StringBuilder
 
 class DM5Api(
     private val service: DM5Service,
     private val parser: DM5Parser
-): BaseApi() {
+) : BaseApi() {
 
     companion object {
         const val MAXIMUM_DATE_INDEX = 6
@@ -52,6 +53,36 @@ class DM5Api(
             val mangaList = parser.parseForTrendingManga(html)
 
             return@withContext mangaList
+        }
+    }
+
+    override suspend fun searchMangaByAuthor(param: String, index: Int): List<SearchResult> {
+        val link = param + "&page=$index"
+        val response = service.getHtml(link)
+
+        return withContext(Dispatchers.Default) {
+            val html = response.string()
+            val searchResultList = parser.parseForSearchByKeyword(html, index)
+
+            return@withContext searchResultList
+        }
+    }
+
+    override suspend fun searchMangaByGenre(param: String, index: Int): List<SearchResult> {
+        // https://www.dm5.com/manhua-list-tag17-p3/
+        val link = StringBuilder()
+            .append(param.removeSuffix("/"))
+            .append("-p")
+            .append(index.toString())
+            .toString()
+
+        val response = service.getHtml(link)
+
+        return withContext(Dispatchers.Default) {
+            val html = response.string()
+            val searchResultList = parser.parseForMangaFromGenrePage(html)
+
+            return@withContext searchResultList
         }
     }
 
@@ -142,5 +173,4 @@ class DM5Api(
             return@withContext searchResultList
         }
     }
-
 }

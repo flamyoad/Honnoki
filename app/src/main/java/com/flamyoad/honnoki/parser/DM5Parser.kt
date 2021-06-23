@@ -260,4 +260,35 @@ class DM5Parser(
 
         return (firstItem + itemList)
     }
+
+    // https://www.dm5.com/manhua-yiquanchaoren/
+    fun parseForMangaFromGenrePage(html: String?): List<SearchResult> {
+        if (html.isNullOrBlank()) {
+            return emptyList()
+        }
+
+        val document = Jsoup.parse(html)
+
+        val mangaDivs = document.select(".mh-list > li")
+
+        val searchResultList = mutableListOf<SearchResult>()
+        for (div in mangaDivs) {
+            val coverImage = div.selectFirst(".mh-cover").attrNonNull("style")
+                .removePrefix("background-image: url(")
+                .removeSuffix(")")
+
+            val link = DM5Service.BASE_URL +
+                    div.selectFirst(".title > a").attrNonNull("href").removePrefix("/")
+
+            val result = SearchResult(
+                coverImage = coverImage,
+                link = link,
+                title = div.selectFirst(".title > a").textNonNull(),
+                latestChapter = div.selectFirst(".chapter > a").ownTextNonNull(),
+                author = div.selectFirst(".author > span > a").ownTextNonNull(),
+            )
+            searchResultList.add(result)
+        }
+        return searchResultList
+    }
 }
