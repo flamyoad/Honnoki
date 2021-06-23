@@ -65,7 +65,6 @@ class SenMangaParser(
                 )
             )
         }
-        println("manga size : ${mangaList.size}")
         return mangaList
     }
 
@@ -131,11 +130,55 @@ class SenMangaParser(
             println("size: ${processedChapters.size}")
             return processedChapters
 
-        }catch(e: Exception) {
+        } catch (e: Exception) {
             println(e.stackTrace)
         }
 
         throw IllegalArgumentException("")
+    }
+
+    fun parseForAuthors(html: String?): List<Author> {
+        if (html.isNullOrBlank()) {
+            return emptyList()
+        }
+
+        val document = Jsoup.parse(html)
+
+        val authorDiv = document.select("strong").toList()
+            .firstOrNull { it.ownTextNonNull().contains("Author", ignoreCase = true) }
+            .parentNonNull()
+
+        val authorLinks = authorDiv.select("a") ?: return emptyList()
+
+        val authors = authorLinks.map {
+            return@map Author(
+                name = it.textNonNull(),
+                link = it.attrNonNull("href")
+            )
+        }
+        return authors
+    }
+
+    fun parseForGenres(html: String?): List<Genre> {
+        if (html.isNullOrBlank()) {
+            return emptyList()
+        }
+
+        val document = Jsoup.parse(html)
+
+        val genreDiv = document.select("strong").toList()
+            .firstOrNull { it.ownTextNonNull().contains("Genre", ignoreCase = true) }
+            .parentNonNull()
+
+        val genreLinks = genreDiv.select("a") ?: return emptyList()
+
+        val genres = genreLinks.map {
+                return@map Genre(
+                    name = it.textNonNull(),
+                    link = it.attrNonNull("href")
+                )
+            }
+        return genres
     }
 
     fun parseForImageList(html: String?): List<Page> {
@@ -166,11 +209,14 @@ class SenMangaParser(
                 )
             }
 
-        } catch(e: Exception) {
+        } catch (e: Exception) {
             when (e) {
-                is NullPointerException -> { }// Jsoup can't find the tag
-                is StringIndexOutOfBoundsException -> { }// Script tag has changed}
-                is IOException -> { } // JsonAdapter string parsing error
+                is NullPointerException -> {
+                }// Jsoup can't find the tag
+                is StringIndexOutOfBoundsException -> {
+                }// Script tag has changed}
+                is IOException -> {
+                } // JsonAdapter string parsing error
             }
             return emptyList()
         }

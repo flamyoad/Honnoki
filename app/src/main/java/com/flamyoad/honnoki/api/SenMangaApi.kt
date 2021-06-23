@@ -54,6 +54,36 @@ class SenMangaApi(
         }
     }
 
+    suspend fun searchForGenres(link: String): State<List<Genre>> {
+        val response = try {
+            service.getHtml(link)
+        } catch (e: Exception) {
+            return State.Error(e)
+        }
+
+        return withContext(Dispatchers.Default) {
+            val html = response.string()
+
+            val genres = parser.parseForGenres(html)
+            return@withContext State.Success(genres)
+        }
+    }
+
+    suspend fun searchForAuthors(link: String): State<List<Author>> {
+        val response = try {
+            service.getHtml(link)
+        } catch (e: Exception) {
+            return State.Error(e)
+        }
+
+        return withContext(Dispatchers.Default) {
+            val html = response.string()
+
+            val genres = parser.parseForAuthors(html)
+            return@withContext State.Success(genres)
+        }
+    }
+
     suspend fun searchForChapterList(link: String): State<List<Chapter>> {
         val response = try {
             service.getHtml(link)
@@ -115,6 +145,30 @@ class SenMangaApi(
             keyword = keyword,
             index = index
         )
+
+        return withContext(Dispatchers.Default) {
+            val html = response.string()
+            val searchResultList = parser.parseForSearchByKeywordAndGenre(html)
+
+            return@withContext searchResultList
+        }
+    }
+
+    override suspend fun searchMangaByAuthor(param: String, index: Int): List<SearchResult> {
+        val link = param + "/?page=${index}"
+        val response = service.getHtml(link)
+
+        return withContext(Dispatchers.Default) {
+            val html = response.string()
+            val searchResultList = parser.parseForSearchByKeyword(html)
+
+            return@withContext searchResultList
+        }
+    }
+
+    override suspend fun searchMangaByGenre(param: String, index: Int): List<SearchResult> {
+        val link = param + "/?page=${index}"
+        val response = service.getHtml(link)
 
         return withContext(Dispatchers.Default) {
             val html = response.string()

@@ -11,8 +11,10 @@ import com.flamyoad.honnoki.data.Source
 import com.flamyoad.honnoki.data.State
 import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.data.db.AppDatabase
+import com.flamyoad.honnoki.paging.LookupSearchMediator
 import com.flamyoad.honnoki.paging.MangaMediator
 import com.flamyoad.honnoki.paging.SimpleSearchResultMediator
+import com.flamyoad.honnoki.ui.lookup.model.LookupType
 import kotlinx.coroutines.flow.Flow
 
 
@@ -52,6 +54,14 @@ class SenMangaSource(db: AppDatabase, context: Context, private val api: SenMang
         return api.searchForOverview(urlPath)
     }
 
+    override suspend fun getAuthors(urlPath: String): State<List<Author>> {
+        return api.searchForAuthors(urlPath)
+    }
+
+    override suspend fun getGenres(urlPath: String): State<List<Genre>> {
+        return api.searchForGenres(urlPath)
+    }
+
     override fun getSimpleSearch(query: String): Flow<PagingData<SearchResult>> {
         return Pager(
             config = PagingConfig(pageSize = PAGINATION_SIZE, enablePlaceholders = false),
@@ -76,6 +86,32 @@ class SenMangaSource(db: AppDatabase, context: Context, private val api: SenMang
                 db,
                 query,
                 genre
+            ),
+            pagingSourceFactory = { db.searchResultDao().getAll() }
+        ).flow
+    }
+
+    override fun getMangaByAuthors(params: String): Flow<PagingData<SearchResult>> {
+        return Pager(
+            config = PagingConfig(pageSize = PAGINATION_SIZE, enablePlaceholders = false),
+            remoteMediator = LookupSearchMediator(
+                api,
+                db,
+                params,
+                LookupType.AUTHOR
+            ),
+            pagingSourceFactory = { db.searchResultDao().getAll() }
+        ).flow
+    }
+
+    override fun getMangaByGenres(params: String): Flow<PagingData<SearchResult>> {
+        return Pager(
+            config = PagingConfig(pageSize = PAGINATION_SIZE, enablePlaceholders = false),
+            remoteMediator = LookupSearchMediator(
+                api,
+                db,
+                params,
+                LookupType.GENRE
             ),
             pagingSourceFactory = { db.searchResultDao().getAll() }
         ).flow
