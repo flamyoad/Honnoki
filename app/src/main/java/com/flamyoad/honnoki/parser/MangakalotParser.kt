@@ -251,12 +251,27 @@ class MangakalotParser {
         }
     }
 
-    fun parseForSearchByKeyword(html: String?): List<SearchResult> {
+    fun parseForSearchByKeyword(html: String?, index: Int): List<SearchResult> {
         if (html.isNullOrBlank()) {
             return emptyList()
         }
 
         val document = Jsoup.parse(html)
+
+        val lastPageLink = document.selectFirst(".page-last").attrNonNull("href")
+
+        // Manganato still returns valid result even though the page is out of bound
+        // If the result only has one page, the lastPageLink link will not be shown in the website
+        // To solve this, we have to verify the current link against the last page link scraped
+        if (lastPageLink.isBlank() && index > 1) {
+            return emptyList()
+        }
+
+        val lastPageIndex = lastPageLink.substringAfterLast("=").toIntOrNull() ?: Int.MAX_VALUE
+
+        if (index > lastPageIndex) {
+            return emptyList()
+        }
 
         val searchResult = document.select(".search-story-item")
         return searchResult.map {
@@ -270,12 +285,23 @@ class MangakalotParser {
         }
     }
     
-    fun parseForSearchByKeywordAndGenre(html: String?): List<SearchResult> {
+    fun parseForSearchByKeywordAndGenre(html: String?, index: Int): List<SearchResult> {
         if (html.isNullOrBlank()) {
             return emptyList()
         }
 
         val document = Jsoup.parse(html)
+
+        val lastPageLink = document.selectFirst(".page-last").attrNonNull("href")
+
+        if (lastPageLink.isBlank() && index > 1) {
+            return emptyList()
+        }
+
+        val lastPageIndex = lastPageLink.substringAfterLast("=").toIntOrNull() ?: Int.MAX_VALUE
+        if (index > lastPageIndex) {
+            return emptyList()
+        }
 
         val searchResult = document.select(".content-genres-item")
         return searchResult.map {

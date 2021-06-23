@@ -7,6 +7,7 @@ import com.flamyoad.honnoki.ui.home.HomeViewModel
 import com.flamyoad.honnoki.ui.library.LibraryViewModel
 import com.flamyoad.honnoki.ui.library.bookmark.BookmarkViewModel
 import com.flamyoad.honnoki.ui.library.history.ReadHistoryViewModel
+import com.flamyoad.honnoki.ui.lookup.MangaLookupViewModel
 import com.flamyoad.honnoki.ui.options.OptionsViewModel
 import com.flamyoad.honnoki.ui.overview.MangaOverviewViewModel
 import com.flamyoad.honnoki.ui.reader.VerticalScrollingReaderViewModel
@@ -28,6 +29,8 @@ val viewModelModules = module {
     viewModel { BookmarkViewModel(get(), get(), get(named(KoinConstants.APP_SCOPE))) }
 
     viewModel { ReadHistoryViewModel(get(), get(), get(named(KoinConstants.APP_SCOPE))) }
+
+    viewModel { (source: String) -> MangaLookupViewModel(get(named(source))) }
 
     viewModel { (source: String) -> MangaOverviewViewModel(get(), get(named(source))) }
 

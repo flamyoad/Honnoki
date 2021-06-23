@@ -66,8 +66,7 @@ class DM5Source(db: AppDatabase, context: Context, private val api: DM5Api) :
                 api,
                 db,
                 query,
-                GenreConstants.ALL,
-                getSourceType()
+                GenreConstants.ALL
             ),
             pagingSourceFactory = { db.searchResultDao().getAll() }
         ).flow

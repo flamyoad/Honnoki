@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.Flow
 @ExperimentalPagingApi
 class ReadMangaSource(db: AppDatabase, context: Context, private val api: ReadMangaApi) :
     BaseSource(db, context) {
+
     override fun getSourceType(): Source {
         return Source.READMANGA
     }
@@ -35,7 +36,8 @@ class ReadMangaSource(db: AppDatabase, context: Context, private val api: ReadMa
             config = PagingConfig(pageSize = NORMAL_PAGINATION_SIZE, enablePlaceholders = true),
             remoteMediator = MangaMediator(api, db, getSourceType(), MangaType.TRENDING),
             pagingSourceFactory = { db.mangaDao().getFrom(getSourceType(), MangaType.TRENDING) }
-        ).flow    }
+        ).flow
+    }
 
     override suspend fun getMangaOverview(urlPath: String): State<MangaOverview> {
         return api.searchForMangaOverview(urlPath)
@@ -64,8 +66,7 @@ class ReadMangaSource(db: AppDatabase, context: Context, private val api: ReadMa
                 api,
                 db,
                 query,
-                GenreConstants.ALL,
-                getSourceType()
+                GenreConstants.ALL
             ),
             pagingSourceFactory = { db.searchResultDao().getAll() }
         ).flow

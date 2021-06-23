@@ -28,10 +28,16 @@ abstract class BaseApi {
     }
 
     open suspend fun searchByKeywordAndGenres(
-        keyword: String,
-        genre: GenreConstants,
-        index: Int
+        keyword: String, genre: GenreConstants, index: Int
     ): List<SearchResult> {
+        return emptyList()
+    }
+
+    open suspend fun searchMangaByGenre(param: String, index: Int): List<SearchResult> {
+        return emptyList()
+    }
+
+    open suspend fun searchMangaByAuthor(param: String, index: Int): List<SearchResult> {
         return emptyList()
     }
 }

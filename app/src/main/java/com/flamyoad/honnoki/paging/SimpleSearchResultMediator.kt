@@ -19,7 +19,6 @@ class SimpleSearchResultMediator(
     private val db: AppDatabase,
     private val keyword: String,
     private val genre: GenreConstants,
-    private val source: Source
 ) : RemoteMediator<Int, SearchResult>() {
 
     override suspend fun load(

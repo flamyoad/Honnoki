@@ -58,8 +58,8 @@ class ReaderActivity : AppCompatActivity() {
                 .commitNow()
         }
 
-        val listener =
-            supportFragmentManager.findFragmentById(R.id.container) as VolumeButtonScroller.Listener
+        val listener = supportFragmentManager
+            .findFragmentById(R.id.container) as VolumeButtonScroller.Listener
         volumeButtonScroller = VolumeButtonScroller(listener, getKoin().get())
 
         viewModel.fetchChapterList(intent.getLongExtra(OVERVIEW_ID, -1L))

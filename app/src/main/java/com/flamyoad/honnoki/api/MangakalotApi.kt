@@ -63,7 +63,7 @@ class MangakalotApi(
 
     suspend fun searchForMangaOverview(link: String): State<MangaOverview> {
         val response = try {
-            service.getMangaOverview(link)
+            service.getHtml(link)
         } catch (e: Exception) {
             return State.Error(e)
         }
@@ -78,7 +78,7 @@ class MangakalotApi(
 
     suspend fun searchForGenres(link: String): State<List<Genre>> {
         val response = try {
-            service.getGenres(link)
+            service.getHtml(link)
         } catch (e: Exception) {
             return State.Error(e)
         }
@@ -93,7 +93,7 @@ class MangakalotApi(
 
     suspend fun searchForAuthors(link: String): State<List<Author>> {
         val response = try {
-            service.getAuthors(link)
+            service.getHtml(link)
         } catch (e: Exception) {
             return State.Error(e)
         }
@@ -108,7 +108,7 @@ class MangakalotApi(
 
     suspend fun searchForChapterList(link: String): State<List<Chapter>> {
         val response = try {
-            service.getMangaOverview(link)
+            service.getHtml(link)
         } catch (e: Exception) {
             return State.Error(e)
         }
@@ -123,7 +123,7 @@ class MangakalotApi(
 
     suspend fun searchForImageList(link: String): State<List<Page>> {
         val response = try {
-            service.getMangaOverview(link)
+            service.getHtml(link)
         } catch (e: Exception) {
             return State.Error(e)
         }
@@ -141,7 +141,7 @@ class MangakalotApi(
 
         return withContext(Dispatchers.Default) {
             val html = response.string()
-            val searchResultList = parser.parseForSearchByKeyword(html)
+            val searchResultList = parser.parseForSearchByKeyword(html, index)
 
             return@withContext searchResultList
         }
@@ -166,7 +166,31 @@ class MangakalotApi(
 
         return withContext(Dispatchers.Default) {
             val html = response.string()
-            val searchResultList = parser.parseForSearchByKeywordAndGenre(html)
+            val searchResultList = parser.parseForSearchByKeywordAndGenre(html, index)
+
+            return@withContext searchResultList
+        }
+    }
+
+    override suspend fun searchMangaByAuthor(param: String, index: Int): List<SearchResult> {
+        val link = param + "/?page=${index}"
+        val response = service.getHtml(link)
+
+        return withContext(Dispatchers.Default) {
+            val html = response.string()
+            val searchResultList = parser.parseForSearchByKeyword(html, index)
+
+            return@withContext searchResultList
+        }
+    }
+
+    override suspend fun searchMangaByGenre(param: String, index: Int): List<SearchResult> {
+        val link = param + "/?page=${index}"
+        val response = service.getHtml(link)
+
+        return withContext(Dispatchers.Default) {
+            val html = response.string()
+            val searchResultList = parser.parseForSearchByKeywordAndGenre(html, index)
 
             return@withContext searchResultList
         }

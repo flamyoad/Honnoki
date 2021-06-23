@@ -67,8 +67,7 @@ class MangakalotSource(db: AppDatabase, context: Context, private val api: Manga
                 api,
                 db,
                 encodedQuery,
-                GenreConstants.ALL,
-                getSourceType()
+                GenreConstants.ALL
             ),
             pagingSourceFactory = { db.searchResultDao().getAll() }
         ).flow
@@ -86,8 +85,7 @@ class MangakalotSource(db: AppDatabase, context: Context, private val api: Manga
                 api,
                 db,
                 encodedQuery,
-                genre,
-                getSourceType()
+                genre
             ),
             pagingSourceFactory = { db.searchResultDao().getAll() }
         ).flow

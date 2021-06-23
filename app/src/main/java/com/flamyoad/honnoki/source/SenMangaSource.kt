@@ -17,7 +17,8 @@ import kotlinx.coroutines.flow.Flow
 
 
 @ExperimentalPagingApi
-class SenMangaSource(db: AppDatabase, context: Context, private val api: SenMangaApi): BaseSource(db, context) {
+class SenMangaSource(db: AppDatabase, context: Context, private val api: SenMangaApi) :
+    BaseSource(db, context) {
 
     override fun getSourceType(): Source {
         return Source.SENMANGA
@@ -58,8 +59,7 @@ class SenMangaSource(db: AppDatabase, context: Context, private val api: SenMang
                 api,
                 db,
                 query,
-                GenreConstants.ALL,
-                getSourceType()
+                GenreConstants.ALL
             ),
             pagingSourceFactory = { db.searchResultDao().getAll() }
         ).flow
@@ -75,8 +75,7 @@ class SenMangaSource(db: AppDatabase, context: Context, private val api: SenMang
                 api,
                 db,
                 query,
-                genre,
-                getSourceType()
+                genre
             ),
             pagingSourceFactory = { db.searchResultDao().getAll() }
         ).flow

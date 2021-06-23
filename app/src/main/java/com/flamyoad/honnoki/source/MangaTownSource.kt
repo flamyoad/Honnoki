@@ -15,7 +15,8 @@ import kotlinx.coroutines.flow.Flow
 import java.io.IOException
 
 @ExperimentalPagingApi
-class MangaTownSource(db: AppDatabase, context: Context, private val api: MangaTownApi): BaseSource(db, context) {
+class MangaTownSource(db: AppDatabase, context: Context, private val api: MangaTownApi) :
+    BaseSource(db, context) {
 
     override fun getSourceType(): Source {
         return Source.MANGATOWN
