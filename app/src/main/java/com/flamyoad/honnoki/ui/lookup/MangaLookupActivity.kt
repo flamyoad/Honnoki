@@ -5,8 +5,10 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.data.Source
@@ -15,6 +17,8 @@ import com.flamyoad.honnoki.databinding.ActivityMangaLookupBinding
 import com.flamyoad.honnoki.ui.lookup.adapter.MangaLookupAdapter
 import com.flamyoad.honnoki.ui.lookup.model.LookupType
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
+import com.flamyoad.honnoki.ui.search.adapter.SearchResultEndOfListAdapter
+import com.kennyc.view.MultiStateView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -57,6 +61,7 @@ class MangaLookupActivity : AppCompatActivity() {
     }
 
     private val lookupAdapter by lazy { MangaLookupAdapter(this::openManga) }
+    private val searchResultEndOfListAdapter by lazy { SearchResultEndOfListAdapter() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,6 +70,8 @@ class MangaLookupActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+
+        binding.listManga.isVisible = false
 
         initUi()
         initRecyclerView()
@@ -92,6 +99,17 @@ class MangaLookupActivity : AppCompatActivity() {
         lifecycleScope.launchWhenResumed {
             viewModel.lookupResult.collectLatest {
                 lookupAdapter.submitData(it)
+            }
+        }
+
+        lookupAdapter.addLoadStateListener {
+            when (it.mediator?.refresh) {
+                is LoadState.Error -> binding.multiStateView.viewState =
+                    MultiStateView.ViewState.ERROR
+                is LoadState.Loading -> binding.multiStateView.viewState =
+                    MultiStateView.ViewState.LOADING
+                is LoadState.NotLoading -> binding.multiStateView.viewState =
+                    MultiStateView.ViewState.CONTENT
             }
         }
     }

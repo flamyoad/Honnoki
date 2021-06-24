@@ -11,7 +11,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-            android:theme="@style/AppTheme.AppBarOverlay">
+        android:theme="@style/AppTheme.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -51,19 +51,32 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
-        android:id="@+id/listManga"
+    <com.kennyc.view.MultiStateView
+        android:id="@+id/multiStateView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:fastScrollPopupBackgroundSize="88dp"
-        app:fastScrollPopupBgColor="@color/colorAccent"
-        app:fastScrollPopupPosition="adjacent"
-        app:fastScrollPopupTextColor="@android:color/primary_text_dark"
-        app:fastScrollPopupTextSize="56sp"
-        app:fastScrollThumbColor="@color/colorAccent"
-        app:fastScrollTrackColor="#1f000000"
-        tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        tools:listitem="@layout/vertical_manga_list_item"
-        tools:spanCount="3" />
+        android:background="?android:attr/colorBackground"
+        android:scrollbars="vertical"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        app:msv_emptyView="@layout/layout_empty_search_result"
+        app:msv_errorView="@layout/error_layout_nestedscrollview"
+        app:msv_loadingView="@layout/loading_layout_nestedscrollview">
+
+        <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
+            android:id="@+id/listManga"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:fastScrollPopupBackgroundSize="88dp"
+            app:fastScrollPopupBgColor="@color/colorAccent"
+            app:fastScrollPopupPosition="adjacent"
+            app:fastScrollPopupTextColor="@android:color/primary_text_dark"
+            app:fastScrollPopupTextSize="56sp"
+            app:fastScrollThumbColor="@color/colorAccent"
+            app:fastScrollTrackColor="#1f000000"
+            tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            tools:listitem="@layout/vertical_manga_list_item"
+            tools:spanCount="3" />
+
+    </com.kennyc.view.MultiStateView>
 
 </LinearLayout>

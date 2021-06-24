@@ -1,9 +1,14 @@
 package com.flamyoad.honnoki.data.entities
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "searched_result")
+@Entity(
+    tableName = "searched_result",
+    indices = [Index(value = ["link"], unique = true)]
+)
+
 data class SearchResult(
     @PrimaryKey
     val id: Int? = null,

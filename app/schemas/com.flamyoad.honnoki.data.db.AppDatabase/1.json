@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "5afbce8a1ee9403e980cf629c80d8065",
+    "identityHash": "78873a78fafc1673a5d610c23f712675",
     "entities": [
       {
         "tableName": "manga",
@@ -513,7 +513,16 @@
           ],
           "autoGenerate": false
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_searched_result_link",
+            "unique": true,
+            "columnNames": [
+              "link"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_searched_result_link` ON `${TABLE_NAME}` (`link`)"
+          }
+        ],
         "foreignKeys": []
       },
       {
@@ -609,7 +618,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5afbce8a1ee9403e980cf629c80d8065')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '78873a78fafc1673a5d610c23f712675')"
     ]
   }
 }

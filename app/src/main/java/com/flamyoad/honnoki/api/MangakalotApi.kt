@@ -185,7 +185,7 @@ class MangakalotApi(
     }
 
     override suspend fun searchMangaByGenre(param: String, index: Int): List<SearchResult> {
-        val link = param + "/?page=${index}"
+        val link = param + "/$index"
         val response = service.getHtml(link)
 
         return withContext(Dispatchers.Default) {
