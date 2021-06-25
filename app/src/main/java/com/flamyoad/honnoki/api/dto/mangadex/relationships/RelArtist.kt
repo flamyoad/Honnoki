@@ -1,18 +1,17 @@
-package com.flamyoad.honnoki.api.json.mangadex.relationships
+package com.flamyoad.honnoki.api.dto.mangadex.relationships
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
-
 @JsonClass(generateAdapter = true)
-data class RelAuthor(
+data class RelArtist(
     @Json(name = "id") override val id: String,
     @Json(name = "type") override val type: String,
     @Json(name = "attributes") val attributes: RelArtistAttr?
 ): BaseRelationship
 
 @JsonClass(generateAdapter = true)
-data class RelAuthorAttr(
+data class RelArtistAttr(
     @Json(name = "name") val name : String?,
     @Json(name = "imageUrl") val imageUrl : String?,
     @Json(name = "biography") val biography : List<String>,

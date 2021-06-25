@@ -1,6 +1,6 @@
-package com.flamyoad.honnoki.api.json.mangadex
+package com.flamyoad.honnoki.api.dto.mangadex
 
-import com.flamyoad.honnoki.api.json.mangadex.relationships.BaseRelationship
+import com.flamyoad.honnoki.api.dto.mangadex.relationships.BaseRelationship
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
@@ -22,6 +22,7 @@ data class MDResultData(
 data class MDResultDataAttributes(
     @Json(name = "title") val title: MDTitle?,
     @Json(name = "altTitles") val altTitles: List<MDTitle>?,
+    @Json(name = "description") val description: MDDescription,
     @Json(name = "links") val links: MDLinks?,
     @Json(name = "originalLanguage") val originalLanguage: String?,
     @Json(name = "lastVolume") val lastVolume: String?,
@@ -39,6 +40,17 @@ data class MDResultDataAttributes(
 @JsonClass(generateAdapter = true)
 data class MDTitle(
     @Json(name = "en") val en: String?
+)
+
+@JsonClass(generateAdapter = true)
+data class MDDescription(
+    @Json(name = "en") val en: String?
+)
+
+@JsonClass(generateAdapter = true)
+data class MDLinks(
+    @Json(name = "property1") val property1: String?,
+    @Json(name = "property2") val property2: String?
 )
 
 @JsonClass(generateAdapter = true)
@@ -61,9 +73,4 @@ data class MDTagName(
     @Json(name = "en") val en: String?
 )
 
-@JsonClass(generateAdapter = true)
-data class MDLinks(
-    @Json(name = "property1") val property1: String?,
-    @Json(name = "property2") val property2: String?
-)
 

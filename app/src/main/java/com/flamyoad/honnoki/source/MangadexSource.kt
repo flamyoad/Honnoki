@@ -7,8 +7,10 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.flamyoad.honnoki.api.MangadexApi
 import com.flamyoad.honnoki.data.Source
+import com.flamyoad.honnoki.data.State
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.entities.Manga
+import com.flamyoad.honnoki.data.entities.MangaOverview
 import com.flamyoad.honnoki.data.entities.MangaType
 import com.flamyoad.honnoki.paging.MangaMediator
 import kotlinx.coroutines.flow.Flow
@@ -32,6 +34,10 @@ class MangadexSource(db: AppDatabase, context: Context, private val api: Mangade
             remoteMediator = MangaMediator(api, db, getSourceType(), MangaType.TRENDING),
             pagingSourceFactory = { db.mangaDao().getFrom(getSourceType(), MangaType.TRENDING) }
         ).flow   
+    }
+
+    override suspend fun getMangaOverview(urlPath: String): State<MangaOverview> {
+        return api.searchForMangaOverview(urlPath)
     }
 
     companion object {

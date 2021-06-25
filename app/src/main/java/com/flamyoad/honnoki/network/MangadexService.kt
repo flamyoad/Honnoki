@@ -1,7 +1,8 @@
 package com.flamyoad.honnoki.network
 
-import com.flamyoad.honnoki.api.json.mangadex.MDCoverImage
-import com.flamyoad.honnoki.api.json.mangadex.MangaJson
+import com.flamyoad.honnoki.api.dto.mangadex.MDCoverImage
+import com.flamyoad.honnoki.api.dto.mangadex.MDResult
+import com.flamyoad.honnoki.api.dto.mangadex.MDResultList
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -25,7 +26,7 @@ interface MangadexService {
         @Query("includes[]") includes1: String = "author",
         @Query("includes[]") includes2: String = "artist",
         @Query("includes[]") includes3: String = "cover_art"
-    ): MangaJson
+    ): MDResultList
 
     /**
      * Used by "Top" tab in the official website
@@ -35,13 +36,15 @@ interface MangadexService {
     suspend fun getTopManga(
         @Query("offset") offset: Int,
         @Query("limit") limit: Int,
-    ): MangaJson
+    ): MDResultList
 
-    @GET("{mangaId}")
+    @GET("manga/{mangaId}")
     suspend fun getMangaDetails(
         @Path("mangaId") mangaId: String,
-        @Query("includes[]") includes: List<String> = listOf("author, artist, cover_art")
-    )
+        @Query("includes[]") includes1: String = "author",
+        @Query("includes[]") includes2: String = "artist",
+        @Query("includes[]") includes3: String = "cover_art"
+    ): MDResult
 
     /**
      * Get cover of multiple manga in a single API call.

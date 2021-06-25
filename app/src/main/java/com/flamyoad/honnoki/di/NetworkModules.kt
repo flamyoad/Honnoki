@@ -2,7 +2,7 @@ package com.flamyoad.honnoki.di
 
 import android.content.Context
 import com.flamyoad.honnoki.BuildConfig
-import com.flamyoad.honnoki.api.json.mangadex.relationships.*
+import com.flamyoad.honnoki.api.dto.mangadex.relationships.*
 import com.flamyoad.honnoki.network.*
 import com.flamyoad.honnoki.network.cookie.SenmangaCookieJar
 import com.flamyoad.honnoki.network.interceptor.CacheInterceptor

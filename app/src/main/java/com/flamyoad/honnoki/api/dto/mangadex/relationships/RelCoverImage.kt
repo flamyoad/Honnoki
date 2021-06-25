@@ -1,4 +1,4 @@
-package com.flamyoad.honnoki.api.json.mangadex.relationships
+package com.flamyoad.honnoki.api.dto.mangadex.relationships
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

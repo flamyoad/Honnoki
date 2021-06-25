@@ -1,14 +1,21 @@
 package com.flamyoad.honnoki.parser
 
-import com.flamyoad.honnoki.api.json.mangadex.MangaJson
-import com.flamyoad.honnoki.api.json.mangadex.relationships.RelCoverImage
+import com.flamyoad.honnoki.api.dto.mangadex.MDResult
+import com.flamyoad.honnoki.api.dto.mangadex.MDResultList
+import com.flamyoad.honnoki.api.dto.mangadex.relationships.RelArtist
+import com.flamyoad.honnoki.api.dto.mangadex.relationships.RelAuthor
+import com.flamyoad.honnoki.api.dto.mangadex.relationships.RelCoverImage
 import com.flamyoad.honnoki.data.Source
 import com.flamyoad.honnoki.data.entities.Manga
+import com.flamyoad.honnoki.data.entities.MangaOverview
 import com.flamyoad.honnoki.data.entities.MangaType
+import com.flamyoad.honnoki.parser.exception.NullMangaIdException
+import com.flamyoad.honnoki.utils.extensions.capitalizeWithLocale
+import java.time.LocalDateTime
 
 class MangadexParser {
 
-    fun parseForHomePageMangas(json: MangaJson, type: MangaType): List<Manga> {
+    fun parseHomeMangas(json: MDResultList, type: MangaType): List<Manga> {
         val mangas = json.results?.map { it ->
             val mangaId = it.data?.id ?: ""
 
@@ -17,7 +24,11 @@ class MangadexParser {
              */
             val coverImage = it.relationships?.firstOrNull { rel -> rel.type == "cover_art" }
             val coverImageUrl = if (coverImage is RelCoverImage) {
-                constructCoverImageUrl(mangaId, coverImage.getFileName(), CoverImageQuality.WIDTH_512PX)
+                constructCoverImageUrl(
+                    mangaId,
+                    coverImage.getFileName(),
+                    CoverImageQuality.WIDTH_512PX
+                )
             } else {
                 ""
             }
@@ -33,6 +44,51 @@ class MangadexParser {
             )
         }
         return mangas ?: emptyList()
+    }
+
+    fun parseForMangaOverview(json: MDResult): MangaOverview {
+        val mangaId = json.data?.id ?: throw NullMangaIdException()
+
+        val attributes = json.data.attributes
+
+        val coverImageAttr =
+            json.relationships?.firstOrNull { rel -> rel.type == "cover_art" } as? RelCoverImage
+
+        val artistAttr = json.relationships
+            ?.filter { rel -> rel.type == "artist" }
+            ?.map { it as? RelArtist }
+
+        val authorAttr = json.relationships
+            ?.filter { rel -> rel.type == "author" }
+            ?.map { it as? RelAuthor }
+
+        val coverImage = constructCoverImageUrl(
+            mangaId,
+            coverImageAttr?.getFileName() ?: "",
+            CoverImageQuality.WIDTH_512PX
+        )
+
+        val alternativeTitle = attributes?.altTitles?.joinToString {
+            it.en ?: ""
+        } ?: ""
+
+        val summary = attributes?.description?.en ?: ""
+
+        val status = attributes?.status?.capitalizeWithLocale() ?: ""
+
+        return MangaOverview(
+            id = null,
+            coverImage = coverImage,
+            mainTitle = attributes?.title?.en ?: "",
+            alternativeTitle = alternativeTitle,
+            summary = summary,
+            status = status,
+            source = Source.MANGADEX,
+            link = mangaId,
+            lastReadChapterId = -1,
+            lastReadDateTime = LocalDateTime.MIN,
+            lastReadPageNumber = -1
+        )
     }
 
     private fun constructCoverImageUrl(

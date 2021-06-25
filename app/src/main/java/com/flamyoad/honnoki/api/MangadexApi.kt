@@ -1,16 +1,21 @@
 package com.flamyoad.honnoki.api
 
-import com.flamyoad.honnoki.api.json.mangadex.relationships.RelCoverImage
-import com.flamyoad.honnoki.data.Source
+import com.flamyoad.honnoki.data.State
 import com.flamyoad.honnoki.data.entities.Manga
+import com.flamyoad.honnoki.data.entities.MangaOverview
 import com.flamyoad.honnoki.data.entities.MangaType
 import com.flamyoad.honnoki.network.MangadexService
 import com.flamyoad.honnoki.parser.MangadexParser
+import com.flamyoad.honnoki.parser.exception.NullMangaIdException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.lang.Exception
 
 class MangadexApi(
     private val service: MangadexService,
     private val parser: MangadexParser
 ) : BaseApi() {
+
     override val startingPageIndex: Int
         get() = 0
 
@@ -23,19 +28,38 @@ class MangadexApi(
             return emptyList()
         }
 
-        return parser.parseForHomePageMangas(json, MangaType.RECENTLY)
+        return withContext(Dispatchers.Default) {
+            parser.parseHomeMangas(json, MangaType.RECENTLY)
+        }
     }
 
     override suspend fun searchForTrendingManga(index: Int): List<Manga> {
         val offset = index * PAGINATION_SIZE
         val json = service.getTopManga(offset, PAGINATION_SIZE)
 
-        val failToGetResults = json.results?.firstOrNull()?.result != RESULT_OK
-        if (failToGetResults) {
-            return emptyList()
+        return withContext(Dispatchers.Default) {
+            parser.parseHomeMangas(json, MangaType.TRENDING)
+        }
+    }
+
+    suspend fun searchForMangaOverview(mangaId: String): State<MangaOverview> {
+        val json = service.getMangaDetails(mangaId)
+
+        val failToGet = json.result != RESULT_OK
+        if (failToGet) {
+            return State.Error()
         }
 
-        return parser.parseForHomePageMangas(json, MangaType.TRENDING)
+        try {
+            val overview = parser.parseForMangaOverview(json)
+            return State.Success(overview)
+
+        } catch (e: Exception) {
+            if (e is NullMangaIdException)
+                return State.Error()
+            else
+                throw e // Rethrow unknown exceptions
+        }
     }
 
     companion object {
