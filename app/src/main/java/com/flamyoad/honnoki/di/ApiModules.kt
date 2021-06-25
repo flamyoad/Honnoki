@@ -14,7 +14,7 @@ val apiModules = module {
     factory { MangaTownApi(get(), get()) }
     factory { ReadMangaApi(get(), get()) }
     factory { DM5Api(get(), get()) }
-    factory { MangadexApi(get()) }
+    factory { MangadexApi(get(), get()) }
 
     // Parsers
     single { MangakalotParser() }
@@ -22,6 +22,7 @@ val apiModules = module {
     single { MangaTownParser() }
     single { ReadMangaParser() }
     single { DM5Parser(get(), get()) }
+    single { MangadexParser() }
 
     // Moshi Adapter
     single { DM5JsonAdapter() }

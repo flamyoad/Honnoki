@@ -26,7 +26,15 @@ class MangadexSource(db: AppDatabase, context: Context, private val api: Mangade
         ).flow
     }
 
+    override fun getTrendingManga(): Flow<PagingData<Manga>> {
+        return Pager(
+            config = PagingConfig(pageSize = PAGINATION_SIZE, enablePlaceholders = true),
+            remoteMediator = MangaMediator(api, db, getSourceType(), MangaType.TRENDING),
+            pagingSourceFactory = { db.mangaDao().getFrom(getSourceType(), MangaType.TRENDING) }
+        ).flow   
+    }
+
     companion object {
-        const val PAGINATION_SIZE = 20
+        const val PAGINATION_SIZE = 50
     }
 }

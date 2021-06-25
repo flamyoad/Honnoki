@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class CoverImageListJson(
+data class MDCoverImage(
     @Json(name = "results") val results: List<CoverImageListResults>?,
     @Json(name = "limit") val limit: Int?,
     @Json(name = "offset") val offset: Int?,

@@ -5,8 +5,12 @@ import com.flamyoad.honnoki.data.Source
 import com.flamyoad.honnoki.data.entities.Manga
 import com.flamyoad.honnoki.data.entities.MangaType
 import com.flamyoad.honnoki.network.MangadexService
+import com.flamyoad.honnoki.parser.MangadexParser
 
-class MangadexApi(private val service: MangadexService) : BaseApi() {
+class MangadexApi(
+    private val service: MangadexService,
+    private val parser: MangadexParser
+) : BaseApi() {
     override val startingPageIndex: Int
         get() = 0
 
@@ -19,51 +23,19 @@ class MangadexApi(private val service: MangadexService) : BaseApi() {
             return emptyList()
         }
 
-        val mangas = json.results?.map {
-            val mangaId = it.data?.id ?: ""
-
-            /*  If coverImageRelationship is null (cannot be casted),
-             *  means it does not have cover image... Lol ask MangaDex
-             */
-            val relationship = it.relationships?.firstOrNull { it.type == "cover_art" }
-            val fileName = if (relationship is RelCoverImage) {
-                relationship.getFileName()
-            } else {
-                ""
-            }
-
-            val coverImageUrl = constructCoverImageUrl(mangaId, fileName, CoverImageQuality.WIDTH_512PX)
-
-            Manga(
-                title = it.data?.attributes?.title?.en ?: "",
-                link = mangaId,
-                latestChapter = "",
-                coverImage = coverImageUrl,
-                viewCount = 0, // Don't care
-                source = Source.MANGADEX,
-                type = MangaType.RECENTLY
-            )
-        }
-
-        return mangas ?: emptyList()
+        return parser.parseForHomePageMangas(json, MangaType.RECENTLY)
     }
 
-    private fun constructCoverImageUrl(
-        mangaId: String,
-        fileName: String,
-        quality: CoverImageQuality
-    ): String {
-        return when (quality) {
-            CoverImageQuality.BEST -> "https://uploads.mangadex.org/covers/${mangaId}/${fileName}.jpg"
-            CoverImageQuality.WIDTH_512PX -> "https://uploads.mangadex.org/covers/${mangaId}/${fileName}.512.jpg"
-            CoverImageQuality.WIDTH_256PX -> "https://uploads.mangadex.org/covers/${mangaId}/${fileName}.256.jpg"
-        }
-    }
+    override suspend fun searchForTrendingManga(index: Int): List<Manga> {
+        val offset = index * PAGINATION_SIZE
+        val json = service.getTopManga(offset, PAGINATION_SIZE)
 
-    private enum class CoverImageQuality {
-        BEST,
-        WIDTH_512PX,
-        WIDTH_256PX
+        val failToGetResults = json.results?.firstOrNull()?.result != RESULT_OK
+        if (failToGetResults) {
+            return emptyList()
+        }
+
+        return parser.parseForHomePageMangas(json, MangaType.TRENDING)
     }
 
     companion object {

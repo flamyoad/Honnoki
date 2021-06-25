@@ -1,8 +1,9 @@
 package com.flamyoad.honnoki.network
 
-import com.flamyoad.honnoki.api.json.mangadex.CoverImageListJson
-import com.flamyoad.honnoki.api.json.mangadex.MangaListJson
+import com.flamyoad.honnoki.api.json.mangadex.MDCoverImage
+import com.flamyoad.honnoki.api.json.mangadex.MangaJson
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface MangadexService {
@@ -14,6 +15,7 @@ interface MangadexService {
      * Used by "Recently Added" tab in the official website.
      * https://mangadex.org/titles/
      * [order]: asc, desc
+     * TODO: Think of a way to concat THE INCLUDES[] into one parameter
      */
     @GET("manga")
     suspend fun getRecentlyAddedManga(
@@ -23,7 +25,7 @@ interface MangadexService {
         @Query("includes[]") includes1: String = "author",
         @Query("includes[]") includes2: String = "artist",
         @Query("includes[]") includes3: String = "cover_art"
-    ): MangaListJson
+    ): MangaJson
 
     /**
      * Used by "Top" tab in the official website
@@ -33,7 +35,13 @@ interface MangadexService {
     suspend fun getTopManga(
         @Query("offset") offset: Int,
         @Query("limit") limit: Int,
-    ): MangaListJson
+    ): MangaJson
+
+    @GET("{mangaId}")
+    suspend fun getMangaDetails(
+        @Path("mangaId") mangaId: String,
+        @Query("includes[]") includes: List<String> = listOf("author, artist, cover_art")
+    )
 
     /**
      * Get cover of multiple manga in a single API call.
@@ -43,5 +51,5 @@ interface MangadexService {
     @GET("cover")
     suspend fun getCovers(
         @Query("ids[]") ids: List<String>
-    ): CoverImageListJson
+    ): MDCoverImage
 }

@@ -6,7 +6,7 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class RelAuthor(
-    @Json(name = "id") val id: String,
+    @Json(name = "id") override val id: String,
     @Json(name = "type") override val type: String,
     @Json(name = "attributes") val attributes: RelArtistAttr?
 ): BaseRelationship
