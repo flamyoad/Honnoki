@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 
 @ExperimentalPagingApi
-class HomeListViewModel(val db: AppDatabase, val mangaSource: BaseSource) : ViewModel() {
+class MangaListViewModel(val db: AppDatabase, val mangaSource: BaseSource) : ViewModel() {
 
     fun getRecentManga(): Flow<PagingData<Manga>> = mangaSource.getRecentManga()
         .flowOn(Dispatchers.IO)

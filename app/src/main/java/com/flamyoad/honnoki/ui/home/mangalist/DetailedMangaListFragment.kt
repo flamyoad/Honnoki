@@ -1,6 +1,5 @@
 package com.flamyoad.honnoki.ui.home.mangalist
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,7 +18,6 @@ import com.flamyoad.honnoki.ui.home.adapter.HorizontalMangaAdapter
 import com.flamyoad.honnoki.databinding.FragmentDetailedMangaListBinding
 import com.flamyoad.honnoki.data.entities.Manga
 import com.flamyoad.honnoki.data.Source
-import com.flamyoad.honnoki.data.entities.SearchResult
 import com.flamyoad.honnoki.ui.home.HomeViewModel
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
@@ -37,7 +35,7 @@ class DetailedMangaListFragment : Fragment() {
 
     private val parentViewModel: HomeViewModel by sharedViewModel()
 
-    private val viewModel: HomeListViewModel by viewModel {
+    private val viewModel: MangaListViewModel by viewModel {
         val sourceName = arguments?.getString(SOURCE) ?: ""
         parametersOf(sourceName)
     }

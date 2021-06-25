@@ -2,19 +2,24 @@ package com.flamyoad.honnoki.di
 
 import android.content.Context
 import com.flamyoad.honnoki.BuildConfig
+import com.flamyoad.honnoki.api.json.mangadex.relationships.*
 import com.flamyoad.honnoki.network.*
 import com.flamyoad.honnoki.network.cookie.SenmangaCookieJar
 import com.flamyoad.honnoki.network.interceptor.CacheInterceptor
 import com.flamyoad.honnoki.network.interceptor.RefererInterceptor
 import com.flamyoad.honnoki.network.interceptor.MobileUserAgentInterceptor
 import com.flamyoad.honnoki.network.interceptor.PCUserAgentInterceptor
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory
 import okhttp3.Cache
+import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
 
 val networkModules = module {
@@ -23,6 +28,7 @@ val networkModules = module {
     single { provideMangaTownService(get(named(KoinConstants.MANGATOWN))) }
     single { provideReadMangaService(get(named(KoinConstants.READMANGA))) }
     single { provideDM5Service(get(named(KoinConstants.DM5))) }
+    single { provideMangadexService(get(named(KoinConstants.MANGADEX))) }
 
     single<OkHttpClient>(named(KoinConstants.MANGAKALOT)) {
         provideMangakalotHttpClient(androidContext(), get())
@@ -42,6 +48,10 @@ val networkModules = module {
 
     single<OkHttpClient>(named(KoinConstants.DM5)) {
         provideDM5HttpClient(androidContext(), get())
+    }
+
+    single<OkHttpClient>(named(KoinConstants.MANGADEX)) {
+        provideMangadexHttpClient(androidContext(), get())
     }
 
     factory { provideHttpLoggingInterceptor() }
@@ -160,6 +170,38 @@ fun provideDM5Service(httpClient: OkHttpClient): DM5Service {
     return retrofit.create(DM5Service::class.java)
 }
 
+fun provideMangadexHttpClient(
+    context: Context,
+    loggingInterceptor: HttpLoggingInterceptor
+): OkHttpClient {
+    val myDispatcher = Dispatcher().apply {
+        maxRequestsPerHost = 2
+    }
+
+    return OkHttpClient.Builder()
+        .addInterceptor(loggingInterceptor)
+        .dispatcher(myDispatcher)
+        .addNetworkInterceptor(MobileUserAgentInterceptor(context))
+        .build()
+}
+
+fun provideMangadexService(httpClient: OkHttpClient): MangadexService {
+    val moshi = Moshi.Builder()
+        .add(PolymorphicJsonAdapterFactory.of(BaseRelationship::class.java, "type")
+            .withSubtype(RelAuthor::class.java, "author")
+            .withSubtype(RelArtist::class.java, "artist")
+            .withSubtype(RelCoverImage::class.java, "cover_art")
+        )
+        .build()
+
+    val retrofit = Retrofit.Builder()
+        .baseUrl(MangadexService.BASE_URL)
+        .client(httpClient)
+        .addConverterFactory(MoshiConverterFactory.create(moshi))
+        .build()
+    return retrofit.create(MangadexService::class.java)
+}
+
 fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
     val httpLoggingInterceptor = HttpLoggingInterceptor()
     if (BuildConfig.DEBUG)
@@ -168,5 +210,4 @@ fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
         httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.NONE
 
     return httpLoggingInterceptor
-
 }

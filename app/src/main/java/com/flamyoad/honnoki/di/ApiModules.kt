@@ -14,6 +14,7 @@ val apiModules = module {
     factory { MangaTownApi(get(), get()) }
     factory { ReadMangaApi(get(), get()) }
     factory { DM5Api(get(), get()) }
+    factory { MangadexApi(get()) }
 
     // Parsers
     single { MangakalotParser() }

@@ -13,4 +13,5 @@ val sourceModules = module {
     factory<BaseSource>(named(KoinConstants.MANGATOWN)) { MangaTownSource(get(), androidContext(), get()) }
     factory<BaseSource>(named(KoinConstants.READMANGA)) { ReadMangaSource(get(), androidContext(), get()) }
     factory<BaseSource>(named(KoinConstants.DM5)) { DM5Source(get(), androidContext(), get()) }
+    factory<BaseSource>(named(KoinConstants.MANGADEX)) { MangadexSource(get(), androidContext(), get()) }
 }

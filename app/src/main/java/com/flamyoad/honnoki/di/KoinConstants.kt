@@ -5,6 +5,7 @@ object KoinConstants {
     const val SENMANGA = "SENMANGA"
     const val MANGATOWN = "MANGATOWN"
     const val READMANGA = "READMANGA"
+    const val MANGADEX = "MANGADEX"
     const val DM5 = "DM5"
 
     const val APP_SCOPE = "app_scope"

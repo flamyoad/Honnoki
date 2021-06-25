@@ -1,6 +1,5 @@
 package com.flamyoad.honnoki.ui.home.mangalist
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -30,7 +29,7 @@ class SimpleMangaListFragment : Fragment() {
 
     private val parentViewModel: HomeViewModel by sharedViewModel()
 
-    private val viewModel: HomeListViewModel by viewModel {
+    private val viewModel: MangaListViewModel by viewModel {
         val sourceName = arguments?.getString(SOURCE) ?: ""
         parametersOf(sourceName)
     }

@@ -2,7 +2,7 @@ package com.flamyoad.honnoki.di
 
 import androidx.paging.ExperimentalPagingApi
 import com.flamyoad.honnoki.dialog.*
-import com.flamyoad.honnoki.ui.home.mangalist.HomeListViewModel
+import com.flamyoad.honnoki.ui.home.mangalist.MangaListViewModel
 import com.flamyoad.honnoki.ui.home.HomeViewModel
 import com.flamyoad.honnoki.ui.home.dialog.GenrePickerViewModel
 import com.flamyoad.honnoki.ui.library.LibraryViewModel
@@ -24,7 +24,7 @@ import org.koin.dsl.module
 val viewModelModules = module {
     viewModel { HomeViewModel(get()) }
 
-    viewModel { (source: String) -> HomeListViewModel(get(), get(named(source))) }
+    viewModel { (source: String) -> MangaListViewModel(get(), get(named(source))) }
 
     viewModel { LibraryViewModel() }
 
