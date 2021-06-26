@@ -1,15 +1,21 @@
 package com.flamyoad.honnoki.network
 
+import com.flamyoad.honnoki.api.dto.mangadex.MDChapter
 import com.flamyoad.honnoki.api.dto.mangadex.MDCoverImage
 import com.flamyoad.honnoki.api.dto.mangadex.MDResult
 import com.flamyoad.honnoki.api.dto.mangadex.MDResultList
 import retrofit2.http.GET
+import retrofit2.http.Headers
 import retrofit2.http.Path
 import retrofit2.http.Query
+
+private const val CACHE_CONTROL_MAX_AGE_60 = "Cache-Control: max-age=60"
+private const val CACHE_CONTROL_NO_CACHE = "Cache-Control: no-cache"
 
 interface MangadexService {
     companion object {
         const val BASE_URL = "https://api.mangadex.org/"
+        const val CACHE_SIZE = (5 * 1024 * 1024).toLong()
     }
 
     /**
@@ -39,12 +45,28 @@ interface MangadexService {
     ): MDResultList
 
     @GET("manga/{mangaId}")
+    @Headers(CACHE_CONTROL_MAX_AGE_60)
     suspend fun getMangaDetails(
         @Path("mangaId") mangaId: String,
         @Query("includes[]") includes1: String = "author",
         @Query("includes[]") includes2: String = "artist",
         @Query("includes[]") includes3: String = "cover_art"
     ): MDResult
+
+    @GET("chapter")
+    suspend fun getChapterList(
+        @Query("manga") mangaId: String,
+        @Query("limit") limit: Int,
+        @Query("offset") offset: Int
+    ): MDChapter
+
+    /**
+     * Retrieves the base url to an assigned MangaDex@Home server for your client and chapter
+     */
+    @GET("at-home/server/{chapterId}")
+    suspend fun getServerUrl(
+        @Path("chapterId") chapterId: String
+    ): String
 
     /**
      * Get cover of multiple manga in a single API call.

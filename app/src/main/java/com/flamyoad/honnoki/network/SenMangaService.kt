@@ -9,7 +9,7 @@ private const val CACHE_CONTROL_NO_CACHE = "Cache-Control: no-cache"
 interface SenMangaService {
     companion object {
         const val BASE_URL = "https://raw.senmanga.com/"
-        const val CACHE_SIZE = (2 * 1024 * 1024).toLong()
+        const val CACHE_SIZE = (5 * 1024 * 1024).toLong()
     }
 
     @GET("directory/last_update")

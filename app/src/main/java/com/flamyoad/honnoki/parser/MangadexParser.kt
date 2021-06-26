@@ -1,15 +1,15 @@
 package com.flamyoad.honnoki.parser
 
+import com.flamyoad.honnoki.api.dto.mangadex.MDChapter
 import com.flamyoad.honnoki.api.dto.mangadex.MDResult
 import com.flamyoad.honnoki.api.dto.mangadex.MDResultList
 import com.flamyoad.honnoki.api.dto.mangadex.relationships.RelArtist
 import com.flamyoad.honnoki.api.dto.mangadex.relationships.RelAuthor
 import com.flamyoad.honnoki.api.dto.mangadex.relationships.RelCoverImage
 import com.flamyoad.honnoki.data.Source
-import com.flamyoad.honnoki.data.entities.Manga
-import com.flamyoad.honnoki.data.entities.MangaOverview
-import com.flamyoad.honnoki.data.entities.MangaType
+import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.parser.exception.NullMangaIdException
+import com.flamyoad.honnoki.parser.model.MangadexQualityMode
 import com.flamyoad.honnoki.utils.extensions.capitalizeWithLocale
 import java.time.LocalDateTime
 
@@ -54,14 +54,6 @@ class MangadexParser {
         val coverImageAttr =
             json.relationships?.firstOrNull { rel -> rel.type == "cover_art" } as? RelCoverImage
 
-        val artistAttr = json.relationships
-            ?.filter { rel -> rel.type == "artist" }
-            ?.map { it as? RelArtist }
-
-        val authorAttr = json.relationships
-            ?.filter { rel -> rel.type == "author" }
-            ?.map { it as? RelAuthor }
-
         val coverImage = constructCoverImageUrl(
             mangaId,
             coverImageAttr?.getFileName() ?: "",
@@ -91,6 +83,81 @@ class MangadexParser {
         )
     }
 
+    fun parseForAuthors(json: MDResult): List<Author> {
+        if (json.data?.id == null) throw NullMangaIdException()
+
+        val artistAttr = json.relationships
+            ?.filter { rel -> rel.type == "artist" }
+            ?.map { it as? RelArtist } ?: emptyList()
+
+        val authorAttr = json.relationships
+            ?.filter { rel -> rel.type == "author" }
+            ?.map { it as? RelAuthor } ?: emptyList()
+
+        val artists = artistAttr.map {
+            Author(
+                name = it?.attributes?.name ?: "",
+                link = it?.id ?: ""
+            )
+        }
+
+        val authors = authorAttr.map {
+            Author(
+                name = it?.attributes?.name ?: "",
+                link = it?.id ?: ""
+            )
+        }
+
+        return (artists + authors)
+    }
+
+    fun parseForGenres(json: MDResult): List<Genre> {
+        if (json.data?.id == null) throw NullMangaIdException()
+
+        val attributes = json.data.attributes
+
+        val genresData = attributes?.tags
+            ?.filter { it.attributes?.group == "genre" }
+            ?.map { it }
+            ?: emptyList()
+
+        return genresData.map {
+            Genre(
+                name = it.attributes?.name?.en ?: "",
+                link = it.id ?: ""
+            )
+        }
+    }
+
+    fun parseForChapters(json: MDChapter, currentOffset: Int): List<Chapter> {
+        val chapterList = json.results.mapIndexed { index, it ->
+            val attr = it.data.attributes
+
+            // We don't use the `title` field from JSON since it could be empty.
+            // so just substitute it with "Vol. X Ch. X" string
+            val title = StringBuilder()
+                .append("Vol. ")
+                .append(attr.volume ?: "")
+                .append(" Ch. ")
+                .append(attr.chapter ?: "")
+                .toString()
+
+            Chapter(
+                title = title,
+                number = (index + currentOffset).toDouble(),
+                link = it.data.id,
+                date = attr.createdAt ?: "",
+                hasBeenRead = false,
+                hasBeenDownloaded = false
+            )
+        }
+        return chapterList
+    }
+
+    fun parseForImageList(json: MDChapter): List<Page> {
+        return emptyList()
+    }
+
     private fun constructCoverImageUrl(
         mangaId: String,
         fileName: String,
@@ -101,6 +168,18 @@ class MangadexParser {
             CoverImageQuality.WIDTH_512PX -> "https://uploads.mangadex.org/covers/${mangaId}/${fileName}.512.jpg"
             CoverImageQuality.WIDTH_256PX -> "https://uploads.mangadex.org/covers/${mangaId}/${fileName}.256.jpg"
         }
+    }
+
+    /**
+     * https://api.mangadex.org/docs.html#section/Reading-a-chapter-using-the-API/Retrieving-pages-from-the-MangaDex@Home-network
+     */
+    private fun constructPageUrl(
+        serverUrl: String,
+        qualityMode: MangadexQualityMode,
+        chapterHash: String,
+        fileName: String
+    ): String {
+        return "$serverUrl/${qualityMode.value}/$chapterHash/$fileName"
     }
 
     private enum class CoverImageQuality {

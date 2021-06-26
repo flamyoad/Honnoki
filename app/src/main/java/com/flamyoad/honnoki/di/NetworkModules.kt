@@ -174,14 +174,18 @@ fun provideMangadexHttpClient(
     context: Context,
     loggingInterceptor: HttpLoggingInterceptor
 ): OkHttpClient {
+    val myCache = (Cache(context.cacheDir, MangadexService.CACHE_SIZE))
+
     val myDispatcher = Dispatcher().apply {
         maxRequestsPerHost = 2
     }
 
     return OkHttpClient.Builder()
-        .addInterceptor(loggingInterceptor)
+        .cache(myCache)
         .dispatcher(myDispatcher)
+        .addInterceptor(loggingInterceptor)
         .addNetworkInterceptor(MobileUserAgentInterceptor(context))
+        .addNetworkInterceptor(CacheInterceptor(10, TimeUnit.SECONDS))
         .build()
 }
 
@@ -191,6 +195,9 @@ fun provideMangadexService(httpClient: OkHttpClient): MangadexService {
             .withSubtype(RelAuthor::class.java, "author")
             .withSubtype(RelArtist::class.java, "artist")
             .withSubtype(RelCoverImage::class.java, "cover_art")
+            .withSubtype(RelScanlationGroup::class.java, "scanlation_group")
+            .withSubtype(RelManga::class.java, "manga")
+            .withSubtype(RelUser::class.java, "user")
         )
         .build()
 
@@ -205,7 +212,7 @@ fun provideMangadexService(httpClient: OkHttpClient): MangadexService {
 fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
     val httpLoggingInterceptor = HttpLoggingInterceptor()
     if (BuildConfig.DEBUG)
-        httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.HEADERS
+        httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BASIC
     else
         httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.NONE
 
