@@ -44,7 +44,6 @@ class HomeFragment : BaseFragment(), KoinComponent, SourceSwitcherDialog.Listene
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initUi()
         observeUi()
     }
@@ -83,6 +82,9 @@ class HomeFragment : BaseFragment(), KoinComponent, SourceSwitcherDialog.Listene
 
         lifecycleScope.launchWhenResumed {
             viewModel.chosenSource.collectLatest { source ->
+                // We have to detach it before notifyDataSetChange() gets called in adapter
+                // Otherwise, the old mediator will react based on the new items in adapter
+                // and may cause OutOfBounds exception
                 tabLayoutMediator?.detach()
 
                 val sourceImpl: BaseSource = getKoin().get(named(source.name))
@@ -103,8 +105,6 @@ class HomeFragment : BaseFragment(), KoinComponent, SourceSwitcherDialog.Listene
 
     override fun onSourceSwitch(source: Source) {
         viewModel.switchSource(source)
-
-        // Dismiss the dialog
         childFragmentManager.findFragmentByTag(SourceSwitcherDialog.TAG).let {
             if (it is DialogFragment) {
                 it.dismiss()

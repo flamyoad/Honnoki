@@ -12,6 +12,7 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.flamyoad.honnoki.BaseFragment
 
 import com.flamyoad.honnoki.R
@@ -108,14 +109,24 @@ class SimpleSearchFragment : BaseFragment() {
             layoutManager = linearLayoutManager
         }
 
+        // Scroll to top automatically when new result arrives.
+        searchResultAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                super.onItemRangeInserted(positionStart, itemCount)
+                // (itemCount != 0)     makes sure no calls are made on empty list
+                // (positionStart != 0) makes sure scrollToPosition(0) is only called on first load,
+                //                      since PagingAdapter frequently submits new list to RV
+                if (itemCount != 0 && positionStart == 0) {
+                    linearLayoutManager.scrollToPosition(0)
+                }
+            }
+        })
+
         searchResultAdapter.addLoadStateListener {
             when (it.mediator?.refresh) {
-                is LoadState.Error -> binding.listSearchResultView.viewState =
-                    MultiStateView.ViewState.ERROR
-                is LoadState.Loading -> binding.listSearchResultView.viewState =
-                    MultiStateView.ViewState.LOADING
-                is LoadState.NotLoading -> binding.listSearchResultView.viewState =
-                    MultiStateView.ViewState.CONTENT
+                is LoadState.Error -> binding.listSearchResultView.viewState = MultiStateView.ViewState.ERROR
+                is LoadState.Loading -> binding.listSearchResultView.viewState = MultiStateView.ViewState.LOADING
+                is LoadState.NotLoading -> binding.listSearchResultView.viewState = MultiStateView.ViewState.CONTENT
             }
             when (it.mediator?.append) {
                 is LoadState.NotLoading -> concatAdapter.addAdapter(searchResultEndOfListAdapter)
