@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.flamyoad.honnoki.R
-import com.flamyoad.honnoki.adapter.SourceSwitcherAdapter
+import com.flamyoad.honnoki.dialog.adapter.SourceSwitcherAdapter
 import com.flamyoad.honnoki.databinding.DialogSourceSwitcherBinding
 import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy

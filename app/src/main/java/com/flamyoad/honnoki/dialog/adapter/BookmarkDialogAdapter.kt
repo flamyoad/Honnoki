@@ -1,8 +1,9 @@
-package com.flamyoad.honnoki.adapter
+package com.flamyoad.honnoki.dialog.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
+import com.flamyoad.honnoki.adapter.BaseListAdapter
 import com.flamyoad.honnoki.databinding.DialogBookmarkGroupListItemBinding
 import com.flamyoad.honnoki.data.entities.BookmarkGroup
 

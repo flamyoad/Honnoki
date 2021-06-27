@@ -39,6 +39,7 @@ interface MangadexService {
     suspend fun getTopManga(
         @Query("offset") offset: Int,
         @Query("limit") limit: Int,
+        @Query("includes[]") includes3: String = "cover_art"
     ): MDResultList
 
     @GET("manga/{mangaId}")
