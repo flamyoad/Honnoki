@@ -1,17 +1,15 @@
-# Honnoki
-ほんの木
+# Honnoki ほんの木
 
 WIP Manga Reader
 
 Heavily uses flavour of the year libs like [Paging 3](https://developer.android.com/topic/libraries/architecture/paging/v3-overview), [Flow](https://developer.android.com/kotlin/flow),  [ConcatAdapter](https://developer.android.com/reference/androidx/recyclerview/widget/ConcatAdapter), and [Jetpack DataStore](https://developer.android.com/topic/libraries/architecture/datastore) on top of your usual MVVM+Retrofit+Koin architecture
 
-| Source     | Homepage           | Summary & Chapter List       | Reader             | Search with keyword | Search with keyword & genre |
-| ---------- | ------------------ | ---------------------------- | -------------------| ------------------- | --------------------------- |
-| MangaNelo  | :white_check_mark: | :white_check_mark:	         | :white_check_mark: | :white_check_mark:  | :white_check_mark:
-| MangaDex   | :white_check_mark: | :white_check_mark:           | :white_check_mark: | :white_check_mark:  | Not supported at the time of writing
-| ReadMng    | :white_check_mark: | :white_check_mark:           | :white_check_mark: | :x:	                | :x:	
-| DM5.cn     | :white_check_mark: | :white_check_mark:           | :white_check_mark: | :white_check_mark:  | Not supported	
-| SenManga   | :white_check_mark: | :white_check_mark:           | :white_check_mark: | :white_check_mark:  | :x:
+#### Sources supported
+* MangaNelo
+* MangaDex
+* ReadMng
+* DM5.cn
+* SenManga
 
 | Screen 1                                                                        | Screen 2         | 
 | :-------------------------------------------------------------------------------------------------------------------: |:-------------:|
