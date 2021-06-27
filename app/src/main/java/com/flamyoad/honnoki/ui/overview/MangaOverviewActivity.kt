@@ -114,15 +114,14 @@ class MangaOverviewActivity : AppCompatActivity() {
                         State.EXPANDED -> {
                             toolbarContent.alpha = 0f
                             showToolbarArea(ToolbarState.EXPANDED)
-                            swipeRefreshLayout.isEnabled = false
+                            swipeRefreshLayout.isEnabled = true
                         }
                         State.COLLAPSED -> {
                             toolbarContent.alpha = 1f
                             showToolbarArea(ToolbarState.COLLAPSED)
-                            swipeRefreshLayout.isEnabled = true
+                            swipeRefreshLayout.isEnabled = false
                         }
-                        State.IDLE -> {
-                        }
+                        State.IDLE -> { }
                     }
                 }
             }
@@ -202,9 +201,12 @@ class MangaOverviewActivity : AppCompatActivity() {
         val authorText = authors.joinToString { it.name }
             .toSpannable()
 
+        var start = 0
+        var end = 0
+
         for (author in authors) {
-            val start = authorText.indexOf(author.name)
-            val end = start + (author.name.length)
+            start = authorText.indexOf(author.name, start)
+            end = start + (author.name.length)
             authorText[start..end] = object : ClickableSpan() {
                 override fun onClick(widget: View) {
                     lookupMangaByAuthor(author)
@@ -215,6 +217,9 @@ class MangaOverviewActivity : AppCompatActivity() {
                     ds.color = Color.WHITE
                 }
             }
+            // Fix issue when two author share the same value
+            // i.e. Azuki, Azuki
+            start = end
         }
 
         with(binding.txtAuthor) {
