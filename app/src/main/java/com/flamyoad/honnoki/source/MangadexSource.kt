@@ -50,6 +50,10 @@ class MangadexSource(db: AppDatabase, context: Context, private val api: Mangade
         return api.searchForChapterList(urlPath)
     }
 
+    override suspend fun getImages(urlPath: String): State<List<Page>> {
+        return api.searchForImageList(urlPath)
+    }
+
     companion object {
         const val PAGINATION_SIZE = 50
     }

@@ -131,11 +131,12 @@ class MangadexApi(
      * [offset]: Pass in "number" field in the Chapter object. It contains the offset
      *           of the item when fetching chapter list
      */
-    suspend fun searchForImageList(mangaId: String, offset: Int): State<List<Page>> {
-        val json = service.getChapterList(mangaId, limit = 1, offset = offset)
+    suspend fun searchForImageList(chapterId: String): State<List<Page>> {
+        val chapterJson = service.getPages(chapterId)
+        val baseUrlJson = service.getBaseUrl(chapterJson.data.id)
 
         return withContext(Dispatchers.Default) {
-            val imageList = parser.parseForImageList(json)
+            val imageList = parser.parseForImageList(chapterJson, baseUrlJson)
             return@withContext State.Success(imageList)
         }
     }

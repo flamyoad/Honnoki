@@ -1,9 +1,6 @@
 package com.flamyoad.honnoki.network
 
-import com.flamyoad.honnoki.api.dto.mangadex.MDChapter
-import com.flamyoad.honnoki.api.dto.mangadex.MDCoverImage
-import com.flamyoad.honnoki.api.dto.mangadex.MDResult
-import com.flamyoad.honnoki.api.dto.mangadex.MDResultList
+import com.flamyoad.honnoki.api.dto.mangadex.*
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.Path
@@ -60,13 +57,18 @@ interface MangadexService {
         @Query("offset") offset: Int
     ): MDChapter
 
+    @GET("chapter/{id}")
+    suspend fun getPages(
+        @Path("id") chapterId: String
+    ): MDChapterResult
+
     /**
      * Retrieves the base url to an assigned MangaDex@Home server for your client and chapter
      */
     @GET("at-home/server/{chapterId}")
-    suspend fun getServerUrl(
+    suspend fun getBaseUrl(
         @Path("chapterId") chapterId: String
-    ): String
+    ): MDBaseUrl
 
     /**
      * Get cover of multiple manga in a single API call.

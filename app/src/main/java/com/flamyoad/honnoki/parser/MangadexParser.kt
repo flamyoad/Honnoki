@@ -1,8 +1,6 @@
 package com.flamyoad.honnoki.parser
 
-import com.flamyoad.honnoki.api.dto.mangadex.MDChapter
-import com.flamyoad.honnoki.api.dto.mangadex.MDResult
-import com.flamyoad.honnoki.api.dto.mangadex.MDResultList
+import com.flamyoad.honnoki.api.dto.mangadex.*
 import com.flamyoad.honnoki.api.dto.mangadex.relationships.RelArtist
 import com.flamyoad.honnoki.api.dto.mangadex.relationships.RelAuthor
 import com.flamyoad.honnoki.api.dto.mangadex.relationships.RelCoverImage
@@ -154,8 +152,17 @@ class MangadexParser {
         return chapterList
     }
 
-    fun parseForImageList(json: MDChapter): List<Page> {
-        return emptyList()
+    fun parseForImageList(chapterJson: MDChapterResult, baseUrlJson: MDBaseUrl): List<Page> {
+        val baseUrl = baseUrlJson.baseUrl
+        val chapter = chapterJson.data
+        val chapterHash = chapter.attributes.hash ?: ""
+
+        return chapter.attributes.data.mapIndexed { index, fileName ->
+            Page(
+                number = index + 1,
+                link = constructPageUrl(baseUrl, MangadexQualityMode.DATA, chapterHash, fileName)
+            )
+        }
     }
 
     private fun constructCoverImageUrl(
@@ -174,12 +181,12 @@ class MangadexParser {
      * https://api.mangadex.org/docs.html#section/Reading-a-chapter-using-the-API/Retrieving-pages-from-the-MangaDex@Home-network
      */
     private fun constructPageUrl(
-        serverUrl: String,
+        baseUrl: String,
         qualityMode: MangadexQualityMode,
         chapterHash: String,
         fileName: String
     ): String {
-        return "$serverUrl/${qualityMode.value}/$chapterHash/$fileName"
+        return "$baseUrl/${qualityMode.value}/$chapterHash/$fileName"
     }
 
     private enum class CoverImageQuality {
