@@ -17,6 +17,8 @@ import kotlinx.coroutines.flow.*
 class MangaOverviewViewModel(private val db: AppDatabase, private val baseSource: BaseSource) :
     ViewModel() {
 
+    private var loadingJob: Job? = null
+
     private val mangaOverviewId = MutableStateFlow(-1L)
 
     val mangaOverview = mangaOverviewId
@@ -64,7 +66,11 @@ class MangaOverviewViewModel(private val db: AppDatabase, private val baseSource
         .asLiveData()
 
     fun loadMangaOverview(url: String) {
-        viewModelScope.launch(Dispatchers.IO) {
+        if (loadingJob?.isActive == true) {
+            return
+        }
+
+        loadingJob = viewModelScope.launch(Dispatchers.IO) {
             // Load manga overview from database
             val overviewFromDb = db.mangaOverviewDao().getByLinkBlocking(url)
             if (overviewFromDb != null) {

@@ -30,7 +30,7 @@ class SenMangaApi(
     }
 
     override suspend fun searchForTrendingManga(index: Int): List<Manga> {
-        val response = service.getLatestManga(index)
+        val response = service.getTrendingManga(index)
 
         return withContext(Dispatchers.Default) {
             val url = response.string()

@@ -162,6 +162,11 @@ class MangaOverviewActivity : AppCompatActivity() {
         binding.btnReadExpanded.setOnClickListener {
             startReading()
         }
+
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.loadMangaOverview(intent.getStringExtra(MANGA_URL) ?: "")
+            binding.swipeRefreshLayout.isRefreshing = false
+        }
     }
 
     private fun initViewPager() {

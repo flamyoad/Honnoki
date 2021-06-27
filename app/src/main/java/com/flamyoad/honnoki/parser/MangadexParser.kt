@@ -92,19 +92,23 @@ class MangadexParser {
             ?.filter { rel -> rel.type == "author" }
             ?.map { it as? RelAuthor } ?: emptyList()
 
-        val artists = artistAttr.map {
-            Author(
-                name = it?.attributes?.name ?: "",
-                link = it?.id ?: ""
-            )
-        }
+        val artists = artistAttr
+            .filter { it?.attributes?.name?.isNotBlank() == true }
+            .map {
+                Author(
+                    name = it?.attributes?.name ?: "",
+                    link = it?.id ?: ""
+                )
+            }
 
-        val authors = authorAttr.map {
-            Author(
-                name = it?.attributes?.name ?: "",
-                link = it?.id ?: ""
-            )
-        }
+        val authors = authorAttr
+            .filter { it?.attributes?.name?.isNotBlank() == true } // Sometimes MangaDex returns empty value. Eg. https://mangadex.org/title/388f639e-7cd1-4493-8242-ae480647479a
+            .map {
+                Author(
+                    name = it?.attributes?.name ?: "",
+                    link = it?.id ?: ""
+                )
+            }
 
         return (artists + authors)
     }

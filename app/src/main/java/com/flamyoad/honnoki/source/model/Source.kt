@@ -13,11 +13,11 @@ enum class Source(
     val logo: Int,
     val languageLogo: Int,
     val isEnabled: Boolean = true
-): Parcelable {
+) : Parcelable {
     MANGAKALOT("Mangakalot", R.drawable.mangakalot_logo, R.drawable.uk_logo),
     MANGATOWN("MangaTown", R.drawable.mangatown_logo, R.drawable.uk_logo, isEnabled = false),
     READMANGA("ReadManga", R.drawable.readmanga_logo, R.drawable.uk_logo),
-    MANGADEX("MangaDex", R.drawable.readmanga_logo, R.drawable.uk_logo),
+    MANGADEX("MangaDex", R.drawable.mangadex_logo, R.drawable.uk_logo),
     DM5("DM5", R.drawable.dm5_logo, R.drawable.cn_logo),
     SENMANGA("SenManga", R.drawable.senmanga_logo, R.drawable.jp_logo);
 
