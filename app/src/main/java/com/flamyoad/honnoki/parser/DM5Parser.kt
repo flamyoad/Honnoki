@@ -39,6 +39,7 @@ class DM5Parser(
         val document = Jsoup.parse(html)
         val mangaDivs =
             document.select("body > section.box.container.pb40.overflow-Show.js_top_container > div > ul:nth-child(2) > li")
+                ?: return emptyList()
 
         val mangaList = mutableListOf<Manga>()
         for (div in mangaDivs) {
@@ -49,7 +50,7 @@ class DM5Parser(
                 .removePrefix("/")
 
             val absoluteLink = DM5Service.BASE_URL + relativeLink
-            
+
             val coverImage = div.selectFirst("div.mh-tip-wrap > div > a > p")
                 .attrNonNull("style")
                 .removePrefix("background-image: url(")
@@ -79,7 +80,7 @@ class DM5Parser(
 
         val document = Jsoup.parse(html)
 
-        val div = document.selectFirst(".banner_detail_form")
+        val div = document.selectFirst(".banner_detail_form") ?: return MangaOverview.empty()
 
         val summary = div.selectFirst(".content")
             .ownTextNonNull()
@@ -162,9 +163,13 @@ class DM5Parser(
         // The first  `ul` contains the list of chapters visible (normally 20~30)
         // The second `ul` contains the chapters that are expandable/collapsible (style="display:none")
         // Hence, we flatmap both of them into same list
-        val chapterList = document
-            .select("#chapterlistload > ul")
-            .flatMap { it.select("li") }
+        val chapterList = try {
+            document
+                .select("#chapterlistload > ul")
+                .flatMap { it.select("li") }
+        } catch (e: NullPointerException) {
+            return emptyList()
+        }
 
         return chapterList.mapIndexed { index, div ->
             val chapterLink = div.selectFirst("a")

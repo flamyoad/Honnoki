@@ -11,6 +11,7 @@ class ReadMangaParser {
 
         val document = Jsoup.parse(html)
         val mangaDivs = document.select(".style-thumbnail > .clearfix > li")
+            ?: return emptyList()
 
         val mangaList = mutableListOf<Manga>()
         for (div in mangaDivs) {
@@ -38,6 +39,7 @@ class ReadMangaParser {
 
         val document = Jsoup.parse(html)
         val mangaDivs = document.select(".style-thumbnail > .clearfix > li")
+            ?: return emptyList()
 
         val mangaList = mutableListOf<Manga>()
         for (div in mangaDivs) {
@@ -67,7 +69,7 @@ class ReadMangaParser {
 
         val document = Jsoup.parse(html)
 
-        val contentDiv = document.selectFirst(".panel-primary")
+        val contentDiv = document.selectFirst(".panel-primary") ?: return MangaOverview.empty()
 
         val mainTitle = contentDiv.selectFirst(".panel-heading > h1").textNonNull()
 
@@ -100,15 +102,11 @@ class ReadMangaParser {
         }
 
         val document = Jsoup.parse(html)
-        val genres = document.selectFirst("dl > dd:nth-child(6)")
+        val genreList = document.selectFirst("dl > dd:nth-child(6)") ?: return emptyList()
+
+        return genreList
             .select("a")
-            .map {
-                return@map Genre(
-                    name = it.textNonNull(),
-                    link = it.attrNonNull("href")
-                )
-            }
-        return genres
+            .mapNotNull { Genre(name = it.textNonNull(), link = it.attrNonNull("href")) }
     }
 
     fun parseForAuthors(html: String?): List<Author> {
@@ -118,7 +116,7 @@ class ReadMangaParser {
 
         val document = Jsoup.parse(html)
 
-        val authorDiv = document.selectFirst(".director")
+        val authorDiv = document.selectFirst(".director") ?: return emptyList()
         val authorLink = authorDiv.selectFirst("a").attrNonNull("href")
         val authorName = authorDiv.selectFirst("ul > li:nth-child(1)").text()
 
@@ -134,7 +132,8 @@ class ReadMangaParser {
 
         val document = Jsoup.parse(html)
 
-        val chapterList = document.select(".chp_lst > li")
+        val chapterList = document.select(".chp_lst > li") ?: return emptyList()
+
         return chapterList.mapIndexed { index, it ->
             val link = it.selectFirst("a").attrNonNull("href") + "/all-pages"
             Chapter(
@@ -155,12 +154,11 @@ class ReadMangaParser {
 
         val document = Jsoup.parse(html)
 
-        val pages = document
-            .select(".content-list > img")
-            .mapIndexed { index, element ->
-                Page(number = index + 1, link = element.attrNonNull("src"))
-            }
+        val imageList = document.select(".content-list > img") ?: return emptyList()
 
+        val pages = imageList.mapIndexed { index, element ->
+            Page(number = index + 1, link = element.attrNonNull("src"))
+        }
         return pages
     }
 
@@ -171,7 +169,7 @@ class ReadMangaParser {
 
         val document = Jsoup.parse(html)
 
-        val searchResult = document.select(".box")
+        val searchResult = document.select(".box") ?: return emptyList()
         return searchResult.map {
             SearchResult(
                 coverImage = it.selectFirst(".left > a > img").attrNonNull("src"),

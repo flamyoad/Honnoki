@@ -44,7 +44,7 @@ class SenMangaParser(
         if (html == null) return emptyList()
 
         val document = Jsoup.parse(html)
-        val mangaDivs = document.select("div.item")
+        val mangaDivs = document.select("div.item") ?: return emptyList()
 
         val mangaList = mutableListOf<Manga>()
         for (div in mangaDivs) {

@@ -3,6 +3,7 @@ package com.flamyoad.honnoki.parser
 import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.data.entities.*
 import org.jsoup.Jsoup
+import java.lang.NullPointerException
 import java.time.LocalDateTime
 
 class MangakalotParser {
@@ -11,13 +12,13 @@ class MangakalotParser {
         if (html.isNullOrBlank()) return emptyList()
 
         val document = Jsoup.parse(html)
-        val mangaDivs = document.select(".content-genres-item")
+        val mangaDivs = document.select(".content-genres-item") ?: return emptyList()
 
         val mangaList = mutableListOf<Manga>()
         for (div in mangaDivs) {
             val nameDiv = div.selectFirst(".genres-item-name")
-            val title = nameDiv.text()
-            val link = nameDiv.attr("href")
+            val title = nameDiv.textNonNull()
+            val link = nameDiv.attrNonNull("href")
 
             val coverImage = div.selectFirst(".genres-item-img > img").attrNonNull("src")
             val latestChapter = div.selectFirst(".genres-item-chap").textNonNull()
@@ -43,7 +44,7 @@ class MangakalotParser {
         if (html.isNullOrBlank()) return emptyList()
 
         val document = Jsoup.parse(html)
-        val mangaDivs = document.select(".content-genres-item")
+        val mangaDivs = document.select(".content-genres-item") ?: return emptyList()
 
         val mangaList = mutableListOf<Manga>()
         for (div in mangaDivs) {
@@ -76,7 +77,7 @@ class MangakalotParser {
 
         val document = Jsoup.parse(html)
 
-        val mangaDivs = document.select("#owl-slider > .item")
+        val mangaDivs = document.select("#owl-slider > .item") ?: return emptyList()
 
         val mangaList = mangaDivs.map {
             val titleDiv = it.selectFirst(".slide-caption > h3 > a")
@@ -106,7 +107,7 @@ class MangakalotParser {
 
         val document = Jsoup.parse(html)
 
-        val mangaDivs = document.select(".content-genres-item")
+        val mangaDivs = document.select(".content-genres-item") ?: return emptyList()
 
         val mangaList = mutableListOf<Manga>()
         for (div in mangaDivs) {
@@ -182,15 +183,19 @@ class MangakalotParser {
 
         val document = Jsoup.parse(html)
 
-        val authors = document.selectFirst("i.info-author")
-            .ancestorNonNull(2)
-            .select("td.table-value > a")
-            .map {
-                return@map Author(
-                    name = it.textNonNull(),
-                    link = it.attrNonNull("href")
-                )
-            }
+        val authors = try {
+            document.selectFirst("i.info-author")
+                .ancestorNonNull(2)
+                .select("td.table-value > a")
+                .map {
+                    return@map Author(
+                        name = it.textNonNull(),
+                        link = it.attrNonNull("href")
+                    )
+                }
+        } catch (e: NullPointerException) {
+            emptyList()
+        }
 
         return authors
     }
@@ -201,15 +206,19 @@ class MangakalotParser {
         }
 
         val document = Jsoup.parse(html)
-        val genres = document.selectFirst("i.info-genres")
-            .ancestorNonNull(2)
-            .select("td.table-value > a")
-            .map {
-                return@map Genre(
-                    name = it.textNonNull(),
-                    link = it.attrNonNull("href")
-                )
-            }
+        val genres = try {
+            document.selectFirst("i.info-genres")
+                .ancestorNonNull(2)
+                .select("td.table-value > a")
+                .map {
+                    return@map Genre(
+                        name = it.textNonNull(),
+                        link = it.attrNonNull("href")
+                    )
+                }
+        } catch (e: NullPointerException) {
+            emptyList()
+        }
 
         return genres
     }
@@ -221,7 +230,8 @@ class MangakalotParser {
 
         val document = Jsoup.parse(html)
 
-        val chapterList = document.select(".row-content-chapter > li")
+        val chapterList = document.select(".row-content-chapter > li") ?: return emptyList()
+
         return chapterList.mapIndexed { index, it ->
             val chapterLink = it.selectFirst(".chapter-name")
             Chapter(
@@ -241,7 +251,7 @@ class MangakalotParser {
         }
 
         val document = Jsoup.parse(html)
-        val imageList = document.select("div.container-chapter-reader > img")
+        val imageList = document.select("div.container-chapter-reader > img") ?: return emptyList()
 
         return imageList.mapIndexed { index, element ->
             Page(
@@ -273,7 +283,7 @@ class MangakalotParser {
             return emptyList()
         }
 
-        val searchResult = document.select(".search-story-item")
+        val searchResult = document.select(".search-story-item") ?: return emptyList()
         return searchResult.map {
             SearchResult(
                 coverImage = it.selectFirst(".img-loading").attrNonNull("src"),
@@ -284,7 +294,7 @@ class MangakalotParser {
             )
         }
     }
-    
+
     fun parseForSearchByKeywordAndGenre(html: String?, index: Int): List<SearchResult> {
         if (html.isNullOrBlank()) {
             return emptyList()
@@ -303,7 +313,7 @@ class MangakalotParser {
             return emptyList()
         }
 
-        val searchResult = document.select(".content-genres-item")
+        val searchResult = document.select(".content-genres-item") ?: return emptyList()
         return searchResult.map {
             SearchResult(
                 coverImage = it.selectFirst(".img-loading").attrNonNull("src"),
