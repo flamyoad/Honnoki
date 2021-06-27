@@ -17,13 +17,6 @@ The reader screen in this app mimics the ones from [漫画人 by DM5.cn](https:/
 | :---------------------------------------------: |:-----------------------------------------:|
 |<img src="https://user-images.githubusercontent.com/35066207/123552300-20d15780-d7a8-11eb-92a6-b3ab1bcb0cf2.gif" width="240" height="500"/>|<img src="https://user-images.githubusercontent.com/35066207/123552303-22028480-d7a8-11eb-95f9-d9432a1620d2.gif" width="240" height="500"/>
 
-#### Sources supported
-* MangaNelo (EN)
-* MangaDex (EN + Others)
-* ReadMng (EN)
-* DM5.cn (CH)
-* SenManga (JP)
-
 ## Preview
 
 | Home(Light) | Overview  | Reader
