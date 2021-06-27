@@ -62,6 +62,16 @@ interface MangadexService {
         @Path("id") chapterId: String
     ): MDChapterResult
 
+    @GET("manga")
+    suspend fun searchByKeyword(
+        @Query("title") keyword: String,
+        @Query("offset") offset: Int,
+        @Query("limit") limit: Int,
+        @Query("includes[]") includes1: String = "author",
+        @Query("includes[]") includes2: String = "artist",
+        @Query("includes[]") includes3: String = "cover_art"
+    ): MDResultList
+
     /**
      * Retrieves the base url to an assigned MangaDex@Home server for your client and chapter
      */

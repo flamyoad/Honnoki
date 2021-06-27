@@ -51,6 +51,19 @@ class MangadexApi(
         }
     }
 
+    override suspend fun searchByKeyword(keyword: String, index: Int): List<SearchResult> {
+        val offset = index * PAGINATION_SIZE
+        val json = try {
+            service.searchByKeyword(keyword, offset, PAGINATION_SIZE)
+        } catch (e: IOException) {
+            return emptyList()
+        }
+
+        return withContext(Dispatchers.Default) {
+            parser.parseForSearchResult(json)
+        }
+    }
+
     suspend fun searchForMangaOverview(mangaId: String): State<MangaOverview> {
         val json = try {
             service.getMangaDetails(mangaId)

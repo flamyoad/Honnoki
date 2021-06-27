@@ -165,6 +165,37 @@ class MangadexParser {
         }
     }
 
+    fun parseForSearchResult(json: MDResultList): List<SearchResult> {
+        val searchResult = json.results?.map { it ->
+            val mangaId = it.data?.id ?: ""
+
+            /*  If it is null (cannot be casted to RelCoverImage),
+             *  means it does not have cover image... Lol ask MangaDex
+             */
+            val coverImage = it.relationships?.firstOrNull { rel -> rel.type == "cover_art" }
+            val coverImageUrl = if (coverImage is RelCoverImage) {
+                constructCoverImageUrl(
+                    mangaId,
+                    coverImage.getFileName(),
+                    CoverImageQuality.WIDTH_512PX
+                )
+            } else {
+                ""
+            }
+
+            val authors = parseForAuthors(it).joinToString(", ") { it.name }
+
+            SearchResult(
+                coverImage = coverImageUrl,
+                link = it.data?.id ?: "",
+                title = it.data?.attributes?.title?.en ?: "",
+                latestChapter = "",
+                author = authors,
+            )
+        }
+        return searchResult ?: emptyList()
+    }
+
     private fun constructCoverImageUrl(
         mangaId: String,
         fileName: String,

@@ -6,11 +6,13 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.flamyoad.honnoki.api.MangadexApi
+import com.flamyoad.honnoki.data.GenreConstants
 import com.flamyoad.honnoki.data.Source
 import com.flamyoad.honnoki.data.State
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.paging.MangaMediator
+import com.flamyoad.honnoki.paging.SimpleSearchResultMediator
 import kotlinx.coroutines.flow.Flow
 
 @ExperimentalPagingApi
@@ -31,7 +33,20 @@ class MangadexSource(db: AppDatabase, context: Context, private val api: Mangade
             config = PagingConfig(pageSize = PAGINATION_SIZE, enablePlaceholders = true),
             remoteMediator = MangaMediator(api, db, getSourceType(), MangaType.TRENDING),
             pagingSourceFactory = { db.mangaDao().getFrom(getSourceType(), MangaType.TRENDING) }
-        ).flow   
+        ).flow
+    }
+
+    override fun getSimpleSearch(query: String): Flow<PagingData<SearchResult>> {
+        return Pager(
+            config = PagingConfig(pageSize = PAGINATION_SIZE, enablePlaceholders = false),
+            remoteMediator = SimpleSearchResultMediator(
+                api,
+                db,
+                query,
+                GenreConstants.ALL
+            ),
+            pagingSourceFactory = { db.searchResultDao().getAll() }
+        ).flow
     }
 
     override suspend fun getMangaOverview(urlPath: String): State<MangaOverview> {
