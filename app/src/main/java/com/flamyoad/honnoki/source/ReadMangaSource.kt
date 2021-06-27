@@ -7,12 +7,13 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.flamyoad.honnoki.api.ReadMangaApi
 import com.flamyoad.honnoki.data.GenreConstants
-import com.flamyoad.honnoki.data.Source
+import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.data.State
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.paging.MangaMediator
 import com.flamyoad.honnoki.paging.SimpleSearchResultMediator
+import com.flamyoad.honnoki.source.model.TabType
 import kotlinx.coroutines.flow.Flow
 
 @ExperimentalPagingApi
@@ -21,6 +22,10 @@ class ReadMangaSource(db: AppDatabase, context: Context, private val api: ReadMa
 
     override fun getSourceType(): Source {
         return Source.READMANGA
+    }
+
+    override fun getAvailableTabs(): List<TabType> {
+        return listOf(TabType.MOST_RECENT, TabType.TRENDING)
     }
 
     override fun getRecentManga(): Flow<PagingData<Manga>> {

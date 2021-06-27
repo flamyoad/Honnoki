@@ -3,7 +3,7 @@ package com.flamyoad.honnoki.data.entities
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.flamyoad.honnoki.data.Source
+import com.flamyoad.honnoki.source.model.Source
 
 @Entity(
     tableName = "manga",

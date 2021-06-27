@@ -10,7 +10,7 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import com.flamyoad.honnoki.R
-import com.flamyoad.honnoki.data.Source
+import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.databinding.FragmentMangaSummaryBinding
 import com.flamyoad.honnoki.data.State
 import com.flamyoad.honnoki.data.entities.Genre

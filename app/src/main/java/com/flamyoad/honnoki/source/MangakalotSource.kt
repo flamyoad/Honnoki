@@ -10,10 +10,11 @@ import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.paging.MangaMediator
 import com.flamyoad.honnoki.paging.SimpleSearchResultMediator
 import com.flamyoad.honnoki.data.GenreConstants
-import com.flamyoad.honnoki.data.Source
+import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.data.State
 import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.paging.LookupSearchMediator
+import com.flamyoad.honnoki.source.model.TabType
 import com.flamyoad.honnoki.ui.lookup.model.LookupType
 import kotlinx.coroutines.flow.Flow
 
@@ -23,6 +24,10 @@ class MangakalotSource(db: AppDatabase, context: Context, private val api: Manga
 
     override fun getSourceType(): Source {
         return Source.MANGAKALOT
+    }
+
+    override fun getAvailableTabs(): List<TabType> {
+        return listOf(TabType.MOST_RECENT, TabType.TRENDING, TabType.NEW)
     }
 
     override fun getRecentManga(): Flow<PagingData<Manga>> {

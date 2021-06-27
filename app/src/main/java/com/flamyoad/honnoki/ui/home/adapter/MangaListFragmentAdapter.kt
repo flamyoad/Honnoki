@@ -3,8 +3,8 @@ package com.flamyoad.honnoki.ui.home.adapter
 import androidx.fragment.app.Fragment
 import androidx.paging.ExperimentalPagingApi
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.flamyoad.honnoki.data.entities.MangaType
-import com.flamyoad.honnoki.data.Source
+import com.flamyoad.honnoki.source.BaseSource
+import com.flamyoad.honnoki.source.model.TabType
 import com.flamyoad.honnoki.ui.home.mangalist.DetailedMangaListFragment
 import com.flamyoad.honnoki.ui.home.mangalist.SimpleMangaListFragment
 import com.flamyoad.honnoki.ui.home.model.TabItem
@@ -12,43 +12,36 @@ import com.flamyoad.honnoki.ui.home.model.TabItem
 class MangaListFragmentAdapter(val fragment: Fragment) :
     FragmentStateAdapter(fragment) {
 
-    private var items = listOf<TabItem>()
+    private var tabs: List<TabItem> = emptyList()
 
-    override fun getItemCount(): Int = items.size
+    override fun getItemCount(): Int = tabs.size
 
-    fun setSource(source: Source) {
-        val newItems = mutableListOf<TabItem>()
-        for (i in 0 until 3) {
-            val type = when (i) {
-                0 -> MangaType.RECENTLY
-                1 -> MangaType.TRENDING
-                2 -> MangaType.NEW
-                else -> throw IllegalArgumentException()
-            }
-            newItems.add(TabItem(source, type))
+    fun setSource(sourceImpl: BaseSource) {
+        tabs = sourceImpl.getAvailableTabs().map {
+            TabItem(source = sourceImpl.getSourceType(), type = it)
         }
-        items = newItems
         notifyDataSetChanged()
     }
 
     override fun getItemId(position: Int): Long {
-        val itemId = items[position].hashCode().toLong()
+        val itemId = tabs[position].hashCode().toLong()
         return itemId
     }
 
     override fun containsItem(itemId: Long): Boolean {
-        val containsItem = items.any { it.hashCode().toLong() == itemId }
+        val containsItem = tabs.any { it.hashCode().toLong() == itemId }
         return containsItem
     }
 
     @ExperimentalPagingApi
     override fun createFragment(position: Int): Fragment {
-        val mangaSource = items[position].source
-        return when (position) {
-            0 -> DetailedMangaListFragment.newInstance(mangaSource)
-            1 -> SimpleMangaListFragment.newInstance(mangaSource, MangaType.TRENDING)
-            2 -> SimpleMangaListFragment.newInstance(mangaSource, MangaType.NEW)
-            else -> throw IllegalArgumentException("Invalid index")
+        val tab = tabs[position]
+
+        return when (tab.type) {
+            TabType.MOST_RECENT -> DetailedMangaListFragment.newInstance(tab.source)
+            TabType.TRENDING -> SimpleMangaListFragment.newInstance(tab.source, tab.type)
+            TabType.NEW -> SimpleMangaListFragment.newInstance(tab.source, tab.type)
+            TabType.LATEST -> SimpleMangaListFragment.newInstance(tab.source, tab.type)
         }
     }
 }

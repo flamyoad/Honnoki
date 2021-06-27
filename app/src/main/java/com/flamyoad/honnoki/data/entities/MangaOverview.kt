@@ -1,7 +1,7 @@
 package com.flamyoad.honnoki.data.entities
 
 import androidx.room.*
-import com.flamyoad.honnoki.data.Source
+import com.flamyoad.honnoki.source.model.Source
 import java.time.LocalDateTime
 
 @Entity(

@@ -1,6 +1,6 @@
 package com.flamyoad.honnoki.parser
 
-import com.flamyoad.honnoki.data.Source
+import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.data.entities.*
 import org.jsoup.Jsoup
 import java.time.LocalDateTime

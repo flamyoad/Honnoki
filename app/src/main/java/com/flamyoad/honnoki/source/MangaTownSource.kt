@@ -6,11 +6,12 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.flamyoad.honnoki.api.MangaTownApi
-import com.flamyoad.honnoki.data.Source
+import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.data.State
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.paging.MangaMediator
+import com.flamyoad.honnoki.source.model.TabType
 import kotlinx.coroutines.flow.Flow
 import java.io.IOException
 
@@ -20,6 +21,10 @@ class MangaTownSource(db: AppDatabase, context: Context, private val api: MangaT
 
     override fun getSourceType(): Source {
         return Source.MANGATOWN
+    }
+
+    override fun getAvailableTabs(): List<TabType> {
+        return listOf(TabType.MOST_RECENT, TabType.TRENDING)
     }
 
     override fun getRecentManga(): Flow<PagingData<Manga>> {

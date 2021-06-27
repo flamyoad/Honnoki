@@ -9,7 +9,7 @@ import com.flamyoad.honnoki.api.BaseApi
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.entities.Manga
 import com.flamyoad.honnoki.data.entities.MangaType
-import com.flamyoad.honnoki.data.Source
+import com.flamyoad.honnoki.source.model.Source
 import retrofit2.HttpException
 import java.io.IOException
 

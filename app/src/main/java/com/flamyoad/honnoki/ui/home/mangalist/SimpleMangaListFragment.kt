@@ -15,7 +15,8 @@ import com.flamyoad.honnoki.ui.home.adapter.VerticalMangaListAdapter
 import com.flamyoad.honnoki.databinding.FragmentSimpleMangaListBinding
 import com.flamyoad.honnoki.data.entities.Manga
 import com.flamyoad.honnoki.data.entities.MangaType
-import com.flamyoad.honnoki.data.Source
+import com.flamyoad.honnoki.source.model.Source
+import com.flamyoad.honnoki.source.model.TabType
 import com.flamyoad.honnoki.ui.home.HomeViewModel
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import kotlinx.coroutines.flow.collectLatest
@@ -74,13 +75,13 @@ class SimpleMangaListFragment : Fragment() {
             itemAnimator = null
         }
 
-        val mangaType = MangaType.valueOf(arguments?.getString(MANGA_TYPE) ?: "")
+        val tabType = TabType.valueOf(arguments?.getString(TAB_TYPE) ?: "")
 
         lifecycleScope.launch {
-            val mangaList = when (mangaType) {
-                MangaType.TRENDING -> viewModel.getTrendingManga()
-                MangaType.RECENTLY -> viewModel.getRecentManga()
-                MangaType.NEW -> viewModel.getNewManga()
+            val mangaList = when (tabType) {
+                TabType.TRENDING -> viewModel.getTrendingManga()
+                TabType.LATEST -> viewModel.getRecentManga()
+                TabType.NEW -> viewModel.getNewManga()
                 else -> throw IllegalArgumentException()
             }
             mangaList.collectLatest {
@@ -122,15 +123,15 @@ class SimpleMangaListFragment : Fragment() {
     }
 
     companion object {
-        private const val MANGA_TYPE = "manga_type"
+        private const val TAB_TYPE = "manga_type"
         private const val SOURCE = "source"
 
         @JvmStatic
-        fun newInstance(source: Source, type: MangaType) =
+        fun newInstance(source: Source, type: TabType) =
             SimpleMangaListFragment().apply {
                 arguments = Bundle().apply {
                     putString(SOURCE, source.toString())
-                    putString(MANGA_TYPE, type.name)
+                    putString(TAB_TYPE, type.name)
                 }
             }
     }

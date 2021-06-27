@@ -1,6 +1,5 @@
 package com.flamyoad.honnoki.ui.search
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,7 +19,7 @@ import com.flamyoad.honnoki.data.GenreConstants
 import com.flamyoad.honnoki.ui.search.adapter.SimpleSearchResultAdapter
 import com.flamyoad.honnoki.databinding.FragmentSimpleSearchBinding
 import com.flamyoad.honnoki.data.entities.SearchResult
-import com.flamyoad.honnoki.data.Source
+import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import com.flamyoad.honnoki.ui.search.adapter.GenrePickerAdapter
 import com.flamyoad.honnoki.ui.search.adapter.SearchResultEndOfListAdapter

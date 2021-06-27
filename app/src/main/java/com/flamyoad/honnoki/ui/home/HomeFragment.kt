@@ -11,7 +11,9 @@ import com.flamyoad.honnoki.BaseFragment
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.databinding.FragmentHomeBinding
 import com.flamyoad.honnoki.dialog.SourceSwitcherDialog
-import com.flamyoad.honnoki.data.Source
+import com.flamyoad.honnoki.source.BaseSource
+import com.flamyoad.honnoki.source.model.Source
+import com.flamyoad.honnoki.source.model.TabType
 import com.flamyoad.honnoki.ui.home.adapter.MangaListFragmentAdapter
 import com.flamyoad.honnoki.ui.home.dialog.GenrePickerDialog
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
@@ -19,15 +21,18 @@ import com.flamyoad.honnoki.utils.ui.DepthPageTransformer
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import java.lang.IllegalArgumentException
+import org.koin.core.component.KoinComponent
+import org.koin.core.qualifier.named
 
 @ExperimentalPagingApi
-class HomeFragment : BaseFragment(), SourceSwitcherDialog.Listener {
+class HomeFragment : BaseFragment(), KoinComponent, SourceSwitcherDialog.Listener {
     private val binding by viewLifecycleLazy { FragmentHomeBinding.bind(requireView()) }
 
     private val viewModel: HomeViewModel by sharedViewModel()
 
     private val viewPagerAdapter by lazy { MangaListFragmentAdapter(this) }
+
+    private var tabLayoutMediator: TabLayoutMediator? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,27 +46,13 @@ class HomeFragment : BaseFragment(), SourceSwitcherDialog.Listener {
         super.onViewCreated(view, savedInstanceState)
 
         initUi()
-        setupViewPager()
-
-        lifecycleScope.launchWhenResumed {
-            viewModel.chosenSource.collectLatest {  source ->
-                viewPagerAdapter.setSource(source)
-            }
-        }
+        observeUi()
     }
 
     private fun initUi() {
-        viewModel.shouldShrinkFab().observe(viewLifecycleOwner) { shouldShrink ->
-            when (shouldShrink) {
-                true -> binding.fab.shrink()
-                false -> binding.fab.extend()
-            }
-        }
-
-        lifecycleScope.launchWhenResumed {
-            viewModel.chosenSource.collectLatest {
-                binding.fab.text = it.title
-            }
+        with(binding.viewPager) {
+            adapter = viewPagerAdapter
+            setPageTransformer(DepthPageTransformer())
         }
 
         binding.fab.setOnClickListener {
@@ -76,20 +67,38 @@ class HomeFragment : BaseFragment(), SourceSwitcherDialog.Listener {
         }
     }
 
-    private fun setupViewPager() {
-        with(binding.viewPager) {
-            adapter = viewPagerAdapter
-            setPageTransformer(DepthPageTransformer())
+    private fun observeUi() {
+        viewModel.shouldShrinkFab().observe(viewLifecycleOwner) { shouldShrink ->
+            when (shouldShrink) {
+                true -> binding.fab.shrink()
+                false -> binding.fab.extend()
+            }
         }
 
-        TabLayoutMediator(binding.tabLayoutMain, binding.viewPager) { tab, position ->
-            tab.text = when (position) {
-                0 -> "Most Recent"
-                1 -> "Trending"
-                2 -> "New"
-                else -> throw IllegalArgumentException("Invalid tab")
+        lifecycleScope.launchWhenResumed {
+            viewModel.chosenSource.collectLatest {
+                binding.fab.text = it.title
             }
-        }.attach()
+        }
+
+        lifecycleScope.launchWhenResumed {
+            viewModel.chosenSource.collectLatest { source ->
+                tabLayoutMediator?.detach()
+
+                val sourceImpl: BaseSource = getKoin().get(named(source.name))
+                viewPagerAdapter.setSource(sourceImpl)
+                attachTabLayoutMediator(sourceImpl.getAvailableTabs())
+            }
+        }
+    }
+
+    private fun attachTabLayoutMediator(tabType: List<TabType>) {
+        val mediator = TabLayoutMediator(binding.tabLayoutMain, binding.viewPager) { tab, position ->
+            tab.text = tabType[position].readableName
+        }
+        mediator.attach()
+
+        tabLayoutMediator = mediator
     }
 
     override fun onSourceSwitch(source: Source) {

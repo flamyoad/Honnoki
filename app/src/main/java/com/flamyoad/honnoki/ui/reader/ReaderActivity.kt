@@ -12,7 +12,7 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.transition.Slide
 import androidx.transition.TransitionManager
 import com.flamyoad.honnoki.R
-import com.flamyoad.honnoki.data.Source
+import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.databinding.ActivityReaderBinding
 import com.flamyoad.honnoki.ui.reader.model.LoadType
 import kotlinx.coroutines.flow.collectLatest

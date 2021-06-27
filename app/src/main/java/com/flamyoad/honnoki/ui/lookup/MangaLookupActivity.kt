@@ -11,7 +11,7 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import com.flamyoad.honnoki.R
-import com.flamyoad.honnoki.data.Source
+import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.data.entities.SearchResult
 import com.flamyoad.honnoki.databinding.ActivityMangaLookupBinding
 import com.flamyoad.honnoki.ui.lookup.adapter.MangaLookupAdapter

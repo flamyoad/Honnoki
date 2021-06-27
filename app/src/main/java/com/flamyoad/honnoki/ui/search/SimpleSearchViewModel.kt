@@ -11,7 +11,7 @@ import com.flamyoad.honnoki.data.entities.SearchResult
 import com.flamyoad.honnoki.source.BaseSource
 import com.flamyoad.honnoki.ui.search.model.SearchGenre
 import com.flamyoad.honnoki.data.GenreConstants
-import com.flamyoad.honnoki.data.Source
+import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.ui.search.model.SearchSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*

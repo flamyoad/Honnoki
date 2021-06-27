@@ -7,13 +7,14 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.flamyoad.honnoki.api.DM5Api
 import com.flamyoad.honnoki.data.GenreConstants
-import com.flamyoad.honnoki.data.Source
+import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.data.State
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.paging.LookupSearchMediator
 import com.flamyoad.honnoki.paging.MangaMediator
 import com.flamyoad.honnoki.paging.SimpleSearchResultMediator
+import com.flamyoad.honnoki.source.model.TabType
 import com.flamyoad.honnoki.ui.lookup.model.LookupType
 import kotlinx.coroutines.flow.Flow
 
@@ -23,6 +24,10 @@ class DM5Source(db: AppDatabase, context: Context, private val api: DM5Api) :
 
     override fun getSourceType(): Source {
         return Source.DM5
+    }
+
+    override fun getAvailableTabs(): List<TabType> {
+        return listOf(TabType.MOST_RECENT, TabType.TRENDING)
     }
 
     override fun getRecentManga(): Flow<PagingData<Manga>> {

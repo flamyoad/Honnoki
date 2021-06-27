@@ -12,7 +12,7 @@ import com.flamyoad.honnoki.api.DM5Api
 import com.flamyoad.honnoki.api.MangakalotApi
 import com.flamyoad.honnoki.api.SenMangaApi
 import com.flamyoad.honnoki.data.GenreConstants
-import com.flamyoad.honnoki.data.Source
+import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.databinding.MangaGenreDialogPickerBinding
 import com.flamyoad.honnoki.ui.lookup.MangaLookupActivity
 import com.flamyoad.honnoki.ui.lookup.model.LookupType

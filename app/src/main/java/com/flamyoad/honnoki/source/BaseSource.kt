@@ -4,14 +4,16 @@ import android.content.Context
 import androidx.paging.PagingData
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.GenreConstants
-import com.flamyoad.honnoki.data.Source
+import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.data.State
 import com.flamyoad.honnoki.data.entities.*
+import com.flamyoad.honnoki.source.model.TabType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
 abstract class BaseSource(val db: AppDatabase, val context: Context) {
     abstract fun getSourceType(): Source
+    abstract fun getAvailableTabs(): List<TabType>
 
     open fun getRecentManga(): Flow<PagingData<Manga>> {
         return emptyFlow()

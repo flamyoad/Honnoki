@@ -4,7 +4,7 @@ import com.flamyoad.honnoki.api.dto.mangadex.*
 import com.flamyoad.honnoki.api.dto.mangadex.relationships.RelArtist
 import com.flamyoad.honnoki.api.dto.mangadex.relationships.RelAuthor
 import com.flamyoad.honnoki.api.dto.mangadex.relationships.RelCoverImage
-import com.flamyoad.honnoki.data.Source
+import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.parser.exception.NullMangaIdException
 import com.flamyoad.honnoki.parser.model.MangadexQualityMode

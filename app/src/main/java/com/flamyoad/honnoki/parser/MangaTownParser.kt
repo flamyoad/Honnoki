@@ -1,6 +1,6 @@
 package com.flamyoad.honnoki.parser
 
-import com.flamyoad.honnoki.data.Source
+import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.network.MangaTownService
 import org.jsoup.Jsoup

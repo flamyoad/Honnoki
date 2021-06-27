@@ -4,7 +4,7 @@ import androidx.paging.PagingSource
 import androidx.room.*
 import com.flamyoad.honnoki.data.entities.Manga
 import com.flamyoad.honnoki.data.entities.MangaType
-import com.flamyoad.honnoki.data.Source
+import com.flamyoad.honnoki.source.model.Source
 
 @Dao
 interface MangaDao {
