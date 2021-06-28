@@ -11,7 +11,7 @@ import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.data.State
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.entities.*
-import com.flamyoad.honnoki.paging.LookupSearchMediator
+import com.flamyoad.honnoki.paging.LookupResultMediator
 import com.flamyoad.honnoki.paging.MangaMediator
 import com.flamyoad.honnoki.paging.SimpleSearchResultMediator
 import com.flamyoad.honnoki.source.model.TabType
@@ -46,29 +46,29 @@ class DM5Source(db: AppDatabase, context: Context, private val api: DM5Api) :
         ).flow
     }
 
-    override fun getMangaByAuthors(params: String): Flow<PagingData<SearchResult>> {
+    override fun getMangaByAuthors(params: String): Flow<PagingData<LookupResult>> {
         return Pager(
             config = PagingConfig(pageSize = NORMAL_PAGINATION_SIZE, enablePlaceholders = false),
-            remoteMediator = LookupSearchMediator(
+            remoteMediator = LookupResultMediator(
                 api,
                 db,
                 params,
                 LookupType.AUTHOR
             ),
-            pagingSourceFactory = { db.searchResultDao().getAll() }
+            pagingSourceFactory = { db.lookupDao().getAll() }
         ).flow
     }
 
-    override fun getMangaByGenres(params: String): Flow<PagingData<SearchResult>> {
+    override fun getMangaByGenres(params: String): Flow<PagingData<LookupResult>> {
         return Pager(
             config = PagingConfig(pageSize = NORMAL_PAGINATION_SIZE, enablePlaceholders = false),
-            remoteMediator = LookupSearchMediator(
+            remoteMediator = LookupResultMediator(
                 api,
                 db,
                 params,
                 LookupType.GENRE
             ),
-            pagingSourceFactory = { db.searchResultDao().getAll() }
+            pagingSourceFactory = { db.lookupDao().getAll() }
         ).flow
     }
 

@@ -11,8 +11,8 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import com.flamyoad.honnoki.R
+import com.flamyoad.honnoki.data.entities.LookupResult
 import com.flamyoad.honnoki.source.model.Source
-import com.flamyoad.honnoki.data.entities.SearchResult
 import com.flamyoad.honnoki.databinding.ActivityMangaLookupBinding
 import com.flamyoad.honnoki.ui.lookup.adapter.MangaLookupAdapter
 import com.flamyoad.honnoki.ui.lookup.model.LookupType
@@ -119,11 +119,11 @@ class MangaLookupActivity : AppCompatActivity() {
         _binding = null
     }
 
-    private fun openManga(searchResult: SearchResult) {
+    private fun openManga(lookupResult: LookupResult) {
         val intent = Intent(this, MangaOverviewActivity::class.java).apply {
-            putExtra(MangaOverviewActivity.MANGA_URL, searchResult.link)
+            putExtra(MangaOverviewActivity.MANGA_URL, lookupResult.link)
             putExtra(MangaOverviewActivity.MANGA_SOURCE, sourceName)
-            putExtra(MangaOverviewActivity.MANGA_TITLE, searchResult.title)
+            putExtra(MangaOverviewActivity.MANGA_TITLE, lookupResult.title)
         }
         startActivity(intent)
     }

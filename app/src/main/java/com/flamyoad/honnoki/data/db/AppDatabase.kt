@@ -22,6 +22,7 @@ const val DATABASE_NAME = "com.flamyoad.android.honnoki.AppDatabase"
         Author::class,
         Genre::class,
         SearchResult::class,
+        LookupResult::class,
         Bookmark::class,
         BookmarkGroup::class],
     version = 1
@@ -35,6 +36,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun chapterDao(): ChapterDao
     abstract fun pageDao(): PageDao
     abstract fun searchResultDao(): SearchResultDao
+    abstract fun lookupDao(): LookupDao
     abstract fun bookmarkDao(): BookmarkDao
     abstract fun bookmarkGroupDao(): BookmarkGroupDao
     abstract fun bookmarkGroupWithInfoDao(): BookmarkGroupWithInfoDao

@@ -44,11 +44,11 @@ abstract class BaseSource(val db: AppDatabase, val context: Context) {
         return emptyFlow()
     }
 
-    open fun getMangaByAuthors(params: String): Flow<PagingData<SearchResult>> {
+    open fun getMangaByAuthors(params: String): Flow<PagingData<LookupResult>> {
         return emptyFlow()
     }
 
-    open fun getMangaByGenres(params: String): Flow<PagingData<SearchResult>> {
+    open fun getMangaByGenres(params: String): Flow<PagingData<LookupResult>> {
         return emptyFlow()
     }
 

@@ -6,24 +6,23 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.flamyoad.honnoki.api.BaseApi
-import com.flamyoad.honnoki.data.GenreConstants
 import com.flamyoad.honnoki.data.db.AppDatabase
-import com.flamyoad.honnoki.data.entities.SearchResult
+import com.flamyoad.honnoki.data.entities.LookupResult
 import com.flamyoad.honnoki.ui.lookup.model.LookupType
 import retrofit2.HttpException
 import java.io.IOException
 
 @ExperimentalPagingApi
-class LookupSearchMediator(
+class LookupResultMediator(
     private val api: BaseApi,
     private val db: AppDatabase,
     private val params: String,
     private val lookupType: LookupType,
-) : RemoteMediator<Int, SearchResult>() {
+) : RemoteMediator<Int, LookupResult>() {
 
     override suspend fun load(
         loadType: LoadType,
-        state: PagingState<Int, SearchResult>
+        state: PagingState<Int, LookupResult>
     ): MediatorResult {
         val lastItem = state.lastItemOrNull()
 
@@ -42,25 +41,32 @@ class LookupSearchMediator(
         }
 
         try {
-            val searchResults = when (lookupType) {
+            val lookupResult = when (lookupType) {
                 LookupType.GENRE -> api.searchMangaByGenre(params, pageNumber)
                 LookupType.AUTHOR -> api.searchMangaByAuthor(params, pageNumber)
-                else -> emptyList()
+            }.map {
+                LookupResult(
+                    link = it.link,
+                    coverImage = it.coverImage,
+                    title = it.title,
+                    author = it.author,
+                    latestChapter = it.latestChapter
+                )
             }
 
-            val endOfPaginationReached = searchResults.isEmpty()
+            val endOfPaginationReached = lookupResult.isEmpty()
 
             db.withTransaction {
                 if (loadType == LoadType.REFRESH) {
-                    db.searchResultDao().deleteAll()
+                    db.lookupDao().deleteAll()
                 }
 
                 val prevKey = if (pageNumber == STARTING_PAGE_INDEX) null else pageNumber - 1
                 val nextKey = if (endOfPaginationReached) null else pageNumber + 1
 
-                val searchResultsWithKeys =
-                    searchResults.map { it.copy(prevKey = prevKey, nextKey = nextKey) }
-                db.searchResultDao().insertAll(searchResultsWithKeys)
+                val lookupResultWithKey =
+                    lookupResult.map { it.copy(prevKey = prevKey, nextKey = nextKey) }
+                db.lookupDao().insertAll(lookupResultWithKey)
             }
             return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
 
