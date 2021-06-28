@@ -18,7 +18,7 @@ class OptionsFragment : BaseFragment() {
     val binding get() = requireNotNull(_binding)
 
     private val viewModel: OptionsViewModel by viewModel()
-
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }

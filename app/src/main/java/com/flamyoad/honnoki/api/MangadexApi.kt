@@ -122,20 +122,16 @@ class MangadexApi(
      * in a recursive manner until offset is larger than total
      */
     suspend fun searchForChapterList(mangaId: String): State<List<Chapter>> {
-        val json = service.getChapterList(mangaId, limit = CHAPTER_MAX_LIMIT, offset = 0)
-
-        var offset = json.offset
-        var total = json.total
-
+        var offset = 0
+        var total = 0
         val chapterList = mutableListOf<Chapter>()
 
-        chapterList.addAll(parser.parseForChapters(json, offset))
-
-        if (offset < total) {
-            offset += CHAPTER_MAX_LIMIT
-            val nextJson = service.getChapterList(mangaId, limit = CHAPTER_MAX_LIMIT, offset = offset)
-            chapterList.addAll(parser.parseForChapters(nextJson, offset))
-        }
+        do {
+            val json = service.getChapterList(mangaId, limit = CHAPTER_MAX_LIMIT, offset = offset)
+            offset = json.offset + CHAPTER_MAX_LIMIT
+            total = json.total
+            chapterList.addAll(parser.parseForChapters(json, offset))
+        } while (offset < total)
 
         return State.Success(chapterList)
     }
