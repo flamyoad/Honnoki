@@ -20,6 +20,8 @@ class SimpleSearchResultMediator(
     private val genre: GenreConstants,
 ) : RemoteMediator<Int, SearchResult>() {
 
+    private val STARTING_PAGE_INDEX get() = api.startingPageIndex
+
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, SearchResult>
@@ -73,9 +75,5 @@ class SimpleSearchResultMediator(
         } catch (exception: HttpException) {
             return MediatorResult.Error(exception)
         }
-    }
-
-    companion object {
-        private const val STARTING_PAGE_INDEX = 1
     }
 }

@@ -11,7 +11,7 @@ class UiPreference(private val dataStore: DataStore<Preferences>) {
     private val NIGHT_MODE_ENABLED = booleanPreferencesKey("night_mode_enabled")
 
     val nightModeEnabled: Flow<Boolean> = dataStore.data.map { prefs ->
-        return@map prefs[NIGHT_MODE_ENABLED] ?: false
+        prefs[NIGHT_MODE_ENABLED] ?: false
     }
 
     suspend fun setNightMode(enabled: Boolean) {

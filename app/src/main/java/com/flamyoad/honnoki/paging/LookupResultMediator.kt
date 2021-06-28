@@ -20,6 +20,8 @@ class LookupResultMediator(
     private val lookupType: LookupType,
 ) : RemoteMediator<Int, LookupResult>() {
 
+    private val STARTING_PAGE_INDEX get() = api.startingPageIndex
+
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, LookupResult>
@@ -75,9 +77,5 @@ class LookupResultMediator(
         } catch (exception: HttpException) {
             return MediatorResult.Error(exception)
         }
-    }
-
-    companion object {
-        private const val STARTING_PAGE_INDEX = 1
     }
 }

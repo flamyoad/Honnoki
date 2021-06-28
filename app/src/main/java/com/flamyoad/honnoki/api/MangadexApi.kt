@@ -52,8 +52,7 @@ class MangadexApi(
     }
 
     override suspend fun searchByKeyword(keyword: String, index: Int): List<SearchResult> {
-        // Convert the one-based to zero-based index
-        val offset = PAGINATION_SIZE * (index - 1)
+        val offset = PAGINATION_SIZE * (index)
         val json = try {
             service.searchByKeyword(keyword, offset, PAGINATION_SIZE)
         } catch (e: IOException) {

@@ -68,7 +68,6 @@ class ReaderViewModel(
         replay = 0,
         extraBufferCapacity = 1
     )
-
     fun pageNumberScrolledBySeekbar() = pageNumberScrolledBySeekbar.asSharedFlow()
 
     private val pageList = MutableStateFlow<List<ReaderPage>>(emptyList())
@@ -79,6 +78,8 @@ class ReaderViewModel(
 
     private val failedToLoadNextChapter = MutableStateFlow(false)
     fun failedToLoadNextChapter() = failedToLoadNextChapter.asStateFlow()
+
+    private val shouldShowAds = readerPrefs.showAds(baseSource.getSourceType())
 
     private var loadPrevChapterJob: Job? = null
     private var loadNextChapterJob: Job? = null
@@ -134,16 +135,22 @@ class ReaderViewModel(
             LoadType.INITIAL -> {
                 existingList.clear()
                 existingList.addAll(pagesFromDb.map { ReaderPage.Value(it) })
-                existingList.add(ReaderPage.Ads(chapterId))
+                if (shouldShowAds) {
+                    existingList.add(ReaderPage.Ads(chapterId))
+                }
             }
             LoadType.PREV -> {
                 val list = pagesFromDb.map { ReaderPage.Value(it) } as MutableList<ReaderPage>
                 list.add(ReaderPage.Ads(chapterId))
-                existingList.addAll(0, list)
+                if (shouldShowAds) {
+                    existingList.addAll(0, list)
+                }
             }
             LoadType.NEXT -> {
                 existingList.addAll(pagesFromDb.map { ReaderPage.Value(it) })
-                existingList.add(ReaderPage.Ads(chapterId))
+                if (shouldShowAds) {
+                    existingList.add(ReaderPage.Ads(chapterId))
+                }
             }
         }
 
