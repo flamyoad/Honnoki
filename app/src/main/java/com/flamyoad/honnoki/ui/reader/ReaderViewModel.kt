@@ -79,7 +79,7 @@ class ReaderViewModel(
     private val failedToLoadNextChapter = MutableStateFlow(false)
     fun failedToLoadNextChapter() = failedToLoadNextChapter.asStateFlow()
 
-    private val shouldShowAds = readerPrefs.showAds(baseSource.getSourceType())
+    private val shouldShowAds = readerPrefs.shouldShowAds(baseSource.getSourceType())
 
     private var loadPrevChapterJob: Job? = null
     private var loadNextChapterJob: Job? = null

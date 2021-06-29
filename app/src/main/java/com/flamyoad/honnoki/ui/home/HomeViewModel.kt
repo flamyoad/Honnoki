@@ -30,7 +30,7 @@ class HomeViewModel(private val sourcePref: SourcePreference) : ViewModel() {
 
     fun switchSource(source: Source) {
         viewModelScope.launch {
-            sourcePref.switchHomeSource(source)
+            sourcePref.editHomeSource(source)
         }
     }
 }

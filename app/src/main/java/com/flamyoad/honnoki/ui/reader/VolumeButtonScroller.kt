@@ -2,10 +2,16 @@ package com.flamyoad.honnoki.ui.reader
 
 import android.view.KeyEvent
 import com.flamyoad.honnoki.data.preference.ReaderPreference
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.onStart
+import java.util.concurrent.TimeUnit
 
 class VolumeButtonScroller(
     private val listener: Listener,
-    private val readerPrefs: ReaderPreference
+    private val readerPrefs: ReaderPreference,
 ) {
 
     fun sendKeyEvent(event: KeyEvent?): Boolean {
