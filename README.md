@@ -13,10 +13,6 @@ Heavily uses flavour of the year libs like [Paging 3](https://developer.android.
 
 The reader screen in this app mimics the ones from [漫画人 by DM5.cn](https://www.dm5.com/download/). It is like a continuous scrolling list that is able to prefetch next chapter without the need for Prev/Next buttons. I used [ConcatAdapter](https://developer.android.com/reference/androidx/recyclerview/widget/ConcatAdapter) to achieve all that but the DM5 app was released like way back in 2015(?). So I think they used another method to achieve the style & functionality. Big applause to the dev of DM5 because IMO it was ahead of its time in terms of UX & performance.'
 
-| Swipe up to load previous chapter (No prefetch) | Scrolling to next chapter (With prefetch) |
-| :---------------------------------------------: |:-----------------------------------------:|
-|<img src="https://user-images.githubusercontent.com/35066207/123552300-20d15780-d7a8-11eb-92a6-b3ab1bcb0cf2.gif" width="240" height="500"/>|<img src="https://user-images.githubusercontent.com/35066207/123552303-22028480-d7a8-11eb-95f9-d9432a1620d2.gif" width="240" height="500"/>
-
 ## Preview
 
 | Home(Light) | Overview  | Reader
