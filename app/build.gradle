@@ -175,5 +175,7 @@ dependencies {
 
     implementation 'app.cash.quickjs:quickjs-android:0.9.0'
 
+    implementation 'com.jakewharton.timber:timber:4.7.1'
+
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 }

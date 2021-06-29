@@ -9,7 +9,7 @@ class ReaderLoadingAdapter: BaseAdapter<Any, ReaderImageListLoadingBinding>() {
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> ReaderImageListLoadingBinding
         get() = ReaderImageListLoadingBinding::inflate
 
-    override val itemLayoutsAreClickable: Boolean
+    override val itemsCanBeClicked: Boolean
         get() = false
 
     override fun onBind(holder: BaseViewHolder, item: Any) {}

@@ -3,11 +3,13 @@ package com.flamyoad.honnoki.ui.overview
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.view.ContextMenu
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
@@ -41,6 +43,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
+import timber.log.Timber
 
 @ExperimentalCoroutinesApi
 @ExperimentalPagingApi
@@ -87,13 +90,6 @@ class MangaOverviewActivity : AppCompatActivity() {
         observeUi()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> finish()
-        }
-        return true
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(OVERVIEW_URL, viewModel.overview.link)
@@ -104,6 +100,39 @@ class MangaOverviewActivity : AppCompatActivity() {
         savedInstanceState.getString(OVERVIEW_URL)?.let {
             viewModel.loadMangaOverview(it)
         }
+    }
+
+    override fun onCreateContextMenu(
+        menu: ContextMenu?,
+        v: View?,
+        menuInfo: ContextMenu.ContextMenuInfo?
+    ) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+        menu?.apply {
+            setHeaderTitle("More options")
+            add(OPEN_IN_BROWSER)
+        }
+    }
+
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        when (item.title) {
+            OPEN_IN_BROWSER -> {
+                viewModel.overview.let {
+                    if (it == MangaOverview.empty()) {
+                        return true
+                    }
+                    openBrowser(it)
+                }
+            }
+        }
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> finish()
+        }
+        return true
     }
 
     private fun initUi() {
@@ -161,6 +190,11 @@ class MangaOverviewActivity : AppCompatActivity() {
 
         binding.btnReadExpanded.setOnClickListener {
             startReading()
+        }
+
+        registerForContextMenu(binding.btnMore)
+        binding.btnMore.setOnClickListener {
+            it.showContextMenu()
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {
@@ -281,8 +315,20 @@ class MangaOverviewActivity : AppCompatActivity() {
         MangaLookupActivity.startActivity(this, author.link, author.name, source, LookupType.AUTHOR)
     }
 
+    private fun openBrowser(overview: MangaOverview) {
+        val uri = if (overview.source == Source.MANGADEX) {
+            Uri.parse("https://mangadex.org/title/{${overview.link}}")
+        } else {
+            Uri.parse(overview.link)
+        }
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+        if (intent.resolveActivity(packageManager) != null) {
+            startActivity(intent)
+        }
+    }
+
     private fun startReading() {
-        if (ioJob != null) return
+        if (ioJob?.isActive == true) return
 
         val overview = viewModel.overview
         val overviewId = overview.id ?: return
@@ -319,6 +365,9 @@ class MangaOverviewActivity : AppCompatActivity() {
 
     companion object {
         const val TAB_NAME_SUMMARY = "Summary"
+
+        // Context menus
+        const val OPEN_IN_BROWSER = "Open in browser"
 
         // For restoring state across process death
         const val OVERVIEW_URL = "overview_url"

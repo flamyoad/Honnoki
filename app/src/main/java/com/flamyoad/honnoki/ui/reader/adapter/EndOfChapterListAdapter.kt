@@ -9,7 +9,7 @@ class EndOfChapterListAdapter: BaseAdapter<Any, LayoutEndOfChapterListBinding>()
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> LayoutEndOfChapterListBinding
         get() = LayoutEndOfChapterListBinding::inflate
 
-    override val itemLayoutsAreClickable: Boolean
+    override val itemsCanBeClicked: Boolean
         get() = false
 
     override fun onBind(holder: BaseViewHolder, item: Any) {}

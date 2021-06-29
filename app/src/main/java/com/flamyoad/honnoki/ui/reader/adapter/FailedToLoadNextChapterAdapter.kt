@@ -11,7 +11,7 @@ class FailedToLoadNextChapterAdapter(private val reloadNextChapter: () -> Unit) 
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> LayoutFailLoadNextChapterBinding
         get() = LayoutFailLoadNextChapterBinding::inflate
 
-    override val itemLayoutsAreClickable: Boolean
+    override val itemsCanBeClicked: Boolean
         get() = false
 
     override fun onCreate(holder: BaseViewHolder, binding: LayoutFailLoadNextChapterBinding) {

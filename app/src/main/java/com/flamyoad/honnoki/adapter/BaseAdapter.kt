@@ -10,43 +10,25 @@ abstract class BaseAdapter<T: Any, VB: ViewBinding>
 
     private var itemList: List<T> = emptyList()
 
-    /**
-     * This field must be overridden to provide layout inflater for the base class
-     */
     abstract val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> VB
-
-    /**
-     * Callback method for onBindViewHolder()
-     */
     abstract fun onBind(holder: BaseViewHolder, item: T)
 
-    /**
-     * Callback method for onCreateViewHolder()
-     */
     open fun onCreate(holder: BaseViewHolder, binding: VB) {}
-
-    /**
-     * Callback method for onClick() on the root layout of item
-     */
     open fun onItemClick(item: T) {}
-
-    /**
-     * Callback method for onViewRecycled()
-     */
     open fun onRecycleView(holder: BaseViewHolder) {}
 
     /**
      * Set this to false when you are using dummy item as a child for ConcatAdapter.
      * This prevents IndexOutOfException from being thrown when the layout is being clicked
      */
-    open val itemLayoutsAreClickable: Boolean = true
+    open val itemsCanBeClicked: Boolean = true
 
     final override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
         val binding = bindingInflater.invoke(LayoutInflater.from(parent.context), parent, false)
         val holder = BaseViewHolder(binding)
         onCreate(holder, binding)
 
-        if (itemLayoutsAreClickable) {
+        if (itemsCanBeClicked) {
             holder.itemView.setOnClickListener {
                 val item = itemList[holder.bindingAdapterPosition]
                 onItemClick(item)

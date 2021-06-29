@@ -9,6 +9,7 @@ import com.flamyoad.honnoki.ui.home.HomeFragment
 import com.flamyoad.honnoki.ui.library.LibraryFragment
 import com.flamyoad.honnoki.ui.options.OptionsFragment
 import com.flamyoad.honnoki.ui.search.SimpleSearchFragment
+import timber.log.Timber
 import java.lang.IllegalArgumentException
 
 @ExperimentalPagingApi
