@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.paging.ExperimentalPagingApi
+import com.flamyoad.honnoki.cache.CoverCache
 import com.flamyoad.honnoki.databinding.ActivityMainBinding
 import com.flamyoad.honnoki.ui.home.HomeFragment
 import com.flamyoad.honnoki.ui.library.LibraryFragment

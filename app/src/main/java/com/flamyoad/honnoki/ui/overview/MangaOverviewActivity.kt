@@ -3,6 +3,7 @@ package com.flamyoad.honnoki.ui.overview
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -21,6 +22,15 @@ import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
 import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestBuilder
+import com.bumptech.glide.RequestManager
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.request.transition.Transition
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.data.entities.Author
@@ -32,10 +42,12 @@ import com.flamyoad.honnoki.ui.lookup.MangaLookupActivity
 import com.flamyoad.honnoki.ui.lookup.model.LookupType
 import com.flamyoad.honnoki.ui.reader.ReaderActivity
 import com.flamyoad.honnoki.utils.ViewUtils
+import com.flamyoad.honnoki.utils.extensions.downloadIntoFile
 import com.flamyoad.honnoki.utils.ui.AppBarStateChangeListener
 import com.flamyoad.honnoki.utils.ui.DepthPageTransformer
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.kennyc.view.MultiStateView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -44,6 +56,7 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import timber.log.Timber
+import java.io.File
 
 @ExperimentalCoroutinesApi
 @ExperimentalPagingApi
@@ -270,15 +283,9 @@ class MangaOverviewActivity : AppCompatActivity() {
     private fun showMangaOverview(overview: MangaOverview) {
         with(binding) {
             Glide.with(this@MangaOverviewActivity)
-                .load(overview.coverImage)
-                .timeout(10000)
-                .into(imageBackground)
-
-            Glide.with(this@MangaOverviewActivity)
-                .load(overview.coverImage)
-                .timeout(10000)
-                .placeholder(ViewUtils.getLoadingIndicator(this@MangaOverviewActivity))
-                .into(imageManga)
+                .downloadIntoFile(overview.coverImage) {
+                    loadImage(it)
+                }
 
             if (overview.alternativeTitle.isBlank()) {
                 txtAlternateName.isVisible = false
@@ -290,6 +297,26 @@ class MangaOverviewActivity : AppCompatActivity() {
             txtAlternateName.text = overview.alternativeTitle
             txtStatus.text = overview.status
         }
+    }
+
+    private fun loadImage(file: File) {
+        Glide.with(this@MangaOverviewActivity)
+            .load(file)
+            .listener(object: RequestListener<Drawable> {
+                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                    return false
+                }
+                override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                    binding.imageMangaLayout.viewState = MultiStateView.ViewState.CONTENT
+                    return false
+                }
+
+            })
+            .into(binding.imageManga)
+
+        Glide.with(this@MangaOverviewActivity)
+            .load(file)
+            .into(binding.imageBackground)
     }
 
     private fun showToolbarArea(state: ToolbarState) {
