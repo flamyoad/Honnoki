@@ -6,6 +6,7 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.flamyoad.honnoki.cache.CoverCache
 import com.flamyoad.honnoki.data.entities.ReadHistory
 import com.flamyoad.honnoki.databinding.ReadHistoryListHeaderBinding
 import com.flamyoad.honnoki.databinding.ReadHistoryListItemBinding
@@ -16,6 +17,7 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
 class ReadHistoryAdapter(
+    private val coverCache: CoverCache,
     private val onItemClick: (ReadHistory) -> Unit,
     private val onResumeRead: (ReadHistory) -> Unit,
     private val onRemoveItem: (ReadHistory) -> Unit,
@@ -84,12 +86,12 @@ class ReadHistoryAdapter(
 
             with(binding) {
                 Glide.with(root)
-                    .load(item.coverImage)
+                    .load(coverCache.get(item.overview))
                     .into(binding.coverImage)
 
-                txtTitle.text = item.mainTitle
+                txtTitle.text = item.overview.mainTitle
                 txtLatestChapter.text = chapter.title
-                txtLastReadTime.text = timeFormatter.format(item.lastReadDateTime)
+                txtLastReadTime.text = timeFormatter.format(item.overview.lastReadDateTime)
             }
         }
     }
@@ -115,7 +117,7 @@ class ReadHistoryAdapter(
                 newItem: ViewReadHistory
             ): Boolean {
                 if (oldItem is ViewReadHistory.Item && newItem is ViewReadHistory.Item) {
-                    return oldItem.history.overviewId == newItem.history.overviewId
+                    return oldItem.history.overview.id!! == newItem.history.overview.id!!
                 }
                 if (oldItem is ViewReadHistory.Header && newItem is ViewReadHistory.Header) {
                     return oldItem.date == newItem.date

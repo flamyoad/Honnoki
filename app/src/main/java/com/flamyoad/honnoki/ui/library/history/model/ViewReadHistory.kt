@@ -10,6 +10,6 @@ sealed class ViewReadHistory {
     data class Header(val date: LocalDate): ViewReadHistory()
 
     data class Item(val history: ReadHistory): ViewReadHistory() {
-        val lastReadDate: LocalDate get() = history.lastReadDateTime.toLocalDate()
+        val lastReadDate: LocalDate get() = history.overview.lastReadDateTime.toLocalDate()
     }
 }

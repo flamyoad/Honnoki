@@ -22,16 +22,12 @@ import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
 import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestBuilder
-import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.target.Target
-import com.bumptech.glide.request.transition.Transition
 import com.flamyoad.honnoki.R
+import com.flamyoad.honnoki.cache.CacheManager
 import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.data.entities.Author
 import com.flamyoad.honnoki.ui.overview.adapter.MangaOverviewFragmentAdapter
@@ -53,9 +49,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import timber.log.Timber
 import java.io.File
 
 @ExperimentalCoroutinesApi
@@ -69,6 +65,8 @@ class MangaOverviewActivity : AppCompatActivity() {
     private val viewModel: MangaOverviewViewModel by viewModel {
         parametersOf(mangaSource)
     }
+
+    private val cacheManager: CacheManager by inject()
 
     private var ioJob: Job? = null
 
@@ -163,7 +161,8 @@ class MangaOverviewActivity : AppCompatActivity() {
                             showToolbarArea(ToolbarState.COLLAPSED)
                             swipeRefreshLayout.isEnabled = false
                         }
-                        State.IDLE -> { }
+                        State.IDLE -> {
+                        }
                     }
                 }
             }
@@ -281,12 +280,9 @@ class MangaOverviewActivity : AppCompatActivity() {
     }
 
     private fun showMangaOverview(overview: MangaOverview) {
-        with(binding) {
-            Glide.with(this@MangaOverviewActivity)
-                .downloadIntoFile(overview.coverImage) {
-                    loadImage(it)
-                }
+        if (overview == MangaOverview.empty()) return
 
+        with(binding) {
             if (overview.alternativeTitle.isBlank()) {
                 txtAlternateName.isVisible = false
             } else {
@@ -297,20 +293,35 @@ class MangaOverviewActivity : AppCompatActivity() {
             txtAlternateName.text = overview.alternativeTitle
             txtStatus.text = overview.status
         }
+
+        cacheManager.getCoverImage(this, overview) {
+            loadImage(it)
+        }
     }
 
     private fun loadImage(file: File) {
         Glide.with(this@MangaOverviewActivity)
             .load(file)
-            .listener(object: RequestListener<Drawable> {
-                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                    return false
-                }
-                override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                    binding.imageMangaLayout.viewState = MultiStateView.ViewState.CONTENT
+            .listener(object : RequestListener<Drawable> {
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    isFirstResource: Boolean
+                ): Boolean {
                     return false
                 }
 
+                override fun onResourceReady(
+                    resource: Drawable?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    binding.imageMangaLayout.viewState = MultiStateView.ViewState.CONTENT
+                    return false
+                }
             })
             .into(binding.imageManga)
 

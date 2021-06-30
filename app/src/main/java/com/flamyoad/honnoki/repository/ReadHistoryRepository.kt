@@ -20,7 +20,8 @@ class ReadHistoryRepository(private val db: AppDatabase) {
     suspend fun removeHistory(history: ReadHistory) {
         withContext(Dispatchers.IO) {
             db.withTransaction {
-                readHistoryDao.removeReadHistory(history.overviewId)
+                val overviewId = requireNotNull(history.overview.id)
+                readHistoryDao.removeReadHistory(overviewId)
             }
         }
     }

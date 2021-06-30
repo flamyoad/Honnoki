@@ -6,10 +6,12 @@ import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.Glide
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.adapter.BaseListAdapter
+import com.flamyoad.honnoki.cache.CoverCache
 import com.flamyoad.honnoki.databinding.BookmarkListItemBinding
 import com.flamyoad.honnoki.data.entities.BookmarkWithOverview
 
 class BookmarkAdapter(
+    private val coverCache: CoverCache,
     private val onBookmarkClick: (BookmarkWithOverview) -> Unit,
     private val onBookmarkLongClick: (BookmarkWithOverview) -> Unit
 ) : BaseListAdapter<BookmarkWithOverview, BookmarkListItemBinding>(BOOKMARK_COMPARATOR) {
@@ -20,7 +22,7 @@ class BookmarkAdapter(
     override fun onBind(holder: BaseViewHolder, item: BookmarkWithOverview) {
         with(holder.binding) {
             Glide.with(this.root)
-                .load(item.overview.coverImage)
+                .load(coverCache.get(item.overview))
                 .into(coverImage)
 
             txtTitle.text = item.overview.mainTitle

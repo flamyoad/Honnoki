@@ -31,6 +31,7 @@ class MyApplication : Application() {
 
         val appModules = listOf(
             apiModules,
+            cacheModules,
             dbModules,
             networkModules,
             sourceModules,

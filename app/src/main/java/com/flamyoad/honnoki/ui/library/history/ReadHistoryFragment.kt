@@ -9,12 +9,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.flamyoad.honnoki.cache.CoverCache
 import com.flamyoad.honnoki.data.entities.ReadHistory
 import com.flamyoad.honnoki.databinding.FragmentReadHistoryBinding
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import com.flamyoad.honnoki.ui.reader.ReaderActivity
 import com.kennyc.view.MultiStateView
 import kotlinx.coroutines.flow.collectLatest
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @ExperimentalPagingApi
@@ -25,8 +27,11 @@ class ReadHistoryFragment : Fragment() {
 
     private val viewModel: ReadHistoryViewModel by viewModel()
 
+    private val coverCache: CoverCache by inject()
+
     private val historyAdapter by lazy {
         ReadHistoryAdapter(
+            coverCache,
             this::openOverviewScreen,
             this::openReaderScreen,
             this::removeItem
@@ -61,19 +66,19 @@ class ReadHistoryFragment : Fragment() {
     private fun openOverviewScreen(history: ReadHistory) {
         MangaOverviewActivity.startActivity(
             context = requireContext(),
-            mangaUrl = history.overviewLink,
-            mangaSource = history.source,
-            mangaTitle = history.mainTitle
+            mangaUrl = history.overview.link,
+            mangaSource = history.overview.source!!,
+            mangaTitle = history.overview.mainTitle
         )
     }
 
     private fun openReaderScreen(history: ReadHistory) {
         ReaderActivity.start(
             requireContext(),
-            chapterId = history.lastReadChapterId,
-            overviewId = history.overviewId,
-            startAtPage = history.lastReadPageNumber,
-            source = history.source
+            chapterId = history.overview.lastReadChapterId,
+            overviewId = history.overview.id!!,
+            startAtPage = history.overview.lastReadPageNumber,
+            source = history.overview.source!!
         )
     }
 

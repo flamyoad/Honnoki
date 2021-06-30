@@ -18,6 +18,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
 import com.flamyoad.honnoki.NavigationMenuListener
 import com.flamyoad.honnoki.R
+import com.flamyoad.honnoki.cache.CoverCache
 import com.flamyoad.honnoki.ui.library.bookmark.adapter.BookmarkAdapter
 import com.flamyoad.honnoki.ui.library.bookmark.adapter.BookmarkGroupAdapter
 import com.flamyoad.honnoki.data.exception.NullEntityIdException
@@ -31,6 +32,7 @@ import com.flamyoad.honnoki.ui.library.LibraryViewModel
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.lang.ClassCastException
@@ -44,13 +46,16 @@ class BookmarkFragment : Fragment() {
     private val viewModel: BookmarkViewModel by viewModel()
     private val parentViewModel: LibraryViewModel by sharedViewModel()
 
+    private val coverCache: CoverCache by inject()
+
     private var listener: NavigationMenuListener? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         try {
             listener = context as NavigationMenuListener
-        } catch (ignored: ClassCastException) { }
+        } catch (ignored: ClassCastException) {
+        }
     }
 
     override fun onCreateView(
@@ -99,7 +104,10 @@ class BookmarkFragment : Fragment() {
         val dialog: DialogFragment =
             when (item.title) {
                 MENU_CHANGE_GROUP_NAME -> ChangeBookmarkGroupNameDialog.newInstance(selectedGroupId)
-                MENU_DELETE_GROUP -> DeleteBookmarkGroupDialog.newInstance(selectedGroupId, selectedGroupName)
+                MENU_DELETE_GROUP -> DeleteBookmarkGroupDialog.newInstance(
+                    selectedGroupId,
+                    selectedGroupName
+                )
                 else -> throw IllegalArgumentException("Invalid menu option!")
             }
 
@@ -182,7 +190,8 @@ class BookmarkFragment : Fragment() {
     }
 
     private fun initBookmarkItems() {
-        val bookmarkAdapter = BookmarkAdapter(this::clickBookmark, this::enterActionMode)
+        val bookmarkAdapter =
+            BookmarkAdapter(coverCache, this::clickBookmark, this::enterActionMode)
         val bookmarkLayoutManager = GridLayoutManager(requireContext(), 3)
 
         with(binding.listItems) {

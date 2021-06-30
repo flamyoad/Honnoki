@@ -22,10 +22,8 @@ class MangaOverviewViewModel(private val db: AppDatabase, private val baseSource
     private val mangaOverviewId = MutableStateFlow(-1L)
 
     val mangaOverview = mangaOverviewId
-        .flatMapLatest {
-            if (it == -1L) return@flatMapLatest flowOf(MangaOverview.empty())
-            return@flatMapLatest db.mangaOverviewDao().getById(it)
-        }
+        .filter { it != -1L }
+        .flatMapLatest { db.mangaOverviewDao().getById(it) }
         .stateIn(viewModelScope, SharingStarted.Lazily, MangaOverview.empty())
 
     val overview get() = mangaOverview.value
