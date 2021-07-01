@@ -1,26 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Not used anymore, i just put it here as reference -->
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nav_graph"
-    tools:ignore="UnusedNavigation"
-    app:startDestination="@id/homeFragment">
+    android:id="@+id/main_activity_nav_graph"
+    app:startDestination="@id/home">
 
-    <fragment
-        android:id="@+id/homeFragment"
-        android:name="com.flamyoad.honnoki.ui.home.HomeFragment"
-        android:label="fragment_featured_mangas"
-        tools:layout="@layout/fragment_home" />
+    <include app:graph="@navigation/home"/>
+    <include app:graph="@navigation/search"/>
+    <include app:graph="@navigation/library"/>
+    <include app:graph="@navigation/more"/>
 
-    <fragment
-        android:id="@+id/libraryFragment"
-        android:name="com.flamyoad.honnoki.ui.library.LibraryFragment"
-        android:label="fragment_library"
-        tools:layout="@layout/fragment_library" />
-
-    <fragment
-        android:id="@+id/downloadFragment"
-        android:name="com.flamyoad.honnoki.ui.search.SimpleSearchFragment"
-        android:label="fragment_download"
-        tools:layout="@layout/fragment_simple_search" />
 </navigation>

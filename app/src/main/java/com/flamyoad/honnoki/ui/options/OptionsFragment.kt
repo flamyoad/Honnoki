@@ -6,22 +6,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.flamyoad.honnoki.BaseFragment
+import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.databinding.FragmentMoreOptionsBinding
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class OptionsFragment : BaseFragment() {
+class OptionsFragment : Fragment() {
 
     private var _binding: FragmentMoreOptionsBinding? = null
     val binding get() = requireNotNull(_binding)
 
     private val viewModel: OptionsViewModel by viewModel()
-    
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,6 +33,11 @@ class OptionsFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.btnSource.setOnClickListener {
+            val action = OptionsFragmentDirections.actionOptionsFragmentToDefaultSourceFragment()
+            findNavController().navigate(action)
+        }
 
         binding.swNightMode.setOnCheckedChangeListener { buttonView, isChecked ->
             viewModel.setNightMode(isChecked)
@@ -59,9 +63,6 @@ class OptionsFragment : BaseFragment() {
         super.onDestroyView()
         _binding = null
     }
-
-    override val bottomBarTitle: String
-        get() = "More"
 
     companion object {
         @JvmStatic

@@ -34,11 +34,16 @@ class HomeFragment : BaseFragment(), KoinComponent, SourceSwitcherDialog.Listene
 
     private var tabLayoutMediator: TabLayoutMediator? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        println("onCreateView")
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
@@ -88,7 +93,7 @@ class HomeFragment : BaseFragment(), KoinComponent, SourceSwitcherDialog.Listene
                 tabLayoutMediator?.detach()
 
                 val sourceImpl: BaseSource = getKoin().get(named(source.name))
-                viewPagerAdapter.setSource(sourceImpl)
+                viewPagerAdapter!!.setSource(sourceImpl)
                 attachTabLayoutMediator(sourceImpl.getAvailableTabs())
             }
         }

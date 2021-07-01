@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/more"
+    app:startDestination="@id/optionsFragment">
+
+    <fragment
+        android:id="@+id/optionsFragment"
+        android:name="com.flamyoad.honnoki.ui.options.OptionsFragment"
+        android:label="fragment_more_options"
+        tools:layout="@layout/fragment_more_options" >
+        <action
+            android:id="@+id/action_optionsFragment_to_defaultSourceFragment"
+            app:destination="@id/defaultSourceFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/defaultSourceFragment"
+        android:name="com.flamyoad.honnoki.ui.lookup.DefaultSourceFragment"
+        android:label="fragment_default_source"
+        tools:layout="@layout/fragment_default_source" />
+</navigation>

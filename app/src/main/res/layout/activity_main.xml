@@ -5,9 +5,9 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:orientation="vertical"
-    tools:context=".MainActivity"
-    android:animateLayoutChanges="true">
+    tools:context=".MainActivity">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerView"
@@ -15,13 +15,11 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-<!--    app:indicatorColor="#2DFFFFFF"-->
-
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
+        style="@style/Widget.MaterialComponents.BottomNavigationView.PrimarySurface"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        style="@style/Widget.MaterialComponents.BottomNavigationView.PrimarySurface"
         android:background="?android:attr/windowBackground"
         app:itemIconTint="@color/bottom_nav_active_tint"
         app:itemTextColor="@color/bottom_nav_active_tint"
@@ -30,21 +28,3 @@
     </com.google.android.material.bottomnavigation.BottomNavigationView>
 
 </LinearLayout>
-
-    <!--    app:indicatorColor="#2DFFFFFF"-->
-
-<!--<me.ibrahimsn.lib.SmoothBottomBar-->
-<!--android:id="@+id/bottomBar"-->
-<!--android:layout_width="match_parent"-->
-<!--android:layout_height="60dp"-->
-<!--app:backgroundColor="@color/colorPrimary"-->
-<!--app:iconSize="24dp"-->
-<!--app:iconTint="#C6BDBD"-->
-<!--app:iconTintActive="@color/white"-->
-<!--app:indicatorColor="#2DFFFFFF"-->
-<!--app:indicatorRadius="10dp"-->
-<!--app:itemPadding="10dp"-->
-<!--app:menu="@menu/bottom_nav_menu"-->
-<!--app:sideMargins="10dp"-->
-<!--app:textColor="@color/white"-->
-<!--app:textSize="12sp" />-->

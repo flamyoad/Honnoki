@@ -3,18 +3,22 @@ package com.flamyoad.honnoki
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import androidx.paging.ExperimentalPagingApi
-import com.flamyoad.honnoki.cache.CoverCache
 import com.flamyoad.honnoki.databinding.ActivityMainBinding
-import com.flamyoad.honnoki.ui.home.HomeFragment
-import com.flamyoad.honnoki.ui.library.LibraryFragment
-import com.flamyoad.honnoki.ui.options.OptionsFragment
-import com.flamyoad.honnoki.ui.search.SimpleSearchFragment
-import timber.log.Timber
 import java.lang.IllegalArgumentException
 
 @ExperimentalPagingApi
 class MainActivity : AppCompatActivity(), NavigationMenuListener {
+
+    private enum class NavigationFragmentType {
+        HOME,
+        SEARCH,
+        LIBRARY,
+        MORE
+    }
 
     private var _binding: ActivityMainBinding? = null
     private val binding get() = requireNotNull(_binding)
@@ -23,22 +27,21 @@ class MainActivity : AppCompatActivity(), NavigationMenuListener {
         super.onCreate(savedInstanceState)
 
         _binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root) // R.layout.activity_main
+        setContentView(binding.root)
 
         if (savedInstanceState == null) {
-            showFragment(HomeFragment.newInstance())
+            showFragment(NavigationFragmentType.HOME)
         }
-        
-        binding.bottomNavigation.setOnNavigationItemSelectedListener {
-            val fragment: BaseFragment = when (it.itemId) {
-                R.id.home -> HomeFragment.newInstance()
-                R.id.library -> LibraryFragment.newInstance()
-                R.id.search -> SimpleSearchFragment.newInstance()
-                R.id.more -> OptionsFragment.newInstance()
-                else -> throw IllegalArgumentException("No such fragment")
-            }
 
-            showFragment(fragment)
+        binding.bottomNavigation.setOnNavigationItemSelectedListener {
+            val type = when (it.itemId) {
+                R.id.home -> NavigationFragmentType.HOME
+                R.id.library -> NavigationFragmentType.LIBRARY
+                R.id.search -> NavigationFragmentType.SEARCH
+                R.id.more -> NavigationFragmentType.MORE
+                else -> throw IllegalArgumentException("No such type")
+            }
+            showFragment(type)
             return@setOnNavigationItemSelectedListener true
         }
 
@@ -63,30 +66,40 @@ class MainActivity : AppCompatActivity(), NavigationMenuListener {
                 return
             }
         }
-
         super.onBackPressed()
-        finish()
     }
 
-    private fun showFragment(fragment: BaseFragment) {
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-
-        val currentFragment = supportFragmentManager.primaryNavigationFragment
-        if (currentFragment != null) {
-            fragmentTransaction.hide(currentFragment)
+    private fun instantiateFragment(type: NavigationFragmentType): NavHostFragment {
+        return when (type) {
+            NavigationFragmentType.HOME -> NavHostFragment.create(R.navigation.home)
+            NavigationFragmentType.SEARCH -> NavHostFragment.create(R.navigation.search)
+            NavigationFragmentType.LIBRARY -> NavHostFragment.create(R.navigation.library)
+            NavigationFragmentType.MORE -> NavHostFragment.create(R.navigation.more)
         }
+    }
 
-        var fragmentTemp = supportFragmentManager.findFragmentByTag(fragment.bottomBarTitle)
+    private fun showFragment(type: NavigationFragmentType) {
+        val transaction = supportFragmentManager.beginTransaction()
+
+        NavigationFragmentType.values()
+            .filter { it != type }
+            .forEach { it ->
+                supportFragmentManager.findFragmentByTag(it.name)?.let { transaction.hide(it) }
+            }
+
+        var fragmentTemp = supportFragmentManager.findFragmentByTag(type.name)
         if (fragmentTemp == null) {
-            fragmentTemp = fragment
-            fragmentTransaction.add(R.id.fragmentContainerView, fragmentTemp, fragment.bottomBarTitle)
+            fragmentTemp = instantiateFragment(type)
+            transaction.add(
+                R.id.fragmentContainerView,
+                fragmentTemp,
+                type.name
+            )
         } else {
-            fragmentTransaction.show(fragmentTemp)
+            transaction.show(fragmentTemp)
         }
 
-        fragmentTransaction.setPrimaryNavigationFragment(fragmentTemp)
-            .setReorderingAllowed(true)
-            .commitNow()
+        transaction.commit()
     }
 
     override fun hideNavMenu() {

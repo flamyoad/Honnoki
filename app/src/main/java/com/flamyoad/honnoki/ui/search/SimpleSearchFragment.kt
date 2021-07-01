@@ -31,6 +31,7 @@ import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.kennyc.view.MultiStateView
 import kotlinx.coroutines.flow.*
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @ExperimentalPagingApi

@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
+apply plugin: 'androidx.navigation.safeargs'
 
 android {
     compileSdkVersion 30
@@ -117,7 +118,7 @@ dependencies {
     def work_version = "2.5.0"
     implementation "androidx.work:work-runtime-ktx:$work_version" // Kotlin + coroutines
 
-    def nav_version = "2.3.3"
+    def nav_version = "2.4.0-alpha03"
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
     androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
