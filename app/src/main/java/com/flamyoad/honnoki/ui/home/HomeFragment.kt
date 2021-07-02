@@ -5,9 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
-import com.flamyoad.honnoki.BaseFragment
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.databinding.FragmentHomeBinding
 import com.flamyoad.honnoki.dialog.SourceSwitcherDialog
@@ -25,7 +25,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.qualifier.named
 
 @ExperimentalPagingApi
-class HomeFragment : BaseFragment(), KoinComponent, SourceSwitcherDialog.Listener {
+class HomeFragment : Fragment(), KoinComponent, SourceSwitcherDialog.Listener {
     private val binding by viewLifecycleLazy { FragmentHomeBinding.bind(requireView()) }
 
     private val viewModel: HomeViewModel by sharedViewModel()
@@ -116,9 +116,6 @@ class HomeFragment : BaseFragment(), KoinComponent, SourceSwitcherDialog.Listene
             }
         }
     }
-
-    override val bottomBarTitle: String
-        get() = "Home"
 
     companion object {
         @JvmStatic

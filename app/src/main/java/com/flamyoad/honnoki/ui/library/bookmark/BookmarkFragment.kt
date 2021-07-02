@@ -1,7 +1,6 @@
 package com.flamyoad.honnoki.ui.library.bookmark
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.DialogFragment
@@ -16,7 +15,7 @@ import androidx.transition.Slide
 import androidx.transition.TransitionManager
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
-import com.flamyoad.honnoki.NavigationMenuListener
+import com.flamyoad.honnoki.MainViewModel
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.cache.CoverCache
 import com.flamyoad.honnoki.ui.library.bookmark.adapter.BookmarkAdapter
@@ -28,7 +27,6 @@ import com.flamyoad.honnoki.dialog.ChangeBookmarkGroupNameDialog
 import com.flamyoad.honnoki.dialog.DeleteBookmarkGroupDialog
 import com.flamyoad.honnoki.data.entities.BookmarkWithOverview
 import com.flamyoad.honnoki.dialog.MoveBookmarkDialog
-import com.flamyoad.honnoki.ui.library.LibraryViewModel
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -44,19 +42,12 @@ class BookmarkFragment : Fragment() {
     private val binding get() = requireNotNull(_binding)
 
     private val viewModel: BookmarkViewModel by viewModel()
-    private val parentViewModel: LibraryViewModel by sharedViewModel()
+
+    private val mainViewModel: MainViewModel by sharedViewModel()
 
     private val coverCache: CoverCache by inject()
 
-    private var listener: NavigationMenuListener? = null
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        try {
-            listener = context as NavigationMenuListener
-        } catch (ignored: ClassCastException) {
-        }
-    }
+    private var actionModeEnabled = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -75,13 +66,6 @@ class BookmarkFragment : Fragment() {
         // Restore the dialog fragment callback on screen rotation, if exists
         val moveBookmarkDialog = childFragmentManager.findFragmentByTag(MoveBookmarkDialog.TAG)
         moveBookmarkDialog?.let { setMoveBookmarkDialogCallback(it as MoveBookmarkDialog) }
-    }
-
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        super.onViewStateRestored(savedInstanceState)
-        if (viewModel.actionModeEnabled) {
-            startActionMode()
-        }
     }
 
     override fun onCreateContextMenu(
@@ -138,19 +122,19 @@ class BookmarkFragment : Fragment() {
         lifecycleScope.launchWhenResumed {
             viewModel.tickedItems().collectLatest {
                 if (it.isEmpty()) {
-                    exitActionMode()
+                    mainViewModel.setActionMode(false)
                 } else {
-                    binding.btnMoveTo.text =
-                        resources.getString(R.string.bookmark_actionmode_btn_moveto, it.size)
-                    binding.btnDelete.text =
-                        resources.getString(R.string.bookmark_actionmode_btn_delete, it.size)
+                    binding.btnMoveTo.text = resources.getString(R.string.bookmark_actionmode_btn_moveto, it.size)
+                    binding.btnDelete.text = resources.getString(R.string.bookmark_actionmode_btn_delete, it.size)
                 }
             }
         }
 
         lifecycleScope.launchWhenResumed {
-            parentViewModel.shouldCancelActionMode().collectLatest { yes ->
-                if (yes) {
+            mainViewModel.actionModeEnabled().collectLatest { enabled ->
+                if (enabled) {
+                    startActionMode()
+                } else {
                     exitActionMode()
                 }
             }
@@ -191,7 +175,7 @@ class BookmarkFragment : Fragment() {
 
     private fun initBookmarkItems() {
         val bookmarkAdapter =
-            BookmarkAdapter(coverCache, this::clickBookmark, this::enterActionMode)
+            BookmarkAdapter(coverCache, this::onBookmarkClick, this::enterActionMode)
         val bookmarkLayoutManager = GridLayoutManager(requireContext(), 3)
 
         with(binding.listItems) {
@@ -210,36 +194,11 @@ class BookmarkFragment : Fragment() {
         }
     }
 
-    private fun enterActionMode(item: BookmarkWithOverview) {
-        startActionMode()
-        clickBookmark(item)
-    }
-
-    private fun startActionMode() {
-        viewModel.actionModeEnabled = true
-        parentViewModel.actionModeEnabled = true
-
-        val btmSlide = Slide(Gravity.BOTTOM).apply {
-            addTarget(binding.actionModeBar)
-        }
-        TransitionManager.beginDelayedTransition(binding.root, btmSlide)
-
-        binding.actionModeBar.visibility = View.VISIBLE
-        listener?.hideNavMenu()
-    }
-
-    private fun exitActionMode() {
-        viewModel.actionModeEnabled = false
-        parentViewModel.actionModeEnabled = false
-
-        binding.actionModeBar.visibility = View.GONE
-        listener?.showNavMenu()
-
-        viewModel.clearTickedBookmarks()
-    }
-
-    private fun clickBookmark(bookmark: BookmarkWithOverview) {
-        if (viewModel.actionModeEnabled) {
+    /**
+     * Ticks manga if currently is in action mode. Otherwise, go to next screen
+     */
+    private fun onBookmarkClick(bookmark: BookmarkWithOverview) {
+        if (actionModeEnabled) {
             viewModel.tickBookmark(bookmark)
         } else {
             MangaOverviewActivity.startActivity(
@@ -249,6 +208,30 @@ class BookmarkFragment : Fragment() {
                 mangaTitle = bookmark.overview.mainTitle
             )
         }
+    }
+
+    private fun enterActionMode(item: BookmarkWithOverview) {
+        startActionMode()
+        onBookmarkClick(item)
+    }
+
+    private fun startActionMode() {
+        mainViewModel.setActionMode(true)
+        actionModeEnabled = true
+
+        val btmSlide = Slide(Gravity.BOTTOM).apply {
+            addTarget(binding.actionModeBar)
+        }
+        TransitionManager.beginDelayedTransition(binding.root, btmSlide)
+        binding.actionModeBar.visibility = View.VISIBLE
+    }
+
+    private fun exitActionMode() {
+        mainViewModel.setActionMode(false)
+        actionModeEnabled = false
+
+        binding.actionModeBar.visibility = View.GONE
+        viewModel.clearTickedBookmarks()
     }
 
     private fun openAddNewBookmarkDialog() {
@@ -295,7 +278,7 @@ class BookmarkFragment : Fragment() {
             .show {
                 positiveButton(text = "Confirm") {
                     viewModel.deleteBookmarks()
-                    exitActionMode()
+                    mainViewModel.setActionMode(false)
                 }
             }
             .lifecycleOwner(requireActivity())

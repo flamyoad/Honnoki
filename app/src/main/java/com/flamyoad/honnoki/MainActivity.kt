@@ -3,15 +3,18 @@ package com.flamyoad.honnoki
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.navigation.NavController
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupWithNavController
 import androidx.paging.ExperimentalPagingApi
 import com.flamyoad.honnoki.databinding.ActivityMainBinding
+import kotlinx.coroutines.flow.collectLatest
 import java.lang.IllegalArgumentException
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @ExperimentalPagingApi
-class MainActivity : AppCompatActivity(), NavigationMenuListener {
+class MainActivity : AppCompatActivity() {
+
+    private val viewModel: MainViewModel by viewModel()
 
     private enum class NavigationFragmentType {
         HOME,
@@ -25,7 +28,6 @@ class MainActivity : AppCompatActivity(), NavigationMenuListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -45,28 +47,11 @@ class MainActivity : AppCompatActivity(), NavigationMenuListener {
             return@setOnNavigationItemSelectedListener true
         }
 
-        binding.bottomNavigation.setOnNavigationItemReselectedListener {
-            when (it.itemId) {
-
+        lifecycleScope.launchWhenResumed {
+            viewModel.actionModeEnabled().collectLatest { enabled ->
+                binding.bottomNavigation.isVisible = enabled.not()
             }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
-    }
-
-    override fun onBackPressed() {
-        val baseFragment = supportFragmentManager.primaryNavigationFragment as? BaseFragment
-
-        baseFragment?.let {
-            if (it.ignoreDefaultBackPressAction) {
-                baseFragment.onBackPressAction()
-                return
-            }
-        }
-        super.onBackPressed()
     }
 
     private fun instantiateFragment(type: NavigationFragmentType): NavHostFragment {
@@ -87,26 +72,19 @@ class MainActivity : AppCompatActivity(), NavigationMenuListener {
                 supportFragmentManager.findFragmentByTag(it.name)?.let { transaction.hide(it) }
             }
 
-        var fragmentTemp = supportFragmentManager.findFragmentByTag(type.name)
-        if (fragmentTemp == null) {
-            fragmentTemp = instantiateFragment(type)
-            transaction.add(
-                R.id.fragmentContainerView,
-                fragmentTemp,
-                type.name
-            )
+        var fragment = supportFragmentManager.findFragmentByTag(type.name)
+        if (fragment == null) {
+            fragment = instantiateFragment(type)
+            transaction.add(R.id.fragmentContainerView, fragment, type.name)
         } else {
-            transaction.show(fragmentTemp)
+            transaction.show(fragment)
         }
 
         transaction.commit()
     }
 
-    override fun hideNavMenu() {
-        binding.bottomNavigation.isVisible = false
-    }
-
-    override fun showNavMenu() {
-        binding.bottomNavigation.isVisible = true
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }

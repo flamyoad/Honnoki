@@ -1,6 +1,5 @@
 package com.flamyoad.honnoki.ui.options
 
-import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,8 +8,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.flamyoad.honnoki.BaseFragment
-import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.databinding.FragmentMoreOptionsBinding
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.viewmodel.ext.android.viewModel

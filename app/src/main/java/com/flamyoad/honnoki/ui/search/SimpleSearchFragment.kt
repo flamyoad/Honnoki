@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
@@ -13,7 +14,6 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.flamyoad.honnoki.BaseFragment
 
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.data.GenreConstants
@@ -35,7 +35,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @ExperimentalPagingApi
-class SimpleSearchFragment : BaseFragment() {
+class SimpleSearchFragment : Fragment() {
     private val viewModel: SimpleSearchViewModel by viewModel()
 
     private val binding by viewLifecycleLazy { FragmentSimpleSearchBinding.bind(requireView()) }
@@ -190,12 +190,9 @@ class SimpleSearchFragment : BaseFragment() {
             context = requireContext(),
             mangaUrl = searchResult.link,
             mangaSource = viewModel.selectedSource().value,
-            mangaTitle =searchResult.title
+            mangaTitle = searchResult.title
         )
     }
-
-    override val bottomBarTitle: String
-        get() = "Search"
 
     companion object {
         private const val SELECTED_GENRE = "selected_genre"

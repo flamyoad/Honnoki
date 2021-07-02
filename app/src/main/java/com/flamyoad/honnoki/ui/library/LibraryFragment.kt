@@ -4,7 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.flamyoad.honnoki.BaseFragment
+import androidx.fragment.app.Fragment
+import com.flamyoad.honnoki.MainViewModel
 
 import com.flamyoad.honnoki.databinding.FragmentLibraryBinding
 import com.flamyoad.honnoki.utils.ui.DepthPageTransformer
@@ -13,12 +14,12 @@ import com.google.android.material.tabs.TabLayoutMediator
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.lang.IllegalArgumentException
 
-class LibraryFragment : BaseFragment() {
+class LibraryFragment : Fragment() {
 
     private var _binding: FragmentLibraryBinding? = null
     val binding get() = requireNotNull(_binding)
 
-    private val viewModel: LibraryViewModel by sharedViewModel()
+    private val mainViewModel: MainViewModel by sharedViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,24 +55,13 @@ class LibraryFragment : BaseFragment() {
 
         binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                viewModel.notifyCancelActionMode()
+                mainViewModel.setActionMode(false)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
             override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
     }
-
-    override fun onBackPressAction() {
-        super.onBackPressAction()
-        viewModel.notifyCancelActionMode()
-    }
-
-    override val ignoreDefaultBackPressAction: Boolean
-        get() = viewModel.actionModeEnabled
-
-    override val bottomBarTitle: String
-        get() = "Library"
 
     companion object {
         @JvmStatic

@@ -49,8 +49,6 @@ class BookmarkViewModel(
         }
         .asLiveData()
 
-    var actionModeEnabled: Boolean = false
-
     init {
         initializeBookmarkGroups()
     }
