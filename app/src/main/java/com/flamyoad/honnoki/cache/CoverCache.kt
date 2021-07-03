@@ -53,7 +53,7 @@ class CoverCache(private val context: Context) {
             ?: File(context.filesDir, dir).also { it.mkdirs() }
     }
 
-    fun getCoverIdentifier(imageUrl: String): String {
+    private fun getCoverIdentifier(imageUrl: String): String {
         val hash = HashUtils.md5(imageUrl)
         return "$hash.png"
     }

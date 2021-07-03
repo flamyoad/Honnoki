@@ -1,9 +1,11 @@
 package com.flamyoad.honnoki.ui.search
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -31,7 +33,6 @@ import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.kennyc.view.MultiStateView
 import kotlinx.coroutines.flow.*
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @ExperimentalPagingApi
@@ -95,6 +96,12 @@ class SimpleSearchFragment : Fragment() {
                 listSource.isVisible = !listSource.isVisible
                 txtSource.isVisible = !txtSource.isVisible
             }
+        }
+
+        binding.fab.setOnClickListener {
+            binding.searchView.requestFocus()
+            val imm = context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
         }
     }
 
