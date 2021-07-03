@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.flamyoad.honnoki.databinding.MangaRecentListHeaderBinding
 
-class VerticalMangaHeaderAdapter(private val onMoreButtonClick: () -> Unit) :
+class VerticalMangaHeaderAdapter(private val onMoreButtonClick: () -> Unit = {}) :
     RecyclerView.Adapter<VerticalMangaHeaderAdapter.HeaderViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HeaderViewHolder {

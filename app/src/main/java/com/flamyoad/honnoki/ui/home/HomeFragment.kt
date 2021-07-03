@@ -43,7 +43,6 @@ class HomeFragment : Fragment(), KoinComponent, SourceSwitcherDialog.Listener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        println("onCreateView")
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 

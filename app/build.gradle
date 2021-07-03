@@ -179,4 +179,6 @@ dependencies {
     implementation 'com.jakewharton.timber:timber:4.7.1'
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
+
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
 }

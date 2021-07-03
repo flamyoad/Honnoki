@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
     android:background="?android:attr/colorBackground">
 
     <ImageView
@@ -38,11 +39,11 @@
         android:foreground="?android:selectableItemBackgroundBorderless"
         android:paddingHorizontal="10dp"
         android:src="@drawable/ic_navigate_next_blue_24dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/listManga"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/listManga"
@@ -54,16 +55,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/logo"
         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/manga_trending_list_item"
+        tools:listitem="@layout/horizontal_manga_list_item"
         tools:orientation="horizontal" />
 
-    <View
-        android:id="@+id/divider"
-        android:layout_width="0dp"
-        android:layout_height="12dp"
-        android:layout_marginTop="16dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/listManga" />
 </androidx.constraintlayout.widget.ConstraintLayout>

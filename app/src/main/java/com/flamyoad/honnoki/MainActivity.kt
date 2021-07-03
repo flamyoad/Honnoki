@@ -54,6 +54,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        if (viewModel.actionModeEnabled().value) {
+            viewModel.setActionMode(false)
+            return
+        }
+
+        super.onBackPressed()
+    }
+
     private fun instantiateFragment(type: NavigationFragmentType): NavHostFragment {
         return when (type) {
             NavigationFragmentType.HOME -> NavHostFragment.create(R.navigation.home)

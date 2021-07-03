@@ -33,7 +33,6 @@ class MangaLoadStateAdapter(private val retry: () -> Unit)
         }
 
         fun bind(loadState: LoadState) {
-            println(loadState)
             with(binding) {
                 progressBar.isVisible = loadState is LoadState.Loading
                 retryButton.isVisible = loadState is LoadState.Error

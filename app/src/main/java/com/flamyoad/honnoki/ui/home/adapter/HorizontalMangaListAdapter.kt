@@ -10,15 +10,15 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.flamyoad.honnoki.R
-import com.flamyoad.honnoki.databinding.MangaTrendingListItemBinding
 import com.flamyoad.honnoki.data.entities.Manga
+import com.flamyoad.honnoki.databinding.HorizontalMangaListItemBinding
 
 class HorizontalMangaListAdapter(private val onItemClick: (Manga) -> Unit) :
     PagingDataAdapter<Manga, HorizontalMangaListAdapter.MangaViewHolder>(MANGA_COMPARATOR) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MangaViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.manga_trending_list_item, parent, false)
+            .inflate(R.layout.horizontal_manga_list_item, parent, false)
 
         val holder = MangaViewHolder(view)
 
@@ -39,7 +39,7 @@ class HorizontalMangaListAdapter(private val onItemClick: (Manga) -> Unit) :
     }
 
     inner class MangaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val binding = MangaTrendingListItemBinding.bind(itemView)
+        private val binding = HorizontalMangaListItemBinding.bind(itemView)
 
         fun bind(manga: Manga) {
             val loadingIndicator = CircularProgressDrawable(itemView.context).apply {

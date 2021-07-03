@@ -7,22 +7,23 @@ import android.view.ViewGroup
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.flamyoad.honnoki.databinding.MangaTrendingListBinding
 import com.flamyoad.honnoki.data.entities.Manga
+import com.flamyoad.honnoki.databinding.HorizontalMangaListBinding
 
-class HorizontalMangaAdapter(context: Context, onItemClick: (Manga) -> Unit) :
+class HorizontalMangaAdapter(
+    private val context: Context,
+    private val onItemClick: (Manga) -> Unit,
+    private val onItemsLoaded: () -> Unit
+) :
     RecyclerView.Adapter<HorizontalMangaAdapter.ListViewHolder>() {
 
     private val listAdapter = HorizontalMangaListAdapter(onItemClick)
-    private val linearLayoutManager =
-        LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+    private val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
     override fun getItemCount(): Int = 1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListViewHolder {
-        val binding =
-            MangaTrendingListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-
+        val binding = HorizontalMangaListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ListViewHolder(binding)
     }
 
@@ -44,10 +45,19 @@ class HorizontalMangaAdapter(context: Context, onItemClick: (Manga) -> Unit) :
                 override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
                 override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
             })
+
+            listAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+                override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                    super.onItemRangeInserted(positionStart, itemCount)
+                    if (itemCount > 0) {
+                        onItemsLoaded.invoke()
+                    }
+                }
+            })
         }
     }
 
-    inner class ListViewHolder(val binding: MangaTrendingListBinding) :
+    inner class ListViewHolder(val binding: HorizontalMangaListBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     suspend fun submitDataToChild(pagingData: PagingData<Manga>) {

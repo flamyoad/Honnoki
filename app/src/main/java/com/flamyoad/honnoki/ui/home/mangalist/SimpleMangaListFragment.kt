@@ -1,23 +1,21 @@
 package com.flamyoad.honnoki.ui.home.mangalist
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-
-import com.flamyoad.honnoki.ui.home.adapter.MangaLoadStateAdapter
-import com.flamyoad.honnoki.ui.home.adapter.VerticalMangaListAdapter
-import com.flamyoad.honnoki.databinding.FragmentSimpleMangaListBinding
 import com.flamyoad.honnoki.data.entities.Manga
-import com.flamyoad.honnoki.data.entities.MangaType
+import com.flamyoad.honnoki.databinding.FragmentSimpleMangaListBinding
 import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.source.model.TabType
 import com.flamyoad.honnoki.ui.home.HomeViewModel
+import com.flamyoad.honnoki.ui.home.adapter.*
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -25,8 +23,12 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
+private const val GRID_SPANCOUNT = 3
+
 @ExperimentalPagingApi
 class SimpleMangaListFragment : Fragment() {
+    private var _binding: FragmentSimpleMangaListBinding? = null
+    private val binding get() = requireNotNull(_binding)
 
     private val parentViewModel: HomeViewModel by sharedViewModel()
 
@@ -35,9 +37,8 @@ class SimpleMangaListFragment : Fragment() {
         parametersOf(sourceName)
     }
 
-    private var _binding: FragmentSimpleMangaListBinding? = null
-    private val binding get() = requireNotNull(_binding)
-
+    private val mangaAdapter by lazy { VerticalMangaListAdapter(this::openManga) }
+    private val loadingIndicatorAdapter by lazy { LoadIndicatorAdapter() }
     private val gridLayoutManager by lazy { GridLayoutManager(requireContext(), 3) }
 
     override fun onResume() {
@@ -60,34 +61,42 @@ class SimpleMangaListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initRecyclerView()
+        initMangaList()
+        initUi()
+        observeUi()
     }
 
-    private fun initRecyclerView() {
-        val mangaAdapter = VerticalMangaListAdapter(this::openManga).apply {
+    private fun initMangaList() {
+        mangaAdapter.apply {
             withLoadStateFooter(MangaLoadStateAdapter { this.retry() })
             stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         }
 
-        with(binding.listManga) {
-            this.adapter = mangaAdapter
-            this.layoutManager = gridLayoutManager
-            itemAnimator = null
-        }
+        val concatAdapter = ConcatAdapter(loadingIndicatorAdapter, mangaAdapter)
 
-        val tabType = TabType.valueOf(arguments?.getString(TAB_TYPE) ?: "")
+        gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                val adapterList = concatAdapter.adapters
+                if (position >= adapterList.size) {
+                    return 1
+                }
 
-        lifecycleScope.launch {
-            val mangaList = when (tabType) {
-                TabType.TRENDING -> viewModel.getTrendingManga()
-                TabType.LATEST -> viewModel.getRecentManga()
-                TabType.NEW -> viewModel.getNewManga()
-                else -> throw IllegalArgumentException()
-            }
-            mangaList.collectLatest {
-                mangaAdapter.submitData(it)
+                return when (adapterList[position]) {
+                    is VerticalMangaListAdapter -> 1
+                    is LoadIndicatorAdapter -> GRID_SPANCOUNT
+                    else -> throw IllegalArgumentException("Unknown adapter")
+                }
             }
         }
+
+        mangaAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                super.onItemRangeInserted(positionStart, itemCount)
+                if (itemCount > 0) {
+                    concatAdapter.removeAdapter(loadingIndicatorAdapter)
+                }
+            }
+        })
 
         // Listener to determine whether to shrink or expand FAB (Shrink after 1st item in list is no longer visible)
         binding.listManga.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -102,9 +111,33 @@ class SimpleMangaListFragment : Fragment() {
             }
         })
 
+        with(binding.listManga) {
+            this.adapter = concatAdapter
+            this.layoutManager = gridLayoutManager
+            itemAnimator = null
+        }
+    }
+
+    private fun initUi() {
         binding.swipeRefreshLayout.setOnRefreshListener {
             mangaAdapter.refresh()
             binding.swipeRefreshLayout.isRefreshing = false
+        }
+    }
+
+    private fun observeUi() {
+        val tabType = TabType.valueOf(arguments?.getString(TAB_TYPE) ?: "")
+
+        lifecycleScope.launchWhenResumed {
+            val mangaList = when (tabType) {
+                TabType.TRENDING -> viewModel.getTrendingManga()
+                TabType.LATEST -> viewModel.getRecentManga()
+                TabType.NEW -> viewModel.getNewManga()
+                else -> throw IllegalArgumentException()
+            }
+            mangaList.collectLatest {
+                mangaAdapter.submitData(it)
+            }
         }
     }
 
