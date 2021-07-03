@@ -190,15 +190,19 @@ class ReaderActivity : AppCompatActivity() {
         }
     }
 
+    // https://stackoverflow.com/questions/4503039/layout-animation-not-working-on-first-run
+    // Reason is because the view is not initially inflated when View.GONE is set. Use View.INVISIBLE instead.
     private fun toggleSidekickVisibility(isVisible: Boolean) {
-        TransitionManager.beginDelayedTransition(binding.appBarLayout, Slide(Gravity.TOP))
-        TransitionManager.beginDelayedTransition(binding.seekbarLayout, Slide(Gravity.BOTTOM))
-
-        // Hide the mini page number info on bottom right when the large bottom bar is visible
         binding.bottomRightInfoView.isVisible = !isVisible
 
-        binding.appBarLayout.isVisible = isVisible
-        binding.seekbarLayout.isVisible = isVisible
+        val visibility = when (isVisible) {
+            true -> View.VISIBLE
+            false -> View.INVISIBLE
+        }
+        TransitionManager.beginDelayedTransition(binding.appBarLayout, Slide(Gravity.TOP))
+        TransitionManager.beginDelayedTransition(binding.seekbarLayout, Slide(Gravity.BOTTOM))
+        binding.appBarLayout.visibility = visibility
+        binding.seekbarLayout.visibility = visibility
     }
 
     override fun onDestroy() {
