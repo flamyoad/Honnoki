@@ -22,7 +22,7 @@ class BookmarkAdapter(
     override fun onBind(holder: BaseViewHolder, item: BookmarkWithOverview) {
         with(holder.binding) {
             Glide.with(this.root)
-                .load(coverCache.get(item.overview))
+                .load(coverCache.get(item.overview.coverImage))
                 .into(coverImage)
 
             txtTitle.text = item.overview.mainTitle

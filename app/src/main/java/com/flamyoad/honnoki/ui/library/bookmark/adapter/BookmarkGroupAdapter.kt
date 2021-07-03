@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.flamyoad.honnoki.cache.CoverCache
 import com.flamyoad.honnoki.databinding.BookmarkGroupItemStackedBinding
 import com.flamyoad.honnoki.databinding.ButtonAddBookmarkGroupBinding
 import com.flamyoad.honnoki.data.entities.BookmarkGroup
@@ -15,6 +16,7 @@ private const val BTN_ADD_NEW_GROUP = 0
 private const val GROUP_ITEM = 1
 
 class BookmarkGroupAdapter(
+    private val coverCache: CoverCache,
     private val onBookmarkGroupClick: (BookmarkGroup) -> Unit,
     private val onAddButtonClick: () -> Unit) :
     ListAdapter<BookmarkGroupWithInfo, RecyclerView.ViewHolder>(GROUP_COMPARATOR) {
@@ -93,11 +95,13 @@ class BookmarkGroupAdapter(
                     0 -> binding.firstImage
                     1 -> binding.secondImage
                     2 -> binding.thirdImage
-                    else -> throw IllegalArgumentException("Image does not exist")
+                    else -> throw IllegalArgumentException("Exceeded amount of image views in the frame")
                 }
 
+                val imageUrl = coverImages.getOrNull(i) ?: return
+
                 Glide.with(imageView)
-                    .load(coverImages.getOrNull(i))
+                    .load(coverCache.get(imageUrl))
                     .into(imageView)
             }
         }

@@ -294,7 +294,7 @@ class MangaOverviewActivity : AppCompatActivity() {
             txtStatus.text = overview.status
         }
 
-        cacheManager.getCoverImage(this, overview) {
+        cacheManager.getCoverImage(this, overview.coverImage) {
             loadImage(it)
         }
     }

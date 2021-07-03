@@ -1,6 +1,5 @@
 package com.flamyoad.honnoki.ui.library.bookmark
 
-import android.content.Context
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.DialogFragment
@@ -18,22 +17,21 @@ import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
 import com.flamyoad.honnoki.MainViewModel
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.cache.CoverCache
-import com.flamyoad.honnoki.ui.library.bookmark.adapter.BookmarkAdapter
-import com.flamyoad.honnoki.ui.library.bookmark.adapter.BookmarkGroupAdapter
+import com.flamyoad.honnoki.data.entities.BookmarkWithOverview
 import com.flamyoad.honnoki.data.exception.NullEntityIdException
 import com.flamyoad.honnoki.databinding.FragmentBookmarkBinding
 import com.flamyoad.honnoki.dialog.AddBookmarkGroupDialog
 import com.flamyoad.honnoki.dialog.ChangeBookmarkGroupNameDialog
 import com.flamyoad.honnoki.dialog.DeleteBookmarkGroupDialog
-import com.flamyoad.honnoki.data.entities.BookmarkWithOverview
 import com.flamyoad.honnoki.dialog.MoveBookmarkDialog
+import com.flamyoad.honnoki.ui.library.bookmark.adapter.BookmarkAdapter
+import com.flamyoad.honnoki.ui.library.bookmark.adapter.BookmarkGroupAdapter
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.lang.ClassCastException
 
 @ExperimentalPagingApi
 class BookmarkFragment : Fragment() {
@@ -142,13 +140,8 @@ class BookmarkFragment : Fragment() {
     }
 
     private fun initBookmarkGroups() {
-        val groupAdapter = BookmarkGroupAdapter(
-            viewModel::selectBookmarkGroup,
-            this::openAddNewBookmarkDialog,
-        )
-
-        val groupLayoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        val groupAdapter = BookmarkGroupAdapter(coverCache, viewModel::selectBookmarkGroup, this::openAddNewBookmarkDialog)
+        val groupLayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
         with(binding.listGroups) {
             adapter = groupAdapter
@@ -174,8 +167,7 @@ class BookmarkFragment : Fragment() {
     }
 
     private fun initBookmarkItems() {
-        val bookmarkAdapter =
-            BookmarkAdapter(coverCache, this::onBookmarkClick, this::enterActionMode)
+        val bookmarkAdapter = BookmarkAdapter(coverCache, this::onBookmarkClick, this::enterActionMode)
         val bookmarkLayoutManager = GridLayoutManager(requireContext(), 3)
 
         with(binding.listItems) {

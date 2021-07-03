@@ -2,6 +2,7 @@ package com.flamyoad.honnoki.cache
 
 import android.content.Context
 import com.flamyoad.honnoki.data.entities.MangaOverview
+import com.flamyoad.honnoki.utils.HashUtils
 import timber.log.Timber
 import java.io.File
 
@@ -19,17 +20,17 @@ class CoverCache(private val context: Context) {
 
     private val cacheDir: File = getCacheDir(COVER_DIR)
 
-    fun get(overview: MangaOverview): File? {
-        val coverImage = File(cacheDir, getCoverIdentifier(overview))
+    fun get(imageUrl: String): File? {
+        val coverImage = File(cacheDir, getCoverIdentifier(imageUrl))
         if (coverImage.exists()) {
             return coverImage
         }
         return null
     }
 
-    fun write(fromGlide: File, overview: MangaOverview) {
+    fun write(fromGlide: File, imageUrl: String) {
         try {
-            val cacheFile = File(cacheDir, getCoverIdentifier(overview))
+            val cacheFile = File(cacheDir, getCoverIdentifier(imageUrl))
             cacheFile.outputStream().use {
                 fromGlide.inputStream().copyTo(it)
             }
@@ -39,11 +40,11 @@ class CoverCache(private val context: Context) {
     }
 
     fun delete(overview: MangaOverview): Boolean {
-        val coverImage = File(cacheDir, getCoverIdentifier(overview))
-        try {
-            return coverImage.delete()
+        val coverImage = File(cacheDir, getCoverIdentifier(overview.coverImage))
+        return try {
+            coverImage.delete()
         } catch (e: SecurityException) {
-            return false
+            false
         }
     }
 
@@ -52,9 +53,8 @@ class CoverCache(private val context: Context) {
             ?: File(context.filesDir, dir).also { it.mkdirs() }
     }
 
-    // Assume extension is .png
-    fun getCoverIdentifier(overview: MangaOverview): String {
-        val source = requireNotNull(overview.source)
-        return "$source-${overview.mainTitle}.png"
+    fun getCoverIdentifier(imageUrl: String): String {
+        val hash = HashUtils.md5(imageUrl)
+        return "$hash.png"
     }
 }

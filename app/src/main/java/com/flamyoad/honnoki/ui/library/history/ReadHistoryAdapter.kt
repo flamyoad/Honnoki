@@ -86,7 +86,7 @@ class ReadHistoryAdapter(
 
             with(binding) {
                 Glide.with(root)
-                    .load(coverCache.get(item.overview))
+                    .load(coverCache.get(item.overview.coverImage))
                     .into(binding.coverImage)
 
                 txtTitle.text = item.overview.mainTitle

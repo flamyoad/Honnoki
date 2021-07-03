@@ -11,29 +11,29 @@ import java.io.File
 // Todo: Try replacing Glide with other libraries to download the image
 class CacheManager(private val coverCache: CoverCache, private val context: Context) {
 
-    fun getCoverImage(activity: Activity, overview: MangaOverview, onLoadComplete: (File) -> Unit) {
-        coverCache.get(overview)?.let {
+    fun getCoverImage(activity: Activity, imageUrl: String, onLoadComplete: (File) -> Unit) {
+        coverCache.get(imageUrl)?.let {
             onLoadComplete(it)
             return
         }
 
         Glide.with(activity)
-            .downloadIntoFile(overview.coverImage) {
+            .downloadIntoFile(imageUrl) {
                 onLoadComplete(it)
-                coverCache.write(it, overview)
+                coverCache.write(it, imageUrl)
             }
     }
 
-    fun getCoverImage(fragment: Fragment, overview: MangaOverview, onLoadComplete: (File) -> Unit) {
-        coverCache.get(overview)?.let {
+    fun getCoverImage(fragment: Fragment, imageUrl: String, onLoadComplete: (File) -> Unit) {
+        coverCache.get(imageUrl)?.let {
             onLoadComplete(it)
             return
         }
 
         Glide.with(fragment)
-            .downloadIntoFile(overview.coverImage) {
+            .downloadIntoFile(imageUrl) {
                 onLoadComplete(it)
-                coverCache.write(it, overview)
+                coverCache.write(it, imageUrl)
             }
     }
 
