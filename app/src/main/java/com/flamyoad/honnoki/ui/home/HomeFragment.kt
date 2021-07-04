@@ -16,6 +16,7 @@ import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.source.model.TabType
 import com.flamyoad.honnoki.ui.home.adapter.MangaListFragmentAdapter
 import com.flamyoad.honnoki.ui.home.dialog.GenrePickerDialog
+import com.flamyoad.honnoki.utils.extensions.toast
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
 import com.flamyoad.honnoki.utils.ui.DepthPageTransformer
 import com.google.android.material.tabs.TabLayoutMediator
@@ -65,6 +66,11 @@ class HomeFragment : Fragment(), KoinComponent, SourceSwitcherDialog.Listener {
 
         binding.btnGenre.setOnClickListener {
             val source = viewModel.getSource() ?: return@setOnClickListener
+            if (source == Source.MANGADEX) {
+                toast("MangaDex does not support searching by genre")
+                return@setOnClickListener
+            }
+
             val dialog = GenrePickerDialog.newInstance(source)
             dialog.show(childFragmentManager, GenrePickerDialog.TAG)
         }

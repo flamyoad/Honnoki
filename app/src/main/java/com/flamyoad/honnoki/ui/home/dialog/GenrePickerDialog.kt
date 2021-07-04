@@ -10,12 +10,14 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.GridLayoutManager
 import com.flamyoad.honnoki.api.DM5Api
 import com.flamyoad.honnoki.api.MangakalotApi
+import com.flamyoad.honnoki.api.ReadMangaApi
 import com.flamyoad.honnoki.api.SenMangaApi
 import com.flamyoad.honnoki.data.GenreConstants
 import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.databinding.MangaGenreDialogPickerBinding
 import com.flamyoad.honnoki.ui.lookup.MangaLookupActivity
 import com.flamyoad.honnoki.ui.lookup.model.LookupType
+import com.flamyoad.honnoki.utils.extensions.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -70,7 +72,8 @@ class GenrePickerDialog : DialogFragment() {
             Source.DM5 -> DM5Api.getDm5GenreUrl(genre)
             Source.MANGAKALOT -> MangakalotApi.getMangakalotGenreUrl(genre)
             Source.SENMANGA -> SenMangaApi.getSenmangaGenreUrl(genre)
-            else -> throw NotImplementedError()
+            Source.READMANGA -> ReadMangaApi.getReadMngGenreUrl(genre)
+            else -> throw NotImplementedError("")
         }
 
         MangaLookupActivity.startActivity(

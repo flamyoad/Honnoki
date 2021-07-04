@@ -2,10 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item
-        android:id="@+id/action_chapter_list"
-        android:icon="@drawable/ic_baseline_format_list_bulleted_24"
-        android:title="Chapter List"
-        app:showAsAction="always"/>
+<!--    <item-->
+<!--        android:id="@+id/action_chapter_list"-->
+<!--        android:icon="@drawable/ic_baseline_format_list_bulleted_24"-->
+<!--        android:title="Chapter List"-->
+<!--        app:showAsAction="always"/>-->
     
 </menu>

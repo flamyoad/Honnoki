@@ -55,12 +55,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
+        // Remove action mode in Bookmark screen before exiting app
         if (viewModel.actionModeEnabled().value) {
             viewModel.setActionMode(false)
             return
         }
 
-        super.onBackPressed()
+        // Pop fragment in the nav backstack if there is any
+        val currentNavFragment = supportFragmentManager.fragments.first { it.isVisible } as NavHostFragment
+        if (currentNavFragment.navController.backQueue.size > 2) {
+            currentNavFragment.navController.navigateUp()
+        } else {
+            super.onBackPressed()
+        }
     }
 
     private fun instantiateFragment(type: NavigationFragmentType): NavHostFragment {

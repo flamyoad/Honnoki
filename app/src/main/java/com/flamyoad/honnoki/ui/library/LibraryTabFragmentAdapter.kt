@@ -11,15 +11,15 @@ import java.lang.IllegalArgumentException
 class LibraryTabFragmentAdapter(fragment: Fragment) :
     FragmentStateAdapter(fragment) {
     override fun getItemCount(): Int {
-        return 3
+        return 2
     }
 
     @ExperimentalPagingApi
     override fun createFragment(position: Int): Fragment {
-        when (position) {
-            0 -> return BookmarkFragment.newInstance()
-            1 -> return ReadHistoryFragment.newInstance()
-            2 -> return DownloadFragment.newInstance()
+        return when (position) {
+            0 -> BookmarkFragment.newInstance()
+            1 -> ReadHistoryFragment.newInstance()
+    //            2 -> return DownloadFragment.newInstance()
             else -> throw IllegalArgumentException("Tab does not exist!")
         }
     }

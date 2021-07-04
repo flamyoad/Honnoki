@@ -57,7 +57,7 @@ val viewModelModules = module {
 
     viewModel { SimpleSearchViewModel(androidApplication(), get()) }
 
-    viewModel { OptionsViewModel(get()) }
+    viewModel { OptionsViewModel(get(), get(), get(named(KoinConstants.APP_SCOPE))) }
 
     // Dialogs
     viewModel { AddBookmarkGroupDialogViewModel(androidApplication(), get()) }

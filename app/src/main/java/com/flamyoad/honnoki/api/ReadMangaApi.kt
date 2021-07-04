@@ -235,5 +235,46 @@ class ReadMangaApi(
                 GenreConstants.YURI -> 37
             }
         }
+
+        // https://www.readmng.com/category/action/1
+        fun getReadMngGenreUrl(genre: GenreConstants): String {
+            return when (genre) {
+                GenreConstants.ACTION -> "https://www.readmng.com/category/action"
+                GenreConstants.ADVENTURE -> "https://www.readmng.com/category/adventure"
+                GenreConstants.COMEDY -> "https://www.readmng.com/category/comedy"
+                GenreConstants.DOUJINSHI -> "https://www.readmng.com/category/doujinshi"
+                GenreConstants.DRAMA -> "https://www.readmng.com/category/drama"
+                GenreConstants.ECCHI -> "https://www.readmng.com/category/ecchi"
+                GenreConstants.FANTASY -> "https://www.readmng.com/category/fantasy"
+                GenreConstants.GENDER_BENDER -> "https://www.readmng.com/category/gender-bender"
+                GenreConstants.HAREM -> "https://www.readmng.com/category/harem"
+                GenreConstants.HISTORICAL -> "https://www.readmng.com/category/historical"
+                GenreConstants.HORROR -> "https://www.readmng.com/category/horror"
+                GenreConstants.ISEKAI -> "https://www.readmng.com/category/isekai"
+                GenreConstants.JOSEI -> "https://www.readmng.com/category/josei"
+                GenreConstants.MARTIAL_ARTS -> "https://www.readmng.com/category/martial-arts"
+                GenreConstants.MATURE -> "https://www.readmng.com/category/mature"
+                GenreConstants.MECHA -> "https://www.readmng.com/category/mecha"
+                GenreConstants.MYSTERY -> "https://www.readmng.com/category/mystery"
+                GenreConstants.ONE_SHOT -> "https://www.readmng.com/category/one-shot"
+                GenreConstants.PSYCHOLOGICAL -> "https://www.readmng.com/category/psychological"
+                GenreConstants.ROMANCE -> "https://www.readmng.com/category/romance"
+                GenreConstants.SCHOOL_LIFE -> "https://www.readmng.com/category/school-life"
+                GenreConstants.SCIFI -> "https://www.readmng.com/category/sci-fi"
+                GenreConstants.SEINEN -> "https://www.readmng.com/category/seinen"
+                GenreConstants.SHOUJO -> "https://www.readmng.com/category/shoujo"
+                GenreConstants.SHOUJO_AI -> "https://www.readmng.com/category/shoujo-ai"
+                GenreConstants.SHOUNEN -> "https://www.readmng.com/category/shounen"
+                GenreConstants.SHOUNEN_AI -> "https://www.readmng.com/category/shounen-ai"
+                GenreConstants.SLICE_OF_LIFE -> "https://www.readmng.com/category/slice-of-life"
+                GenreConstants.SMUT -> "https://www.readmng.com/category/smut"
+                GenreConstants.SPORTS -> "https://www.readmng.com/category/sports"
+                GenreConstants.SUPERNATURAL -> "https://www.readmng.com/category/supernatural"
+                GenreConstants.TRAGEDY -> "https://www.readmng.com/category/tragedy"
+                GenreConstants.YAOI -> "https://www.readmng.com/category/yaoi"
+                GenreConstants.YURI -> "https://www.readmng.com/category/yuri"
+                else -> ""
+            }
+        }
     }
 }

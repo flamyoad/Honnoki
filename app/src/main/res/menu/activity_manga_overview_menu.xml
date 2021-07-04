@@ -2,18 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-<!--        <item-->
-<!--            android:id="@+id/action_download"-->
-<!--            android:icon="@drawable/ic_file_download_white_24dp"-->
-<!--            android:title="Download"-->
-<!--            android:actionLayout="@layout/menu_item_back_button"-->
-<!--            app:showAsAction="always"/>-->
-
-    <item
-        android:id="@+id/action_download"
-        android:icon="@drawable/ic_file_download_white_24dp"
-        android:title="Download"
-        app:showAsAction="always" />
+<!--    <item-->
+<!--        android:id="@+id/action_download"-->
+<!--        android:icon="@drawable/ic_file_download_white_24dp"-->
+<!--        android:title="Download"-->
+<!--        app:showAsAction="always" />-->
 
     <item
         android:id="@+id/action_more"

@@ -43,6 +43,7 @@
             android:backgroundTint="@color/flower_petal_dark"
             android:insetLeft="0dp"
             android:insetTop="0dp"
+            android:textColor="@color/white"
             android:insetRight="0dp"
             android:insetBottom="0dp"
             android:text="Save"

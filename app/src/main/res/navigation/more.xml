@@ -17,7 +17,7 @@
     <fragment
         android:id="@+id/defaultSourceFragment"
         android:name="com.flamyoad.honnoki.ui.options.DefaultSourceFragment"
-        android:label="Select default source"
+        android:label="Preferred source"
         tools:layout="@layout/fragment_default_source">
     </fragment>
 </navigation>
