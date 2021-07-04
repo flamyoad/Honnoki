@@ -17,8 +17,9 @@ class ReaderPreference(private val dataStore: DataStore<Preferences>) {
     private val SHOW_ADS = booleanPreferencesKey("show_ads")
 
     fun shouldShowAds(source: Source): Boolean {
-        if (source == Source.MANGADEX) return false
-        return dataStore.getValueBlocking(SHOW_ADS) ?: true
+        return false
+//        if (source == Source.MANGADEX) return false
+//        return dataStore.getValueBlocking(SHOW_ADS) ?: true
     }
 
     suspend fun editVolumeUpAction(scrollDir: PageScrollDirection) = dataStore.edit {

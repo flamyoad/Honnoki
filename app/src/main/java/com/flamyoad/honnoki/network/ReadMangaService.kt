@@ -10,7 +10,7 @@ private const val CACHE_CONTROL_NO_CACHE = "Cache-Control: no-cache"
 
 interface ReadMangaService {
     companion object {
-        const val BASE_URL = "https://readmng.com/"
+        const val BASE_URL = "https://www.readmng.com/"
         const val CACHE_SIZE = (2 * 1024 * 1024).toLong()
     }
 
@@ -27,12 +27,25 @@ interface ReadMangaService {
     @POST("service/advanced_search")
     @FormUrlEncoded
     @Headers(
-        "X-Requested-With: XMLHttpRequest",
+        "x-requested-with: XMLHttpRequest",
         "content-type:application/x-www-form-urlencoded; charset=UTF-8"
     )
     suspend fun searchByKeyword(
         @Field("manga-name") query: String,
         @Field("type") type: String = "all",
-        @Field("status") status: String = "both",
+        @Field("status") status: String = "both"
+    ): ResponseBody
+
+    @POST("service/advanced_search")
+    @FormUrlEncoded
+    @Headers(
+        "x-requested-with: XMLHttpRequest",
+        "content-type:application/x-www-form-urlencoded; charset=UTF-8"
+    )
+    suspend fun searchByKeywordAndGenre(
+        @Field("manga-name") query: String,
+        @Field("include[]") genreId: Int,
+        @Field("type") type: String = "all",
+        @Field("status") status: String = "both"
     ): ResponseBody
 }

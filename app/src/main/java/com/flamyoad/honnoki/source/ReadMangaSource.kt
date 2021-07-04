@@ -11,9 +11,11 @@ import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.data.State
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.entities.*
+import com.flamyoad.honnoki.paging.LookupResultMediator
 import com.flamyoad.honnoki.paging.MangaMediator
 import com.flamyoad.honnoki.paging.SimpleSearchResultMediator
 import com.flamyoad.honnoki.source.model.TabType
+import com.flamyoad.honnoki.ui.lookup.model.LookupType
 import kotlinx.coroutines.flow.Flow
 
 @ExperimentalPagingApi
@@ -74,6 +76,45 @@ class ReadMangaSource(db: AppDatabase, context: Context, private val api: ReadMa
                 GenreConstants.ALL
             ),
             pagingSourceFactory = { db.searchResultDao().getAll() }
+        ).flow
+    }
+
+    override fun getSimpleSearchWithGenre(query: String, genre: GenreConstants): Flow<PagingData<SearchResult>> {
+        return Pager(
+            config = PagingConfig(pageSize = NORMAL_PAGINATION_SIZE, enablePlaceholders = false),
+            remoteMediator = SimpleSearchResultMediator(
+                api,
+                db,
+                query,
+                genre
+            ),
+            pagingSourceFactory = { db.searchResultDao().getAll() }
+        ).flow
+    }
+
+    override fun getMangaByAuthors(params: String): Flow<PagingData<LookupResult>> {
+        return Pager(
+            config = PagingConfig(pageSize = NORMAL_PAGINATION_SIZE, enablePlaceholders = false),
+            remoteMediator = LookupResultMediator(
+                api,
+                db,
+                params,
+                LookupType.AUTHOR
+            ),
+            pagingSourceFactory = { db.lookupDao().getAll() }
+        ).flow
+    }
+
+    override fun getMangaByGenres(params: String): Flow<PagingData<LookupResult>> {
+        return Pager(
+            config = PagingConfig(pageSize = NORMAL_PAGINATION_SIZE, enablePlaceholders = false),
+            remoteMediator = LookupResultMediator(
+                api,
+                db,
+                params,
+                LookupType.GENRE
+            ),
+            pagingSourceFactory = { db.lookupDao().getAll() }
         ).flow
     }
 

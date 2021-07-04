@@ -1,7 +1,7 @@
 package com.flamyoad.honnoki.parser
 
-import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.data.entities.*
+import com.flamyoad.honnoki.source.model.Source
 import org.jsoup.Jsoup
 import java.time.LocalDateTime
 
@@ -176,7 +176,26 @@ class ReadMangaParser {
                 link = it.selectFirst(".left > a").attrNonNull("href"),
                 title = it.selectFirst(".title > h2").textNonNull(),
                 latestChapter = it.selectFirst("dd:nth-child(2)").textNonNull(), // Status
-                author = it.selectFirst("dd:nth-child(4)").textNonNull(), // Genre
+                author = it.selectFirst("dd:nth-child(4)").textNonNull() // Genre
+            )
+        }
+    }
+
+    fun parseForSearchByAuthor(html: String?): List<SearchResult> {
+        if (html.isNullOrBlank()) {
+            return emptyList()
+        }
+
+        val document = Jsoup.parse(html)
+
+        val searchResult = document.select(".movies-grid > ul > li") ?: emptyList()
+        return searchResult.map {
+            SearchResult(
+                coverImage = it.selectFirst("a.thumbnail > img").attrNonNull("src"),
+                link = it.selectFirst(".movie-title").attrNonNull("href"),
+                title = it.selectFirst(".movie-title").textNonNull(),
+                latestChapter = "",
+                author = "",
             )
         }
     }

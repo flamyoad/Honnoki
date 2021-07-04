@@ -1,5 +1,7 @@
 package com.flamyoad.honnoki.api
 
+import com.flamyoad.honnoki.api.exception.InvalidGenreException
+import com.flamyoad.honnoki.data.GenreConstants
 import com.flamyoad.honnoki.data.State
 import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.network.ReadMangaService
@@ -116,11 +118,122 @@ class ReadMangaApi(
     override suspend fun searchByKeyword(keyword: String, index: Int): List<SearchResult> {
         val response = service.searchByKeyword(keyword)
 
+        // POST request gives all result in oneshot. So just return emptylist on index > 1
+        if (index > 1) {
+            return emptyList()
+        }
+
         return withContext(Dispatchers.Default) {
             val html = response.string()
             val searchResultList = parser.parseForSearchByKeyword(html)
 
             return@withContext searchResultList
+        }
+    }
+
+    override suspend fun searchByKeywordAndGenres(
+        keyword: String,
+        genre: GenreConstants,
+        index: Int
+    ): List<SearchResult> {
+
+        if (genre == GenreConstants.ALL) {
+            throw InvalidGenreException("There is no id for `All` genres! Use searchByKeyword() instead of searchByKeywordAndGenres()")
+        }
+
+        if (index > 1) {
+            return emptyList()
+        }
+
+        val response = service.searchByKeywordAndGenre(
+            query = keyword,
+            genreId = getReadMngGenreId(genre)
+        )
+
+        return withContext(Dispatchers.Default) {
+            val html = response.string()
+            val searchResultList = parser.parseForSearchByKeyword(html)
+
+            return@withContext searchResultList
+        }
+    }
+
+    override suspend fun searchMangaByGenre(param: String, index: Int): List<SearchResult> {
+        // https://www.readmng.com/category/action/1
+        val url = "$param/$index"
+
+        val response = service.getHtml(url)
+
+        return withContext(Dispatchers.Default) {
+            val html = response.string()
+            val searchResultList = parser.parseForSearchByKeyword(html)
+            return@withContext searchResultList
+        }
+    }
+
+    override suspend fun searchMangaByAuthor(param: String, index: Int): List<SearchResult> {
+        if (index > 1) {
+            return emptyList()
+        }
+
+        val response = service.getHtml(param)
+        return withContext(Dispatchers.Default) {
+            val html = response.string()
+            val searchResultList = parser.parseForSearchByAuthor(html)
+            return@withContext searchResultList
+        }
+    }
+
+    companion object {
+        private const val INVALID_GENRE = -1
+
+        /**
+         * Get the id of genre in ReadMng's database
+         */
+        fun getReadMngGenreId(genre: GenreConstants): Int {
+            return when (genre) {
+                GenreConstants.ALL -> throw InvalidGenreException("This genre constant does not have its own id")
+                GenreConstants.ACTION -> 2
+                GenreConstants.ADULT -> INVALID_GENRE
+                GenreConstants.ADVENTURE -> 4
+                GenreConstants.COMEDY -> 5
+                GenreConstants.COOKING -> INVALID_GENRE
+                GenreConstants.DOUJINSHI -> INVALID_GENRE
+                GenreConstants.DRAMA -> 7
+                GenreConstants.ECCHI -> 8
+                GenreConstants.FANTASY -> 9
+                GenreConstants.GENDER_BENDER -> 10
+                GenreConstants.HAREM -> 11
+                GenreConstants.HISTORICAL -> 12
+                GenreConstants.HORROR -> 13
+                GenreConstants.ISEKAI -> INVALID_GENRE
+                GenreConstants.JOSEI -> 14
+                GenreConstants.MANHUA -> INVALID_GENRE
+                GenreConstants.MANHWA -> INVALID_GENRE
+                GenreConstants.MARTIAL_ARTS -> 16
+                GenreConstants.MATURE -> 17
+                GenreConstants.MECHA -> 18
+                GenreConstants.MEDICAL -> INVALID_GENRE
+                GenreConstants.MYSTERY -> 19
+                GenreConstants.ONE_SHOT -> 20
+                GenreConstants.PSYCHOLOGICAL -> 21
+                GenreConstants.ROMANCE -> 22
+                GenreConstants.SCHOOL_LIFE -> 23
+                GenreConstants.SCIFI -> 24
+                GenreConstants.SEINEN -> 25
+                GenreConstants.SHOUJO -> 27
+                GenreConstants.SHOUJO_AI -> 28
+                GenreConstants.SHOUNEN -> 29
+                GenreConstants.SHOUNEN_AI -> 30
+                GenreConstants.SLICE_OF_LIFE -> 31
+                GenreConstants.SMUT -> 32
+                GenreConstants.SPORTS -> 33
+                GenreConstants.SUPERNATURAL -> 34
+                GenreConstants.TRAGEDY -> 35
+                GenreConstants.WEBTOONS -> INVALID_GENRE
+                GenreConstants.YAOI -> 36
+                GenreConstants.YURI -> 37
+            }
         }
     }
 }

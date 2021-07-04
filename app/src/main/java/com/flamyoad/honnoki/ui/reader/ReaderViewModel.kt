@@ -141,13 +141,14 @@ class ReaderViewModel(
             }
             LoadType.PREV -> {
                 val list = pagesFromDb.map { ReaderPage.Value(it) } as MutableList<ReaderPage>
-                list.add(ReaderPage.Ads(chapterId))
+                existingList.addAll(0, list)
                 if (shouldShowAds) {
-                    existingList.addAll(0, list)
+                    list.add(ReaderPage.Ads(chapterId))
                 }
             }
             LoadType.NEXT -> {
-                existingList.addAll(pagesFromDb.map { ReaderPage.Value(it) })
+                val list = pagesFromDb.map { ReaderPage.Value(it) }
+                existingList.addAll(list)
                 if (shouldShowAds) {
                     existingList.add(ReaderPage.Ads(chapterId))
                 }
