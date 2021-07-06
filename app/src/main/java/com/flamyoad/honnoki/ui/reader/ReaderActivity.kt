@@ -186,6 +186,16 @@ class ReaderActivity : AppCompatActivity() {
             viewModel.currentChapterShown().collectLatest {
                 binding.txtToolbarChapterTitle.text = it.title
                 binding.txtCurrentChapterMini.text = it.title
+
+                binding.bottomRightInfoView.apply {
+                    invalidate()
+                    requestLayout()
+                }
+
+                binding.txtCurrentChapterMini.apply {
+                    invalidate()
+                    requestLayout()
+                }
             }
         }
     }

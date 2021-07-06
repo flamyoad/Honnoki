@@ -28,17 +28,15 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.cache.CacheManager
-import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.data.entities.Author
-import com.flamyoad.honnoki.ui.overview.adapter.MangaOverviewFragmentAdapter
+import com.flamyoad.honnoki.data.entities.MangaOverview
 import com.flamyoad.honnoki.databinding.ActivityMangaOverviewBinding
 import com.flamyoad.honnoki.dialog.BookmarkDialog
-import com.flamyoad.honnoki.data.entities.MangaOverview
+import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.ui.lookup.MangaLookupActivity
 import com.flamyoad.honnoki.ui.lookup.model.LookupType
+import com.flamyoad.honnoki.ui.overview.adapter.MangaOverviewFragmentAdapter
 import com.flamyoad.honnoki.ui.reader.ReaderActivity
-import com.flamyoad.honnoki.utils.ViewUtils
-import com.flamyoad.honnoki.utils.extensions.downloadIntoFile
 import com.flamyoad.honnoki.utils.ui.AppBarStateChangeListener
 import com.flamyoad.honnoki.utils.ui.DepthPageTransformer
 import com.google.android.material.appbar.AppBarLayout
@@ -84,12 +82,6 @@ class MangaOverviewActivity : AppCompatActivity() {
             window.insetsController?.let {
                 window.navigationBarColor = getColor(R.color.sea_blue)
             }
-        } else {
-            binding.appbarLayout.updatePadding(top = 32)
-            window.setFlags(
-                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-            )
         }
 
         if (savedInstanceState == null) {
