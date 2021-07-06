@@ -84,7 +84,7 @@
                             android:id="@+id/imageManga"
                             android:layout_width="130dp"
                             android:layout_height="180dp"
-                            android:scaleType="fitXY"
+                            android:scaleType="fitCenter"
                             app:shapeAppearanceOverlay="@style/roundedCorners12dp"
                             tools:src="@drawable/fatestaynight" />
 
