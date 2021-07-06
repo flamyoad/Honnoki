@@ -2,13 +2,14 @@ package com.flamyoad.honnoki.ui.home.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.ViewGroup
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.flamyoad.honnoki.data.entities.Manga
 import com.flamyoad.honnoki.databinding.HorizontalMangaListBinding
+import com.flamyoad.honnoki.utils.ui.onItemsArrived
+import com.flamyoad.honnoki.utils.ui.willConsumeHorizontalScrolls
 
 class HorizontalMangaAdapter(
     private val context: Context,
@@ -32,28 +33,11 @@ class HorizontalMangaAdapter(
             adapter = listAdapter
             layoutManager = linearLayoutManager
             stateRestorationPolicy = StateRestorationPolicy.PREVENT_WHEN_EMPTY
-            addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
-                override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-                    when (e.action) {
-                        MotionEvent.ACTION_DOWN -> {
-                            parent.requestDisallowInterceptTouchEvent(true)
-                        }
-                    }
-                    return false
-                }
+            willConsumeHorizontalScrolls()
+        }
 
-                override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
-                override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
-            })
-
-            listAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-                override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                    super.onItemRangeInserted(positionStart, itemCount)
-                    if (itemCount > 0) {
-                        onItemsLoaded.invoke()
-                    }
-                }
-            })
+        listAdapter.onItemsArrived {
+            onItemsLoaded.invoke()
         }
     }
 

@@ -18,8 +18,8 @@ import com.flamyoad.honnoki.ui.home.HomeViewModel
 import com.flamyoad.honnoki.ui.home.adapter.*
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
+import com.flamyoad.honnoki.utils.ui.onItemsArrived
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -82,15 +82,9 @@ class DetailedMangaListFragment : Fragment() {
 
         trendingMangaAdapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
 
-        trendingMangaAdapter.registerAdapterDataObserver(object :
-            RecyclerView.AdapterDataObserver() {
-            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                super.onItemRangeInserted(positionStart, itemCount)
-                if (itemCount > 0) {
-                    concatAdapter.removeAdapter(trendingMangaLoadingAdapter)
-                }
-            }
-        })
+        trendingMangaAdapter.onItemsArrived {
+            concatAdapter.removeAdapter(trendingMangaLoadingAdapter)
+        }
     }
 
     private fun initRecentList() {

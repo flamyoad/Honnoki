@@ -15,7 +15,7 @@ class MangaGenreAdapter(private val onGenreClick: (GenreConstants) -> Unit) :
 
     override fun onBind(holder: BaseViewHolder, item: GenreConstants) {
         val name = item.toReadableName(holder.itemView.context)
-        holder.binding.btnGenre.text = name
+        holder.binding.txtGenre.text = name
     }
 
     override fun onItemClick(item: GenreConstants?) {

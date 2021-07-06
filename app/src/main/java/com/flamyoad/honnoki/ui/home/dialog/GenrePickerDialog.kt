@@ -37,7 +37,6 @@ class GenrePickerDialog : DialogFragment() {
         _binding = MangaGenreDialogPickerBinding.inflate(layoutInflater, null, false)
 
         val builder = MaterialAlertDialogBuilder(requireContext()).apply {
-            setTitle("Find Manga by Genre")
             setView(binding.root)
         }
 

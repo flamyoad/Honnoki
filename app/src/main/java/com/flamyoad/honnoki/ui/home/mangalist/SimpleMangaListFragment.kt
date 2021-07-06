@@ -17,8 +17,8 @@ import com.flamyoad.honnoki.source.model.TabType
 import com.flamyoad.honnoki.ui.home.HomeViewModel
 import com.flamyoad.honnoki.ui.home.adapter.*
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
+import com.flamyoad.honnoki.utils.ui.onItemsArrived
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -89,14 +89,9 @@ class SimpleMangaListFragment : Fragment() {
             }
         }
 
-        mangaAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                super.onItemRangeInserted(positionStart, itemCount)
-                if (itemCount > 0) {
-                    concatAdapter.removeAdapter(loadingIndicatorAdapter)
-                }
-            }
-        })
+        mangaAdapter.onItemsArrived {
+            concatAdapter.removeAdapter(loadingIndicatorAdapter)
+        }
 
         // Listener to determine whether to shrink or expand FAB (Shrink after 1st item in list is no longer visible)
         binding.listManga.addOnScrollListener(object : RecyclerView.OnScrollListener() {

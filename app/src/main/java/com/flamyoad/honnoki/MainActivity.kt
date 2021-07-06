@@ -8,6 +8,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.paging.ExperimentalPagingApi
 import com.flamyoad.honnoki.databinding.ActivityMainBinding
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flowOn
 import java.lang.IllegalArgumentException
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

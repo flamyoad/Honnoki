@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.postDelayed
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
@@ -13,8 +12,8 @@ import com.flamyoad.honnoki.ui.reader.adapter.ReaderImageAdapter
 import com.flamyoad.honnoki.ui.reader.adapter.ReaderLoadingAdapter
 import com.flamyoad.honnoki.databinding.FragmentVerticalScrollingReaderBinding
 import com.flamyoad.honnoki.ui.reader.adapter.FailedToLoadNextChapterAdapter
-import com.flamyoad.honnoki.ui.reader.model.LoadType
 import com.flamyoad.honnoki.ui.reader.model.ReaderPage
+import com.flamyoad.honnoki.utils.ui.onItemsArrived
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.withContext
@@ -68,23 +67,14 @@ class VerticalScrollingReaderFragment : Fragment(), VolumeButtonScroller.Listene
     }
 
     private fun initUi() {
-        readerAdapter.stateRestorationPolicy =
-            RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         concatAdapter.addAdapter(readerAdapter)
 
-        // First pass is 0 item. So we skip calling the scrolling method
-        // Second pass will be the size of the list given to ListAdapter#submitList()
-        //
-        // Don't bother using the commit callback from submitList() to scroll.
-        // Because it doesn't work
-        readerAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                super.onItemRangeInserted(positionStart, itemCount)
-                if (itemCount != 0) {
-                    scrollToStartingPageNumber()
-                }
+        readerAdapter.apply {
+            stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+            onItemsArrived {
+                scrollToStartingPageNumber()
             }
-        })
+        }
 
         with(binding) {
             with(listImages) {

@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimaryLight"
-            app:layout_scrollFlags="scroll|enterAlwaysCollapsed" />
+            app:layout_scrollFlags="scroll|enterAlwaysCollapsed"/>
 
         <LinearLayout
             android:layout_width="match_parent"

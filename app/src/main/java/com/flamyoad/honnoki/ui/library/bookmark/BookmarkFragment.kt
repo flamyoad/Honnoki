@@ -9,7 +9,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Slide
 import androidx.transition.TransitionManager
 import com.afollestad.materialdialogs.MaterialDialog
@@ -27,6 +26,7 @@ import com.flamyoad.honnoki.dialog.MoveBookmarkDialog
 import com.flamyoad.honnoki.ui.library.bookmark.adapter.BookmarkAdapter
 import com.flamyoad.honnoki.ui.library.bookmark.adapter.BookmarkGroupAdapter
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
+import com.flamyoad.honnoki.utils.ui.willConsumeHorizontalScrolls
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.android.ext.android.inject
@@ -146,19 +146,7 @@ class BookmarkFragment : Fragment() {
         with(binding.listGroups) {
             adapter = groupAdapter
             layoutManager = groupLayoutManager
-            addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
-                override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-                    when (e.action) {
-                        MotionEvent.ACTION_DOWN -> {
-                            parent?.requestDisallowInterceptTouchEvent(true)
-                        }
-                    }
-                    return false
-                }
-
-                override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
-                override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
-            })
+            willConsumeHorizontalScrolls()
         }
 
         viewModel.bookmarkGroupsWithInfo.observe(viewLifecycleOwner) {
