@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "bbf462082ee9b82a0bf5cc4e83976894",
+    "identityHash": "06a35930879deeb9dac4e77990efc67c",
     "entities": [
       {
         "tableName": "manga",
@@ -271,7 +271,7 @@
       },
       {
         "tableName": "page",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `number` INTEGER NOT NULL, `chapterId` INTEGER, `link` TEXT NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`chapterId`) REFERENCES `chapters`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `number` INTEGER NOT NULL, `chapterId` INTEGER, `link` TEXT NOT NULL, `linkDataSaver` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`chapterId`) REFERENCES `chapters`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -296,6 +296,12 @@
             "columnName": "link",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "linkDataSaver",
+            "columnName": "linkDataSaver",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -689,7 +695,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'bbf462082ee9b82a0bf5cc4e83976894')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '06a35930879deeb9dac4e77990efc67c')"
     ]
   }
 }

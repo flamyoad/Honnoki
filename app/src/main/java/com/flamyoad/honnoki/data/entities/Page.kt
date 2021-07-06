@@ -23,5 +23,6 @@ data class Page(
     @PrimaryKey val id: Long? = null,
     val number: Int,
     val chapterId: Long? = null,
-    val link: String
+    val link: String,
+    val linkDataSaver: String? = null,
 )

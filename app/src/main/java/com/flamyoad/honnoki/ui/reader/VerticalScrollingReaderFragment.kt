@@ -8,17 +8,17 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.*
-import com.flamyoad.honnoki.ui.reader.adapter.ReaderImageAdapter
-import com.flamyoad.honnoki.ui.reader.adapter.ReaderLoadingAdapter
 import com.flamyoad.honnoki.databinding.FragmentVerticalScrollingReaderBinding
 import com.flamyoad.honnoki.ui.reader.adapter.FailedToLoadNextChapterAdapter
+import com.flamyoad.honnoki.ui.reader.adapter.ReaderImageAdapter
+import com.flamyoad.honnoki.ui.reader.adapter.ReaderLoadingAdapter
 import com.flamyoad.honnoki.ui.reader.model.ReaderPage
 import com.flamyoad.honnoki.utils.ui.onItemsArrived
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.withContext
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @ExperimentalPagingApi
 class VerticalScrollingReaderFragment : Fragment(), VolumeButtonScroller.Listener {
@@ -30,10 +30,12 @@ class VerticalScrollingReaderFragment : Fragment(), VolumeButtonScroller.Listene
     private val viewModel: VerticalScrollingReaderViewModel by viewModel()
 
     private val concatAdapter = ConcatAdapter()
-    private val readerAdapter = ReaderImageAdapter()
     private val loadingAdapter = ReaderLoadingAdapter()
     private val failedToLoadNextChapAdapter by lazy {
         FailedToLoadNextChapterAdapter(parentViewModel::loadNextChapter)
+    }
+    private val readerAdapter by lazy {
+        ReaderImageAdapter(parentViewModel.source, parentViewModel.mangadexQualityMode)
     }
 
     private val linearLayoutManager by lazy { LinearLayoutManager(requireContext()) }

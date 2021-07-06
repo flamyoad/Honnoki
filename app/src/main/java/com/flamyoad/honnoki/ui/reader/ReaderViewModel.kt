@@ -14,11 +14,8 @@ import com.flamyoad.honnoki.repository.OverviewRepository
 import com.flamyoad.honnoki.source.BaseSource
 import com.flamyoad.honnoki.ui.reader.model.LoadType
 import com.flamyoad.honnoki.ui.reader.model.ReaderPage
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import java.util.concurrent.ConcurrentHashMap
 
 @ExperimentalPagingApi
@@ -31,8 +28,13 @@ class ReaderViewModel(
     private val readerPrefs: ReaderPreference
 ) : ViewModel() {
 
-    private val mangaOverviewId = MutableStateFlow(-1L)
+    val source get() =  baseSource.getSourceType()
+
+    val mangadexQualityMode get() = runBlocking { readerPrefs.mangadexQualityMode.first() }
+
     val overviewId get() = mangaOverviewId.value
+
+    private val mangaOverviewId = MutableStateFlow(-1L)
 
     val mangaOverview = mangaOverviewId
         .flatMapLatest { db.mangaOverviewDao().getById(it) }

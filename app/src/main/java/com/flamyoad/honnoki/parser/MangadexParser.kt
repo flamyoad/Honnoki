@@ -164,7 +164,8 @@ class MangadexParser {
         return chapter.attributes.data.mapIndexed { index, fileName ->
             Page(
                 number = index + 1,
-                link = constructPageUrl(baseUrl, MangadexQualityMode.DATA, chapterHash, fileName)
+                link = constructPageUrl(baseUrl, MangadexQualityMode.DATA, chapterHash, fileName),
+                linkDataSaver = constructPageUrl(baseUrl, MangadexQualityMode.DATA_SAVER, chapterHash, fileName)
             )
         }
     }

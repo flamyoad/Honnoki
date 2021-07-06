@@ -8,7 +8,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import com.flamyoad.honnoki.parser.model.MangadexQualityMode
 import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.ui.reader.model.PageScrollDirection
-import com.flamyoad.honnoki.utils.extensions.getValueBlocking
+import com.flamyoad.honnoki.utils.extensions.getConvertedValue
 
 class ReaderPreference(private val dataStore: DataStore<Preferences>) {
     private val VOLUME_UP_ACTION = stringPreferencesKey("volume_up_action")
@@ -20,6 +20,10 @@ class ReaderPreference(private val dataStore: DataStore<Preferences>) {
         return false
 //        if (source == Source.MANGADEX) return false
 //        return dataStore.getValueBlocking(SHOW_ADS) ?: true
+    }
+
+    val mangadexQualityMode = dataStore.getConvertedValue(MANGADEX_QUALITY_MODE) {
+        MangadexQualityMode.valueOf(it ?: MangadexQualityMode.DATA.toString())
     }
 
     suspend fun editVolumeUpAction(scrollDir: PageScrollDirection) = dataStore.edit {
@@ -35,6 +39,4 @@ class ReaderPreference(private val dataStore: DataStore<Preferences>) {
     suspend fun editMangadexQualityMode(mode: MangadexQualityMode) = dataStore.edit {
         it[MANGADEX_QUALITY_MODE] = mode.toString()
     }
-
-
 }

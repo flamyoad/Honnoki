@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.databinding.FragmentMoreOptionsBinding
+import com.flamyoad.honnoki.parser.model.MangadexQualityMode
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -34,20 +35,31 @@ class OptionsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initUi()
+        observeUi()
+    }
 
+    private fun initUi() {
         Glide.with(this)
             .load(ContextCompat.getDrawable(requireContext(), R.drawable.rinze))
             .into(binding.logo)
+
+        binding.swNightMode.setOnCheckedChangeListener { buttonView, isChecked ->
+            viewModel.setNightMode(isChecked)
+        }
 
         binding.layoutPreferredSource.setOnClickListener {
             val action = OptionsFragmentDirections.actionOptionsFragmentToDefaultSourceFragment()
             findNavController().navigate(action)
         }
 
-        binding.swNightMode.setOnCheckedChangeListener { buttonView, isChecked ->
-            viewModel.setNightMode(isChecked)
+        binding.layoutMangadexQuality.setOnClickListener {
+            val action = OptionsFragmentDirections.actionOptionsFragmentToMangadexQualityFragment()
+            findNavController().navigate(action)
         }
+    }
 
+    private fun observeUi() {
         lifecycleScope.launchWhenResumed {
             viewModel.nightModeEnabled.collectLatest {
                 binding.swNightMode.isChecked = it
@@ -58,6 +70,15 @@ class OptionsFragment : Fragment() {
         lifecycleScope.launchWhenResumed {
             viewModel.preferredSource.collectLatest {
                 binding.txtPreferredSource.text = it.title
+            }
+        }
+
+        lifecycleScope.launchWhenResumed {
+            viewModel.preferredMangadexQuality.collectLatest {
+                binding.txtMangadexQuality.text = when (it) {
+                    MangadexQualityMode.DATA -> "Original"
+                    MangadexQualityMode.DATA_SAVER -> "Compressed"
+                }
             }
         }
     }

@@ -9,13 +9,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.model.GlideUrl
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+import com.flamyoad.honnoki.data.entities.Page
 import com.flamyoad.honnoki.databinding.ReaderImageListAdsBinding
 import com.flamyoad.honnoki.databinding.ReaderImageListItemBinding
-import com.flamyoad.honnoki.data.entities.Page
+import com.flamyoad.honnoki.parser.model.MangadexQualityMode
+import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.ui.reader.model.ReaderPage
 import com.flamyoad.honnoki.utils.ui.MangaImageViewTarget
 
-class ReaderImageAdapter : ListAdapter<ReaderPage, RecyclerView.ViewHolder>(PAGE_COMPARATOR) {
+class ReaderImageAdapter(
+    private val source: Source,
+    private val quality: MangadexQualityMode
+) : ListAdapter<ReaderPage, RecyclerView.ViewHolder>(PAGE_COMPARATOR) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -86,15 +91,27 @@ class ReaderImageAdapter : ListAdapter<ReaderPage, RecyclerView.ViewHolder>(PAGE
                     }
                 })
 
-                val urlWithHeader = GlideUrl(page.link) {
-                    mapOf("Referer" to "https://manganelo.com/")
-                }
-
                 Glide.with(root)
-                    .download(urlWithHeader)
+                    .download(getImageUrl(page))
                     .timeout(15000) // 15 seconds
                     .into(MangaImageViewTarget(this))
             }
+        }
+
+        private fun getImageUrl(page: Page): GlideUrl {
+            val url = when {
+                source == Source.MANGAKALOT -> {
+                    GlideUrl(page.link) { mapOf("Referer" to "https://manganelo.com/") }
+                }
+                source == Source.MANGADEX && quality == MangadexQualityMode.DATA_SAVER -> {
+                    GlideUrl(page.linkDataSaver ?: page.link)
+                }
+                else -> {
+                    GlideUrl(page.link)
+                }
+            }
+            println(url.toStringUrl())
+            return url
         }
     }
 

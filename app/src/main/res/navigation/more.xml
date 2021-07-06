@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_optionsFragment_to_defaultSourceFragment"
             app:destination="@id/defaultSourceFragment" />
+        <action
+            android:id="@+id/action_optionsFragment_to_mangadexQualityFragment"
+            app:destination="@id/mangadexQualityFragment" />
     </fragment>
     <fragment
         android:id="@+id/defaultSourceFragment"
@@ -20,4 +23,9 @@
         android:label="Preferred source"
         tools:layout="@layout/fragment_default_source">
     </fragment>
+    <fragment
+        android:id="@+id/mangadexQualityFragment"
+        android:name="com.flamyoad.honnoki.ui.options.MangadexQualityFragment"
+        android:label="Preferred MangaDex image quality"
+        tools:layout="@layout/mangadex_quality_option_list_item"/>
 </navigation>
