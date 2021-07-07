@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
@@ -20,6 +22,7 @@ import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
 import com.flamyoad.honnoki.utils.ui.onItemsArrived
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -129,15 +132,18 @@ class DetailedMangaListFragment : Fragment() {
     }
 
     private fun observeUi() {
-        lifecycleScope.launchWhenResumed {
-            viewModel.getTrendingManga().collectLatest {
-                trendingMangaAdapter.submitDataToChild(it)
-            }
-        }
-
-        lifecycleScope.launchWhenResumed {
-            viewModel.getRecentManga().collectLatest {
-                recentMangaAdapter.submitData(it)
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                launch {
+                    viewModel.getTrendingManga().collectLatest {
+                        trendingMangaAdapter.submitDataToChild(it)
+                    }
+                }
+                launch {
+                    viewModel.getRecentManga().collectLatest {
+                        recentMangaAdapter.submitData(it)
+                    }
+                }
             }
         }
     }

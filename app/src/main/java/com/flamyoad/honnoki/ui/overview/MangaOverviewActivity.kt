@@ -19,7 +19,9 @@ import androidx.core.text.set
 import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.ExperimentalPagingApi
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -233,9 +235,11 @@ class MangaOverviewActivity : AppCompatActivity() {
             buildAuthorSpannableString(authors)
         }
 
-        lifecycleScope.launchWhenResumed {
-            viewModel.mangaOverview.collectLatest {
-                showMangaOverview(it)
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                launch {
+                    viewModel.mangaOverview.collectLatest { showMangaOverview(it) }
+                }
             }
         }
     }

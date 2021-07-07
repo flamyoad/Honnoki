@@ -18,7 +18,7 @@ class HomeViewModel(private val sourcePref: SourcePreference) : ViewModel() {
 
     val chosenSource = sourcePref.homeSource
         .distinctUntilChanged()
-        .shareIn(viewModelScope, SharingStarted.Lazily, replay = 1)
+        .shareIn(viewModelScope, SharingStarted.WhileSubscribed(), replay = 1)
 
     fun setShouldShrinkFab(boolean: Boolean) {
         shouldShrinkFab.value = boolean

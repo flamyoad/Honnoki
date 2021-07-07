@@ -21,7 +21,7 @@ class OptionsViewModel(
 ) : ViewModel() {
 
     val nightModeEnabled = uiPrefs.nightModeEnabled
-        .shareIn(viewModelScope, SharingStarted.Eagerly, 1)
+        .shareIn(viewModelScope, SharingStarted.WhileSubscribed(), 1)
 
     val preferredSource: Flow<Source> = sourcePrefs.homeSource
 

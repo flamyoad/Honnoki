@@ -5,6 +5,8 @@ import android.view.*
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.GridLayoutManager
@@ -118,24 +120,28 @@ class BookmarkFragment : Fragment() {
         }
 
         lifecycleScope.launchWhenResumed {
-            viewModel.tickedItems().collectLatest {
-                if (it.isEmpty()) {
-                    mainViewModel.setActionMode(false)
-                } else {
-                    binding.btnMoveTo.text = resources.getString(R.string.bookmark_actionmode_btn_moveto, it.size)
-                    binding.btnDelete.text = resources.getString(R.string.bookmark_actionmode_btn_delete, it.size)
+            viewModel.tickedItems()
+                .flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
+                .collectLatest {
+                    if (it.isEmpty()) {
+                        mainViewModel.setActionMode(false)
+                    } else {
+                        binding.btnMoveTo.text = resources.getString(R.string.bookmark_actionmode_btn_moveto, it.size)
+                        binding.btnDelete.text = resources.getString(R.string.bookmark_actionmode_btn_delete, it.size)
+                    }
                 }
-            }
         }
 
         lifecycleScope.launchWhenResumed {
-            mainViewModel.actionModeEnabled().collectLatest { enabled ->
-                if (enabled) {
-                    startActionMode()
-                } else {
-                    exitActionMode()
+            mainViewModel.actionModeEnabled()
+                .flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
+                .collectLatest { enabled ->
+                    if (enabled) {
+                        startActionMode()
+                    } else {
+                        exitActionMode()
+                    }
                 }
-            }
         }
     }
 

@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.ExperimentalPagingApi
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.databinding.FragmentHomeBinding
@@ -21,6 +23,7 @@ import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
 import com.flamyoad.honnoki.utils.ui.DepthPageTransformer
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.component.KoinComponent
 import org.koin.core.qualifier.named
@@ -84,22 +87,25 @@ class HomeFragment : Fragment(), KoinComponent, SourceSwitcherDialog.Listener {
             }
         }
 
-        lifecycleScope.launchWhenResumed {
-            viewModel.chosenSource.collectLatest {
-                binding.fab.text = it.title
-            }
-        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                launch {
+                    viewModel.chosenSource.collectLatest {
+                        binding.fab.text = it.title
+                    }
+                }
+                launch {
+                    viewModel.chosenSource.collectLatest { source ->
+                        // We have to detach it before notifyDataSetChange() gets called in adapter
+                        // Otherwise, the old mediator will react based on the new items in adapter
+                        // and may cause OutOfBounds exception
+                        tabLayoutMediator?.detach()
 
-        lifecycleScope.launchWhenResumed {
-            viewModel.chosenSource.collectLatest { source ->
-                // We have to detach it before notifyDataSetChange() gets called in adapter
-                // Otherwise, the old mediator will react based on the new items in adapter
-                // and may cause OutOfBounds exception
-                tabLayoutMediator?.detach()
-
-                val sourceImpl: BaseSource = getKoin().get(named(source.name))
-                viewPagerAdapter!!.setSource(sourceImpl)
-                attachTabLayoutMediator(sourceImpl.getAvailableTabs())
+                        val sourceImpl: BaseSource = getKoin().get(named(source.name))
+                        viewPagerAdapter.setSource(sourceImpl)
+                        attachTabLayoutMediator(sourceImpl.getAvailableTabs())
+                    }
+                }
             }
         }
     }

@@ -7,6 +7,8 @@ import android.view.*
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.transition.Slide
@@ -136,67 +138,65 @@ class ReaderActivity : AppCompatActivity() {
 
     private fun observeUi() {
         lifecycleScope.launchWhenResumed {
-            viewModel.mangaOverview.collectLatest {
-                binding.txtToolbarMangaTitle.text = it.mainTitle
-            }
+            viewModel.mangaOverview
+                .flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
+                .collectLatest { binding.txtToolbarMangaTitle.text = it.mainTitle }
         }
 
         lifecycleScope.launchWhenResumed {
-            viewModel.sideKickVisibility().collectLatest {
-                toggleSidekickVisibility(it)
-            }
+            viewModel.sideKickVisibility()
+                .flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
+                .collectLatest { toggleSidekickVisibility(it) }
         }
 
         lifecycleScope.launchWhenResumed {
             viewModel.currentPageIndicator
+                .flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
                 .debounce(50)
-                .collectLatest {
-                    binding.txtCurrentPageMini.text = it
-                }
+                .collectLatest { binding.txtCurrentPageMini.text = it }
         }
 
         lifecycleScope.launchWhenResumed {
             viewModel.currentPageIndicator
-                .collectLatest {
-                    binding.txtSeekbarCurrentPage.text = it
-                }
+                .flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
+                .collectLatest { binding.txtSeekbarCurrentPage.text = it }
         }
 
         lifecycleScope.launchWhenResumed {
-            viewModel.totalPageNumber.collectLatest {
-                binding.seekbar.max = it
-            }
+            viewModel.totalPageNumber
+                .flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
+                .collectLatest { binding.seekbar.max = it }
         }
 
         lifecycleScope.launchWhenResumed {
-            viewModel.currentPageNumber().collectLatest {
-                binding.seekbar.progress = it
-            }
+            viewModel.currentPageNumber()
+                .flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
+                .collectLatest { binding.seekbar.progress = it }
         }
 
         lifecycleScope.launchWhenResumed {
             viewModel.currentPageNumber()
                 .debounce(250)
-                .collectLatest {
-                    viewModel.saveLastReadPage(it)
-                }
+                .collectLatest { viewModel.saveLastReadPage(it) }
         }
 
         lifecycleScope.launchWhenResumed {
-            viewModel.currentChapterShown().collectLatest {
-                binding.txtToolbarChapterTitle.text = it.title
-                binding.txtCurrentChapterMini.text = it.title
+            viewModel.currentChapterShown()
+                .flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
+                .collectLatest {
+                    binding.txtToolbarChapterTitle.text = it.title
+                    binding.txtCurrentChapterMini.text = it.title
 
-                binding.bottomRightInfoView.apply {
-                    invalidate()
-                    requestLayout()
-                }
+                    binding.bottomRightInfoView.apply {
+                        invalidate()
+                        requestLayout()
+                    }
 
-                binding.txtCurrentChapterMini.apply {
-                    invalidate()
-                    requestLayout()
+                    binding.txtCurrentChapterMini.apply {
+                        invalidate()
+                        requestLayout()
+                    }
                 }
-            }
         }
     }
 
