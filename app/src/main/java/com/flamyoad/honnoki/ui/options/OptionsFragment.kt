@@ -47,8 +47,12 @@ class OptionsFragment : Fragment() {
             .load(ContextCompat.getDrawable(requireContext(), R.drawable.rinze))
             .into(binding.logo)
 
-        binding.swNightMode.setOnCheckedChangeListener { buttonView, isChecked ->
+        binding.switchNightMode.setOnCheckedChangeListener { buttonView, isChecked ->
             viewModel.setNightMode(isChecked)
+        }
+
+        binding.switchExtraSpaceAtBottomIndicator.setOnCheckedChangeListener { buttonView, isChecked ->
+            viewModel.setExtraSpaceAtBottomIndicator(isChecked)
         }
 
         binding.layoutPreferredSource.setOnClickListener {
@@ -67,8 +71,13 @@ class OptionsFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 launch {
                     viewModel.nightModeEnabled.collectLatest {
-                        binding.swNightMode.isChecked = it
+                        binding.switchNightMode.isChecked = it
                         enableNightMode(it)
+                    }
+                }
+                launch {
+                    viewModel.showExtraSpaceAtBottomIndicator.collectLatest {
+                        binding.switchExtraSpaceAtBottomIndicator.isChecked = it
                     }
                 }
                 launch {
@@ -86,28 +95,6 @@ class OptionsFragment : Fragment() {
                 }
             }
         }
-
-//        lifecycleScope.launchWhenResumed {
-//            viewModel.nightModeEnabled.collectLatest {
-//                binding.swNightMode.isChecked = it
-//                enableNightMode(it)
-//            }
-//        }
-//
-//        lifecycleScope.launchWhenResumed {
-//            viewModel.preferredSource.collectLatest {
-//                binding.txtPreferredSource.text = it.title
-//            }
-//        }
-//
-//        lifecycleScope.launchWhenResumed {
-//            viewModel.preferredMangadexQuality.collectLatest {
-//                binding.txtMangadexQuality.text = when (it) {
-//                    MangadexQualityMode.DATA -> "Original"
-//                    MangadexQualityMode.DATA_SAVER -> "Compressed"
-//                }
-//            }
-//        }
     }
 
     private fun enableNightMode(yes: Boolean) {

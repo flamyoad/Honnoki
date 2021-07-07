@@ -60,7 +60,7 @@
             app:layout_constraintTop_toBottomOf="@+id/txtAppVersion" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/swNightMode"
+            android:id="@+id/switchNightMode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingHorizontal="12dp"
@@ -77,7 +77,27 @@
             android:background="?android:attr/listDivider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/swNightMode" />
+            app:layout_constraintTop_toBottomOf="@+id/switchNightMode" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switchExtraSpaceAtBottomIndicator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="12dp"
+            android:text="Add empty space at bottom indicator in reader"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider3" />
+
+        <View
+            android:id="@+id/divider4"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/switchExtraSpaceAtBottomIndicator" />
 
         <LinearLayout
             android:id="@+id/layoutPreferredSource"
@@ -90,7 +110,7 @@
             android:padding="12dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider3">
+            app:layout_constraintTop_toBottomOf="@+id/divider4">
 
             <TextView
                 android:layout_width="match_parent"
@@ -109,7 +129,7 @@
         </LinearLayout>
 
         <View
-            android:id="@+id/divider4"
+            android:id="@+id/divider5"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="?android:attr/listDivider"
@@ -128,7 +148,7 @@
             android:padding="12dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider4">
+            app:layout_constraintTop_toBottomOf="@+id/divider5">
 
             <TextView
                 android:layout_width="match_parent"
@@ -147,7 +167,7 @@
         </LinearLayout>
 
         <View
-            android:id="@+id/divider5"
+            android:id="@+id/divider6"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="?android:attr/listDivider"

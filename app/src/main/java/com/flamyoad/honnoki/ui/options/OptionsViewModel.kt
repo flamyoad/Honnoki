@@ -27,6 +27,8 @@ class OptionsViewModel(
 
     val preferredMangadexQuality = readerPrefs.mangadexQualityMode
 
+    val showExtraSpaceAtBottomIndicator = readerPrefs.extraSpaceAtBottomIndicator
+
     val sourceOptionList: StateFlow<List<SourceOption>> = preferredSource
         .map { selectedSource ->
             Source.values()
@@ -43,6 +45,12 @@ class OptionsViewModel(
     fun setNightMode(enabled: Boolean) {
         viewModelScope.launch {
             uiPrefs.setNightMode(enabled)
+        }
+    }
+
+    fun setExtraSpaceAtBottomIndicator(enabled: Boolean) {
+        applicationScope.launch {
+            readerPrefs.editExtraSpaceAtBottomIndicator(enabled)
         }
     }
 

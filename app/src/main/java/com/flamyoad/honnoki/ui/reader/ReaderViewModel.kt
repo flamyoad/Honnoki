@@ -28,9 +28,11 @@ class ReaderViewModel(
     private val readerPrefs: ReaderPreference
 ) : ViewModel() {
 
-    val source get() =  baseSource.getSourceType()
+    val source get() = baseSource.getSourceType()
 
     val mangadexQualityMode get() = runBlocking { readerPrefs.mangadexQualityMode.first() }
+
+    val extraSpaceAtBottomIndicator get() = runBlocking { readerPrefs.extraSpaceAtBottomIndicator.first() }
 
     val overviewId get() = mangaOverviewId.value
 
@@ -70,6 +72,7 @@ class ReaderViewModel(
         replay = 0,
         extraBufferCapacity = 1
     )
+
     fun pageNumberScrolledBySeekbar() = pageNumberScrolledBySeekbar.asSharedFlow()
 
     private val pageList = MutableStateFlow<List<ReaderPage>>(emptyList())
@@ -128,7 +131,7 @@ class ReaderViewModel(
         db.withTransaction {
             db.pageDao().insertAll(pagesFromNetwork)
         }
-        
+
         val pagesFromDb = db.pageDao().getAllFromChapter(chapterId)
 
         val existingList = pageList.value.toMutableList()

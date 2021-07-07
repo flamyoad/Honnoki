@@ -7,6 +7,7 @@ import android.view.*
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -106,12 +107,12 @@ class ReaderActivity : AppCompatActivity() {
                 viewModel.goToLastPage()
             }
 
+            if (viewModel.extraSpaceAtBottomIndicator) {
+                binding.bottomRightInfoViewContent.updatePadding(right = 32)
+            }
+
             seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(
-                    seekBar: SeekBar?,
-                    progress: Int,
-                    fromUser: Boolean
-                ) {
+                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                     if (fromUser) {
                         if (progress == 0) {
                             viewModel.setCurrentPageNumber(1)
@@ -120,9 +121,7 @@ class ReaderActivity : AppCompatActivity() {
                         }
                     }
                 }
-
                 override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {
                     // User has stopped moving. Move to the image selected
                     val progress = seekBar?.progress ?: return
@@ -186,12 +185,10 @@ class ReaderActivity : AppCompatActivity() {
                 .collectLatest {
                     binding.txtToolbarChapterTitle.text = it.title
                     binding.txtCurrentChapterMini.text = it.title
-
                     binding.bottomRightInfoView.apply {
                         invalidate()
                         requestLayout()
                     }
-
                     binding.txtCurrentChapterMini.apply {
                         invalidate()
                         requestLayout()
