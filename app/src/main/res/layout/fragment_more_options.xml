@@ -85,7 +85,7 @@
             android:layout_height="wrap_content"
             android:paddingHorizontal="12dp"
             android:paddingVertical="12dp"
-            android:text="Add empty space at bottom indicator in reader"
+            android:text="Add extra space at bottom indicator in reader"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/divider3" />
