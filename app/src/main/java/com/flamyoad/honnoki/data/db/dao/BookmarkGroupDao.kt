@@ -23,7 +23,7 @@ interface BookmarkGroupDao {
     fun getById(id: Long): Flow<BookmarkGroup?>
 
     @Query("SELECT id FROM bookmark_group LIMIT 1")
-    suspend fun getFirstItemId(): Long
+    suspend fun getFirstItemId(): Long?
 
     @Query("SELECT * FROM bookmark_group")
     fun getAll(): Flow<List<BookmarkGroup>>

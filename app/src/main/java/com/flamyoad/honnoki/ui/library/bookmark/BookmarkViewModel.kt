@@ -31,7 +31,6 @@ class BookmarkViewModel(
 
     val selectedBookmarkGroup = selectedBookmarkGroupId
         .onEach { flowOf(BookmarkGroup.empty()) }
-        .filter { it != -1L }
         .flatMapLatest { db.bookmarkGroupDao().getById(it) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), BookmarkGroup.empty())
 
@@ -42,8 +41,8 @@ class BookmarkViewModel(
 
     val bookmarkItems: LiveData<List<BookmarkWithOverview>> = selectedBookmarkGroup
         .onEach { flowOf(emptyList<BookmarkWithOverview>()) }
-        .filterNotNull()
-        .flatMapLatest { db.bookmarkDao().getAllWithOverviewFrom(it.id ?: -1L) }
+        .filter { it != BookmarkGroup.empty() }
+        .flatMapLatest { db.bookmarkDao().getAllWithOverviewFrom(it?.id ?: -1L) }
         .combine(tickedItems) { fromDb, tickedBookmarks ->
             fromDb.map { it.copy(isSelected = it.bookmark in tickedBookmarks) }
         }
@@ -55,7 +54,7 @@ class BookmarkViewModel(
 
     private fun initializeBookmarkGroups() {
         viewModelScope.launch(Dispatchers.IO) {
-            selectedBookmarkGroupId.value = bookmarkGroupDao.getFirstItemId()
+            selectedBookmarkGroupId.value = bookmarkGroupDao.getFirstItemId() ?: -1L
         }
     }
 
