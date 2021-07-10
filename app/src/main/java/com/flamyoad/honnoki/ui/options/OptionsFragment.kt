@@ -7,13 +7,16 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.databinding.FragmentMoreOptionsBinding
 import com.flamyoad.honnoki.parser.model.MangadexQualityMode
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -44,8 +47,12 @@ class OptionsFragment : Fragment() {
             .load(ContextCompat.getDrawable(requireContext(), R.drawable.rinze))
             .into(binding.logo)
 
-        binding.swNightMode.setOnCheckedChangeListener { buttonView, isChecked ->
+        binding.switchNightMode.setOnCheckedChangeListener { buttonView, isChecked ->
             viewModel.setNightMode(isChecked)
+        }
+
+        binding.switchExtraSpaceAtBottomIndicator.setOnCheckedChangeListener { buttonView, isChecked ->
+            viewModel.setExtraSpaceAtBottomIndicator(isChecked)
         }
 
         binding.layoutPreferredSource.setOnClickListener {
@@ -60,24 +67,31 @@ class OptionsFragment : Fragment() {
     }
 
     private fun observeUi() {
-        lifecycleScope.launchWhenResumed {
-            viewModel.nightModeEnabled.collectLatest {
-                binding.swNightMode.isChecked = it
-                enableNightMode(it)
-            }
-        }
-
-        lifecycleScope.launchWhenResumed {
-            viewModel.preferredSource.collectLatest {
-                binding.txtPreferredSource.text = it.title
-            }
-        }
-
-        lifecycleScope.launchWhenResumed {
-            viewModel.preferredMangadexQuality.collectLatest {
-                binding.txtMangadexQuality.text = when (it) {
-                    MangadexQualityMode.DATA -> "Original"
-                    MangadexQualityMode.DATA_SAVER -> "Compressed"
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                launch {
+                    viewModel.nightModeEnabled.collectLatest {
+                        binding.switchNightMode.isChecked = it
+                        enableNightMode(it)
+                    }
+                }
+                launch {
+                    viewModel.showExtraSpaceAtBottomIndicator.collectLatest {
+                        binding.switchExtraSpaceAtBottomIndicator.isChecked = it
+                    }
+                }
+                launch {
+                    viewModel.preferredSource.collectLatest {
+                        binding.txtPreferredSource.text = it.title
+                    }
+                }
+                launch {
+                    viewModel.preferredMangadexQuality.collectLatest {
+                        binding.txtMangadexQuality.text = when (it) {
+                            MangadexQualityMode.DATA -> "Original"
+                            MangadexQualityMode.DATA_SAVER -> "Compressed"
+                        }
+                    }
                 }
             }
         }

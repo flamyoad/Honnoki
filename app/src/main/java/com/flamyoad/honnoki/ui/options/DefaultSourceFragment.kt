@@ -5,13 +5,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.flamyoad.honnoki.databinding.FragmentDefaultSourceBinding
 import com.flamyoad.honnoki.ui.options.adapter.SourceOptionsAdapter
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class DefaultSourceFragment : Fragment() {
@@ -45,9 +49,13 @@ class DefaultSourceFragment : Fragment() {
             layoutManager = linearLayoutManager
         }
 
-        lifecycleScope.launchWhenResumed {
-            viewModel.sourceOptionList.collectLatest {
-                sourceAdapter.setList(it)
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                launch {
+                    viewModel.sourceOptionList.collectLatest {
+                        sourceAdapter.setList(it)
+                    }
+                }
             }
         }
     }

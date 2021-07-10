@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
@@ -23,12 +25,16 @@ import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
 import jp.wasabeef.recyclerview.animators.FadeInAnimator
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.parameter.parametersOf
 
 @ExperimentalCoroutinesApi
 @ExperimentalPagingApi
 class MangaSummaryFragment : Fragment() {
+    private var _binding: FragmentMangaSummaryBinding? = null
+    private val binding get() = requireNotNull(_binding)
+
     private val mangaSource: String by lazy {
         requireActivity().intent.getStringExtra(MangaOverviewActivity.MANGA_SOURCE) ?: ""
     }
@@ -36,8 +42,6 @@ class MangaSummaryFragment : Fragment() {
     private val viewModel: MangaOverviewViewModel by sharedViewModel {
         parametersOf(mangaSource)
     }
-
-    private val binding by viewLifecycleLazy { FragmentMangaSummaryBinding.bind(requireView()) }
 
     private val mainHeaderAdapter by lazy { MainHeaderAdapter() }
     private val mangaSummaryAdapter by lazy { MangaSummaryAdapter(this::lookupMangaByGenre) }
@@ -57,14 +61,20 @@ class MangaSummaryFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_manga_summary, container, false)
+    ): View {
+        _binding = FragmentMangaSummaryBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initUi()
         observeUi()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun initUi() {
@@ -90,9 +100,13 @@ class MangaSummaryFragment : Fragment() {
     }
 
     private fun observeUi() {
-        lifecycleScope.launchWhenResumed {
-            viewModel.mangaOverview.collectLatest {
-                mangaSummaryAdapter.setMangaOverview(State.Success(it))
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                launch {
+                    viewModel.mangaOverview.collectLatest {
+                        mangaSummaryAdapter.setMangaOverview(State.Success(it))
+                    }
+                }
             }
         }
 

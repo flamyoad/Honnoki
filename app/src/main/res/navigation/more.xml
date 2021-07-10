@@ -26,6 +26,6 @@
     <fragment
         android:id="@+id/mangadexQualityFragment"
         android:name="com.flamyoad.honnoki.ui.options.MangadexQualityFragment"
-        android:label="Preferred MangaDex image quality"
-        tools:layout="@layout/mangadex_quality_option_list_item"/>
+        android:label="MangaDex image quality"
+        tools:layout="@layout/mangadex_quality_option_list_item" />
 </navigation>

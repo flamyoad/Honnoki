@@ -21,11 +21,13 @@ class OptionsViewModel(
 ) : ViewModel() {
 
     val nightModeEnabled = uiPrefs.nightModeEnabled
-        .shareIn(viewModelScope, SharingStarted.Eagerly, 1)
+        .shareIn(viewModelScope, SharingStarted.WhileSubscribed(), 1)
 
     val preferredSource: Flow<Source> = sourcePrefs.homeSource
 
     val preferredMangadexQuality = readerPrefs.mangadexQualityMode
+
+    val showExtraSpaceAtBottomIndicator = readerPrefs.extraSpaceAtBottomIndicator
 
     val sourceOptionList: StateFlow<List<SourceOption>> = preferredSource
         .map { selectedSource ->
@@ -43,6 +45,12 @@ class OptionsViewModel(
     fun setNightMode(enabled: Boolean) {
         viewModelScope.launch {
             uiPrefs.setNightMode(enabled)
+        }
+    }
+
+    fun setExtraSpaceAtBottomIndicator(enabled: Boolean) {
+        applicationScope.launch {
+            readerPrefs.editExtraSpaceAtBottomIndicator(enabled)
         }
     }
 

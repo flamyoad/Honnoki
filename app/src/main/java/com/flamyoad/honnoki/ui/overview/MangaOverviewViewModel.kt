@@ -24,7 +24,7 @@ class MangaOverviewViewModel(private val db: AppDatabase, private val baseSource
     val mangaOverview = mangaOverviewId
         .filter { it != -1L }
         .flatMapLatest { db.mangaOverviewDao().getById(it) }
-        .stateIn(viewModelScope, SharingStarted.Lazily, MangaOverview.empty())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), MangaOverview.empty())
 
     val overview get() = mangaOverview.value
 

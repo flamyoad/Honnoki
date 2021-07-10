@@ -7,6 +7,9 @@ import android.view.*
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.transition.Slide
@@ -104,14 +107,17 @@ class ReaderActivity : AppCompatActivity() {
                 viewModel.goToLastPage()
             }
 
+            if (viewModel.extraSpaceAtBottomIndicator) {
+                binding.bottomRightInfoViewContent.updatePadding(right = 32)
+            }
+
             seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                     if (fromUser) {
                         viewModel.setCurrentPageNumber(progress + 1)
                     }
                 }
-                override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                }
+                override fun onStartTrackingTouch(seekBar: SeekBar?) {}
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {
                     // User has stopped moving. Move to the image selected
                     val progress = seekBar?.progress ?: return
@@ -123,67 +129,64 @@ class ReaderActivity : AppCompatActivity() {
 
     private fun observeUi() {
         lifecycleScope.launchWhenResumed {
-            viewModel.mangaOverview.collectLatest {
-                binding.txtToolbarMangaTitle.text = it.mainTitle
-            }
+            viewModel.mangaOverview
+                .flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
+                .collectLatest { binding.txtToolbarMangaTitle.text = it.mainTitle }
         }
 
         lifecycleScope.launchWhenResumed {
-            viewModel.sideKickVisibility().collectLatest {
-                toggleSidekickVisibility(it)
-            }
+            viewModel.sideKickVisibility()
+                .flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
+                .collectLatest { toggleSidekickVisibility(it) }
         }
 
         lifecycleScope.launchWhenResumed {
             viewModel.currentPageIndicator
+                .flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
                 .debounce(50)
-                .collectLatest {
-                    println(it)
-                    binding.txtCurrentPageMini.text = it
-                }
+                .collectLatest { binding.txtCurrentPageMini.text = it }
         }
 
         lifecycleScope.launchWhenResumed {
             viewModel.currentPageIndicator
-                .collectLatest {
-                    binding.txtSeekbarCurrentPage.text = it
-                }
+                .flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
+                .collectLatest { binding.txtSeekbarCurrentPage.text = it }
         }
 
         lifecycleScope.launchWhenResumed {
-            viewModel.totalPageNumber.collectLatest {
-                binding.seekbar.max = it - 1
-            }
+            viewModel.totalPageNumber
+                .flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
+                .collectLatest { binding.seekbar.max = it - 1 }
         }
 
         lifecycleScope.launchWhenResumed {
-            viewModel.currentPageNumber().collectLatest {
-                binding.seekbar.progress = it
-            }
+            viewModel.currentPageNumber()
+                .flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
+                .collectLatest { binding.seekbar.progress = it }
         }
 
         lifecycleScope.launchWhenResumed {
             viewModel.currentPageNumber()
                 .debounce(250)
-                .collectLatest {
-                    viewModel.saveLastReadPage(it)
-                }
+                .collectLatest { viewModel.saveLastReadPage(it) }
         }
 
         lifecycleScope.launchWhenResumed {
-            viewModel.currentChapterShown().collectLatest {
-                binding.txtToolbarChapterTitle.text = it.title
-                binding.txtCurrentChapterMini.text = it.title
-                binding.bottomRightInfoView.apply {
-                    invalidate()
-                    requestLayout()
+            viewModel.currentChapterShown()
+                .flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
+                .collectLatest {
+                    binding.txtToolbarChapterTitle.text = it.title
+                    binding.txtCurrentChapterMini.text = it.title
+                    binding.bottomRightInfoView.apply {
+                        invalidate()
+                        requestLayout()
+                    }
+                    binding.txtCurrentChapterMini.apply {
+                        invalidate()
+                        requestLayout()
+                    }
+                    viewModel.saveLastReadChapter(it)
                 }
-                binding.txtCurrentChapterMini.apply {
-                    invalidate()
-                    requestLayout()
-                }
-                viewModel.saveLastReadChapter(it)
-            }
         }
     }
 

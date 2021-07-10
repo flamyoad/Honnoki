@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -56,10 +58,12 @@ class ReadHistoryFragment : Fragment() {
         }
 
         lifecycleScope.launchWhenResumed {
-            viewModel.readHistory.collectLatest {
-                binding.multiStateView.viewState = MultiStateView.ViewState.CONTENT
-                historyAdapter.submitData(it)
-            }
+            viewModel.readHistory
+                .flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
+                .collectLatest {
+                    binding.multiStateView.viewState = MultiStateView.ViewState.CONTENT
+                    historyAdapter.submitData(it)
+                }
         }
     }
 

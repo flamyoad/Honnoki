@@ -9,6 +9,8 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
@@ -33,6 +35,7 @@ import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.kennyc.view.MultiStateView
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @ExperimentalPagingApi
@@ -168,27 +171,27 @@ class SimpleSearchFragment : Fragment() {
         binding.listSearchResultView.viewState = MultiStateView.ViewState.CONTENT
 
         lifecycleScope.launchWhenResumed {
-            viewModel.searchResult.collectLatest {
-                searchResultAdapter.submitData(it)
-            }
+            viewModel.searchResult
+                .flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
+                .collectLatest { searchResultAdapter.submitData(it) }
         }
 
         lifecycleScope.launchWhenResumed {
-            viewModel.genreList().collectLatest {
-                genreAdapter.submitList(it)
-            }
+            viewModel.genreList()
+                .flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
+                .collectLatest { genreAdapter.submitList(it) }
         }
 
         lifecycleScope.launchWhenResumed {
-            viewModel.sourceList().collectLatest {
-                sourceAdapter.submitList(it)
-            }
+            viewModel.sourceList()
+                .flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
+                .collectLatest { sourceAdapter.submitList(it) }
         }
 
         lifecycleScope.launchWhenResumed {
-            viewModel.selectedSource().collectLatest {
-                binding.selectLayout.txtSource.text = it.title
-            }
+            viewModel.selectedSource()
+                .flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
+                .collectLatest { binding.selectLayout.txtSource.text = it.title }
         }
     }
 
