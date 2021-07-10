@@ -16,6 +16,7 @@ import com.flamyoad.honnoki.ui.reader.model.ReaderPage
 import com.flamyoad.honnoki.utils.ui.onItemsArrived
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -52,7 +53,7 @@ class VerticalScrollingReaderFragment : Fragment(), VolumeButtonScroller.Listene
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initUi()
+        initUi(savedInstanceState)
         observeUi()
     }
 
@@ -68,13 +69,13 @@ class VerticalScrollingReaderFragment : Fragment(), VolumeButtonScroller.Listene
         }
     }
 
-    private fun initUi() {
+    private fun initUi(savedInstanceState: Bundle?) {
         concatAdapter.addAdapter(readerAdapter)
 
         readerAdapter.apply {
             stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
             onItemsArrived {
-                scrollToStartingPageNumber()
+                scrollToStartingPageNumber(savedInstanceState)
             }
         }
 
@@ -204,11 +205,14 @@ class VerticalScrollingReaderFragment : Fragment(), VolumeButtonScroller.Listene
         }
     }
 
-    private fun scrollToStartingPageNumber() {
+    private fun scrollToStartingPageNumber(savedInstanceState: Bundle?) {
         if (initialScrollDone) return
 
-        val startingPageNumber = requireActivity().intent.getIntExtra(ReaderActivity.START_AT_PAGE, 0)
-        linearLayoutManager.scrollToPositionWithOffset(startingPageNumber - 1, 0)
+        lifecycleScope.launch {
+            val overviewId = requireActivity().intent.getLongExtra(ReaderActivity.OVERVIEW_ID, -1)
+            val overview = viewModel.getMangaOverview(overviewId)
+            linearLayoutManager.scrollToPositionWithOffset(overview.lastReadPageNumber - 1, 0)
+        }
 
         initialScrollDone = true
     }

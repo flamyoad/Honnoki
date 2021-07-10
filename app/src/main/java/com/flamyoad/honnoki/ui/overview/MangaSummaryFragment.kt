@@ -138,13 +138,7 @@ class MangaSummaryFragment : Fragment() {
         val chapterId = chapter.id ?: return
         val source = overview.source ?: return
 
-        val startAtPage = if (overview.lastReadChapterId == chapterId) {
-            overview.lastReadPageNumber
-        } else {
-            0
-        }
-
-        ReaderActivity.start(requireContext(), chapterId, overviewId, startAtPage, source)
+        ReaderActivity.start(requireContext(), chapterId, overviewId, source)
     }
 
     private fun lookupMangaByGenre(genre: Genre) {

@@ -81,7 +81,6 @@ class ReadHistoryFragment : Fragment() {
             requireContext(),
             chapterId = history.overview.lastReadChapterId,
             overviewId = history.overview.id!!,
-            startAtPage = history.overview.lastReadPageNumber,
             source = history.overview.source!!
         )
     }

@@ -7,6 +7,7 @@ import androidx.room.withTransaction
 import com.flamyoad.honnoki.data.State
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.entities.Chapter
+import com.flamyoad.honnoki.data.entities.MangaOverview
 import com.flamyoad.honnoki.data.entities.Page
 import com.flamyoad.honnoki.data.preference.ReaderPreference
 import com.flamyoad.honnoki.repository.ChapterRepository
@@ -162,6 +163,13 @@ class ReaderViewModel(
         loadCompletionStatusByChapterId.put(chapter.id, true)
     }
 
+    fun restoreLastReadChapter(overviewId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val overview = db.mangaOverviewDao().getByIdBlocking(overviewId)
+            fetchChapterImages(overview.lastReadChapterId, LoadType.INITIAL)
+        }
+    }
+
     fun saveLastReadChapter(chapter: Chapter) {
         val overviewId = mangaOverviewId.value
         applicationScope.launch(Dispatchers.IO) {
@@ -186,8 +194,7 @@ class ReaderViewModel(
             val overviewId = mangaOverviewId.value
             val currentChapterNumber = currentChapterShown.value.number
 
-            val prevChapter = db.chapterDao().getPreviousChapter(overviewId, currentChapterNumber)
-                ?: return@launch
+            val prevChapter = db.chapterDao().getPreviousChapter(overviewId, currentChapterNumber) ?: return@launch
             val chapterId = prevChapter.id ?: return@launch
 
             fetchChapterImages(chapterId, LoadType.PREV)

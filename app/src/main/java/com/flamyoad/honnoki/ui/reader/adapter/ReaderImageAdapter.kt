@@ -110,7 +110,6 @@ class ReaderImageAdapter(
                     GlideUrl(page.link)
                 }
             }
-            println(url.toStringUrl())
             return url
         }
     }

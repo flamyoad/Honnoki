@@ -377,16 +377,10 @@ class MangaOverviewActivity : AppCompatActivity() {
             if (chapterId == null) return@launch
             if (overview.source == null) return@launch
 
-            val startAtPage = if (overview.lastReadChapterId == chapterId) {
-                overview.lastReadPageNumber
-            } else {
-                0
-            }
             ReaderActivity.start(
                 this@MangaOverviewActivity,
                 chapterId,
                 overviewId,
-                startAtPage,
                 overview.source
             )
         }

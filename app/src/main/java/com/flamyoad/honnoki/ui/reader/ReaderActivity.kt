@@ -40,33 +40,30 @@ class ReaderActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         _binding = ActivityReaderBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
-        initUi()
-        observeUi()
-    }
-
-    override fun onResume() {
-        super.onResume()
         // Helps to survive process death by checking whether the initial id is -1
-        // We can set the overviewId however many times we want because StateFlow is distinct by default
         if (viewModel.overviewId == -1L) {
             val frameFragment = VerticalScrollingReaderFragment.newInstance()
             supportFragmentManager.beginTransaction()
                 .replace(R.id.container, frameFragment, VerticalScrollingReaderFragment.TAG)
                 .commitNow()
         }
-
-        val listener = supportFragmentManager
-            .findFragmentById(R.id.container) as VolumeButtonScroller.Listener
+        val listener = supportFragmentManager.findFragmentById(R.id.container) as VolumeButtonScroller.Listener
         volumeButtonScroller = VolumeButtonScroller(listener, getKoin().get())
 
-        viewModel.fetchChapterList(intent.getLongExtra(OVERVIEW_ID, -1L))
-        viewModel.fetchChapterImages(intent.getLongExtra(CHAPTER_ID, -1), LoadType.INITIAL)
+        initUi()
+        observeUi()
+
+        viewModel.fetchChapterList(intent.getLongExtra(OVERVIEW_ID, -1))
+
+        if (savedInstanceState == null) {
+            viewModel.fetchChapterImages(intent.getLongExtra(CHAPTER_ID, -1), LoadType.INITIAL)
+        } else {
+            viewModel.restoreLastReadChapter(intent.getLongExtra(OVERVIEW_ID, -1))
+        }
     }
 
     override fun dispatchKeyEvent(event: KeyEvent?): Boolean {
@@ -213,21 +210,18 @@ class ReaderActivity : AppCompatActivity() {
     companion object {
         const val CHAPTER_ID = "chapter_id"
         const val OVERVIEW_ID = "overview_id"
-        const val START_AT_PAGE = "start_at_page"
         const val MANGA_SOURCE = "manga_source"
 
         fun start(
             context: Context,
             chapterId: Long,
             overviewId: Long,
-            startAtPage: Int,
             source: Source
         ) {
             val intent = Intent(context, ReaderActivity::class.java)
             intent.apply {
                 putExtra(CHAPTER_ID, chapterId)
                 putExtra(OVERVIEW_ID, overviewId)
-                putExtra(START_AT_PAGE, startAtPage)
                 putExtra(MANGA_SOURCE, source.toString())
             }
             context.startActivity(intent)

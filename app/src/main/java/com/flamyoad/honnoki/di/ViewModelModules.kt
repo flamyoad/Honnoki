@@ -53,7 +53,7 @@ val viewModelModules = module {
         )
     }
 
-    viewModel { VerticalScrollingReaderViewModel() }
+    viewModel { VerticalScrollingReaderViewModel(get()) }
 
     viewModel { SimpleSearchViewModel(androidApplication(), get()) }
 
