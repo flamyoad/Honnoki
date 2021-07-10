@@ -4,10 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.room.withTransaction
+import com.flamyoad.honnoki.data.State
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.entities.Chapter
 import com.flamyoad.honnoki.data.entities.Page
-import com.flamyoad.honnoki.data.State
 import com.flamyoad.honnoki.data.preference.ReaderPreference
 import com.flamyoad.honnoki.repository.ChapterRepository
 import com.flamyoad.honnoki.repository.OverviewRepository
@@ -64,7 +64,7 @@ class ReaderViewModel(
 
     val currentPageIndicator = currentPageNumber.combine(totalPageNumber) { current, total ->
         "$current / $total"
-    }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), "")
 
     private val pageNumberScrolledBySeekbar = MutableSharedFlow<Int>(
         replay = 0,
@@ -91,25 +91,20 @@ class ReaderViewModel(
     var currentScrollPosition: Int = -1
 
     fun fetchChapterImages(chapterId: Long, loadType: LoadType): Job {
-        // Skip loading this chapter if it has been loaded before. Returns a completed job by default
-        if (loadCompletionStatusByChapterId[chapterId] == true) {
-            return Job().apply { complete() }
-        }
-
-        if (loadType == LoadType.NEXT) {
-            showBottomLoadingIndicator.value = true
-        }
-
         return viewModelScope.launch(Dispatchers.IO) {
-            val chapter = db.chapterDao().get(chapterId)
-                ?: throw IllegalArgumentException("Chapter id is null")
+            val chapter = db.chapterDao().get(chapterId) ?: throw IllegalArgumentException("Chapter id is null")
 
-            val result = baseSource.getImages(chapter.link)
-            when (result) {
-                is State.Success -> {
-                    processChapterImages(chapter, result.value, loadType)
-                    markChapterAsRead(chapter)
-                }
+            // Skip loading this chapter if it has been loaded before
+            if (loadCompletionStatusByChapterId[chapterId] == true) {
+                return@launch
+            }
+
+            if (loadType == LoadType.NEXT) {
+                showBottomLoadingIndicator.value = true
+            }
+
+            when (val result = baseSource.getImages(chapter.link)) {
+                is State.Success -> processChapterImages(chapter, result.value, loadType)
                 is State.Error -> failedToLoadNextChapter.value = true
             }
 
@@ -164,12 +159,12 @@ class ReaderViewModel(
         loadCompletionStatusByChapterId.put(chapter.id, true)
     }
 
-    private suspend fun markChapterAsRead(chapter: Chapter) {
+    fun saveLastReadChapter(chapter: Chapter) {
         val overviewId = mangaOverviewId.value
-        if (overviewId == -1L) return
-
-        chapterRepo.markChapterAsRead(chapter)
-        overviewRepo.updateLastReadChapter(chapter, overviewId)
+        applicationScope.launch(Dispatchers.IO) {
+            chapterRepo.markChapterAsRead(chapter)
+            overviewRepo.updateLastReadChapter(chapter, overviewId)
+        }
     }
 
     fun saveLastReadPage(pageNumber: Int) {
@@ -238,7 +233,6 @@ class ReaderViewModel(
     }
 
     fun goToFirstPage() {
-        // One-based numbering is used because we are checking against the page number in db rows
         pageNumberScrolledBySeekbar.tryEmit(1)
     }
 

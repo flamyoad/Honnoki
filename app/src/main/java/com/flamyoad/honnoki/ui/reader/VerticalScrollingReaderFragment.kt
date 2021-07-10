@@ -136,12 +136,11 @@ class VerticalScrollingReaderFragment : Fragment(), VolumeButtonScroller.Listene
             }
         }
 
+        // Set the page number in the bottom-right tooltip
         lifecycleScope.launchWhenResumed {
             parentViewModel.pageNumberScrolledBySeekbar().collectLatest {
-                val currentItemScrolled =
-                    readerAdapter.currentList.getOrNull(it) ?: return@collectLatest
+                val currentItemScrolled = readerAdapter.currentList.getOrNull(it - 1) ?: return@collectLatest
                 if (currentItemScrolled is ReaderPage.Value) {
-                    // Set the page number in the bottom-right tooltip
                     parentViewModel.setCurrentPageNumber(currentItemScrolled.page.number)
                 }
             }
@@ -208,8 +207,7 @@ class VerticalScrollingReaderFragment : Fragment(), VolumeButtonScroller.Listene
     private fun scrollToStartingPageNumber() {
         if (initialScrollDone) return
 
-        val startingPageNumber =
-            requireActivity().intent.getIntExtra(ReaderActivity.START_AT_PAGE, 0)
+        val startingPageNumber = requireActivity().intent.getIntExtra(ReaderActivity.START_AT_PAGE, 0)
         linearLayoutManager.scrollToPositionWithOffset(startingPageNumber - 1, 0)
 
         initialScrollDone = true
@@ -222,13 +220,13 @@ class VerticalScrollingReaderFragment : Fragment(), VolumeButtonScroller.Listene
 
     override fun onNextPage() {
         val position = linearLayoutManager.findLastVisibleItemPosition()
-        linearLayoutManager.scrollToPosition(position + 1)
+        binding.listImages.scrollToPosition(position + 1)
     }
 
     override fun onPrevPage() {
         val position = linearLayoutManager.findFirstVisibleItemPosition()
         if (position <= 0) return
-        linearLayoutManager.scrollToPosition(position - 1)
+        binding.listImages.scrollToPosition(position - 1)
     }
 
     override fun scrollByFixedDistance(distance: Int) {

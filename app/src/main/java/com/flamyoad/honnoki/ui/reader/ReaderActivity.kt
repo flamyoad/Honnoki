@@ -105,30 +105,17 @@ class ReaderActivity : AppCompatActivity() {
             }
 
             seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(
-                    seekBar: SeekBar?,
-                    progress: Int,
-                    fromUser: Boolean
-                ) {
+                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                     if (fromUser) {
-                        if (progress == 0) {
-                            viewModel.setCurrentPageNumber(1)
-                        } else {
-                            viewModel.setCurrentPageNumber(progress)
-                        }
+                        viewModel.setCurrentPageNumber(progress + 1)
                     }
                 }
-
-                override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-
+                override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                }
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {
                     // User has stopped moving. Move to the image selected
                     val progress = seekBar?.progress ?: return
-                    if (progress == 0) {
-                        viewModel.setSeekbarScrolledPosition(1)
-                    } else {
-                        viewModel.setSeekbarScrolledPosition(progress)
-                    }
+                    viewModel.setSeekbarScrolledPosition(progress + 1)
                 }
             })
         }
@@ -151,6 +138,7 @@ class ReaderActivity : AppCompatActivity() {
             viewModel.currentPageIndicator
                 .debounce(50)
                 .collectLatest {
+                    println(it)
                     binding.txtCurrentPageMini.text = it
                 }
         }
@@ -164,7 +152,7 @@ class ReaderActivity : AppCompatActivity() {
 
         lifecycleScope.launchWhenResumed {
             viewModel.totalPageNumber.collectLatest {
-                binding.seekbar.max = it
+                binding.seekbar.max = it - 1
             }
         }
 
@@ -186,16 +174,15 @@ class ReaderActivity : AppCompatActivity() {
             viewModel.currentChapterShown().collectLatest {
                 binding.txtToolbarChapterTitle.text = it.title
                 binding.txtCurrentChapterMini.text = it.title
-
                 binding.bottomRightInfoView.apply {
                     invalidate()
                     requestLayout()
                 }
-
                 binding.txtCurrentChapterMini.apply {
                     invalidate()
                     requestLayout()
                 }
+                viewModel.saveLastReadChapter(it)
             }
         }
     }
