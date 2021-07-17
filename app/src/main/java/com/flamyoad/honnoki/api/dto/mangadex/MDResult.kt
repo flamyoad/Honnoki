@@ -64,7 +64,7 @@ data class MDTag(
 data class MDTagAttribute(
     @Json(name = "name") val name: MDTagName?,
     @Json(name = "group") val group: String?,
-    @Json(name = "version") val version: Int?
+    @Json(name = "version") val version: Int?,
 )
 
 @JsonClass(generateAdapter = true)
