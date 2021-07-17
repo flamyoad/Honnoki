@@ -10,6 +10,10 @@ import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.entities.Manga
 import com.flamyoad.honnoki.data.entities.MangaType
 import com.flamyoad.honnoki.source.model.Source
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.firebase.crashlytics.internal.common.CrashlyticsCore
+import com.google.firebase.crashlytics.internal.model.CrashlyticsReport
+import com.squareup.moshi.JsonDataException
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -65,6 +69,9 @@ class MangaMediator(
         } catch (exception: IOException) {
             return MediatorResult.Error(exception)
         } catch (exception: HttpException) {
+            return MediatorResult.Error(exception)
+        } catch (exception: JsonDataException) {
+            FirebaseCrashlytics.getInstance().recordException(exception)
             return MediatorResult.Error(exception)
         }
     }
