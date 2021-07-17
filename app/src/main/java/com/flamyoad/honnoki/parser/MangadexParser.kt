@@ -59,7 +59,7 @@ class MangadexParser {
         )
 
         val alternativeTitle = attributes?.altTitles?.joinToString {
-            it.en ?: ""
+            it?.en ?: ""
         } ?: ""
 
         val summary = attributes?.description?.en ?: ""

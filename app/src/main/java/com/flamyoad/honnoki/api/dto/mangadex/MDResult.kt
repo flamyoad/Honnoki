@@ -21,7 +21,7 @@ data class MDResultData(
 @JsonClass(generateAdapter = true)
 data class MDResultDataAttributes(
     @Json(name = "title") val title: MDTitle?,
-    @Json(name = "altTitles") val altTitles: List<MDTitle>?,
+    @Json(name = "altTitles") val altTitles: List<MDTitle?>?,
     @Json(name = "description") val description: MDDescription,
     @Json(name = "links") val links: MDLinks?,
     @Json(name = "originalLanguage") val originalLanguage: String?,
@@ -63,7 +63,6 @@ data class MDTag(
 @JsonClass(generateAdapter = true)
 data class MDTagAttribute(
     @Json(name = "name") val name: MDTagName?,
-    @Json(name = "description") val description: List<String>?,
     @Json(name = "group") val group: String?,
     @Json(name = "version") val version: Int?
 )
