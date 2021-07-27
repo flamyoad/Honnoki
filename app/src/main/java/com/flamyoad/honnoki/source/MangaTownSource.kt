@@ -7,7 +7,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.flamyoad.honnoki.api.MangaTownApi
 import com.flamyoad.honnoki.source.model.Source
-import com.flamyoad.honnoki.data.State
+import com.flamyoad.honnoki.common.State
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.paging.MangaMediator

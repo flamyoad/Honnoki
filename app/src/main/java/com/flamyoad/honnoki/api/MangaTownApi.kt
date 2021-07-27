@@ -1,39 +1,46 @@
 package com.flamyoad.honnoki.api
 
-import com.flamyoad.honnoki.data.State
+import com.flamyoad.honnoki.api.handler.ApiRequestHandler
+import com.flamyoad.honnoki.api.handler.NetworkResult
+import com.flamyoad.honnoki.common.State
 import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.network.MangaTownService
 import com.flamyoad.honnoki.parser.MangaTownParser
+import com.flamyoad.honnoki.utils.extensions.stringSuspending
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+// Refactor to use ApiRequestHandler if this source is enabled. Currently is disabled
 class MangaTownApi(
     private val service: MangaTownService,
-    private val parser: MangaTownParser
+    private val parser: MangaTownParser,
+    private val apiHandler: ApiRequestHandler
 ) : BaseApi() {
 
     override val startingPageIndex: Int
         get() = 1
 
-    override suspend fun searchForLatestManga(index: Int): List<Manga> {
-        val response = service.getLatestManga(index)
-
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-            val mangaList = parser.parseForRecentMangas(html)
-
-            return@withContext mangaList
+    override suspend fun searchForLatestManga(index: Int): State<List<Manga>> {
+        when (val response = apiHandler.safeApiCall { service.getLatestManga(index) }) {
+            is NetworkResult.Success -> {
+                val html = response.data.stringSuspending()
+                return successOrErrorIfNull { parser.parseForRecentMangas(html) }
+            }
+            is NetworkResult.Failure -> {
+                return State.Error(response.exception)
+            }
         }
     }
 
-    override suspend fun searchForTrendingManga(index: Int): List<Manga> {
-        val response = service.getTrendingManga(index)
-
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-            val mangaList = parser.parseForTrendingMangas(html)
-
-            return@withContext mangaList
+    override suspend fun searchForTrendingManga(index: Int): State<List<Manga>> {
+        when (val response = apiHandler.safeApiCall { service.getTrendingManga(index) }) {
+            is NetworkResult.Success -> {
+                val html = response.data.stringSuspending()
+                return successOrErrorIfNull { parser.parseForTrendingMangas(html) }
+            }
+            is NetworkResult.Failure -> {
+                return State.Error(response.exception)
+            }
         }
     }
 

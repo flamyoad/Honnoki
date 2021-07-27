@@ -6,9 +6,14 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.flamyoad.honnoki.api.BaseApi
+import com.flamyoad.honnoki.api.handler.ApiException
+import com.flamyoad.honnoki.common.State
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.entities.SearchResult
 import com.flamyoad.honnoki.data.GenreConstants
+import com.flamyoad.honnoki.data.entities.Manga
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.squareup.moshi.JsonDataException
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -47,33 +52,48 @@ class SimpleSearchResultMediator(
             }
         }
 
-        try {
-            val searchedResults = if (genre == GenreConstants.ALL) {
-                api.searchByKeyword(keyword, pageNumber)
-            } else {
-                api.searchByKeywordAndGenres(keyword, genre, pageNumber)
-            }
-
-            val endOfPaginationReached = searchedResults.isEmpty()
-
-            db.withTransaction {
-                if (loadType == LoadType.REFRESH) {
-                    db.searchResultDao().deleteAll()
-                }
-
-                val prevKey = if (pageNumber == STARTING_PAGE_INDEX) null else pageNumber - 1
-                val nextKey = if (endOfPaginationReached) null else pageNumber + 1
-
-                val searchedResultsWithKeys =
-                    searchedResults.map { it.copy(prevKey = prevKey, nextKey = nextKey) }
-                db.searchResultDao().insertAll(searchedResultsWithKeys)
-            }
-            return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
-
-        } catch (exception: IOException) {
-            return MediatorResult.Error(exception)
-        } catch (exception: HttpException) {
-            return MediatorResult.Error(exception)
+        val apiResult = when (genre) {
+            GenreConstants.ALL -> api.searchByKeyword(keyword, pageNumber)
+            else -> api.searchByKeywordAndGenres(keyword, genre, pageNumber)
         }
+
+        return when (apiResult) {
+            is State.Success -> handleSuccess(apiResult.value, loadType, pageNumber)
+            is State.Error -> handleError(apiResult.exception)
+            is State.Loading -> MediatorResult.Error(Exception())
+        }
+    }
+
+    private suspend fun handleSuccess(
+        data: List<SearchResult>,
+        loadType: LoadType,
+        pageNumber: Int
+    ): MediatorResult.Success {
+        val endOfPaginationReached = data.isEmpty()
+
+        db.withTransaction {
+            if (loadType == LoadType.REFRESH) {
+                db.searchResultDao().deleteAll()
+            }
+
+            val prevKey = if (pageNumber == STARTING_PAGE_INDEX) null else pageNumber - 1
+            val nextKey = if (endOfPaginationReached) null else pageNumber + 1
+
+            val searchedResultsWithKeys =
+                data.map { it.copy(prevKey = prevKey, nextKey = nextKey) }
+            db.searchResultDao().insertAll(searchedResultsWithKeys)
+        }
+        return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
+    }
+
+    private fun handleError(throwable: Throwable?): MediatorResult.Error {
+        throwable?.let {
+            if (it is ApiException) {
+                if (it.code != ApiException.Code.NoInternetConnection) {
+                    FirebaseCrashlytics.getInstance().recordException(it)
+                }
+            }
+        }
+        return MediatorResult.Error(throwable ?: Exception())
     }
 }

@@ -1,133 +1,125 @@
 package com.flamyoad.honnoki.api
 
 import com.flamyoad.honnoki.api.exception.InvalidGenreException
+import com.flamyoad.honnoki.api.handler.ApiRequestHandler
+import com.flamyoad.honnoki.api.handler.NetworkResult
 import com.flamyoad.honnoki.data.GenreConstants
-import com.flamyoad.honnoki.data.State
+import com.flamyoad.honnoki.common.State
 import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.network.ReadMangaService
 import com.flamyoad.honnoki.parser.ReadMangaParser
+import com.flamyoad.honnoki.utils.extensions.stringSuspending
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 
 class ReadMangaApi(
     private val service: ReadMangaService,
-    private val parser: ReadMangaParser
+    private val parser: ReadMangaParser,
+    private val apiHandler: ApiRequestHandler
 ) : BaseApi() {
 
     override val startingPageIndex: Int
         get() = 1
 
-    override suspend fun searchForLatestManga(index: Int): List<Manga> {
-        val response = service.getLatestManga(index)
-
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-            val mangaList = parser.parseForRecentMangas(html)
-
-            return@withContext mangaList
+    override suspend fun searchForLatestManga(index: Int): State<List<Manga>> {
+        when (val response = apiHandler.safeApiCall { service.getLatestManga(index) }) {
+            is NetworkResult.Success -> {
+                val html = response.data.stringSuspending()
+                return successOrErrorIfNull { parser.parseForRecentMangas(html) }
+            }
+            is NetworkResult.Failure -> {
+                return State.Error(response.exception)
+            }
         }
     }
 
-    override suspend fun searchForTrendingManga(index: Int): List<Manga> {
-        val response = service.getTrendingManga(index)
-
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-            val mangaList = parser.parseForTrendingMangas(html)
-
-            return@withContext mangaList
+    override suspend fun searchForTrendingManga(index: Int): State<List<Manga>> {
+        when (val response = apiHandler.safeApiCall { service.getTrendingManga(index) }) {
+            is NetworkResult.Success -> {
+                val html = response.data.stringSuspending()
+                return successOrErrorIfNull { parser.parseForTrendingMangas(html) }
+            }
+            is NetworkResult.Failure -> {
+                return State.Error(response.exception)
+            }
         }
     }
 
     suspend fun searchForMangaOverview(link: String): State<MangaOverview> {
-        val response = try {
-            service.getHtml(link)
-        } catch (e: Exception) {
-            return State.Error(e)
-        }
-
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-
-            val mangaOverview = parser.parseForMangaOverview(html, link)
-            return@withContext State.Success(mangaOverview)
+        when (val response = apiHandler.safeApiCall { service.getHtml(link) }) {
+            is NetworkResult.Success -> {
+                val html = response.data.stringSuspending()
+                return successOrErrorIfNull { parser.parseForMangaOverview(html, link) }
+            }
+            is NetworkResult.Failure -> {
+                return State.Error(response.exception)
+            }
         }
     }
 
     suspend fun searchForGenres(link: String): State<List<Genre>> {
-        val response = try {
-            service.getHtml(link)
-        } catch (e: Exception) {
-            return State.Error(e)
-        }
-
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-
-            val genres = parser.parseForGenres(html)
-            return@withContext State.Success(genres)
+        when (val response = apiHandler.safeApiCall { service.getHtml(link) }) {
+            is NetworkResult.Success -> {
+                val html = response.data.stringSuspending()
+                return successOrErrorIfNull { parser.parseForGenres(html) }
+            }
+            is NetworkResult.Failure -> {
+                return State.Error(response.exception)
+            }
         }
     }
 
     suspend fun searchForAuthors(link: String): State<List<Author>> {
-        val response = try {
-            service.getHtml(link)
-        } catch (e: Exception) {
-            return State.Error(e)
-        }
-
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-
-            val authors = parser.parseForAuthors(html)
-            return@withContext State.Success(authors)
+        when (val response = apiHandler.safeApiCall { service.getHtml(link) }) {
+            is NetworkResult.Success -> {
+                val html = response.data.stringSuspending()
+                return successOrErrorIfNull { parser.parseForAuthors(html) }
+            }
+            is NetworkResult.Failure -> {
+                return State.Error(response.exception)
+            }
         }
     }
 
     suspend fun searchForChapterList(link: String): State<List<Chapter>> {
-        val response = try {
-            service.getHtml(link)
-        } catch (e: Exception) {
-            return State.Error(e)
-        }
-
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-
-            val chapterList = parser.parseForChapterList(html)
-            return@withContext State.Success(chapterList)
+        when (val response = apiHandler.safeApiCall { service.getHtml(link) }) {
+            is NetworkResult.Success -> {
+                val html = response.data.stringSuspending()
+                return successOrErrorIfNull { parser.parseForChapterList(html) }
+            }
+            is NetworkResult.Failure -> {
+                return State.Error(response.exception)
+            }
         }
     }
 
     suspend fun searchForImageList(link: String): State<List<Page>> {
-        val response = try {
-            service.getHtml(link)
-        } catch (e: Exception) {
-            return State.Error(e)
-        }
-
-        val html = response.string()
-
-        return withContext(Dispatchers.Default) {
-            val imageList = parser.parseForPageList(html)
-            return@withContext State.Success(imageList)
+        when (val response = apiHandler.safeApiCall { service.getHtml(link) }) {
+            is NetworkResult.Success -> {
+                val html = response.data.stringSuspending()
+                return successOrErrorIfNull { parser.parseForPageList(html) }
+            }
+            is NetworkResult.Failure -> {
+                return State.Error(response.exception)
+            }
         }
     }
 
-    override suspend fun searchByKeyword(keyword: String, index: Int): List<SearchResult> {
-        val response = service.searchByKeyword(keyword)
-
-        // POST request gives all result in oneshot. So just return emptylist on index > 1
+    override suspend fun searchByKeyword(keyword: String, index: Int): State<List<SearchResult>> {
+        // POST request gives all result in oneshot. So just return empty list on index > 1
         if (index > 1) {
-            return emptyList()
+            return State.Success(emptyList())
         }
 
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-            val searchResultList = parser.parseForSearchByKeyword(html)
-
-            return@withContext searchResultList
+        when (val response = apiHandler.safeApiCall { service.searchByKeyword(keyword) }) {
+            is NetworkResult.Success -> {
+                val html = response.data.stringSuspending()
+                return successOrErrorIfNull { parser.parseForSearchByKeyword(html) }
+            }
+            is NetworkResult.Failure -> {
+                return State.Error(response.exception)
+            }
         }
     }
 
@@ -135,52 +127,58 @@ class ReadMangaApi(
         keyword: String,
         genre: GenreConstants,
         index: Int
-    ): List<SearchResult> {
+    ): State<List<SearchResult>> {
 
         if (genre == GenreConstants.ALL) {
             throw InvalidGenreException("There is no id for `All` genres! Use searchByKeyword() instead of searchByKeywordAndGenres()")
         }
 
         if (index > 1) {
-            return emptyList()
+            return State.Success(emptyList())
         }
 
-        val response = service.searchByKeywordAndGenre(
-            query = keyword,
-            genreId = getReadMngGenreId(genre)
-        )
-
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-            val searchResultList = parser.parseForSearchByKeyword(html)
-
-            return@withContext searchResultList
+        val response = apiHandler.safeApiCall {
+            service.searchByKeywordAndGenre(query = keyword, genreId = getReadMngGenreId(genre))
+        }
+        when (response) {
+            is NetworkResult.Success -> {
+                val html = response.data.stringSuspending()
+                return successOrErrorIfNull { parser.parseForSearchByKeyword(html) }
+            }
+            is NetworkResult.Failure -> {
+                return State.Error(response.exception)
+            }
         }
     }
 
-    override suspend fun searchMangaByGenre(param: String, index: Int): List<SearchResult> {
+    override suspend fun searchMangaByGenre(param: String, index: Int): State<List<SearchResult>> {
         // https://www.readmng.com/category/action/1
         val url = "$param/$index"
 
-        val response = service.getHtml(url)
-
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-            val searchResultList = parser.parseForSearchByKeyword(html)
-            return@withContext searchResultList
+        when (val response = apiHandler.safeApiCall { service.getHtml(url) }) {
+            is NetworkResult.Success -> {
+                val html = response.data.stringSuspending()
+                return successOrErrorIfNull { parser.parseForSearchByKeyword(html) }
+            }
+            is NetworkResult.Failure -> {
+                return State.Error(response.exception)
+            }
         }
     }
 
-    override suspend fun searchMangaByAuthor(param: String, index: Int): List<SearchResult> {
+    override suspend fun searchMangaByAuthor(param: String, index: Int): State<List<SearchResult>> {
         if (index > 1) {
-            return emptyList()
+            return State.Success(emptyList())
         }
 
-        val response = service.getHtml(param)
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-            val searchResultList = parser.parseForSearchByAuthor(html)
-            return@withContext searchResultList
+        when (val response = apiHandler.safeApiCall { service.getHtml(param) }) {
+            is NetworkResult.Success -> {
+                val html = response.data.stringSuspending()
+                return successOrErrorIfNull { parser.parseForSearchByAuthor(html) }
+            }
+            is NetworkResult.Failure -> {
+                return State.Error(response.exception)
+            }
         }
     }
 

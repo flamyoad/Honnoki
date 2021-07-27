@@ -4,10 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.room.withTransaction
-import com.flamyoad.honnoki.data.State
+import com.flamyoad.honnoki.common.State
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.entities.Chapter
-import com.flamyoad.honnoki.data.entities.MangaOverview
 import com.flamyoad.honnoki.data.entities.Page
 import com.flamyoad.honnoki.data.preference.ReaderPreference
 import com.flamyoad.honnoki.repository.ChapterRepository

@@ -3,7 +3,7 @@ package com.flamyoad.honnoki.ui.search.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
-import com.flamyoad.honnoki.adapter.BaseListAdapter
+import com.flamyoad.honnoki.common.adapter.BaseListAdapter
 import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.databinding.SearchSourceListItemBinding
 import com.flamyoad.honnoki.ui.search.model.SearchSource

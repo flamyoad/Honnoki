@@ -1,102 +1,103 @@
 package com.flamyoad.honnoki.api
 
-import com.flamyoad.honnoki.data.State
+import com.flamyoad.honnoki.api.handler.ApiRequestHandler
+import com.flamyoad.honnoki.api.handler.NetworkResult
+import com.flamyoad.honnoki.common.State
 import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.network.MangadexService
 import com.flamyoad.honnoki.parser.MangadexParser
-import com.flamyoad.honnoki.parser.exception.NullMangaIdException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.IOException
-import java.lang.Exception
 
 class MangadexApi(
     private val service: MangadexService,
-    private val parser: MangadexParser
+    private val parser: MangadexParser,
+    private val apiHandler: ApiRequestHandler
 ) : BaseApi() {
 
     override val startingPageIndex: Int
         get() = 0
 
-    override suspend fun searchForLatestManga(index: Int): List<Manga> {
+    override suspend fun searchForLatestManga(index: Int): State<List<Manga>> {
         val offset = index * PAGINATION_SIZE
 
-        val json = try {
+        val response = apiHandler.safeApiCall {
             service.getRecentlyAddedManga(offset, PAGINATION_SIZE, ORDER_DESC)
-        } catch (e: IOException) {
-            return emptyList()
         }
 
-        val failToGetResults = json.results?.firstOrNull()?.result != RESULT_OK
-        if (failToGetResults) {
-            return emptyList()
-        }
-
-        return withContext(Dispatchers.Default) {
-            parser.parseHomeMangas(json, MangaType.RECENTLY)
+        when (response) {
+            is NetworkResult.Success -> {
+                return successOrErrorIfNull {
+                    parser.parseHomeMangas(response.data, MangaType.RECENTLY)
+                }
+            }
+            is NetworkResult.Failure -> {
+                return State.Error(response.exception)
+            }
         }
     }
 
-    override suspend fun searchForTrendingManga(index: Int): List<Manga> {
+    override suspend fun searchForTrendingManga(index: Int): State<List<Manga>> {
         val offset = index * PAGINATION_SIZE
 
-        val json = try {
-            service.getTopManga(offset, PAGINATION_SIZE)
-        } catch (e: IOException) {
-            return emptyList()
-        }
-
-        return withContext(Dispatchers.Default) {
-            parser.parseHomeMangas(json, MangaType.TRENDING)
+        when (val response =
+            apiHandler.safeApiCall { service.getTopManga(offset, PAGINATION_SIZE) }) {
+            is NetworkResult.Success -> {
+                return successOrErrorIfNull {
+                    parser.parseHomeMangas(response.data, MangaType.TRENDING)
+                }
+            }
+            is NetworkResult.Failure -> {
+                return State.Error(response.exception)
+            }
         }
     }
 
-    override suspend fun searchByKeyword(keyword: String, index: Int): List<SearchResult> {
+    override suspend fun searchByKeyword(keyword: String, index: Int): State<List<SearchResult>> {
         val offset = PAGINATION_SIZE * (index)
-        val json = try {
-            service.searchByKeyword(keyword, offset, PAGINATION_SIZE)
-        } catch (e: IOException) {
-            return emptyList()
-        }
 
-        return withContext(Dispatchers.Default) {
-            parser.parseForSearchResult(json)
+        val response =
+            apiHandler.safeApiCall { service.searchByKeyword(keyword, offset, PAGINATION_SIZE) }
+        when (response) {
+            is NetworkResult.Success -> {
+                return successOrErrorIfNull { parser.parseForSearchResult(response.data) }
+            }
+            is NetworkResult.Failure -> {
+                return State.Error(response.exception)
+            }
         }
     }
 
     suspend fun searchForMangaOverview(mangaId: String): State<MangaOverview> {
-        val json = try {
-            service.getMangaDetails(mangaId)
-        } catch (e: IOException) {
-            return State.Error(e)
-        }
-
-        if (json.result != RESULT_OK) {
-            return State.Error()
-        }
-
-        try {
-            val overview = parser.parseForMangaOverview(json)
-            return State.Success(overview)
-
-        } catch (e: Exception) {
-            if (e is NullMangaIdException)
-                return State.Error()
-            else
-                throw e // Rethrow unknown exceptions
+        when (val response = apiHandler.safeApiCall { service.getMangaDetails(mangaId) }) {
+            is NetworkResult.Success -> {
+                return if (response.data.result == RESULT_OK) {
+                    val overview = parser.parseForMangaOverview(response.data)
+                    State.Success(overview)
+                } else {
+                    State.Error()
+                }
+            }
+            is NetworkResult.Failure -> {
+                return State.Error(response.exception)
+            }
         }
     }
 
     suspend fun searchForGenres(mangaId: String): State<List<Genre>> {
-        val json = service.getMangaDetails(mangaId)
-
-        if (json.result != RESULT_OK) {
-            return State.Error()
-        }
-
-        return withContext(Dispatchers.Default) {
-            val genres = parser.parseForGenres(json)
-            return@withContext State.Success(genres)
+        when (val response = apiHandler.safeApiCall { service.getMangaDetails(mangaId) }) {
+            is NetworkResult.Success -> {
+                return if (response.data.result == RESULT_OK) {
+                    val genres = parser.parseForGenres(response.data)
+                    State.Success(genres)
+                } else {
+                    State.Error()
+                }
+            }
+            is NetworkResult.Failure -> {
+                return State.Error(response.exception)
+            }
         }
     }
 
@@ -105,15 +106,18 @@ class MangadexApi(
      * So we just combine both of them into one
      */
     suspend fun searchForAuthors(mangaId: String): State<List<Author>> {
-        val json = service.getMangaDetails(mangaId)
-
-        if (json.result != RESULT_OK) {
-            return State.Error()
-        }
-
-        return withContext(Dispatchers.Default) {
-            val genres = parser.parseForAuthors(json)
-            return@withContext State.Success(genres)
+        when (val response = apiHandler.safeApiCall { service.getMangaDetails(mangaId) }) {
+            is NetworkResult.Success -> {
+                return if (response.data.result == RESULT_OK) {
+                    val genres = parser.parseForAuthors(response.data)
+                    return State.Success(genres)
+                } else {
+                    State.Error()
+                }
+            }
+            is NetworkResult.Failure -> {
+                return State.Error(response.exception)
+            }
         }
     }
 
@@ -127,10 +131,19 @@ class MangadexApi(
         val chapterList = mutableListOf<Chapter>()
 
         do {
-            val json = service.getChapterList(mangaId, limit = CHAPTER_MAX_LIMIT, offset = offset)
-            offset = json.offset + CHAPTER_MAX_LIMIT
-            total = json.total
-            chapterList.addAll(parser.parseForChapters(json, offset))
+            val response = apiHandler.safeApiCall {
+                service.getChapterList(mangaId, limit = CHAPTER_MAX_LIMIT, offset = offset)
+            }
+            when (response) {
+                is NetworkResult.Success -> {
+                    offset = response.data.offset + CHAPTER_MAX_LIMIT
+                    total = response.data.total
+                    chapterList.addAll(parser.parseForChapters(response.data, offset))
+                }
+                is NetworkResult.Failure -> {
+                    break
+                }
+            }
         } while (offset < total)
 
         return State.Success(chapterList)
@@ -141,13 +154,20 @@ class MangadexApi(
      *           of the item when fetching chapter list
      */
     suspend fun searchForImageList(chapterId: String): State<List<Page>> {
-        val chapterJson = service.getPages(chapterId)
-        val baseUrlJson = service.getBaseUrl(chapterJson.data.id)
+        val chapterJson =
+            when (val response = apiHandler.safeApiCall { service.getPages(chapterId) }) {
+                is NetworkResult.Success -> response.data
+                is NetworkResult.Failure -> return State.Error(response.exception)
+            }
 
-        return withContext(Dispatchers.Default) {
-            val imageList = parser.parseForImageList(chapterJson, baseUrlJson)
-            return@withContext State.Success(imageList)
+        val baseUrlJson = when (val response =
+            apiHandler.safeApiCall { service.getBaseUrl(chapterJson.data.id) }) {
+            is NetworkResult.Success -> response.data
+            is NetworkResult.Failure -> return State.Error(response.exception)
         }
+
+        val imageList = parser.parseForImageList(chapterJson, baseUrlJson)
+        return State.Success(imageList)
     }
 
     companion object {

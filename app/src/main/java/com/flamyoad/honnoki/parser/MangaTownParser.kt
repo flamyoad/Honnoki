@@ -6,6 +6,7 @@ import com.flamyoad.honnoki.network.MangaTownService
 import org.jsoup.Jsoup
 import java.time.LocalDateTime
 
+// Refactor this if enable this source in future
 class MangaTownParser {
     fun parseForRecentMangas(html: String?): List<Manga> {
         if (html == null) return emptyList()

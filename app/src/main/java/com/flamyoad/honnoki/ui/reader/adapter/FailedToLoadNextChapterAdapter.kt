@@ -2,7 +2,7 @@ package com.flamyoad.honnoki.ui.reader.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.flamyoad.honnoki.adapter.BaseAdapter
+import com.flamyoad.honnoki.common.adapter.BaseAdapter
 import com.flamyoad.honnoki.databinding.LayoutFailLoadNextChapterBinding
 
 class FailedToLoadNextChapterAdapter(private val reloadNextChapter: () -> Unit) :
