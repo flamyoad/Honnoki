@@ -1,22 +1,19 @@
 package com.flamyoad.honnoki.api
 
 import com.flamyoad.honnoki.api.handler.ApiRequestHandler
-import com.flamyoad.honnoki.api.handler.NetworkResult
 import com.flamyoad.honnoki.data.GenreConstants
 import com.flamyoad.honnoki.common.State
 import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.network.DM5Service
 import com.flamyoad.honnoki.parser.DM5Parser
 import com.flamyoad.honnoki.utils.extensions.stringSuspending
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.lang.StringBuilder
 
 class DM5Api(
     private val service: DM5Service,
     private val parser: DM5Parser,
-    private val apiHandler: ApiRequestHandler
-) : BaseApi() {
+    apiHandler: ApiRequestHandler
+) : BaseApi(apiHandler) {
 
     /**
      * DM5 uses epoch time (13 digits) to fetch recently updated manga from their server
@@ -31,16 +28,10 @@ class DM5Api(
             return State.Success(emptyList())
         }
 
-        val response = apiHandler.safeApiCall { service.getLatestManga(epochTimeMillis, index) }
-        when (response) {
-            is NetworkResult.Success -> {
-                val html = response.data.stringSuspending()
-                return successOrErrorIfNull { parser.parseForRecentMangas(html) }
-            }
-            is NetworkResult.Failure -> {
-                return State.Error(response.exception)
-            }
-        }
+        return processApiData(
+            apiCall = { service.getLatestManga(epochTimeMillis, index) },
+            parseData = { parser.parseForRecentMangas(it.stringSuspending()) }
+        )
     }
 
     override suspend fun searchForTrendingManga(index: Int): State<List<Manga>> {
@@ -49,28 +40,18 @@ class DM5Api(
             return State.Success(emptyList())
         }
 
-        when (val response = apiHandler.safeApiCall { service.getTrendingManga(2) }) {
-            is NetworkResult.Success -> {
-                val html = response.data.stringSuspending()
-                return successOrErrorIfNull { parser.parseForTrendingManga(html) }
-            }
-            is NetworkResult.Failure -> {
-                return State.Error(response.exception)
-            }
-        }
+        return processApiData(
+            apiCall = { service.getTrendingManga(2) },
+            parseData = { parser.parseForTrendingManga(it.stringSuspending()) }
+        )
     }
 
     override suspend fun searchMangaByAuthor(param: String, index: Int): State<List<SearchResult>> {
         val link = param + "&page=$index"
-        when (val response = apiHandler.safeApiCall { service.getHtml(link) }) {
-            is NetworkResult.Success -> {
-                val html = response.data.stringSuspending()
-                return successOrErrorIfNull { parser.parseForSearchByKeyword(html, index) }
-            }
-            is NetworkResult.Failure -> {
-                return State.Error(response.exception)
-            }
-        }
+        return processApiData(
+            apiCall = { service.getHtml(link) },
+            parseData = { parser.parseForSearchByKeyword(it.stringSuspending(), index) }
+        )
     }
 
     override suspend fun searchMangaByGenre(param: String, index: Int): State<List<SearchResult>> {
@@ -81,89 +62,53 @@ class DM5Api(
             .append(index.toString())
             .toString()
 
-        when (val response = apiHandler.safeApiCall { service.getHtml(link) }) {
-            is NetworkResult.Success -> {
-                val html = response.data.stringSuspending()
-                return successOrErrorIfNull { parser.parseForMangaFromGenrePage(html) }
-            }
-            is NetworkResult.Failure -> {
-                return State.Error(response.exception)
-            }
-        }
+        return processApiData(
+            apiCall = { service.getHtml(link) },
+            parseData = { parser.parseForMangaFromGenrePage(it.stringSuspending()) }
+        )
     }
 
     override suspend fun searchByKeyword(keyword: String, index: Int): State<List<SearchResult>> {
-        when (val response = apiHandler.safeApiCall { service.searchByKeyword(keyword, index) }) {
-            is NetworkResult.Success -> {
-                val html = response.data.stringSuspending()
-                return successOrErrorIfNull { parser.parseForSearchByKeyword(html, index) }
-            }
-            is NetworkResult.Failure -> {
-                return State.Error(response.exception)
-            }
-        }
+        return processApiData(
+            apiCall = { service.searchByKeyword(keyword, index) },
+            parseData = { parser.parseForSearchByKeyword(it.stringSuspending(), index) }
+        )
     }
 
     suspend fun searchForMangaOverview(link: String): State<MangaOverview> {
-        when (val response = apiHandler.safeApiCall { service.getHtml(link) }) {
-            is NetworkResult.Success -> {
-                val html = response.data.stringSuspending()
-                return successOrErrorIfNull { parser.parseForMangaOverview(html, link) }
-            }
-            is NetworkResult.Failure -> {
-                return State.Error(response.exception)
-            }
-        }
+        return processApiData(
+            apiCall = { service.getHtml(link) },
+            parseData = { parser.parseForMangaOverview(it.stringSuspending(), link) }
+        )
     }
 
     suspend fun searchForGenres(link: String): State<List<Genre>> {
-        when (val response = apiHandler.safeApiCall { service.getHtml(link) }) {
-            is NetworkResult.Success -> {
-                val html = response.data.stringSuspending()
-                return successOrErrorIfNull { parser.parseForGenres(html) }
-            }
-            is NetworkResult.Failure -> {
-                return State.Error(response.exception)
-            }
-        }
+        return processApiData(
+            apiCall = { service.getHtml(link) },
+            parseData = { parser.parseForGenres(it.stringSuspending()) }
+        )
     }
 
     suspend fun searchForAuthors(link: String): State<List<Author>> {
-        when (val response = apiHandler.safeApiCall { service.getHtml(link) }) {
-            is NetworkResult.Success -> {
-                val html = response.data.stringSuspending()
-                return successOrErrorIfNull { parser.parseForAuthors(html) }
-            }
-            is NetworkResult.Failure -> {
-                return State.Error(response.exception)
-            }
-        }
+        return processApiData(
+            apiCall = { service.getHtml(link) },
+            parseData = { parser.parseForAuthors(it.stringSuspending()) }
+        )
     }
 
     suspend fun searchForChapterList(link: String): State<List<Chapter>> {
-        when (val response = apiHandler.safeApiCall { service.getHtml(link) }) {
-            is NetworkResult.Success -> {
-                val html = response.data.stringSuspending()
-                return successOrErrorIfNull { parser.parseForChapterList(html) }
-            }
-            is NetworkResult.Failure -> {
-                return State.Error(response.exception)
-            }
-        }
+        return processApiData(
+            apiCall = { service.getHtml(link) },
+            parseData = { parser.parseForChapterList(it.stringSuspending()) }
+        )
     }
 
     suspend fun searchForImageList(relativeLink: String): State<List<Page>> {
         val absoluteLink = DM5Service.BASE_MOBILE_URL + relativeLink
-
-        when (val response = apiHandler.safeApiCall { service.getHtml(absoluteLink) }) {
-            is NetworkResult.Success -> {
-                val html = response.data.stringSuspending()
-                return successOrErrorIfNull { parser.parseForImageList(html) }
-            }
-            is NetworkResult.Failure -> {
-                return State.Error(response.exception)
-            }
-        }
+        return processApiData(
+            apiCall = { service.getHtml(absoluteLink) },
+            parseData = { parser.parseForImageList(it.stringSuspending()) }
+        )
     }
 
     companion object {

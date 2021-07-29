@@ -14,120 +14,72 @@ import kotlinx.coroutines.withContext
 class MangaTownApi(
     private val service: MangaTownService,
     private val parser: MangaTownParser,
-    private val apiHandler: ApiRequestHandler
-) : BaseApi() {
+    apiHandler: ApiRequestHandler
+) : BaseApi(apiHandler) {
 
     override val startingPageIndex: Int
         get() = 1
 
     override suspend fun searchForLatestManga(index: Int): State<List<Manga>> {
-        when (val response = apiHandler.safeApiCall { service.getLatestManga(index) }) {
-            is NetworkResult.Success -> {
-                val html = response.data.stringSuspending()
-                return successOrErrorIfNull { parser.parseForRecentMangas(html) }
-            }
-            is NetworkResult.Failure -> {
-                return State.Error(response.exception)
-            }
-        }
+        return processApiData(
+            apiCall = { service.getLatestManga(index) },
+            parseData = { parser.parseForRecentMangas(it.stringSuspending()) }
+        )
     }
 
     override suspend fun searchForTrendingManga(index: Int): State<List<Manga>> {
-        when (val response = apiHandler.safeApiCall { service.getTrendingManga(index) }) {
-            is NetworkResult.Success -> {
-                val html = response.data.stringSuspending()
-                return successOrErrorIfNull { parser.parseForTrendingMangas(html) }
-            }
-            is NetworkResult.Failure -> {
-                return State.Error(response.exception)
-            }
-        }
+        return processApiData(
+            apiCall = { service.getTrendingManga(index) },
+            parseData = { parser.parseForTrendingMangas(it.stringSuspending()) }
+        )
     }
 
     suspend fun searchForMangaOverview(link: String): State<MangaOverview> {
-        val response = try {
-            service.getHtml(link)
-        } catch (e: Exception) {
-            return State.Error(e)
-        }
-
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-
-            val mangaOverview = parser.parseForMangaOverview(html, link)
-            return@withContext State.Success(mangaOverview)
-        }
+        return processApiData(
+            apiCall = { service.getHtml(link) },
+            parseData = { parser.parseForMangaOverview(it.stringSuspending(), link) }
+        )
     }
 
     suspend fun searchForGenres(link: String): State<List<Genre>> {
-        val response = try {
-            service.getHtml(link)
-        } catch (e: Exception) {
-            return State.Error(e)
-        }
-
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-
-            val genres = parser.parseForGenres(html)
-            return@withContext State.Success(genres)
-        }
+        return processApiData(
+            apiCall = { service.getHtml(link) },
+            parseData = { parser.parseForGenres(it.stringSuspending()) }
+        )
     }
 
     suspend fun searchForAuthors(link: String): State<List<Author>> {
-        val response = try {
-            service.getHtml(link)
-        } catch (e: Exception) {
-            return State.Error(e)
-        }
-
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-
-            val genres = parser.parseForAuthors(html)
-            return@withContext State.Success(genres)
-        }
+        return processApiData(
+            apiCall = { service.getHtml(link) },
+            parseData = { parser.parseForAuthors(it.stringSuspending()) }
+        )
     }
 
     suspend fun searchForChapterList(link: String): State<List<Chapter>> {
-        val response = try {
-            service.getHtml(link)
-        } catch (e: Exception) {
-            return State.Error(e)
-        }
-
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-
-            val chapterList = parser.parseForChapterList(html)
-            return@withContext State.Success(chapterList)
-        }
+        return processApiData(
+            apiCall = { service.getHtml(link) },
+            parseData = { parser.parseForChapterList(it.stringSuspending()) }
+        )
     }
 
     // Gets the list of pages from the right hand dropdown-box
     suspend fun searchForPageList(link: String): List<String> {
-        val response = service.getHtml(link)
-        val html = response.string()
-
-        return withContext(Dispatchers.Default) {
-            val pageList = parser.parseForPageList(html)
-            return@withContext pageList
+        val result = processApiData(
+            apiCall = { service.getHtml(link) },
+            parseData = { parser.parseForPageList(it.stringSuspending()) }
+        )
+        if (result is State.Success) {
+            return result.value
+        } else {
+            return emptyList()
         }
     }
 
     suspend fun getImageFromPage(link: String, index: Int): State<Page> {
-        val response = try {
-            service.getHtml(link)
-        } catch (e: Exception) {
-            return State.Error(e)
-        }
-
-        val html = response.string()
-
-        return withContext(Dispatchers.Default) {
-            val image = parser.parseImageFromPage(html, index)
-            return@withContext State.Success(image)
-        }
+        return processApiData(
+            apiCall = { service.getHtml(link) },
+            parseData = { parser.parseImageFromPage(it.stringSuspending(), index) }
+        )
     }
 
 }
