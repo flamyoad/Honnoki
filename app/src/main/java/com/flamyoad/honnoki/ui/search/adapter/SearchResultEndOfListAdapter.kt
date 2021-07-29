@@ -2,7 +2,7 @@ package com.flamyoad.honnoki.ui.search.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.flamyoad.honnoki.adapter.BaseAdapter
+import com.flamyoad.honnoki.common.adapter.BaseAdapter
 import com.flamyoad.honnoki.databinding.SimpleSearchEndOfListBinding
 
 class SearchResultEndOfListAdapter: BaseAdapter<Any, SimpleSearchEndOfListBinding>() {

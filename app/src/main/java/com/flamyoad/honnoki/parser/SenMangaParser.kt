@@ -3,6 +3,8 @@ package com.flamyoad.honnoki.parser
 import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.parser.json.senmanga.SenmangaJsonAdapter
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import java.io.IOException
 import java.lang.NullPointerException
@@ -12,109 +14,112 @@ class SenMangaParser(
     private val jsonAdapter: SenmangaJsonAdapter
 ) {
 
-    fun parseForRecentMangas(html: String?): List<Manga> {
-        if (html == null) return emptyList()
+    suspend fun parseForRecentMangas(html: String?): List<Manga> =
+        withContext(Dispatchers.Default) {
+            if (html == null) return@withContext emptyList()
 
-        val document = Jsoup.parse(html)
-        val mangaDivs = document.select("div.item")
+            val document = Jsoup.parse(html)
+            val mangaDivs = document.select("div.item")
 
-        val mangaList = mutableListOf<Manga>()
-        for (div in mangaDivs) {
-            val title = div.selectFirst(".series-title").textNonNull()
-            val link = div.selectFirst("a").attrNonNull("href")
-            val latestChapter = div.selectFirst(".chapter").textNonNull()
-            val coverImage = div.selectFirst("img").attrNonNull("src")
+            val mangaList = mutableListOf<Manga>()
+            for (div in mangaDivs) {
+                val title = div.selectFirst(".series-title").textNonNull()
+                val link = div.selectFirst("a").attrNonNull("href")
+                val latestChapter = div.selectFirst(".chapter").textNonNull()
+                val coverImage = div.selectFirst("img").attrNonNull("src")
 
-            mangaList.add(
-                Manga(
-                    title = title,
-                    link = link,
-                    latestChapter = latestChapter,
-                    coverImage = coverImage,
-                    viewCount = -1, // Non existent in senmanga
-                    source = Source.SENMANGA,
-                    type = MangaType.RECENTLY
+                mangaList.add(
+                    Manga(
+                        title = title,
+                        link = link,
+                        latestChapter = latestChapter,
+                        coverImage = coverImage,
+                        viewCount = -1, // Non existent in senmanga
+                        source = Source.SENMANGA,
+                        type = MangaType.RECENTLY
+                    )
                 )
+            }
+            return@withContext mangaList
+        }
+
+    suspend fun parseForTrendingMangas(html: String?): List<Manga> =
+        withContext(Dispatchers.Default) {
+            if (html == null) return@withContext emptyList()
+
+            val document = Jsoup.parse(html)
+            val mangaDivs = document.select("div.item")
+                ?: return@withContext emptyList()
+
+            val mangaList = mutableListOf<Manga>()
+            for (div in mangaDivs) {
+                val title = div.selectFirst(".series-title").textNonNull()
+                val link = div.selectFirst("a").attrNonNull("href")
+                val latestChapter = div.selectFirst(".chapter").textNonNull()
+                val coverImage = div.selectFirst("img").attrNonNull("src")
+
+                mangaList.add(
+                    Manga(
+                        title = title,
+                        link = link,
+                        latestChapter = latestChapter,
+                        coverImage = coverImage,
+                        viewCount = -1, // Non existent in senmanga
+                        source = Source.SENMANGA,
+                        type = MangaType.TRENDING
+                    )
+                )
+            }
+            return@withContext mangaList
+        }
+
+    suspend fun parseForMangaOverview(html: String?, link: String): MangaOverview =
+        withContext(Dispatchers.Default) {
+            if (html.isNullOrBlank()) {
+                return@withContext MangaOverview.empty()
+            }
+
+            val document = Jsoup.parse(html)
+            val summary = document.selectFirst(".summary")
+                .ownTextNonNull()
+
+            val descriptionDiv = document.selectFirst(".series-desc")
+
+            val mainTitle = descriptionDiv.selectFirst(".series").textNonNull()
+
+            val alternativeTitle = descriptionDiv.selectFirst(".alt-name").textNonNull()
+
+            val coverImage = descriptionDiv.selectFirst(".cover > img")
+                .attrNonNull("src")
+
+            val status = descriptionDiv.selectFirst("div.info > div:nth-child(2)")
+                .ownTextNonNull()
+
+            return@withContext MangaOverview(
+                id = null,
+                coverImage = coverImage,
+                mainTitle = mainTitle,
+                alternativeTitle = alternativeTitle,
+                summary = summary,
+                status = status,
+                source = Source.SENMANGA,
+                link = link,
+                lastReadChapterId = -1,
+                lastReadDateTime = LocalDateTime.MIN,
+                lastReadPageNumber = -1
             )
         }
-        return mangaList
-    }
 
-    fun parseForTrendingMangas(html: String?): List<Manga> {
-        if (html == null) return emptyList()
+    suspend fun parseForChapterList(html: String?): List<Chapter> =
+        withContext(Dispatchers.Default) {
+            if (html.isNullOrBlank()) {
+                return@withContext emptyList()
+            }
 
-        val document = Jsoup.parse(html)
-        val mangaDivs = document.select("div.item") ?: return emptyList()
+            val document = Jsoup.parse(html)
 
-        val mangaList = mutableListOf<Manga>()
-        for (div in mangaDivs) {
-            val title = div.selectFirst(".series-title").textNonNull()
-            val link = div.selectFirst("a").attrNonNull("href")
-            val latestChapter = div.selectFirst(".chapter").textNonNull()
-            val coverImage = div.selectFirst("img").attrNonNull("src")
+            val chapterList = document.select(".chapter-list > li")
 
-            mangaList.add(
-                Manga(
-                    title = title,
-                    link = link,
-                    latestChapter = latestChapter,
-                    coverImage = coverImage,
-                    viewCount = -1, // Non existent in senmanga
-                    source = Source.SENMANGA,
-                    type = MangaType.TRENDING
-                )
-            )
-        }
-        return mangaList
-    }
-
-    fun parseForMangaOverview(html: String?, link: String): MangaOverview {
-        if (html.isNullOrBlank()) {
-            return MangaOverview.empty()
-        }
-
-        val document = Jsoup.parse(html)
-        val summary = document.selectFirst(".summary")
-            .ownTextNonNull()
-
-        val descriptionDiv = document.selectFirst(".series-desc")
-
-        val mainTitle = descriptionDiv.selectFirst(".series").textNonNull()
-
-        val alternativeTitle = descriptionDiv.selectFirst(".alt-name").textNonNull()
-
-        val coverImage = descriptionDiv.selectFirst(".cover > img")
-            .attrNonNull("src")
-
-        val status = descriptionDiv.selectFirst("div.info > div:nth-child(2)")
-            .ownTextNonNull()
-
-        return MangaOverview(
-            id = null,
-            coverImage = coverImage,
-            mainTitle = mainTitle,
-            alternativeTitle = alternativeTitle,
-            summary = summary,
-            status = status,
-            source = Source.SENMANGA,
-            link = link,
-            lastReadChapterId = -1,
-            lastReadDateTime = LocalDateTime.MIN,
-            lastReadPageNumber = -1
-        )
-    }
-
-    fun parseForChapterList(html: String?): List<Chapter> {
-        if (html.isNullOrBlank()) {
-            return emptyList()
-        }
-
-        val document = Jsoup.parse(html)
-
-        val chapterList = document.select(".chapter-list > li")
-        println("chapter list in senmanga: ${chapterList.size}")
-
-        try {
             val processedChapters = chapterList.mapIndexed { index, it ->
                 val chapterDiv = it.selectFirst("li")
                 val chapterLink = it.selectFirst("li > a")
@@ -127,15 +132,8 @@ class SenMangaParser(
                     hasBeenDownloaded = false
                 )
             }
-            println("size: ${processedChapters.size}")
-            return processedChapters
-
-        } catch (e: Exception) {
-            println(e.stackTrace)
+            return@withContext processedChapters
         }
-
-        throw IllegalArgumentException("")
-    }
 
     fun parseForAuthors(html: String?): List<Author> {
         if (html.isNullOrBlank()) {
@@ -173,11 +171,11 @@ class SenMangaParser(
         val genreLinks = genreDiv.select("a") ?: return emptyList()
 
         val genres = genreLinks.map {
-                return@map Genre(
-                    name = it.textNonNull(),
-                    link = it.attrNonNull("href")
-                )
-            }
+            return@map Genre(
+                name = it.textNonNull(),
+                link = it.attrNonNull("href")
+            )
+        }
         return genres
     }
 

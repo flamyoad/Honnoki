@@ -1,199 +1,130 @@
 package com.flamyoad.honnoki.api
 
 import com.flamyoad.honnoki.api.exception.InvalidGenreException
+import com.flamyoad.honnoki.api.handler.ApiRequestHandler
+import com.flamyoad.honnoki.api.handler.NetworkResult
 import com.flamyoad.honnoki.network.MangakalotService
 import com.flamyoad.honnoki.parser.MangakalotParser
 import com.flamyoad.honnoki.data.GenreConstants
-import com.flamyoad.honnoki.data.State
+import com.flamyoad.honnoki.common.State
 import com.flamyoad.honnoki.data.entities.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.flamyoad.honnoki.utils.extensions.stringSuspending
 
 class MangakalotApi(
     private val service: MangakalotService,
-    private val parser: MangakalotParser
-) : BaseApi() {
+    private val parser: MangakalotParser,
+    apiHandler: ApiRequestHandler
+) : BaseApi(apiHandler) {
 
     override val startingPageIndex: Int
         get() = 1
 
-    override suspend fun searchForLatestManga(index: Int): List<Manga> {
-        val response = service.getLatestManga(index)
-
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-            val mangaList = parser.parseForRecentMangas(html)
-
-            return@withContext mangaList
-        }
+    override suspend fun searchForLatestManga(index: Int): State<List<Manga>> {
+        return processApiData(
+            apiCall = { service.getLatestManga(index) },
+            parseData = { parser.parseForRecentMangas(it.stringSuspending()) }
+        )
     }
 
-    override suspend fun searchForTrendingManga(index: Int): List<Manga> {
-        val response = service.getTrendingManga(index)
-
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-            val mangaList = parser.parseForTrendingManga(html)
-
-            return@withContext mangaList
-        }
+    override suspend fun searchForTrendingManga(index: Int): State<List<Manga>> {
+        return processApiData(
+            apiCall = { service.getTrendingManga(index) },
+            parseData = { parser.parseForTrendingManga(it.stringSuspending()) }
+        )
     }
 
-    override suspend fun searchForTopManga(index: Int): List<Manga> {
-        val response = service.getTopWeekManga()
-
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-            val mangaList = parser.parseForTopManga(html)
-
-            return@withContext mangaList
-        }
+    override suspend fun searchForTopManga(index: Int): State<List<Manga>> {
+        return processApiData(
+            apiCall = { service.getTopWeekManga() },
+            parseData = { parser.parseForTopManga(it.stringSuspending()) }
+        )
     }
 
-    override suspend fun searchForNewManga(index: Int): List<Manga> {
-        val response = service.getNewManga(index)
-
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-            val mangaList = parser.parseForNewManga(html)
-
-            return@withContext mangaList
-        }
+    override suspend fun searchForNewManga(index: Int): State<List<Manga>> {
+        return processApiData(
+            apiCall = { service.getNewManga(index) },
+            parseData = { parser.parseForNewManga(it.stringSuspending()) }
+        )
     }
 
     suspend fun searchForMangaOverview(link: String): State<MangaOverview> {
-        val response = try {
-            service.getHtml(link)
-        } catch (e: Exception) {
-            return State.Error(e)
-        }
-
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-
-            val mangaOverview = parser.parseForMangaOverview(html, link)
-            return@withContext State.Success(mangaOverview)
-        }
+        return processApiData(
+            apiCall = { service.getHtml(link) },
+            parseData = { parser.parseForMangaOverview(it.stringSuspending(), link) }
+        )
     }
 
     suspend fun searchForGenres(link: String): State<List<Genre>> {
-        val response = try {
-            service.getHtml(link)
-        } catch (e: Exception) {
-            return State.Error(e)
-        }
-
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-
-            val genres = parser.parseForGenres(html)
-            return@withContext State.Success(genres)
-        }
+        return processApiData(
+            apiCall = { service.getHtml(link) },
+            parseData = { parser.parseForGenres(it.stringSuspending()) }
+        )
     }
 
     suspend fun searchForAuthors(link: String): State<List<Author>> {
-        val response = try {
-            service.getHtml(link)
-        } catch (e: Exception) {
-            return State.Error(e)
-        }
-
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-
-            val genres = parser.parseForAuthors(html)
-            return@withContext State.Success(genres)
-        }
+        return processApiData(
+            apiCall = { service.getHtml(link) },
+            parseData = { parser.parseForAuthors(it.stringSuspending()) }
+        )
     }
 
     suspend fun searchForChapterList(link: String): State<List<Chapter>> {
-        val response = try {
-            service.getHtml(link)
-        } catch (e: Exception) {
-            return State.Error(e)
-        }
-
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-
-            val chapterList = parser.parseForChapterList(html)
-            return@withContext State.Success(chapterList)
-        }
+        return processApiData(
+            apiCall = { service.getHtml(link) },
+            parseData = { parser.parseForChapterList(it.stringSuspending()) }
+        )
     }
 
     suspend fun searchForImageList(link: String): State<List<Page>> {
-        val response = try {
-            service.getHtml(link)
-        } catch (e: Exception) {
-            return State.Error(e)
-        }
-
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-
-            val imageList = parser.parseForImageList(html)
-            return@withContext State.Success(imageList)
-        }
+        return processApiData(
+            apiCall = { service.getHtml(link) },
+            parseData = { parser.parseForImageList(it.stringSuspending()) }
+        )
     }
 
-    override suspend fun searchByKeyword(keyword: String, index: Int): List<SearchResult> {
-        val response = service.searchByKeyword(keyword, index)
-
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-            val searchResultList = parser.parseForSearchByKeyword(html, index)
-
-            return@withContext searchResultList
-        }
+    override suspend fun searchByKeyword(keyword: String, index: Int): State<List<SearchResult>> {
+        return processApiData(
+            apiCall = { service.searchByKeyword(keyword, index) },
+            parseData = { parser.parseForSearchByKeyword(it.stringSuspending(), index) }
+        )
     }
 
     override suspend fun searchByKeywordAndGenres(
         keyword: String,
         genre: GenreConstants,
         index: Int
-    ): List<SearchResult> {
-
+    ): State<List<SearchResult>> {
         if (genre == GenreConstants.ALL) {
             throw InvalidGenreException("There is no id for `All` genres! Use searchByKeyword() instead of searchByKeywordAndGenres()")
         }
 
         val genreString = "_" + getMangakalotGenreId(genre) + "_"
-        val response = service.searchByKeywordAndGenres(
-            genre = genreString,
-            keyword = keyword,
-            index = index
+        return processApiData(
+            apiCall = {
+                service.searchByKeywordAndGenres(
+                    genre = genreString,
+                    keyword = keyword,
+                    index = index
+                )
+            },
+            parseData = { parser.parseForSearchByKeyword(it.stringSuspending(), index) }
         )
-
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-            val searchResultList = parser.parseForSearchByKeywordAndGenre(html, index)
-
-            return@withContext searchResultList
-        }
     }
 
-    override suspend fun searchMangaByAuthor(param: String, index: Int): List<SearchResult> {
+    override suspend fun searchMangaByAuthor(param: String, index: Int): State<List<SearchResult>> {
         val link = param + "/?page=${index}"
-        val response = service.getHtml(link)
-
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-            val searchResultList = parser.parseForSearchByKeyword(html, index)
-
-            return@withContext searchResultList
-        }
+        return processApiData(
+            apiCall = { service.getHtml(link) },
+            parseData = { parser.parseForSearchByKeyword(it.stringSuspending(), index) }
+        )
     }
 
-    override suspend fun searchMangaByGenre(param: String, index: Int): List<SearchResult> {
+    override suspend fun searchMangaByGenre(param: String, index: Int): State<List<SearchResult>> {
         val link = param + "/$index"
-        val response = service.getHtml(link)
-
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-            val searchResultList = parser.parseForSearchByKeywordAndGenre(html, index)
-
-            return@withContext searchResultList
-        }
+        return processApiData(
+            apiCall = { service.getHtml(link) },
+            parseData = { parser.parseForSearchByKeywordAndGenre(it.stringSuspending(), index) }
+        )
     }
 
     companion object {

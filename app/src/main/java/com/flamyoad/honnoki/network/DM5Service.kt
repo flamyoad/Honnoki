@@ -1,7 +1,7 @@
 package com.flamyoad.honnoki.network
 
-import okhttp3.Response
 import okhttp3.ResponseBody
+import retrofit2.Response
 import retrofit2.http.*
 
 private const val CACHE_CONTROL_MAX_AGE_60 = "Cache-Control: max-age=60"

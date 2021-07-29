@@ -1,4 +1,4 @@
-package com.flamyoad.honnoki.data
+package com.flamyoad.honnoki.common
 
 sealed class State<out T : Any> {
     data class Success<out T : Any>(val value: T) : State<T>()

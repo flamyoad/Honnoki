@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.flamyoad.honnoki.R
-import com.flamyoad.honnoki.adapter.BaseAdapter
+import com.flamyoad.honnoki.common.adapter.BaseAdapter
 import com.flamyoad.honnoki.databinding.SourceOptionListItemBinding
 import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.ui.options.model.SourceOption

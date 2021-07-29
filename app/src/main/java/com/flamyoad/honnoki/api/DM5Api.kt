@@ -1,19 +1,19 @@
 package com.flamyoad.honnoki.api
 
+import com.flamyoad.honnoki.api.handler.ApiRequestHandler
 import com.flamyoad.honnoki.data.GenreConstants
-import com.flamyoad.honnoki.data.State
+import com.flamyoad.honnoki.common.State
 import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.network.DM5Service
-import com.flamyoad.honnoki.network.MangakalotService
 import com.flamyoad.honnoki.parser.DM5Parser
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.flamyoad.honnoki.utils.extensions.stringSuspending
 import java.lang.StringBuilder
 
 class DM5Api(
     private val service: DM5Service,
-    private val parser: DM5Parser
-) : BaseApi() {
+    private val parser: DM5Parser,
+    apiHandler: ApiRequestHandler
+) : BaseApi(apiHandler) {
 
     /**
      * DM5 uses epoch time (13 digits) to fetch recently updated manga from their server
@@ -23,50 +23,38 @@ class DM5Api(
     override val startingPageIndex: Int
         get() = 0
 
-    override suspend fun searchForLatestManga(index: Int): List<Manga> {
+    override suspend fun searchForLatestManga(index: Int): State<List<Manga>> {
         if (index > MAXIMUM_DATE_INDEX) {
-            return emptyList()
+            return State.Success(emptyList())
         }
 
-        val response = service.getLatestManga(epochTimeMillis, index)
-
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-            val mangaList = parser.parseForRecentMangas(html)
-
-            return@withContext mangaList
-        }
+        return processApiData(
+            apiCall = { service.getLatestManga(epochTimeMillis, index) },
+            parseData = { parser.parseForRecentMangas(it.stringSuspending()) }
+        )
     }
 
-    override suspend fun searchForTrendingManga(index: Int): List<Manga> {
+    override suspend fun searchForTrendingManga(index: Int): State<List<Manga>> {
         // Only have first page, otherwise return empty list
         if (index > 1) {
-            return emptyList()
+            return State.Success(emptyList())
         }
 
-        val response = service.getTrendingManga(2) // Japanese manga category only
-
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-            val mangaList = parser.parseForTrendingManga(html)
-
-            return@withContext mangaList
-        }
+        return processApiData(
+            apiCall = { service.getTrendingManga(2) },
+            parseData = { parser.parseForTrendingManga(it.stringSuspending()) }
+        )
     }
 
-    override suspend fun searchMangaByAuthor(param: String, index: Int): List<SearchResult> {
+    override suspend fun searchMangaByAuthor(param: String, index: Int): State<List<SearchResult>> {
         val link = param + "&page=$index"
-        val response = service.getHtml(link)
-
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-            val searchResultList = parser.parseForSearchByKeyword(html, index)
-
-            return@withContext searchResultList
-        }
+        return processApiData(
+            apiCall = { service.getHtml(link) },
+            parseData = { parser.parseForSearchByKeyword(it.stringSuspending(), index) }
+        )
     }
 
-    override suspend fun searchMangaByGenre(param: String, index: Int): List<SearchResult> {
+    override suspend fun searchMangaByGenre(param: String, index: Int): State<List<SearchResult>> {
         // https://www.dm5.com/manhua-list-tag17-p3/
         val link = StringBuilder()
             .append(param.removeSuffix("/"))
@@ -74,102 +62,53 @@ class DM5Api(
             .append(index.toString())
             .toString()
 
-        val response = service.getHtml(link)
+        return processApiData(
+            apiCall = { service.getHtml(link) },
+            parseData = { parser.parseForMangaFromGenrePage(it.stringSuspending()) }
+        )
+    }
 
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-            val searchResultList = parser.parseForMangaFromGenrePage(html)
-
-            return@withContext searchResultList
-        }
+    override suspend fun searchByKeyword(keyword: String, index: Int): State<List<SearchResult>> {
+        return processApiData(
+            apiCall = { service.searchByKeyword(keyword, index) },
+            parseData = { parser.parseForSearchByKeyword(it.stringSuspending(), index) }
+        )
     }
 
     suspend fun searchForMangaOverview(link: String): State<MangaOverview> {
-        val response = try {
-            service.getHtml(link)
-        } catch (e: Exception) {
-            return State.Error(e)
-        }
-
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-
-            val mangaOverview = parser.parseForMangaOverview(html, link)
-            return@withContext State.Success(mangaOverview)
-        }
+        return processApiData(
+            apiCall = { service.getHtml(link) },
+            parseData = { parser.parseForMangaOverview(it.stringSuspending(), link) }
+        )
     }
 
     suspend fun searchForGenres(link: String): State<List<Genre>> {
-        val response = try {
-            service.getHtml(link)
-        } catch (e: Exception) {
-            return State.Error(e)
-        }
-
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-
-            val genres = parser.parseForGenres(html)
-            return@withContext State.Success(genres)
-        }
+        return processApiData(
+            apiCall = { service.getHtml(link) },
+            parseData = { parser.parseForGenres(it.stringSuspending()) }
+        )
     }
 
     suspend fun searchForAuthors(link: String): State<List<Author>> {
-        val response = try {
-            service.getHtml(link)
-        } catch (e: Exception) {
-            return State.Error(e)
-        }
-
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-
-            val genres = parser.parseForAuthors(html)
-            return@withContext State.Success(genres)
-        }
+        return processApiData(
+            apiCall = { service.getHtml(link) },
+            parseData = { parser.parseForAuthors(it.stringSuspending()) }
+        )
     }
 
     suspend fun searchForChapterList(link: String): State<List<Chapter>> {
-        val response = try {
-            service.getHtml(link)
-        } catch (e: Exception) {
-            return State.Error(e)
-        }
-
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-
-            val chapterList = parser.parseForChapterList(html)
-            return@withContext State.Success(chapterList)
-        }
+        return processApiData(
+            apiCall = { service.getHtml(link) },
+            parseData = { parser.parseForChapterList(it.stringSuspending()) }
+        )
     }
 
     suspend fun searchForImageList(relativeLink: String): State<List<Page>> {
         val absoluteLink = DM5Service.BASE_MOBILE_URL + relativeLink
-
-        val response = try {
-            service.getHtml(absoluteLink)
-        } catch (e: Exception) {
-            return State.Error(e)
-        }
-
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-
-            val imageList = parser.parseForImageList(html)
-            return@withContext State.Success(imageList)
-        }
-    }
-
-    override suspend fun searchByKeyword(keyword: String, index: Int): List<SearchResult> {
-        val response = service.searchByKeyword(keyword, index)
-
-        return withContext(Dispatchers.Default) {
-            val html = response.string()
-            val searchResultList = parser.parseForSearchByKeyword(html, index)
-
-            return@withContext searchResultList
-        }
+        return processApiData(
+            apiCall = { service.getHtml(absoluteLink) },
+            parseData = { parser.parseForImageList(it.stringSuspending()) }
+        )
     }
 
     companion object {
@@ -185,6 +124,7 @@ class DM5Api(
 
             return DM5Service.BASE_URL + "manhua-list-tag$genreId/"
         }
+
         /**
          * Get the id of genre in DM5's database
          */

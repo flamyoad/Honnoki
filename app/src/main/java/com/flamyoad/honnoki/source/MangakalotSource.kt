@@ -11,7 +11,7 @@ import com.flamyoad.honnoki.paging.MangaMediator
 import com.flamyoad.honnoki.paging.SimpleSearchResultMediator
 import com.flamyoad.honnoki.data.GenreConstants
 import com.flamyoad.honnoki.source.model.Source
-import com.flamyoad.honnoki.data.State
+import com.flamyoad.honnoki.common.State
 import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.paging.LookupResultMediator
 import com.flamyoad.honnoki.source.model.TabType

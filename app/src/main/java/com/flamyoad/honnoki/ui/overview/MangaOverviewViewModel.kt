@@ -2,7 +2,7 @@ package com.flamyoad.honnoki.ui.overview
 
 import androidx.lifecycle.*
 import androidx.paging.ExperimentalPagingApi
-import com.flamyoad.honnoki.data.State
+import com.flamyoad.honnoki.common.State
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.mapper.mapToDomain
 import com.flamyoad.honnoki.data.entities.*
