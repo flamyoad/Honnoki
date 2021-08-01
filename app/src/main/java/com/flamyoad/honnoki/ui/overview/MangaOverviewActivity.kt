@@ -351,7 +351,7 @@ class MangaOverviewActivity : AppCompatActivity() {
 
     private fun openBrowser(overview: MangaOverview) {
         val uri = if (overview.source == Source.MANGADEX) {
-            Uri.parse("https://mangadex.org/title/{${overview.link}}")
+            Uri.parse("https://mangadex.org/title/${overview.link}")
         } else {
             Uri.parse(overview.link)
         }

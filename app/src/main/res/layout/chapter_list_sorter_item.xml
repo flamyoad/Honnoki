@@ -32,12 +32,23 @@
         tools:text="121 Chapters" />
 
     <ImageButton
+        android:id="@+id/btnListType"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:paddingHorizontal="12dp"
+        android:src="@drawable/ic_baseline_view_list_24"
+        app:layout_constraintBottom_toBottomOf="@+id/txtTotalChapters"
+        app:layout_constraintEnd_toStartOf="@+id/btnSort"
+        app:layout_constraintTop_toBottomOf="@id/divider" />
+
+    <ImageButton
         android:id="@+id/btnSort"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:paddingHorizontal="12dp"
-        android:src="@drawable/ic_baseline_sort_by_alpha_24"
+        android:src="@drawable/ic_baseline_sort_by_alpha_24_gray"
         app:layout_constraintBottom_toBottomOf="@+id/txtTotalChapters"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/divider" />

@@ -18,6 +18,7 @@ import com.flamyoad.honnoki.data.entities.Genre
 import com.flamyoad.honnoki.ui.lookup.MangaLookupActivity
 import com.flamyoad.honnoki.ui.lookup.model.LookupType
 import com.flamyoad.honnoki.ui.overview.adapter.*
+import com.flamyoad.honnoki.ui.overview.model.ChapterListStyle
 import com.flamyoad.honnoki.ui.overview.model.ReaderChapter
 import com.flamyoad.honnoki.ui.reader.ReaderActivity
 import jp.wasabeef.recyclerview.animators.FadeInAnimator
@@ -30,6 +31,9 @@ import org.koin.core.parameter.parametersOf
 @ExperimentalCoroutinesApi
 @ExperimentalPagingApi
 class MangaSummaryFragment : Fragment() {
+
+    var style = ChapterListStyle.GRID
+
     private var _binding: FragmentMangaSummaryBinding? = null
     private val binding get() = requireNotNull(_binding)
 
@@ -43,8 +47,14 @@ class MangaSummaryFragment : Fragment() {
 
     private val mainHeaderAdapter by lazy { MainHeaderAdapter() }
     private val mangaSummaryAdapter by lazy { MangaSummaryAdapter(this::lookupMangaByGenre) }
-    private val chapterListHeaderAdapter by lazy { ChapterListHeaderAdapter(viewModel::toggleChapterListSort) }
+    private val chapterListHeaderAdapter by lazy {
+        ChapterListHeaderAdapter(
+            viewModel::toggleChapterListSort,
+            this::changeChapterListStyle
+        )
+    }
     private val chapterListLoadingAdapter by lazy { ChapterListLoadingAdapter() }
+    private val chapterGridAdapter by lazy { ChapterGridAdapter(this::onChapterClick) }
     private val chapterListAdapter by lazy { ChapterListAdapter(this::onChapterClick) }
 
     private val concatAdapter by lazy {
@@ -66,7 +76,7 @@ class MangaSummaryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initUi()
+        initUi(style)
         observeUi()
     }
 
@@ -75,21 +85,25 @@ class MangaSummaryFragment : Fragment() {
         _binding = null
     }
 
-    private fun initUi() {
-        val spanCount = 3
-        val gridLayoutManager = GridLayoutManager(requireContext(), spanCount)
+    private fun initUi(chapterListStyle: ChapterListStyle) {
+        val fullSpanCount = 3
+        val chapterListSpanCount = when (chapterListStyle) {
+            ChapterListStyle.GRID -> 1
+            ChapterListStyle.LIST -> fullSpanCount
+        }
+
+        val gridLayoutManager = GridLayoutManager(requireContext(), fullSpanCount)
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 return when (position) {
-                    0 -> spanCount
-                    1 -> spanCount
-                    2 -> spanCount
-                    3 -> spanCount
-                    else -> 1
+                    0 -> fullSpanCount
+                    1 -> fullSpanCount
+                    2 -> fullSpanCount
+                    3 -> fullSpanCount
+                    else -> chapterListSpanCount
                 }
             }
         }
-
         with(binding.contentList) {
             adapter = concatAdapter
             layoutManager = gridLayoutManager
@@ -120,9 +134,13 @@ class MangaSummaryFragment : Fragment() {
                 is State.Success -> {
                     concatAdapter.apply {
                         removeAdapter(chapterListLoadingAdapter)
-                        addAdapter(chapterListAdapter)
+                        when (style) {
+                            ChapterListStyle.GRID -> addAdapter(chapterGridAdapter)
+                            ChapterListStyle.LIST -> addAdapter(chapterListAdapter)
+                        }
                     }
                     chapterListHeaderAdapter.setItem(it.value)
+                    chapterGridAdapter.submitList(it.value)
                     chapterListAdapter.submitList(it.value)
                 }
             }
@@ -137,6 +155,23 @@ class MangaSummaryFragment : Fragment() {
         val source = overview.source ?: return
 
         ReaderActivity.start(requireContext(), chapterId, overviewId, source)
+    }
+
+    private fun changeChapterListStyle() {
+        concatAdapter.apply {
+            removeAdapter(chapterGridAdapter)
+            removeAdapter(chapterListAdapter)
+        }
+
+        if (style == ChapterListStyle.GRID) {
+            initUi(ChapterListStyle.LIST)
+            style = ChapterListStyle.LIST
+            concatAdapter.addAdapter(chapterListAdapter)
+        } else {
+            initUi(ChapterListStyle.GRID)
+            style = ChapterListStyle.GRID
+            concatAdapter.addAdapter(chapterGridAdapter)
+        }
     }
 
     private fun lookupMangaByGenre(genre: Genre) {
@@ -155,7 +190,6 @@ class MangaSummaryFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance() =
-            MangaSummaryFragment()
+        fun newInstance() = MangaSummaryFragment()
     }
 }
