@@ -199,7 +199,8 @@ class DM5Parser(
                     link = chapterLink.attrNonNull("href"), // It's relative link
                     date = "", // Does not have date
                     hasBeenRead = false,
-                    hasBeenDownloaded = false
+                    hasBeenDownloaded = false,
+                    translatedLanguage = "cn"
                 )
             }
         }

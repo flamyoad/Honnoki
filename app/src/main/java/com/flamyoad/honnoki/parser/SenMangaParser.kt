@@ -129,7 +129,8 @@ class SenMangaParser(
                     link = chapterLink.attrNonNull("href"),
                     date = it.selectFirst(".span > .time").attrNonNull("title"),
                     hasBeenRead = false,
-                    hasBeenDownloaded = false
+                    hasBeenDownloaded = false,
+                    translatedLanguage = "jp"
                 )
             }
             return@withContext processedChapters

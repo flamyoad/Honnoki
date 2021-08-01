@@ -14,6 +14,7 @@ fun Chapter.mapToDomain(mangaOverview: MangaOverview): ReaderChapter {
         currentlyRead = (this.id == mangaOverview.lastReadChapterId),
         hasBeenRead = this.hasBeenRead,
         hasBeenDownloaded = this.hasBeenDownloaded,
+        translatedLanguage = this.translatedLanguage,
         mangaOverviewId = mangaOverview.id ?: -1L
     )
 }
@@ -33,6 +34,7 @@ fun ReaderChapter.mapToDb(): Chapter {
         link = this.link,
         hasBeenRead = this.hasBeenRead,
         hasBeenDownloaded = this.hasBeenDownloaded,
+        translatedLanguage = this.translatedLanguage,
         mangaOverviewId = this.mangaOverviewId
     )
 }

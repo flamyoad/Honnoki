@@ -156,7 +156,8 @@ class MangadexParser {
                     link = it.data.id,
                     date = attr.createdAt ?: "",
                     hasBeenRead = false,
-                    hasBeenDownloaded = false
+                    hasBeenDownloaded = false,
+                    translatedLanguage = attr.translatedLanguage ?: ""
                 )
             }
             return@withContext chapterList

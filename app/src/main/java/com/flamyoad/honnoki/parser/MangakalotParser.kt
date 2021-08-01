@@ -255,7 +255,8 @@ class MangakalotParser {
                     link = chapterLink.attrNonNull("href"),
                     date = it.selectFirst(".chapter-time").textNonNull(),
                     hasBeenRead = false,
-                    hasBeenDownloaded = false
+                    hasBeenDownloaded = false,
+                    translatedLanguage = "en"
                 )
             }
         }

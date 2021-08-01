@@ -1,10 +1,7 @@
 package com.flamyoad.honnoki.data.db
 
 import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
+import androidx.room.*
 import com.flamyoad.honnoki.data.db.dao.*
 import com.flamyoad.honnoki.data.db.typeconverters.LocalDateTimeConverter
 import com.flamyoad.honnoki.data.entities.*
@@ -25,9 +22,11 @@ const val DATABASE_NAME = "com.flamyoad.android.honnoki.AppDatabase"
         LookupResult::class,
         Bookmark::class,
         BookmarkGroup::class],
-    version = 1
+    version = 2,
+    autoMigrations = [
+        AutoMigration(from = 1, to = 2)
+    ]
 )
-
 @TypeConverters(SourceConverter::class, MangaTypeConverter::class, LocalDateTimeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
 
