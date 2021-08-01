@@ -53,6 +53,7 @@ class MangaSummaryFragment : Fragment() {
             this::changeChapterListStyle
         )
     }
+    private val languageFilterAdapter by lazy { LanguageFilterAdapter() }
     private val chapterListLoadingAdapter by lazy { ChapterListLoadingAdapter() }
     private val chapterGridAdapter by lazy { ChapterGridAdapter(this::onChapterClick) }
     private val chapterListAdapter by lazy { ChapterListAdapter(this::onChapterClick) }
@@ -62,6 +63,7 @@ class MangaSummaryFragment : Fragment() {
             mainHeaderAdapter,
             mangaSummaryAdapter,
             chapterListHeaderAdapter,
+            languageFilterAdapter
         )
     }
 
@@ -100,6 +102,7 @@ class MangaSummaryFragment : Fragment() {
                     1 -> fullSpanCount
                     2 -> fullSpanCount
                     3 -> fullSpanCount
+                    4 -> fullSpanCount
                     else -> chapterListSpanCount
                 }
             }
