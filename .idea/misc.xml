@@ -13,6 +13,8 @@
         <entry key="app/src/main/res/layout/chapter_list_item_complex.xml" value="0.375" />
         <entry key="app/src/main/res/layout/chapter_list_language_filter.xml" value="0.22604166666666667" />
         <entry key="app/src/main/res/layout/chapter_list_sorter_item.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/fragment_detailed_manga_list.xml" value="0.15092592592592594" />
+        <entry key="app/src/main/res/layout/fragment_simple_manga_list.xml" value="0.15092592592592594" />
         <entry key="app/src/main/res/layout/manga_summary_list_header.xml" value="0.15" />
       </map>
     </option>
