@@ -21,12 +21,14 @@ import com.flamyoad.honnoki.ui.overview.adapter.*
 import com.flamyoad.honnoki.ui.overview.model.ChapterListStyle
 import com.flamyoad.honnoki.ui.overview.model.ReaderChapter
 import com.flamyoad.honnoki.ui.reader.ReaderActivity
+import com.flamyoad.honnoki.utils.extensions.toast
 import jp.wasabeef.recyclerview.animators.FadeInAnimator
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.parameter.parametersOf
+import java.lang.IllegalArgumentException
 
 @ExperimentalCoroutinesApi
 @ExperimentalPagingApi
@@ -53,7 +55,9 @@ class MangaSummaryFragment : Fragment() {
             this::changeChapterListStyle
         )
     }
-    private val languageFilterAdapter by lazy { LanguageFilterAdapter() }
+    private val languageFilterAdapter by lazy {
+        LanguageFilterAdapter(requireContext(), viewModel::setChapterLanguageFilter)
+    }
     private val chapterListLoadingAdapter by lazy { ChapterListLoadingAdapter() }
     private val chapterGridAdapter by lazy { ChapterGridAdapter(this::onChapterClick) }
     private val chapterListAdapter by lazy { ChapterListAdapter(this::onChapterClick) }
@@ -63,7 +67,6 @@ class MangaSummaryFragment : Fragment() {
             mainHeaderAdapter,
             mangaSummaryAdapter,
             chapterListHeaderAdapter,
-            languageFilterAdapter
         )
     }
 
@@ -88,25 +91,44 @@ class MangaSummaryFragment : Fragment() {
     }
 
     private fun initUi(chapterListStyle: ChapterListStyle) {
-        val fullSpanCount = 3
-        val chapterListSpanCount = when (chapterListStyle) {
-            ChapterListStyle.GRID -> 1
-            ChapterListStyle.LIST -> fullSpanCount
+        // Sources other than MD dont need lang filters
+        if (Source.valueOf(mangaSource) == Source.MANGADEX) {
+            concatAdapter.addAdapter(languageFilterAdapter)
         }
 
+        val fullSpanCount = 3
+
+        val adapterList = concatAdapter.adapters
         val gridLayoutManager = GridLayoutManager(requireContext(), fullSpanCount)
+
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                return when (position) {
-                    0 -> fullSpanCount
-                    1 -> fullSpanCount
-                    2 -> fullSpanCount
-                    3 -> fullSpanCount
-                    4 -> fullSpanCount
-                    else -> chapterListSpanCount
+                // This is for the first item in grid (Full span width). List is always full span
+                if (position == adapterList.size) {
+                    return fullSpanCount
+                }
+
+                // This is for the second until last item in grid (1/3 span width). List is always full span
+                if (position > adapterList.size) {
+                    return when (chapterListStyle) {
+                        ChapterListStyle.GRID -> 1
+                        ChapterListStyle.LIST -> fullSpanCount
+                    }
+                }
+
+                return when (adapterList[position]) {
+                    is MainHeaderAdapter -> fullSpanCount
+                    is MangaSummaryAdapter -> fullSpanCount
+                    is ChapterListHeaderAdapter -> fullSpanCount
+                    is LanguageFilterAdapter -> fullSpanCount
+                    is ChapterListLoadingAdapter -> fullSpanCount
+                    is ChapterGridAdapter -> fullSpanCount
+                    is ChapterListAdapter -> fullSpanCount
+                    else -> throw IllegalArgumentException("Unknown adapter type")
                 }
             }
         }
+
         with(binding.contentList) {
             adapter = concatAdapter
             layoutManager = gridLayoutManager
@@ -129,22 +151,30 @@ class MangaSummaryFragment : Fragment() {
             mangaSummaryAdapter.setGenres(State.Success(it))
         }
 
-        viewModel.chapterList.observe(viewLifecycleOwner) {
-            when (it) {
-                is State.Loading -> {
-                    concatAdapter.addAdapter(chapterListLoadingAdapter)
-                }
-                is State.Success -> {
-                    concatAdapter.apply {
-                        removeAdapter(chapterListLoadingAdapter)
-                        when (style) {
-                            ChapterListStyle.GRID -> addAdapter(chapterGridAdapter)
-                            ChapterListStyle.LIST -> addAdapter(chapterListAdapter)
+        viewModel.languageList.observe(viewLifecycleOwner) {
+            languageFilterAdapter.items = it
+        }
+
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                viewModel.chapterList.collectLatest {
+                    when (it) {
+                        is State.Loading -> {
+                            concatAdapter.addAdapter(chapterListLoadingAdapter)
+                        }
+                        is State.Success -> {
+                            concatAdapter.apply {
+                                removeAdapter(chapterListLoadingAdapter)
+                                when (style) {
+                                    ChapterListStyle.GRID -> addAdapter(chapterGridAdapter)
+                                    ChapterListStyle.LIST -> addAdapter(chapterListAdapter)
+                                }
+                            }
+                            chapterListHeaderAdapter.setItem(it.value)
+                            chapterGridAdapter.submitList(it.value)
+                            chapterListAdapter.submitList(it.value)
                         }
                     }
-                    chapterListHeaderAdapter.setItem(it.value)
-                    chapterGridAdapter.submitList(it.value)
-                    chapterListAdapter.submitList(it.value)
                 }
             }
         }
@@ -178,9 +208,7 @@ class MangaSummaryFragment : Fragment() {
     }
 
     private fun lookupMangaByGenre(genre: Genre) {
-        val sourceName = requireActivity().intent
-            .getStringExtra(MangaOverviewActivity.MANGA_SOURCE) ?: ""
-        val source = Source.valueOf(sourceName)
+        val source = Source.valueOf(mangaSource)
 
         MangaLookupActivity.startActivity(
             requireContext(),

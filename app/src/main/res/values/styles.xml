@@ -156,7 +156,7 @@
     </style>
 
     <style name="AppTheme.ExposedDropdownMenu.MaterialThemeOverlay" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorSurface">?attr/backgroundColor</item>
+        <item name="colorSurface">@color/yanfei_primary_red</item>
         <item name="colorControlHighlight">@color/colorAccent</item>
         <item name="autoCompleteTextViewStyle">
             @style/AppTheme.ExposedDropdownMenu.AutoCompleteStyle
@@ -165,8 +165,16 @@
 
     <style name="AppTheme.ExposedDropdownMenu.AutoCompleteStyle">
         <item name="android:padding">15dp</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="android:textSize">21sp</item>
+    </style>
+
+    <style name="AppTheme.MaterialSpinnerItem" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:padding">16dp</item>
     </style>
 
 </resources>
