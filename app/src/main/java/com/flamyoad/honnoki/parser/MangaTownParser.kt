@@ -155,7 +155,8 @@ class MangaTownParser {
                 link = absoluteLink,
                 date = it.selectFirst(".time").textNonNull(),
                 hasBeenRead = false,
-                hasBeenDownloaded = false
+                hasBeenDownloaded = false,
+                translatedLanguage = "en"
             )
         }
     }

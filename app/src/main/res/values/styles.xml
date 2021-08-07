@@ -127,11 +127,54 @@
     </style>
 
     <style name="MaterialAlertDialog.Rounded" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
-        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.MaterialAlertDialog.Rounded</item>
+        <item name="shapeAppearanceOverlay">
+            @style/ShapeAppearanceOverlay.MaterialAlertDialog.Rounded
+        </item>
     </style>
 
     <style name="ShapeAppearanceOverlay.MaterialAlertDialog.Rounded" parent="">
         <item name="cornerSize">18dp</item>
+    </style>
+
+    <style name="AppTheme.ExposedDropdownMenu" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <!-- color of box ONLY, not dropdown -->
+        <item name="boxBackgroundColor">?attr/colorBackgroundFloating</item>
+        <item name="endIconDrawable">@drawable/ic_baseline_arrow_drop_down_24</item>
+        <item name="endIconTint">?android:attr/textColorPrimary</item>
+        <!-- the box outline color depending on state
+             (default, enabled, hovered, focused, but NOT error) -->
+        <item name="boxStrokeColor">@color/yanfei_primary_red</item>
+        <!-- the box outline color just for errors -->
+        <item name="boxStrokeErrorColor">@color/yanfei_primary_red</item>
+        <!-- enable 8dp space below the box for error message -->
+        <item name="errorEnabled">true</item>
+        <!-- Gain access to additional styling for the child AutoCompleteTextView,
+             which includes this spinner's dropdown/popup menu -->
+<!--        <item name="materialThemeOverlay">-->
+<!--            @style/AppTheme.ExposedDropdownMenu.MaterialThemeOverlay-->
+<!--        </item>-->
+    </style>
+
+    <style name="AppTheme.ExposedDropdownMenu.MaterialThemeOverlay" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorSurface">@color/yanfei_primary_red</item>
+        <item name="colorControlHighlight">@color/colorAccent</item>
+        <item name="autoCompleteTextViewStyle">
+            @style/AppTheme.ExposedDropdownMenu.AutoCompleteStyle
+        </item>
+    </style>
+
+    <style name="AppTheme.ExposedDropdownMenu.AutoCompleteStyle">
+        <item name="android:padding">15dp</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textSize">21sp</item>
+    </style>
+
+    <style name="AppTheme.MaterialSpinnerItem" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:padding">16dp</item>
     </style>
 
 </resources>

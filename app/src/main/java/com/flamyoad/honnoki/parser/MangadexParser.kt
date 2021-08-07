@@ -10,7 +10,10 @@ import com.flamyoad.honnoki.parser.model.MangadexQualityMode
 import com.flamyoad.honnoki.utils.extensions.capitalizeWithLocale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.time.DateTimeException
 import java.time.LocalDateTime
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 
 class MangadexParser {
 
@@ -150,13 +153,22 @@ class MangadexParser {
                     .append(attr.chapter ?: "")
                     .toString()
 
+                val date = try {
+                    OffsetDateTime
+                        .parse(attr.createdAt)
+                        .format(DateTimeFormatter.RFC_1123_DATE_TIME)
+                } catch (dte: DateTimeException) {
+                    attr.createdAt
+                }
+
                 Chapter(
                     title = title,
                     number = (index + currentOffset).toDouble(),
                     link = it.data.id,
-                    date = attr.createdAt ?: "",
+                    date = date ?: "",
                     hasBeenRead = false,
-                    hasBeenDownloaded = false
+                    hasBeenDownloaded = false,
+                    translatedLanguage = attr.translatedLanguage ?: ""
                 )
             }
             return@withContext chapterList

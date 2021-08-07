@@ -15,7 +15,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.data.entities.Manga
 import com.flamyoad.honnoki.databinding.FragmentDetailedMangaListBinding
+import com.flamyoad.honnoki.databinding.FragmentSimpleMangaListBinding
 import com.flamyoad.honnoki.source.model.Source
+import com.flamyoad.honnoki.source.model.TabType
 import com.flamyoad.honnoki.ui.home.HomeViewModel
 import com.flamyoad.honnoki.ui.home.adapter.*
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
@@ -31,7 +33,8 @@ private const val GRID_SPANCOUNT = 3
 
 @ExperimentalPagingApi
 class DetailedMangaListFragment : Fragment() {
-    private val binding by viewLifecycleLazy { FragmentDetailedMangaListBinding.bind(requireView()) }
+    private var _binding: FragmentDetailedMangaListBinding? = null
+    private val binding get() = requireNotNull(_binding)
 
     private val parentViewModel: HomeViewModel by sharedViewModel()
 
@@ -42,11 +45,12 @@ class DetailedMangaListFragment : Fragment() {
 
     private lateinit var concatAdapter: ConcatAdapter
 
-    private lateinit var trendingMangaLoadingAdapter: LoadIndicatorAdapter
+    private val trendingMangaLoadingAdapter by lazy { LoadIndicatorAdapter() }
+    private val listDividerAdapter by lazy { ListDividerAdapter() }
+    private val recentMangaLoadingAdapter by lazy { LoadIndicatorAdapter() }
+    private val recentMangaHeaderAdapter by lazy { VerticalMangaHeaderAdapter() }
+
     private lateinit var trendingMangaAdapter: HorizontalMangaAdapter
-    private lateinit var listDividerAdapter: ListDividerAdapter
-    private lateinit var recentMangaLoadingAdapter: LoadIndicatorAdapter
-    private lateinit var recentMangaHeaderAdapter: VerticalMangaHeaderAdapter
     private lateinit var recentMangaAdapter: VerticalMangaListAdapter
 
     private val gridLayoutManager by lazy { GridLayoutManager(requireContext(), GRID_SPANCOUNT) }
@@ -63,8 +67,14 @@ class DetailedMangaListFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_detailed_manga_list, container, false)
+    ): View {
+        _binding = FragmentDetailedMangaListBinding.inflate(layoutInflater, container, false)
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -74,40 +84,6 @@ class DetailedMangaListFragment : Fragment() {
         initConcatList()
         initUi()
         observeUi()
-    }
-
-    private fun initTrendingList() {
-        trendingMangaLoadingAdapter = LoadIndicatorAdapter()
-
-        trendingMangaAdapter = HorizontalMangaAdapter(requireContext(), this::openManga) {
-            concatAdapter.removeAdapter(trendingMangaLoadingAdapter)
-        }
-
-        trendingMangaAdapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
-
-        trendingMangaAdapter.onItemsArrived {
-            concatAdapter.removeAdapter(trendingMangaLoadingAdapter)
-        }
-    }
-
-    private fun initRecentList() {
-        recentMangaLoadingAdapter = LoadIndicatorAdapter()
-        recentMangaHeaderAdapter = VerticalMangaHeaderAdapter()
-        recentMangaAdapter = VerticalMangaListAdapter(this::openManga)
-
-        recentMangaAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                super.onItemRangeInserted(positionStart, itemCount)
-                if (itemCount > 0) {
-                    concatAdapter.removeAdapter(recentMangaLoadingAdapter)
-                }
-            }
-        })
-
-        recentMangaAdapter.apply {
-            withLoadStateFooter(MangaLoadStateAdapter { this.retry() })
-            stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
-        }
     }
 
     private fun initUi() {
@@ -132,15 +108,24 @@ class DetailedMangaListFragment : Fragment() {
     }
 
     private fun observeUi() {
+        // WHAT IS HAPPENING?!!!!
+        // Do not try to inline these 2 variables - recentMangas, trendingMangas
+        // Otherwise, the page keep refreshes when you swipe back from another page to this page
+
+        // It works now but Try to figure this out?!!
+        // It maybe caused by fact that Flow is cold stream?!
+        val recentMangas = viewModel.getRecentManga()
+        val trendingMangas = viewModel.getTrendingManga()
+
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 launch {
-                    viewModel.getTrendingManga().collectLatest {
+                    trendingMangas.collectLatest {
                         trendingMangaAdapter.submitDataToChild(it)
                     }
                 }
                 launch {
-                    viewModel.getRecentManga().collectLatest {
+                    recentMangas.collectLatest {
                         recentMangaAdapter.submitData(it)
                     }
                 }
@@ -149,8 +134,6 @@ class DetailedMangaListFragment : Fragment() {
     }
 
     private fun initConcatList() {
-        listDividerAdapter = ListDividerAdapter()
-
         concatAdapter = ConcatAdapter(
             trendingMangaAdapter,
             trendingMangaLoadingAdapter,
@@ -163,7 +146,7 @@ class DetailedMangaListFragment : Fragment() {
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 val adapterList = concatAdapter.adapters
-                // Not sure why the layout manager would ask for index 3 when the list has only 3 items?
+                // Position will go up to 100~ depending on the item of VerticalMangaListAdapter
                 if (position >= adapterList.size) {
                     return 1
                 }
@@ -180,9 +163,36 @@ class DetailedMangaListFragment : Fragment() {
         }
 
         with(binding.listManga) {
-            this.adapter = concatAdapter
-            this.layoutManager = gridLayoutManager
+            adapter = concatAdapter
+            layoutManager = gridLayoutManager
             itemAnimator = null
+        }
+    }
+
+    private fun initTrendingList() {
+        trendingMangaAdapter = HorizontalMangaAdapter(
+            requireContext(),
+            this::openManga,
+            onItemsLoaded = { concatAdapter.removeAdapter(trendingMangaLoadingAdapter) }
+        )
+
+        trendingMangaAdapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+
+        trendingMangaAdapter.onItemsArrived {
+            concatAdapter.removeAdapter(trendingMangaLoadingAdapter)
+        }
+    }
+
+    private fun initRecentList() {
+        recentMangaAdapter = VerticalMangaListAdapter(this::openManga)
+
+        recentMangaAdapter.onItemsArrived {
+            concatAdapter.removeAdapter(recentMangaLoadingAdapter)
+        }
+
+        recentMangaAdapter.apply {
+            withLoadStateFooter(MangaLoadStateAdapter { this.retry() })
+            stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         }
     }
 

@@ -154,7 +154,8 @@ class ReadMangaParser {
                     link = link,
                     date = it.selectFirst(".dte").attrNonNull("title"),
                     hasBeenRead = false,
-                    hasBeenDownloaded = false
+                    hasBeenDownloaded = false,
+                    translatedLanguage = "en"
                 )
             }
         }

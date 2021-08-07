@@ -16,7 +16,6 @@ abstract class BaseApi(val apiHandler: ApiRequestHandler) {
         crossinline apiCall: suspend () -> A,
         crossinline parseData: suspend (responseData: A) -> T,
     ): State<T> {
-
         when (val apiResult = apiHandler.safeApiCall { apiCall() }) {
             is NetworkResult.Success -> {
                 return try {

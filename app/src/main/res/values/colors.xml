@@ -23,6 +23,7 @@
     <color name="translucent_black">#99080808</color>
 
     <color name="white">#FFFFFF</color>
+    <color name="transparent">#00000000</color>
     <color name="navDrawerScrim">#8D000000</color>
     <color name="maskColor">#88000000</color>
     <color name="deepMaskColor">#A9000000</color>
@@ -45,4 +46,5 @@
 
     <color name="secondaryPink">#F05A66</color>
     <color name="sea_blue">#09203f</color>
+
 </resources>

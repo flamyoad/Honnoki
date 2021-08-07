@@ -12,6 +12,7 @@ import com.flamyoad.honnoki.data.preference.ReaderPreference
 import com.flamyoad.honnoki.repository.ChapterRepository
 import com.flamyoad.honnoki.repository.OverviewRepository
 import com.flamyoad.honnoki.source.BaseSource
+import com.flamyoad.honnoki.ui.overview.model.LanguageFilter
 import com.flamyoad.honnoki.ui.reader.model.LoadType
 import com.flamyoad.honnoki.ui.reader.model.ReaderPage
 import kotlinx.coroutines.*
@@ -91,11 +92,16 @@ class ReaderViewModel(
 
     private val loadCompletionStatusByChapterId = ConcurrentHashMap<Long, Boolean>()
 
+    var selectedLanguage: String? = null
+
     var currentScrollPosition: Int = -1
 
     fun fetchChapterImages(chapterId: Long, loadType: LoadType): Job {
         return viewModelScope.launch(Dispatchers.IO) {
-            val chapter = db.chapterDao().get(chapterId) ?: throw IllegalArgumentException("Chapter id is null")
+            val chapter = db.chapterDao().get(chapterId)
+                ?: throw IllegalArgumentException("Chapter id is null")
+
+            selectedLanguage = chapter.translatedLanguage
 
             // Skip loading this chapter if it has been loaded before
             if (loadCompletionStatusByChapterId[chapterId] == true) {
@@ -116,7 +122,11 @@ class ReaderViewModel(
         }
     }
 
-    private suspend fun processChapterImages(chapter: Chapter, pages: List<Page>, loadType: LoadType) {
+    private suspend fun processChapterImages(
+        chapter: Chapter,
+        pages: List<Page>,
+        loadType: LoadType
+    ) {
         val chapterId = chapter.id ?: throw IllegalArgumentException("Chapter id is null")
 
         val pagesFromNetwork = pages.map {
@@ -193,8 +203,14 @@ class ReaderViewModel(
             val overviewId = mangaOverviewId.value
             val currentChapterNumber = currentChapterShown.value.number
 
-            val prevChapter = db.chapterDao().getPreviousChapter(overviewId, currentChapterNumber) ?: return@launch
-            val chapterId = prevChapter.id ?: return@launch
+            val lang = selectedLanguage
+            val prevChapter = if (lang != null) {
+                db.chapterDao().getPreviousChapterFromLanguage(overviewId, currentChapterNumber, lang)
+            } else {
+                db.chapterDao().getPreviousChapter(overviewId, currentChapterNumber)
+            }
+
+            val chapterId = prevChapter?.id ?: return@launch
 
             fetchChapterImages(chapterId, LoadType.PREV)
                 .join()
@@ -212,9 +228,14 @@ class ReaderViewModel(
             val overviewId = mangaOverviewId.value
             val currentChapterNumber = currentChapterShown.value.number
 
-            val nextChapter =
-                db.chapterDao().getNextChapter(overviewId, currentChapterNumber) ?: return@launch
-            val chapterId = nextChapter.id ?: return@launch
+            val lang = selectedLanguage
+            val nextChapter = if (lang != null) {
+                db.chapterDao().getNextChapterFromLanguage(overviewId, currentChapterNumber, lang)
+            } else {
+                db.chapterDao().getNextChapter(overviewId, currentChapterNumber)
+            }
+
+            val chapterId = nextChapter?.id ?: return@launch
 
             fetchChapterImages(chapterId, LoadType.NEXT)
                 .join()

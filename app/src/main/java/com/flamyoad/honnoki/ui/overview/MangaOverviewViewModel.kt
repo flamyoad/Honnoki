@@ -8,6 +8,7 @@ import com.flamyoad.honnoki.data.mapper.mapToDomain
 import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.source.BaseSource
 import com.flamyoad.honnoki.ui.overview.model.ChapterListSort
+import com.flamyoad.honnoki.ui.overview.model.LanguageFilter
 import com.flamyoad.honnoki.ui.overview.model.ReaderChapter
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -38,13 +39,39 @@ class MangaOverviewViewModel(private val db: AppDatabase, private val baseSource
 
     private val chapterListSortType = MutableStateFlow(ChapterListSort.DESC)
 
-    val chapterList: LiveData<State<List<ReaderChapter>>> = mangaOverviewId
+    // todo: Move the default lang to datastore, if got time ;d
+    private val selectedLanguage = MutableStateFlow(LanguageFilter.empty())
+
+    val languageList: LiveData<List<LanguageFilter>> = mangaOverviewId
+        .flatMapLatest { id -> db.chapterDao().getAvailableLanguages(id) }
+        .combine(selectedLanguage) { languageList, selectedLanguage -> Pair(languageList, selectedLanguage) }
+        .map { (languageList, selectedLanguage) ->
+            languageList.map {
+                LanguageFilter(it, isSelected = (it == selectedLanguage.locale))
+            }
+        }
+        .asLiveData()
+
+    val chapterList: StateFlow<State<List<ReaderChapter>>> = mangaOverviewId
         .onStart { flowOf(State.Loading) }
         .combine(chapterListSortType) { id, sortType -> Pair(id, sortType) }
-        .flatMapLatest { (id, sortType) ->
+        .combine(selectedLanguage) { (id, sortType), lang -> Triple(id, sortType, lang) }
+        .flatMapLatest { (id, sortType, lang) ->
             when (sortType) {
-                ChapterListSort.ASC -> db.chapterDao().getAscByOverviewId(id)
-                ChapterListSort.DESC -> db.chapterDao().getDescByOverviewId(id)
+                ChapterListSort.ASC -> {
+                    if (lang == LanguageFilter.empty()) {
+                        db.chapterDao().getAscByOverviewId(id)
+                    } else {
+                        db.chapterDao().getAscByOverviewIdFromLanguage(id, lang.locale)
+                    }
+                }
+                ChapterListSort.DESC -> {
+                    if (lang == LanguageFilter.empty()) {
+                        db.chapterDao().getDescByOverviewId(id)
+                    } else {
+                        db.chapterDao().getDescByOverviewIdFromLanguage(id, lang.locale)
+                    }
+                }
             }
         }
         .flowOn(Dispatchers.IO)
@@ -57,7 +84,7 @@ class MangaOverviewViewModel(private val db: AppDatabase, private val baseSource
             }
         }
         .flowOn(Dispatchers.Default)
-        .asLiveData()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), State.Loading)
 
     val hasBeenBookmarked = mangaOverviewId
         .flatMapLatest { db.mangaOverviewDao().hasBeenBookmarked(it) }
@@ -132,7 +159,11 @@ class MangaOverviewViewModel(private val db: AppDatabase, private val baseSource
         }
     }
 
-    suspend fun getFirstChapter(overviewId: Long): Chapter? {
+    fun setChapterLanguageFilter(languageFilter: LanguageFilter) {
+        selectedLanguage.value = languageFilter
+    }
+
+    fun getFirstChapter(overviewId: Long): Chapter? {
         return db.chapterDao().getFirst(overviewId)
     }
 }

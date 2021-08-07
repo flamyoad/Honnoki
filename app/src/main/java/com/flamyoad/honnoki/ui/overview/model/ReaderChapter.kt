@@ -9,5 +9,6 @@ data class ReaderChapter(
     val currentlyRead: Boolean,
     val hasBeenRead: Boolean,
     val hasBeenDownloaded: Boolean,
+    val translatedLanguage: String,
     val mangaOverviewId: Long = -1
 )

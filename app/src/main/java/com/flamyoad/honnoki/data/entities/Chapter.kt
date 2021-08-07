@@ -25,6 +25,10 @@ data class Chapter(
     val date: String,
     val hasBeenRead: Boolean,
     val hasBeenDownloaded: Boolean,
+
+    @ColumnInfo(defaultValue = "") // Needed for auto migration
+    val translatedLanguage: String,
+
     val mangaOverviewId: Long = -1
 ) {
 
@@ -37,6 +41,7 @@ data class Chapter(
             link = "",
             hasBeenRead = false,
             hasBeenDownloaded = false,
+            translatedLanguage = "",
             mangaOverviewId = -1
         )
     }

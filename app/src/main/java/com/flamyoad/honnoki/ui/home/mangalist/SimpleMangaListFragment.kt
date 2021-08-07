@@ -110,8 +110,8 @@ class SimpleMangaListFragment : Fragment() {
         })
 
         with(binding.listManga) {
-            this.adapter = concatAdapter
-            this.layoutManager = gridLayoutManager
+            adapter = concatAdapter
+            layoutManager = gridLayoutManager
             itemAnimator = null
         }
     }

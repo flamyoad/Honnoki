@@ -107,7 +107,7 @@ class MangakalotApi(
                     index = index
                 )
             },
-            parseData = { parser.parseForSearchByKeyword(it.stringSuspending(), index) }
+            parseData = { parser.parseForSearchByKeywordAndGenre(it.stringSuspending(), index) }
         )
     }
 
