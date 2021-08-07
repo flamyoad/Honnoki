@@ -39,7 +39,8 @@ class MangaOverviewViewModel(private val db: AppDatabase, private val baseSource
 
     private val chapterListSortType = MutableStateFlow(ChapterListSort.DESC)
 
-    private val selectedLanguage = MutableStateFlow(LanguageFilter.english())
+    // todo: Move the default lang to datastore, if got time ;d
+    private val selectedLanguage = MutableStateFlow(LanguageFilter.empty())
 
     val languageList: LiveData<List<LanguageFilter>> = mangaOverviewId
         .flatMapLatest { id -> db.chapterDao().getAvailableLanguages(id) }

@@ -38,6 +38,7 @@ import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.ui.lookup.MangaLookupActivity
 import com.flamyoad.honnoki.ui.lookup.model.LookupType
 import com.flamyoad.honnoki.ui.overview.adapter.MangaOverviewFragmentAdapter
+import com.flamyoad.honnoki.ui.overview.model.LanguageFilter
 import com.flamyoad.honnoki.ui.reader.ReaderActivity
 import com.flamyoad.honnoki.utils.ui.AppBarStateChangeListener
 import com.flamyoad.honnoki.utils.ui.DepthPageTransformer
@@ -88,6 +89,9 @@ class MangaOverviewActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
             viewModel.loadMangaOverview(intent.getStringExtra(MANGA_URL) ?: "")
+            if (mangaSource == Source.MANGADEX.toString()) {
+                viewModel.setChapterLanguageFilter(LanguageFilter.english())
+            }
         }
 
         initUi()

@@ -72,4 +72,30 @@ interface ChapterDao {
         """
     )
     fun getNextChapter(overviewId: Long, currentChapterNumber: Double): Chapter?
+
+    @Query(
+        """
+        SELECT * FROM chapters
+        WHERE mangaOverviewId = :overviewId  AND translatedLanguage = :language  AND number < :currentChapterNumber
+        ORDER BY number DESC
+        """
+    )
+    fun getPreviousChapterFromLanguage(
+        overviewId: Long,
+        currentChapterNumber: Double,
+        language: String
+    ): Chapter?
+
+    @Query(
+        """
+        SELECT * FROM chapters
+        WHERE mangaOverviewId = :overviewId AND translatedLanguage = :language AND number > :currentChapterNumber
+        ORDER BY number
+        """
+    )
+    fun getNextChapterFromLanguage(
+        overviewId: Long,
+        currentChapterNumber: Double,
+        language: String
+    ): Chapter?
 }
