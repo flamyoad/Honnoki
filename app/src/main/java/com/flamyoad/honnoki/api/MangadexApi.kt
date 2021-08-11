@@ -78,7 +78,11 @@ class MangadexApi(
         do {
             val result = processApiData(
                 apiCall = { service.getChapterList(mangaId, limit = CHAPTER_MAX_LIMIT, offset = offset) },
-                parseData = { parser.parseForChapters(it, offset) }
+                parseData = {
+                    offset = it.offset + CHAPTER_MAX_LIMIT
+                    total = it.total
+                    parser.parseForChapters(it, offset)
+                }
             )
             when (result) {
                 is State.Success -> chapterList.addAll(result.value)
