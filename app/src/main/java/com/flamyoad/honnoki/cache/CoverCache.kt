@@ -3,8 +3,10 @@ package com.flamyoad.honnoki.cache
 import android.content.Context
 import com.flamyoad.honnoki.data.entities.MangaOverview
 import com.flamyoad.honnoki.utils.HashUtils
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import timber.log.Timber
 import java.io.File
+import java.io.IOException
 
 /**
  * Class used to save [com.flamyoad.honnoki.data.entities.MangaOverView.kt]
@@ -34,8 +36,8 @@ class CoverCache(private val context: Context) {
             cacheFile.outputStream().use {
                 fromGlide.inputStream().copyTo(it)
             }
-        } catch (e: FileSystemException) {
-            Timber.e("Failed to write cover image into cache")
+        } catch (e: IOException) {
+            FirebaseCrashlytics.getInstance().recordException(e)
         }
     }
 
