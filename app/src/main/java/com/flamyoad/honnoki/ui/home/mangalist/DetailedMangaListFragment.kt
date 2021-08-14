@@ -25,6 +25,7 @@ import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
 import com.flamyoad.honnoki.utils.ui.onItemsArrived
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import okhttp3.internal.addHeaderLenient
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -108,12 +109,6 @@ class DetailedMangaListFragment : Fragment() {
     }
 
     private fun observeUi() {
-        // WHAT IS HAPPENING?!!!!
-        // Do not try to inline these 2 variables - recentMangas, trendingMangas
-        // Otherwise, the page keep refreshes when you swipe back from another page to this page
-
-        // It works now but Try to figure this out?!!
-        // It maybe caused by fact that Flow is cold stream?!
         val recentMangas = viewModel.getRecentManga()
         val trendingMangas = viewModel.getTrendingManga()
 
@@ -134,30 +129,27 @@ class DetailedMangaListFragment : Fragment() {
     }
 
     private fun initConcatList() {
-        concatAdapter = ConcatAdapter(
-            trendingMangaAdapter,
-            trendingMangaLoadingAdapter,
-            listDividerAdapter,
-            recentMangaHeaderAdapter,
-            recentMangaLoadingAdapter,
-            recentMangaAdapter
+        concatAdapter = recentMangaAdapter.withLoadStateFooter(
+            footer = MangaLoadStateAdapter(retry = { recentMangaAdapter.retry() })
         )
+        concatAdapter.apply {
+            addAdapter(0, trendingMangaAdapter)
+            addAdapter(1, trendingMangaLoadingAdapter)
+            addAdapter(2, listDividerAdapter)
+            addAdapter(3, recentMangaHeaderAdapter)
+            addAdapter(4, recentMangaLoadingAdapter)
+        }
 
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                val adapterList = concatAdapter.adapters
-                // Position will go up to 100~ depending on the item of VerticalMangaListAdapter
-                if (position >= adapterList.size) {
-                    return 1
+                if (position in 0 until 3) {
+                    return GRID_SPANCOUNT
                 }
-
-                return when (adapterList[position]) {
-                    is HorizontalMangaAdapter -> GRID_SPANCOUNT
-                    is VerticalMangaHeaderAdapter -> GRID_SPANCOUNT
-                    is VerticalMangaListAdapter -> 1
-                    is LoadIndicatorAdapter -> GRID_SPANCOUNT
-                    is ListDividerAdapter -> GRID_SPANCOUNT
-                    else -> throw IllegalArgumentException("Unknown adapter")
+                val mangaCount = recentMangaAdapter.itemCount + 3
+                return if (mangaCount > 0 && position in 3 until mangaCount)  {
+                    1
+                } else {
+                    GRID_SPANCOUNT
                 }
             }
         }

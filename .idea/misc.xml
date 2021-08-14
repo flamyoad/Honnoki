@@ -19,6 +19,7 @@
         <entry key="app/src/main/res/layout/fragment_simple_manga_list.xml" value="0.15092592592592594" />
         <entry key="app/src/main/res/layout/language_filter_content_item.xml" value="0.25" />
         <entry key="app/src/main/res/layout/language_filter_list.xml" value="0.22604166666666667" />
+        <entry key="app/src/main/res/layout/layout_loading_state.xml" value="0.14074074074074075" />
         <entry key="app/src/main/res/layout/manga_summary_list_header.xml" value="0.15" />
       </map>
     </option>
