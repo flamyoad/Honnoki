@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.flamyoad.honnoki.BuildConfig
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.databinding.FragmentMoreOptionsBinding
 import com.flamyoad.honnoki.parser.model.MangadexQualityMode
@@ -46,6 +47,8 @@ class OptionsFragment : Fragment() {
         Glide.with(this)
             .load(ContextCompat.getDrawable(requireContext(), R.drawable.rinze))
             .into(binding.logo)
+
+        binding.txtAppVersion.text = "Honnoki (App Version: v${BuildConfig.VERSION_NAME})"
 
         binding.switchNightMode.setOnCheckedChangeListener { buttonView, isChecked ->
             viewModel.setNightMode(isChecked)

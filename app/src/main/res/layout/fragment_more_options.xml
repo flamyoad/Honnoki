@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Honnoki (App Version: v1.0.3)"
+            tools:text="Honnoki (App Version: v1.0.3)"
             android:textColor="@color/subLightTextColor"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="@id/lblThanks"
