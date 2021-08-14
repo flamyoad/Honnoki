@@ -21,7 +21,12 @@ class ChapterGridAdapter(private val onChapterClick: (ReaderChapter) -> Unit) :
             ChapterListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         val holder = ChapterViewHolder(layout)
         holder.itemView.setOnClickListener {
-            onChapterClick(getItem(holder.bindingAdapterPosition))
+            holder.bindingAdapterPosition.let {
+                if (it == RecyclerView.NO_POSITION) {
+                    return@setOnClickListener
+                }
+                onChapterClick(getItem(it))
+            }
         }
         return holder
     }

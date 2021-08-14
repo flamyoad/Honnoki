@@ -61,10 +61,11 @@ class ReaderActivity : AppCompatActivity() {
 
         viewModel.fetchChapterList(intent.getLongExtra(OVERVIEW_ID, -1))
 
+        val chapterIdPickedByUser = intent.getLongExtra(CHAPTER_ID, -1)
         if (savedInstanceState == null) {
-            viewModel.fetchChapterImages(intent.getLongExtra(CHAPTER_ID, -1), LoadType.INITIAL)
+            viewModel.fetchChapterImages(chapterIdPickedByUser, LoadType.INITIAL)
         } else {
-            viewModel.restoreLastReadChapter(intent.getLongExtra(OVERVIEW_ID, -1))
+            viewModel.restoreLastReadChapter(intent.getLongExtra(OVERVIEW_ID, -1), chapterIdPickedByUser)
         }
     }
 
