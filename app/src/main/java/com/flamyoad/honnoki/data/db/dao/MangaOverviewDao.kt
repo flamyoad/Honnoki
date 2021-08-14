@@ -19,7 +19,7 @@ interface MangaOverviewDao {
     fun getById(id: Long): Flow<MangaOverview>
 
     @Query("SELECT * FROM manga_overview WHERE id = :id")
-    suspend fun getByIdBlocking(id: Long): MangaOverview
+    suspend fun getByIdBlocking(id: Long): MangaOverview?
 
     @Query("SELECT * FROM manga_overview WHERE link = :link")
     fun getByLink(link: String): LiveData<MangaOverview>

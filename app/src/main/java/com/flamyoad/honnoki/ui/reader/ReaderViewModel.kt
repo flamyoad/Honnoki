@@ -174,7 +174,7 @@ class ReaderViewModel(
 
     fun restoreLastReadChapter(overviewId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            val overview = db.mangaOverviewDao().getByIdBlocking(overviewId)
+            val overview = db.mangaOverviewDao().getByIdBlocking(overviewId) ?: return@launch
             fetchChapterImages(overview.lastReadChapterId, LoadType.INITIAL)
         }
     }

@@ -15,6 +15,7 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.transition.Slide
 import androidx.transition.TransitionManager
 import com.flamyoad.honnoki.R
+import com.flamyoad.honnoki.data.entities.Chapter
 import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.databinding.ActivityReaderBinding
 import com.flamyoad.honnoki.ui.reader.model.LoadType
@@ -51,7 +52,8 @@ class ReaderActivity : AppCompatActivity() {
                 .replace(R.id.container, frameFragment, VerticalScrollingReaderFragment.TAG)
                 .commitNow()
         }
-        val listener = supportFragmentManager.findFragmentById(R.id.container) as VolumeButtonScroller.Listener
+        val listener =
+            supportFragmentManager.findFragmentById(R.id.container) as VolumeButtonScroller.Listener
         volumeButtonScroller = VolumeButtonScroller(listener, getKoin().get())
 
         initUi()
@@ -63,6 +65,18 @@ class ReaderActivity : AppCompatActivity() {
             viewModel.fetchChapterImages(intent.getLongExtra(CHAPTER_ID, -1), LoadType.INITIAL)
         } else {
             viewModel.restoreLastReadChapter(intent.getLongExtra(OVERVIEW_ID, -1))
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        viewModel.currentChapterShown().value.let {
+            if (it == Chapter.empty()) return
+            viewModel.saveLastReadChapter(it)
+        }
+        viewModel.currentPageNumber().value.let {
+            if (it == 0) return
+            viewModel.saveLastReadPage(it)
         }
     }
 
@@ -109,11 +123,16 @@ class ReaderActivity : AppCompatActivity() {
             }
 
             seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                override fun onProgressChanged(
+                    seekBar: SeekBar?,
+                    progress: Int,
+                    fromUser: Boolean
+                ) {
                     if (fromUser) {
                         viewModel.setCurrentPageNumber(progress + 1)
                     }
                 }
+
                 override fun onStartTrackingTouch(seekBar: SeekBar?) {}
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {
                     // User has stopped moving. Move to the image selected
@@ -163,12 +182,6 @@ class ReaderActivity : AppCompatActivity() {
         }
 
         lifecycleScope.launchWhenResumed {
-            viewModel.currentPageNumber()
-                .debounce(250)
-                .collectLatest { viewModel.saveLastReadPage(it) }
-        }
-
-        lifecycleScope.launchWhenResumed {
             viewModel.currentChapterShown()
                 .flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
                 .collectLatest {
@@ -182,7 +195,6 @@ class ReaderActivity : AppCompatActivity() {
                         invalidate()
                         requestLayout()
                     }
-                    viewModel.saveLastReadChapter(it)
                 }
         }
     }
