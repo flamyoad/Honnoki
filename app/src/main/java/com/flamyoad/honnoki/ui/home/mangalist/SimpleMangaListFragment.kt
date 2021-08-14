@@ -9,7 +9,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.ExperimentalPagingApi
-import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.flamyoad.honnoki.data.entities.Manga
@@ -25,6 +24,7 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
+import java.lang.RuntimeException
 
 private const val GRID_SPANCOUNT = 3
 
@@ -41,7 +41,7 @@ class SimpleMangaListFragment : Fragment() {
     }
 
     private val mangaAdapter by lazy { VerticalMangaListAdapter(this::openManga) }
-    private val loadingIndicatorAdapter by lazy { LoadIndicatorAdapter() }
+    private val initialLoadIndicatorAdapter by lazy { LoadIndicatorAdapter() }
     private val gridLayoutManager by lazy { GridLayoutManager(requireContext(), 3) }
 
     override fun onResume() {
@@ -71,29 +71,28 @@ class SimpleMangaListFragment : Fragment() {
 
     private fun initMangaList() {
         mangaAdapter.apply {
-            withLoadStateFooter(MangaLoadStateAdapter { this.retry() })
             stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         }
 
-        val concatAdapter = ConcatAdapter(loadingIndicatorAdapter, mangaAdapter)
+        val loadingFooter = MangaLoadStateAdapter(
+            retry = { mangaAdapter.retry() }
+        )
+
+        val concatAdapter = mangaAdapter.withLoadStateFooter(loadingFooter)
 
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                val adapterList = concatAdapter.adapters
-                if (position >= adapterList.size) {
-                    return 1
-                }
-
-                return when (adapterList[position]) {
-                    is VerticalMangaListAdapter -> 1
-                    is LoadIndicatorAdapter -> GRID_SPANCOUNT
-                    else -> throw IllegalArgumentException("Unknown adapter")
+                val mangaCount = mangaAdapter.itemCount
+                return if (mangaCount > 0 && position in 0 until mangaCount) {
+                    1
+                } else {
+                    GRID_SPANCOUNT
                 }
             }
         }
 
         mangaAdapter.onItemsArrived {
-            concatAdapter.removeAdapter(loadingIndicatorAdapter)
+            concatAdapter.removeAdapter(initialLoadIndicatorAdapter)
         }
 
         // Listener to determine whether to shrink or expand FAB (Shrink after 1st item in list is no longer visible)

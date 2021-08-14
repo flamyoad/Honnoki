@@ -7,8 +7,8 @@ import com.flamyoad.honnoki.common.adapter.BaseListAdapter
 import com.flamyoad.honnoki.databinding.DialogBookmarkGroupListItemBinding
 import com.flamyoad.honnoki.data.entities.BookmarkGroup
 
-class BookmarkDialogAdapter(private val onGroupClick: (BookmarkGroup) -> Unit)
-    : BaseListAdapter<BookmarkGroup, DialogBookmarkGroupListItemBinding>(COMPARATOR) {
+class BookmarkDialogAdapter(private val onGroupClick: (BookmarkGroup) -> Unit) :
+    BaseListAdapter<BookmarkGroup, DialogBookmarkGroupListItemBinding>(COMPARATOR) {
 
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> DialogBookmarkGroupListItemBinding
         get() = DialogBookmarkGroupListItemBinding::inflate
@@ -28,17 +28,24 @@ class BookmarkDialogAdapter(private val onGroupClick: (BookmarkGroup) -> Unit)
         with(holder.binding) {
             txtGroupName.text = item.name
             checkBox.isChecked = item.isSelected
-            txtIcon.text = item.name.first().toUpperCase().toString()
+            txtIcon.text = if (item.name.isBlank()) {
+                ""
+            } else {
+                item.name.firstOrNull()?.uppercase() ?: ""
+            }
         }
     }
 
     companion object {
-        val COMPARATOR = object: DiffUtil.ItemCallback<BookmarkGroup>() {
+        val COMPARATOR = object : DiffUtil.ItemCallback<BookmarkGroup>() {
             override fun areItemsTheSame(oldItem: BookmarkGroup, newItem: BookmarkGroup): Boolean {
                 return oldItem.id == newItem.id
             }
 
-            override fun areContentsTheSame(oldItem: BookmarkGroup, newItem: BookmarkGroup): Boolean {
+            override fun areContentsTheSame(
+                oldItem: BookmarkGroup,
+                newItem: BookmarkGroup
+            ): Boolean {
                 return oldItem == newItem
             }
         }
