@@ -21,7 +21,11 @@ class MangaLookupAdapter(private val onItemClick: (LookupResult) -> Unit) :
         val holder = ResultViewHolder(layout)
 
         holder.itemView.setOnClickListener {
-            val lookupResult = getItem(holder.bindingAdapterPosition) ?: return@setOnClickListener
+            val position = holder.bindingAdapterPosition
+            if (position == RecyclerView.NO_POSITION) {
+                return@setOnClickListener
+            }
+            val lookupResult = getItem(position) ?: return@setOnClickListener
             onItemClick.invoke(lookupResult)
         }
 

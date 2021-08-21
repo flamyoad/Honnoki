@@ -172,10 +172,16 @@ class ReaderViewModel(
         loadCompletionStatusByChapterId.put(chapter.id, true)
     }
 
-    fun restoreLastReadChapter(overviewId: Long) {
+    fun restoreLastReadChapter(overviewId: Long, fallbackChapterId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             val overview = db.mangaOverviewDao().getByIdBlocking(overviewId)
-            fetchChapterImages(overview.lastReadChapterId, LoadType.INITIAL)
+            overview?.lastReadChapterId?.let {
+                if (it != -1L) {
+                    fetchChapterImages(it, LoadType.INITIAL)
+                } else {
+                    fetchChapterImages(fallbackChapterId, LoadType.INITIAL)
+                }
+            }
         }
     }
 

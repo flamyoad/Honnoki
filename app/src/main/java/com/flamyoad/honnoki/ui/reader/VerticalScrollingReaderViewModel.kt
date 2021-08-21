@@ -19,7 +19,7 @@ class VerticalScrollingReaderViewModel(
         _pullToRefreshEnabled.value = isEnabled
     }
 
-    suspend fun getMangaOverview(overviewId: Long): MangaOverview {
+    suspend fun getMangaOverview(overviewId: Long): MangaOverview? {
         return db.mangaOverviewDao().getByIdBlocking(overviewId)
     }
 }
