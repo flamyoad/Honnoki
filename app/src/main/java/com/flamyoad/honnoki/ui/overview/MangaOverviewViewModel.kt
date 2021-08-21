@@ -108,14 +108,12 @@ class MangaOverviewViewModel(private val db: AppDatabase, private val baseSource
             // Otherwise, load manga overview from network
             when (val overview = baseSource.getMangaOverview(url)) {
                 is State.Success -> {
-                    db.withTransaction {
-                        val overviewId = db.mangaOverviewDao().insert(overview.value)
-                        mangaOverviewId.value = overviewId
-                    }
+                    val overviewId = db.mangaOverviewDao().insert(overview.value)
+                    mangaOverviewId.value = overviewId
 
-                    refreshChapterList(url, mangaOverviewId.value)
-                    refreshGenres(url, mangaOverviewId.value)
                     refreshAuthors(url, mangaOverviewId.value)
+                    refreshGenres(url, mangaOverviewId.value)
+                    refreshChapterList(url, mangaOverviewId.value)
                 }
             }
         }
