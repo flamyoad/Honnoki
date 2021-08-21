@@ -2,6 +2,7 @@ package com.flamyoad.honnoki.ui.overview
 
 import androidx.lifecycle.*
 import androidx.paging.ExperimentalPagingApi
+import androidx.room.withTransaction
 import com.flamyoad.honnoki.common.State
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.mapper.mapToDomain
@@ -107,12 +108,14 @@ class MangaOverviewViewModel(private val db: AppDatabase, private val baseSource
             // Otherwise, load manga overview from network
             when (val overview = baseSource.getMangaOverview(url)) {
                 is State.Success -> {
-                    val overviewId = db.mangaOverviewDao().insert(overview.value)
-                    mangaOverviewId.value = overviewId
+                    db.withTransaction {
+                        val overviewId = db.mangaOverviewDao().insert(overview.value)
+                        mangaOverviewId.value = overviewId
+                    }
 
-                    refreshChapterList(url, overviewId)
-                    refreshGenres(url, overviewId)
-                    refreshAuthors(url, overviewId)
+                    refreshChapterList(url, mangaOverviewId.value)
+                    refreshGenres(url, mangaOverviewId.value)
+                    refreshAuthors(url, mangaOverviewId.value)
                 }
             }
         }
@@ -124,7 +127,9 @@ class MangaOverviewViewModel(private val db: AppDatabase, private val baseSource
                 val genreListWithId = genreList.value.map {
                     it.copy(mangaOverviewId = overviewId)
                 }
-                db.genreDao().insertAll(genreListWithId)
+                db.withTransaction {
+                    db.genreDao().insertAll(genreListWithId)
+                }
             }
         }
     }
@@ -135,7 +140,9 @@ class MangaOverviewViewModel(private val db: AppDatabase, private val baseSource
                 val authorListWithId = authorList.value.map {
                     it.copy(mangaOverviewId = overviewId)
                 }
-                db.authorDao().insertAll(authorListWithId)
+                db.withTransaction {
+                    db.authorDao().insertAll(authorListWithId)
+                }
             }
         }
     }
@@ -146,7 +153,9 @@ class MangaOverviewViewModel(private val db: AppDatabase, private val baseSource
                 val chapterListWithId = chapterList.value.map {
                     it.copy(mangaOverviewId = overviewId)
                 }
-                db.chapterDao().insertAll(chapterListWithId)
+                db.withTransaction {
+                    db.chapterDao().insertAll(chapterListWithId)
+                }
             }
         }
     }
