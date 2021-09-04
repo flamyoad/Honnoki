@@ -45,4 +45,7 @@ interface MangaOverviewDao {
         WHERE id = :overviewId 
     """)
     fun updateLastReadPage(pageNumber: Int, overviewId: Long): Int
+
+    @Query("DELETE FROM manga_overview WHERE id = :overviewId")
+    fun delete(overviewId: Long)
 }

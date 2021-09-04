@@ -4,6 +4,7 @@ import androidx.room.withTransaction
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.exception.NullEntityIdException
 import com.flamyoad.honnoki.data.entities.Chapter
+import com.flamyoad.honnoki.data.entities.MangaOverview
 import java.time.LocalDateTime
 
 class OverviewRepository(private val db: AppDatabase) {
@@ -20,6 +21,13 @@ class OverviewRepository(private val db: AppDatabase) {
     suspend fun updateLastReadPage(pageNumber: Int, overviewId: Long) {
         db.withTransaction {
             overviewDao.updateLastReadPage(pageNumber, overviewId)
+        }
+    }
+
+    suspend fun delete(overview: MangaOverview) {
+        if (overview.id == null) return
+        db.withTransaction {
+            overviewDao.delete(overview.id)
         }
     }
 }

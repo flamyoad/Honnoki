@@ -40,7 +40,7 @@ val viewModelModules = module {
         )
     }
 
-    viewModel { (source: String) -> MangaOverviewViewModel(get(), get(named(source))) }
+    viewModel { (source: String) -> MangaOverviewViewModel(get(), get(named(source)), get()) }
 
     viewModel { (source: String) ->
         ReaderViewModel(

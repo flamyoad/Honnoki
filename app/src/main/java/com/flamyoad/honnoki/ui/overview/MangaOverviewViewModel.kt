@@ -7,6 +7,7 @@ import com.flamyoad.honnoki.common.State
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.mapper.mapToDomain
 import com.flamyoad.honnoki.data.entities.*
+import com.flamyoad.honnoki.repository.ChapterRepository
 import com.flamyoad.honnoki.source.BaseSource
 import com.flamyoad.honnoki.ui.overview.model.ChapterListSort
 import com.flamyoad.honnoki.ui.overview.model.LanguageFilter
@@ -16,8 +17,11 @@ import kotlinx.coroutines.flow.*
 
 @ExperimentalCoroutinesApi
 @ExperimentalPagingApi
-class MangaOverviewViewModel(private val db: AppDatabase, private val baseSource: BaseSource) :
-    ViewModel() {
+class MangaOverviewViewModel(
+    private val db: AppDatabase,
+    private val baseSource: BaseSource,
+    private val chapterRepo: ChapterRepository
+) : ViewModel() {
 
     private var loadingJob: Job? = null
 
@@ -84,7 +88,9 @@ class MangaOverviewViewModel(private val db: AppDatabase, private val baseSource
             }
         }
         .flowOn(Dispatchers.IO)
-        .combine(mangaOverview) { chapterList, overview -> chapterList.mapToDomain(overview) }
+        .combine(mangaOverview) { chapterList, overview ->
+            chapterList.mapToDomain(overview)
+        }
         .flatMapLatest {
             if (it.isNullOrEmpty()) {
                 flowOf(State.Loading)
@@ -172,8 +178,14 @@ class MangaOverviewViewModel(private val db: AppDatabase, private val baseSource
         }
     }
 
-    fun clearExistingChaptersAndReload() {
+    fun clearExistingChaptersAndReload(url: String) {
+        val overview = mangaOverview.value
+        if (overview == MangaOverview.empty()) return
 
+        viewModelScope.launch(Dispatchers.IO) {
+            db.withTransaction { chapterRepo.clearExistingChapters(overview) }
+            loadMangaOverview(url)
+        }
     }
 
     fun toggleChapterListSort() {

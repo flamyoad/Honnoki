@@ -18,11 +18,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.set
 import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
-import androidx.core.view.updatePadding
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.ExperimentalPagingApi
+import com.afollestad.materialdialogs.MaterialDialog
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -120,6 +120,7 @@ class MangaOverviewActivity : AppCompatActivity() {
         menu?.apply {
             setHeaderTitle("More options")
             add(OPEN_IN_BROWSER)
+            add(RELOAD_CHAPTER_LIST)
         }
     }
 
@@ -131,6 +132,17 @@ class MangaOverviewActivity : AppCompatActivity() {
                         return true
                     }
                     openBrowser(it)
+                }
+            }
+            RELOAD_CHAPTER_LIST -> {
+                MaterialDialog(this).show {
+                    message(text = "Do you want to clear chapters for this manga?")
+                    positiveButton(text = "Yes") {
+                        viewModel.clearExistingChaptersAndReload(
+                            intent.getStringExtra(MANGA_URL) ?: ""
+                        )
+                    }
+                    negativeButton(text = "Back")
                 }
             }
         }
@@ -400,6 +412,7 @@ class MangaOverviewActivity : AppCompatActivity() {
 
         // Context menus
         const val OPEN_IN_BROWSER = "Open in browser"
+        const val RELOAD_CHAPTER_LIST = "Clear existing chapters"
 
         // For restoring state across process death
         const val OVERVIEW_URL = "overview_url"
