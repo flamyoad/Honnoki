@@ -161,9 +161,12 @@ class MangadexParser {
                     attr.createdAt
                 }
 
+                val chapterNumber = attr.chapter?.toDoubleOrNull()
+                    ?: (index + currentOffset).toDouble()
+
                 Chapter(
                     title = title,
-                    number = (index + currentOffset).toDouble(),
+                    number = chapterNumber,
                     link = it.data.id,
                     date = date ?: "",
                     hasBeenRead = false,

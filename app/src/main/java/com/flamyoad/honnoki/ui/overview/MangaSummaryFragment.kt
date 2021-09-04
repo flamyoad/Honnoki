@@ -59,6 +59,7 @@ class MangaSummaryFragment : Fragment() {
         LanguageFilterAdapter(requireContext(), viewModel::setChapterLanguageFilter)
     }
     private val chapterListLoadingAdapter by lazy { ChapterListLoadingAdapter() }
+    private val chapterListEmptyAdapter by lazy { ChapterListEmptyAdapter() }
     private val chapterGridAdapter by lazy { ChapterGridAdapter(this::onChapterClick) }
     private val chapterListAdapter by lazy { ChapterListAdapter(this::onChapterClick) }
 
@@ -124,6 +125,7 @@ class MangaSummaryFragment : Fragment() {
                     is ChapterListLoadingAdapter -> fullSpanCount
                     is ChapterGridAdapter -> fullSpanCount
                     is ChapterListAdapter -> fullSpanCount
+                    is ChapterListEmptyAdapter -> fullSpanCount
                     else -> throw IllegalArgumentException("Unknown adapter type")
                 }
             }
@@ -174,6 +176,20 @@ class MangaSummaryFragment : Fragment() {
                             chapterGridAdapter.submitList(it.value)
                             chapterListAdapter.submitList(it.value)
                         }
+                    }
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                viewModel.noChaptersFound().collectLatest {
+                    if (it) {
+                        concatAdapter.removeAdapter(chapterListLoadingAdapter)
+                        concatAdapter.addAdapter(chapterListEmptyAdapter)
+                    } else {
+                        concatAdapter.removeAdapter(chapterListEmptyAdapter)
+                        concatAdapter.addAdapter(chapterListLoadingAdapter)
                     }
                 }
             }

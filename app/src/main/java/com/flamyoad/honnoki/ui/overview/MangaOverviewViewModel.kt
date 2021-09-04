@@ -45,13 +45,21 @@ class MangaOverviewViewModel(private val db: AppDatabase, private val baseSource
 
     val languageList: LiveData<List<LanguageFilter>> = mangaOverviewId
         .flatMapLatest { id -> db.chapterDao().getAvailableLanguages(id) }
-        .combine(selectedLanguage) { languageList, selectedLanguage -> Pair(languageList, selectedLanguage) }
+        .combine(selectedLanguage) { languageList, selectedLanguage ->
+            Pair(
+                languageList,
+                selectedLanguage
+            )
+        }
         .map { (languageList, selectedLanguage) ->
             languageList.map {
                 LanguageFilter(it, isSelected = (it == selectedLanguage.locale))
             }
         }
         .asLiveData()
+
+    private val noChaptersFound = MutableStateFlow(false)
+    fun noChaptersFound() = noChaptersFound.asStateFlow()
 
     val chapterList: StateFlow<State<List<ReaderChapter>>> = mangaOverviewId
         .onStart { flowOf(State.Loading) }
@@ -95,6 +103,8 @@ class MangaOverviewViewModel(private val db: AppDatabase, private val baseSource
         if (loadingJob?.isActive == true) {
             return
         }
+
+        noChaptersFound.value = false
 
         loadingJob = viewModelScope.launch(Dispatchers.IO) {
             // Load manga overview from database
@@ -148,12 +158,19 @@ class MangaOverviewViewModel(private val db: AppDatabase, private val baseSource
     private suspend fun refreshChapterList(url: String, overviewId: Long) {
         when (val chapterList = baseSource.getChapterList(url)) {
             is State.Success -> {
-                val chapterListWithId = chapterList.value.map {
-                    it.copy(mangaOverviewId = overviewId)
+                if (chapterList.value.isEmpty()) {
+                    noChaptersFound.value = true
+                } else {
+                    val chapterListWithId = chapterList.value.map {
+                        it.copy(mangaOverviewId = overviewId)
+                    }
+                    db.withTransaction {
+                        db.chapterDao().insertAll(chapterListWithId)
+                    }
                 }
-                db.withTransaction {
-                    db.chapterDao().insertAll(chapterListWithId)
-                }
+            }
+            is State.Error -> {
+
             }
         }
     }
