@@ -22,6 +22,9 @@ interface ChapterDao {
     @Query("SELECT * FROM chapters WHERE mangaOverviewId = :overviewId ORDER BY number DESC")
     fun getDescByOverviewId(overviewId: Long): Flow<List<Chapter>>
 
+    @Query("DELETE FROM chapters WHERE mangaOverviewId = :overviewId")
+    suspend fun deleteAllFromOverview(overviewId: Long)
+
     @Query(
         """
         SELECT * FROM chapters 

@@ -175,7 +175,13 @@ class MangaSummaryFragment : Fragment() {
                             setChapterListState(ChapterListState.LOADING)
                         }
                         is State.Success -> {
-                            setChapterListState(ChapterListState.CONTENT_REUSE_LAYOUTMANAGER)
+                            concatAdapter.apply {
+                                removeAdapter(chapterListLoadingAdapter)
+                                when (displayMode) {
+                                    ChapterListDisplayMode.GRID -> addAdapter(chapterGridAdapter)
+                                    ChapterListDisplayMode.LIST -> addAdapter(chapterListAdapter)
+                                }
+                            }
                             chapterListHeaderAdapter.setItem(it.value)
                             chapterGridAdapter.submitList(it.value)
                             chapterListAdapter.submitList(it.value)
@@ -203,6 +209,7 @@ class MangaSummaryFragment : Fragment() {
             removeAdapter(chapterGridAdapter)
             removeAdapter(chapterListEmptyAdapter)
         }
+
         when (state) {
             ChapterListState.LOADING -> {
                 concatAdapter.addAdapter(chapterListLoadingAdapter)
@@ -210,8 +217,7 @@ class MangaSummaryFragment : Fragment() {
             ChapterListState.EMPTY -> {
                 concatAdapter.addAdapter(chapterListEmptyAdapter)
             }
-            // This one will reinitialize the layout manager. Used when switching between
-            // LIST or GRID.
+            // This one will reinitialize the layout manager. Used when switching between LIST or GRID.
             ChapterListState.CONTENT_RENEW_LAYOUTMANAGER -> {
                 initUi(displayMode)
                 when (displayMode) {
@@ -230,12 +236,19 @@ class MangaSummaryFragment : Fragment() {
     }
 
     private fun toggleChapterListDisplayMode() {
+        concatAdapter.apply {
+            removeAdapter(chapterGridAdapter)
+            removeAdapter(chapterListAdapter)
+        }
         if (displayMode == ChapterListDisplayMode.LIST) {
             displayMode = ChapterListDisplayMode.GRID
+            initUi(ChapterListDisplayMode.GRID)
+            concatAdapter.addAdapter(chapterGridAdapter)
         } else {
             displayMode = ChapterListDisplayMode.LIST
+            initUi(ChapterListDisplayMode.LIST)
+            concatAdapter.addAdapter(chapterListAdapter)
         }
-        setChapterListState(ChapterListState.CONTENT_RENEW_LAYOUTMANAGER)
     }
 
     private fun onChapterClick(chapter: ReaderChapter) {

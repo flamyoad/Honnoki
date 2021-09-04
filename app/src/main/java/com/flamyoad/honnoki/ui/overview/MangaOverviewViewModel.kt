@@ -169,10 +169,11 @@ class MangaOverviewViewModel(private val db: AppDatabase, private val baseSource
                     }
                 }
             }
-            is State.Error -> {
-
-            }
         }
+    }
+
+    fun clearExistingChaptersAndReload() {
+
     }
 
     fun toggleChapterListSort() {
