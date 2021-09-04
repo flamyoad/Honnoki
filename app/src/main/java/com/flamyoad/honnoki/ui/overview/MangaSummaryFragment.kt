@@ -18,10 +18,10 @@ import com.flamyoad.honnoki.data.entities.Genre
 import com.flamyoad.honnoki.ui.lookup.MangaLookupActivity
 import com.flamyoad.honnoki.ui.lookup.model.LookupType
 import com.flamyoad.honnoki.ui.overview.adapter.*
-import com.flamyoad.honnoki.ui.overview.model.ChapterListStyle
+import com.flamyoad.honnoki.ui.overview.model.ChapterListState
+import com.flamyoad.honnoki.ui.overview.model.ChapterListDisplayMode
 import com.flamyoad.honnoki.ui.overview.model.ReaderChapter
 import com.flamyoad.honnoki.ui.reader.ReaderActivity
-import com.flamyoad.honnoki.utils.extensions.toast
 import jp.wasabeef.recyclerview.animators.FadeInAnimator
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
@@ -34,7 +34,7 @@ import java.lang.IllegalArgumentException
 @ExperimentalPagingApi
 class MangaSummaryFragment : Fragment() {
 
-    var style = ChapterListStyle.GRID
+    var displayMode = ChapterListDisplayMode.GRID
 
     private var _binding: FragmentMangaSummaryBinding? = null
     private val binding get() = requireNotNull(_binding)
@@ -52,13 +52,14 @@ class MangaSummaryFragment : Fragment() {
     private val chapterListHeaderAdapter by lazy {
         ChapterListHeaderAdapter(
             viewModel::toggleChapterListSort,
-            this::changeChapterListStyle
+            this::toggleChapterListDisplayMode
         )
     }
     private val languageFilterAdapter by lazy {
         LanguageFilterAdapter(requireContext(), viewModel::setChapterLanguageFilter)
     }
     private val chapterListLoadingAdapter by lazy { ChapterListLoadingAdapter() }
+    private val chapterListEmptyAdapter by lazy { ChapterListEmptyAdapter() }
     private val chapterGridAdapter by lazy { ChapterGridAdapter(this::onChapterClick) }
     private val chapterListAdapter by lazy { ChapterListAdapter(this::onChapterClick) }
 
@@ -79,9 +80,19 @@ class MangaSummaryFragment : Fragment() {
         return binding.root
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putSerializable("displayMode", displayMode)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initUi(style)
+        savedInstanceState?.getSerializable("displayMode").let {
+            if (it is ChapterListDisplayMode) {
+                displayMode = it
+            }
+        }
+        initUi(displayMode)
         observeUi()
     }
 
@@ -90,7 +101,7 @@ class MangaSummaryFragment : Fragment() {
         _binding = null
     }
 
-    private fun initUi(chapterListStyle: ChapterListStyle) {
+    private fun initUi(chapterListStyle: ChapterListDisplayMode) {
         // Sources other than MD dont need lang filters
         if (Source.valueOf(mangaSource) == Source.MANGADEX) {
             concatAdapter.addAdapter(languageFilterAdapter)
@@ -111,8 +122,8 @@ class MangaSummaryFragment : Fragment() {
                 // This is for the second until last item in grid (1/3 span width). List is always full span
                 if (position > adapterList.size) {
                     return when (chapterListStyle) {
-                        ChapterListStyle.GRID -> 1
-                        ChapterListStyle.LIST -> fullSpanCount
+                        ChapterListDisplayMode.GRID -> 1
+                        ChapterListDisplayMode.LIST -> fullSpanCount
                     }
                 }
 
@@ -124,6 +135,7 @@ class MangaSummaryFragment : Fragment() {
                     is ChapterListLoadingAdapter -> fullSpanCount
                     is ChapterGridAdapter -> fullSpanCount
                     is ChapterListAdapter -> fullSpanCount
+                    is ChapterListEmptyAdapter -> fullSpanCount
                     else -> throw IllegalArgumentException("Unknown adapter type")
                 }
             }
@@ -160,14 +172,14 @@ class MangaSummaryFragment : Fragment() {
                 viewModel.chapterList.collectLatest {
                     when (it) {
                         is State.Loading -> {
-                            concatAdapter.addAdapter(chapterListLoadingAdapter)
+                            setChapterListState(ChapterListState.LOADING)
                         }
                         is State.Success -> {
                             concatAdapter.apply {
                                 removeAdapter(chapterListLoadingAdapter)
-                                when (style) {
-                                    ChapterListStyle.GRID -> addAdapter(chapterGridAdapter)
-                                    ChapterListStyle.LIST -> addAdapter(chapterListAdapter)
+                                when (displayMode) {
+                                    ChapterListDisplayMode.GRID -> addAdapter(chapterGridAdapter)
+                                    ChapterListDisplayMode.LIST -> addAdapter(chapterListAdapter)
                                 }
                             }
                             chapterListHeaderAdapter.setItem(it.value)
@@ -177,6 +189,65 @@ class MangaSummaryFragment : Fragment() {
                     }
                 }
             }
+        }
+
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                viewModel.noChaptersFound().collectLatest { noChapters ->
+                    if (noChapters) {
+                        setChapterListState(ChapterListState.EMPTY)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setChapterListState(state: ChapterListState) {
+        concatAdapter.apply {
+            removeAdapter(chapterListLoadingAdapter)
+            removeAdapter(chapterListAdapter)
+            removeAdapter(chapterGridAdapter)
+            removeAdapter(chapterListEmptyAdapter)
+        }
+
+        when (state) {
+            ChapterListState.LOADING -> {
+                concatAdapter.addAdapter(chapterListLoadingAdapter)
+            }
+            ChapterListState.EMPTY -> {
+                concatAdapter.addAdapter(chapterListEmptyAdapter)
+            }
+            // This one will reinitialize the layout manager. Used when switching between LIST or GRID.
+            ChapterListState.CONTENT_RENEW_LAYOUTMANAGER -> {
+                initUi(displayMode)
+                when (displayMode) {
+                    ChapterListDisplayMode.GRID -> concatAdapter.addAdapter(chapterGridAdapter)
+                    ChapterListDisplayMode.LIST -> concatAdapter.addAdapter(chapterListAdapter)
+                }
+            }
+            // This one does not reinitialize the layout manager
+            ChapterListState.CONTENT_REUSE_LAYOUTMANAGER -> {
+                when (displayMode) {
+                    ChapterListDisplayMode.GRID -> concatAdapter.addAdapter(chapterGridAdapter)
+                    ChapterListDisplayMode.LIST -> concatAdapter.addAdapter(chapterListAdapter)
+                }
+            }
+        }
+    }
+
+    private fun toggleChapterListDisplayMode() {
+        concatAdapter.apply {
+            removeAdapter(chapterGridAdapter)
+            removeAdapter(chapterListAdapter)
+        }
+        if (displayMode == ChapterListDisplayMode.LIST) {
+            displayMode = ChapterListDisplayMode.GRID
+            initUi(ChapterListDisplayMode.GRID)
+            concatAdapter.addAdapter(chapterGridAdapter)
+        } else {
+            displayMode = ChapterListDisplayMode.LIST
+            initUi(ChapterListDisplayMode.LIST)
+            concatAdapter.addAdapter(chapterListAdapter)
         }
     }
 
@@ -188,23 +259,6 @@ class MangaSummaryFragment : Fragment() {
         val source = overview.source ?: return
 
         ReaderActivity.start(requireContext(), chapterId, overviewId, source)
-    }
-
-    private fun changeChapterListStyle() {
-        concatAdapter.apply {
-            removeAdapter(chapterGridAdapter)
-            removeAdapter(chapterListAdapter)
-        }
-
-        if (style == ChapterListStyle.GRID) {
-            initUi(ChapterListStyle.LIST)
-            style = ChapterListStyle.LIST
-            concatAdapter.addAdapter(chapterListAdapter)
-        } else {
-            initUi(ChapterListStyle.GRID)
-            style = ChapterListStyle.GRID
-            concatAdapter.addAdapter(chapterGridAdapter)
-        }
     }
 
     private fun lookupMangaByGenre(genre: Genre) {

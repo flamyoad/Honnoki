@@ -19,6 +19,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+
+        <meta-data
+            android:name="firebase_crashlytics_collection_enabled"
+            android:value="${crashlyticsCollectionEnabled}" />
+
         <activity
             android:name=".ui.lookup.MangaLookupActivity" />
         <activity android:name=".ui.search.result.AdvancedSearchResultActivity" />

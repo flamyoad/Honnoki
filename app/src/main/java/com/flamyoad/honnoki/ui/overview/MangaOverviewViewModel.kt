@@ -7,6 +7,7 @@ import com.flamyoad.honnoki.common.State
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.mapper.mapToDomain
 import com.flamyoad.honnoki.data.entities.*
+import com.flamyoad.honnoki.repository.ChapterRepository
 import com.flamyoad.honnoki.source.BaseSource
 import com.flamyoad.honnoki.ui.overview.model.ChapterListSort
 import com.flamyoad.honnoki.ui.overview.model.LanguageFilter
@@ -16,8 +17,11 @@ import kotlinx.coroutines.flow.*
 
 @ExperimentalCoroutinesApi
 @ExperimentalPagingApi
-class MangaOverviewViewModel(private val db: AppDatabase, private val baseSource: BaseSource) :
-    ViewModel() {
+class MangaOverviewViewModel(
+    private val db: AppDatabase,
+    private val baseSource: BaseSource,
+    private val chapterRepo: ChapterRepository
+) : ViewModel() {
 
     private var loadingJob: Job? = null
 
@@ -45,13 +49,21 @@ class MangaOverviewViewModel(private val db: AppDatabase, private val baseSource
 
     val languageList: LiveData<List<LanguageFilter>> = mangaOverviewId
         .flatMapLatest { id -> db.chapterDao().getAvailableLanguages(id) }
-        .combine(selectedLanguage) { languageList, selectedLanguage -> Pair(languageList, selectedLanguage) }
+        .combine(selectedLanguage) { languageList, selectedLanguage ->
+            Pair(
+                languageList,
+                selectedLanguage
+            )
+        }
         .map { (languageList, selectedLanguage) ->
             languageList.map {
                 LanguageFilter(it, isSelected = (it == selectedLanguage.locale))
             }
         }
         .asLiveData()
+
+    private val noChaptersFound = MutableStateFlow(false)
+    fun noChaptersFound() = noChaptersFound.asStateFlow()
 
     val chapterList: StateFlow<State<List<ReaderChapter>>> = mangaOverviewId
         .onStart { flowOf(State.Loading) }
@@ -76,7 +88,9 @@ class MangaOverviewViewModel(private val db: AppDatabase, private val baseSource
             }
         }
         .flowOn(Dispatchers.IO)
-        .combine(mangaOverview) { chapterList, overview -> chapterList.mapToDomain(overview) }
+        .combine(mangaOverview) { chapterList, overview ->
+            chapterList.mapToDomain(overview)
+        }
         .flatMapLatest {
             if (it.isNullOrEmpty()) {
                 flowOf(State.Loading)
@@ -95,6 +109,8 @@ class MangaOverviewViewModel(private val db: AppDatabase, private val baseSource
         if (loadingJob?.isActive == true) {
             return
         }
+
+        noChaptersFound.value = false
 
         loadingJob = viewModelScope.launch(Dispatchers.IO) {
             // Load manga overview from database
@@ -148,13 +164,27 @@ class MangaOverviewViewModel(private val db: AppDatabase, private val baseSource
     private suspend fun refreshChapterList(url: String, overviewId: Long) {
         when (val chapterList = baseSource.getChapterList(url)) {
             is State.Success -> {
-                val chapterListWithId = chapterList.value.map {
-                    it.copy(mangaOverviewId = overviewId)
-                }
-                db.withTransaction {
-                    db.chapterDao().insertAll(chapterListWithId)
+                if (chapterList.value.isEmpty()) {
+                    noChaptersFound.value = true
+                } else {
+                    val chapterListWithId = chapterList.value.map {
+                        it.copy(mangaOverviewId = overviewId)
+                    }
+                    db.withTransaction {
+                        db.chapterDao().insertAll(chapterListWithId)
+                    }
                 }
             }
+        }
+    }
+
+    fun clearExistingChaptersAndReload(url: String) {
+        val overview = mangaOverview.value
+        if (overview == MangaOverview.empty()) return
+
+        viewModelScope.launch(Dispatchers.IO) {
+            db.withTransaction { chapterRepo.clearExistingChapters(overview) }
+            loadMangaOverview(url)
         }
     }
 

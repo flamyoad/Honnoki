@@ -196,6 +196,7 @@ class ReaderActivity : AppCompatActivity() {
                         invalidate()
                         requestLayout()
                     }
+                    viewModel.markChapterAsRead(it)
                 }
         }
     }

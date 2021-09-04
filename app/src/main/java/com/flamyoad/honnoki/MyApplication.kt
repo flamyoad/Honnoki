@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.paging.ExperimentalPagingApi
 import com.flamyoad.honnoki.data.preference.UiPreference
 import com.flamyoad.honnoki.di.*
+import com.github.venom.Venom
+import com.github.venom.service.NotificationConfig
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -28,6 +30,8 @@ class MyApplication : Application() {
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }
+
+        initializeVenom()
 
         val appModules = listOf(
             apiModules,
@@ -55,5 +59,16 @@ class MyApplication : Application() {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
         }
+    }
+
+    private fun initializeVenom() {
+        val venom = Venom.createInstance(this)
+
+        val notification = NotificationConfig.Builder(this)
+            .buttonCancel("Cancel")
+            .buttonKill("Kill")
+            .build()
+        venom.initialize(notification)
+        Venom.setGlobalInstance(venom)
     }
 }

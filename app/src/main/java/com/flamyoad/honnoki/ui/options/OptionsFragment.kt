@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -16,6 +17,7 @@ import com.flamyoad.honnoki.BuildConfig
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.databinding.FragmentMoreOptionsBinding
 import com.flamyoad.honnoki.parser.model.MangadexQualityMode
+import com.github.venom.Venom
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -66,6 +68,16 @@ class OptionsFragment : Fragment() {
         binding.layoutMangadexQuality.setOnClickListener {
             val action = OptionsFragmentDirections.actionOptionsFragmentToMangadexQualityFragment()
             findNavController().navigate(action)
+        }
+
+        binding.switchVenom.isVisible = BuildConfig.DEBUG
+        val venom = Venom.getGlobalInstance()
+        binding.switchVenom.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                venom.start()
+            } else {
+                venom.stop()
+            }
         }
     }
 

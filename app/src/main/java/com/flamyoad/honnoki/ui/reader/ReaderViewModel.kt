@@ -52,6 +52,11 @@ class ReaderViewModel(
 
     private val currentChapterShown = MutableStateFlow(Chapter.empty())
     fun currentChapterShown() = currentChapterShown.asStateFlow()
+//        .onEach {
+//            if (it != Chapter.empty()) {
+//                chapterRepo.markChapterAsRead(it)
+//            }
+//        }
 
     val currentChapter get() = currentChapterShown.value
 
@@ -185,10 +190,16 @@ class ReaderViewModel(
         }
     }
 
+    fun markChapterAsRead(chapter: Chapter) {
+        if (chapter == Chapter.empty()) return
+        applicationScope.launch(Dispatchers.IO) {
+            chapterRepo.markChapterAsRead(chapter)
+        }
+    }
+
     fun saveLastReadChapter(chapter: Chapter) {
         val overviewId = mangaOverviewId.value
         applicationScope.launch(Dispatchers.IO) {
-            chapterRepo.markChapterAsRead(chapter)
             overviewRepo.updateLastReadChapter(chapter, overviewId)
         }
     }
@@ -211,7 +222,8 @@ class ReaderViewModel(
 
             val lang = selectedLanguage
             val prevChapter = if (lang != null) {
-                db.chapterDao().getPreviousChapterFromLanguage(overviewId, currentChapterNumber, lang)
+                db.chapterDao()
+                    .getPreviousChapterFromLanguage(overviewId, currentChapterNumber, lang)
             } else {
                 db.chapterDao().getPreviousChapter(overviewId, currentChapterNumber)
             }

@@ -2,6 +2,9 @@ package com.flamyoad.honnoki.di
 
 import android.content.Context
 import com.flamyoad.honnoki.BuildConfig
+import com.flamyoad.honnoki.api.dto.mangadex.MDDescription
+import com.flamyoad.honnoki.api.dto.mangadex.MDLinks
+import com.flamyoad.honnoki.api.dto.mangadex.jsonadapter.DefaultOnDataMismatchAdapter
 import com.flamyoad.honnoki.api.dto.mangadex.relationships.*
 import com.flamyoad.honnoki.network.*
 import com.flamyoad.honnoki.network.cookie.SenmangaCookieJar
@@ -176,13 +179,8 @@ fun provideMangadexHttpClient(
 ): OkHttpClient {
     val myCache = (Cache(context.cacheDir, MangadexService.CACHE_SIZE))
 
-    val myDispatcher = Dispatcher().apply {
-        maxRequestsPerHost = 2
-    }
-
     return OkHttpClient.Builder()
         .cache(myCache)
-        .dispatcher(myDispatcher)
         .addInterceptor(loggingInterceptor)
         .addNetworkInterceptor(MobileUserAgentInterceptor(context))
         .addNetworkInterceptor(CacheInterceptor(10, TimeUnit.SECONDS))
@@ -191,14 +189,17 @@ fun provideMangadexHttpClient(
 
 fun provideMangadexService(httpClient: OkHttpClient): MangadexService {
     val moshi = Moshi.Builder()
-        .add(PolymorphicJsonAdapterFactory.of(BaseRelationship::class.java, "type")
-            .withSubtype(RelAuthor::class.java, "author")
-            .withSubtype(RelArtist::class.java, "artist")
-            .withSubtype(RelCoverImage::class.java, "cover_art")
-            .withSubtype(RelScanlationGroup::class.java, "scanlation_group")
-            .withSubtype(RelManga::class.java, "manga")
-            .withSubtype(RelUser::class.java, "user")
+        .add(
+            PolymorphicJsonAdapterFactory.of(BaseRelationship::class.java, "type")
+                .withSubtype(RelAuthor::class.java, "author")
+                .withSubtype(RelArtist::class.java, "artist")
+                .withSubtype(RelCoverImage::class.java, "cover_art")
+                .withSubtype(RelScanlationGroup::class.java, "scanlation_group")
+                .withSubtype(RelManga::class.java, "manga")
+                .withSubtype(RelUser::class.java, "user")
         )
+        .add(DefaultOnDataMismatchAdapter.newFactory(MDDescription::class.java, MDDescription(null)))
+        .add(DefaultOnDataMismatchAdapter.newFactory(MDLinks::class.java, MDLinks(null, null)))
         .build()
 
     val retrofit = Retrofit.Builder()

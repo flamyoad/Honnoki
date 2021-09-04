@@ -24,8 +24,8 @@ android {
         applicationId "com.flamyoad.honnoki"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 6
-        versionName "1.0.5"
+        versionCode 7
+        versionName "1.0.6"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -38,7 +38,11 @@ android {
     }
 
     buildTypes {
+        debug {
+            manifestPlaceholders = [crashlyticsCollectionEnabled:"false"]
+        }
         release {
+            manifestPlaceholders = [crashlyticsCollectionEnabled:"true"]
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             ndk {
@@ -104,7 +108,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
 
-    def room_version = "2.4.0-alpha02"
+    def room_version = "2.4.0-alpha04"
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
@@ -187,4 +191,7 @@ dependencies {
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
+
+    debugImplementation "com.github.YarikSOffice.Venom:venom:0.4.1"
+    releaseImplementation "com.github.YarikSOffice.Venom:venom-no-op:0.4.1"
 }

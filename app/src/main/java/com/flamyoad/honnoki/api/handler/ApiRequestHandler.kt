@@ -1,5 +1,7 @@
 package com.flamyoad.honnoki.api.handler
 
+import android.os.Build
+import com.flamyoad.honnoki.BuildConfig
 import retrofit2.HttpException
 import java.io.IOException
 import kotlin.runCatching
@@ -35,6 +37,9 @@ class ApiRequestHandler {
                 NetworkResult.Failure(ApiException(Code.NoInternetConnection))
             }
             is JsonDataException -> {
+                if (BuildConfig.DEBUG) {
+                    throw throwable
+                }
                 NetworkResult.Failure(ApiException(Code.JsonDataMismatch))
             }
             else -> NetworkResult.Failure(

@@ -3,6 +3,7 @@ package com.flamyoad.honnoki.repository
 import androidx.room.withTransaction
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.entities.Chapter
+import com.flamyoad.honnoki.data.entities.MangaOverview
 
 class ChapterRepository(private val db: AppDatabase) {
 
@@ -24,6 +25,13 @@ class ChapterRepository(private val db: AppDatabase) {
         val readChapter = chapter.copy(hasBeenDownloaded = true)
         db.withTransaction {
             chapterDao.update(readChapter)
+        }
+    }
+
+    suspend fun clearExistingChapters(overview: MangaOverview) {
+        if (overview.id == null) return
+        db.withTransaction {
+            chapterDao.deleteAllFromOverview(overview.id)
         }
     }
 }
