@@ -28,7 +28,7 @@ interface MangadexService {
         @Query("order[createdAt]") order: String,
         @Query("includes[]") includes1: String = "author",
         @Query("includes[]") includes2: String = "artist",
-        @Query("includes[]") includes3: String = "cover_art"
+        @Query("includes[]") includes3: String = "cover_art",
     ): MDResultList
 
     /**
@@ -39,7 +39,7 @@ interface MangadexService {
     suspend fun getTopManga(
         @Query("offset") offset: Int,
         @Query("limit") limit: Int,
-        @Query("includes[]") includes3: String = "cover_art"
+        @Query("includes[]") includes3: String = "cover_art",
     ): MDResultList
 
     @GET("manga/{mangaId}")
@@ -55,7 +55,8 @@ interface MangadexService {
     suspend fun getChapterList(
         @Query("manga") mangaId: String,
         @Query("limit") limit: Int,
-        @Query("offset") offset: Int
+        @Query("offset") offset: Int,
+        @Query("includeFutureUpdates") includeFutureUpdates: String = "0",
     ): MDChapterList
 
     @GET("chapter/{id}")
