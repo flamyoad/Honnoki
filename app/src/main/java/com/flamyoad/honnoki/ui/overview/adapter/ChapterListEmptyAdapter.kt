@@ -11,5 +11,8 @@ class ChapterListEmptyAdapter : BaseAdapter<Any, ChapterListEmptyIndicatorBindin
 
     override fun getItemCount(): Int = 1
 
+    override val itemsCanBeClicked: Boolean
+        get() = false
+
     override fun onBind(holder: BaseViewHolder, item: Any) {}
 }
