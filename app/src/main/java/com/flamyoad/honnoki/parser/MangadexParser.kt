@@ -19,8 +19,8 @@ class MangadexParser {
 
     suspend fun parseHomeMangas(json: MDResultList, type: MangaType): List<Manga> =
         withContext(Dispatchers.Default) {
-            val mangas = json.results?.map { it ->
-                val mangaId = it.data?.id ?: ""
+            val mangas = json.data?.map { it ->
+                val mangaId = it.id ?: "";
 
                 /*  If it is null (cannot be casted to RelCoverImage),
                  *  means it does not have cover image... Lol ask MangaDex
@@ -37,7 +37,7 @@ class MangadexParser {
                 }
 
                 Manga(
-                    title = it.data?.attributes?.title?.en ?: "",
+                    title = it.attributes?.title?.en ?: "",
                     link = mangaId,
                     latestChapter = "",
                     coverImage = coverImageUrl,
@@ -49,14 +49,14 @@ class MangadexParser {
             return@withContext mangas ?: emptyList()
         }
 
-    suspend fun parseForMangaOverview(json: MDResult): MangaOverview =
+    suspend fun parseForMangaOverview(json: MDEntity): MangaOverview =
         withContext(Dispatchers.Default) {
             val mangaId = json.data?.id ?: return@withContext MangaOverview.empty()
 
             val attributes = json.data.attributes
 
             val coverImageAttr =
-                json.relationships?.firstOrNull { rel -> rel.type == "cover_art" } as? RelCoverImage
+                json.data.relationships?.firstOrNull { rel -> rel.type == "cover_art" } as? RelCoverImage
 
             val coverImage = constructCoverImageUrl(
                 mangaId,
@@ -87,9 +87,9 @@ class MangadexParser {
             )
         }
 
-    suspend fun parseForAuthors(json: MDResult): List<Author> =
+    suspend fun parseForAuthors(json: MDResult?): List<Author> =
         withContext(Dispatchers.Default) {
-            if (json.data?.id == null) return@withContext emptyList()
+            if (json?.id == null) return@withContext emptyList()
 
             val artistAttr = json.relationships
                 ?.filter { rel -> rel.type == "artist" }
@@ -120,7 +120,7 @@ class MangadexParser {
             return@withContext (artists + authors)
         }
 
-    suspend fun parseForGenres(json: MDResult): List<Genre> =
+    suspend fun parseForGenres(json: MDEntity): List<Genre> =
         withContext(Dispatchers.Default) {
             if (json.data?.id == null) return@withContext emptyList()
 
@@ -139,10 +139,10 @@ class MangadexParser {
             }
         }
 
-    suspend fun parseForChapters(json: MDChapter, currentOffset: Int): List<Chapter> =
+    suspend fun parseForChapters(json: MDChapterList, currentOffset: Int): List<Chapter> =
         withContext(Dispatchers.Default) {
-            val chapterList = json.results.mapIndexed { index, it ->
-                val attr = it.data.attributes
+            val chapterList = json.data.mapIndexed { index, it ->
+                val attr = it.attributes
 
                 // We don't use the `title` field from JSON since it could be empty.
                 // so just substitute it with "Vol. X Ch. X" string
@@ -167,7 +167,7 @@ class MangadexParser {
                 Chapter(
                     title = title,
                     number = chapterNumber,
-                    link = it.data.id,
+                    link = it.id,
                     date = date ?: "",
                     hasBeenRead = false,
                     hasBeenDownloaded = false,
@@ -178,13 +178,17 @@ class MangadexParser {
         }
 
     suspend fun parseForImageList(
-        chapterJson: MDChapterResult,
+        chapterJson: MDChapter,
         baseUrlJson: MDBaseUrl
     ): List<Page> =
         withContext(Dispatchers.Default) {
             val baseUrl = baseUrlJson.baseUrl
             val chapter = chapterJson.data
-            val chapterHash = chapter.attributes.hash ?: ""
+            val chapterHash = chapter?.attributes?.hash ?: ""
+
+            if (chapter?.attributes?.data == null) {
+                return@withContext emptyList()
+            }
 
             return@withContext chapter.attributes.data.mapIndexed { index, fileName ->
                 Page(
@@ -206,8 +210,8 @@ class MangadexParser {
         }
 
     suspend fun parseForSearchResult(json: MDResultList): List<SearchResult> {
-        val searchResult = json.results?.map { it ->
-            val mangaId = it.data?.id ?: ""
+        val searchResult = json.data?.map { it ->
+            val mangaId = it.id ?: ""
 
             /*  If it is null (cannot be casted to RelCoverImage),
              *  means it does not have cover image... Lol ask MangaDex
@@ -227,8 +231,8 @@ class MangadexParser {
 
             SearchResult(
                 coverImage = coverImageUrl,
-                link = it.data?.id ?: "",
-                title = it.data?.attributes?.title?.en ?: "",
+                link = it.id ?: "",
+                title = it.attributes?.title?.en ?: "",
                 latestChapter = "",
                 author = authors,
             )

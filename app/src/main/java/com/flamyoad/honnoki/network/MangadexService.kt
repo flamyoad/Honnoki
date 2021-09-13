@@ -49,19 +49,19 @@ interface MangadexService {
         @Query("includes[]") includes1: String = "author",
         @Query("includes[]") includes2: String = "artist",
         @Query("includes[]") includes3: String = "cover_art"
-    ): MDResult
+    ): MDEntity
 
     @GET("chapter")
     suspend fun getChapterList(
         @Query("manga") mangaId: String,
         @Query("limit") limit: Int,
         @Query("offset") offset: Int
-    ): MDChapter
+    ): MDChapterList
 
     @GET("chapter/{id}")
     suspend fun getPages(
         @Path("id") chapterId: String
-    ): MDChapterResult
+    ): MDChapter
 
     @GET("manga")
     suspend fun searchByKeyword(

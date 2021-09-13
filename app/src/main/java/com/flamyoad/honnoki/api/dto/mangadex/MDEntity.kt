@@ -2,9 +2,10 @@ package com.flamyoad.honnoki.api.dto.mangadex
 
 import com.squareup.moshi.JsonClass
 
+// Single manga
 @JsonClass(generateAdapter = true)
-data class MDChapter(
+data class MDEntity(
     val result: String?,
     val response: String?,
-    val data: MDChapterData?
+    val data: MDResult?,
 )

@@ -62,7 +62,7 @@ class MangadexApi(
     suspend fun searchForAuthors(mangaId: String): State<List<Author>> {
         return processApiData(
             apiCall = { service.getMangaDetails(mangaId) },
-            parseData = { parser.parseForAuthors(it) }
+            parseData = { parser.parseForAuthors(it.data) }
         )
     }
 
@@ -105,7 +105,7 @@ class MangadexApi(
             }
 
         val baseUrlJson = when (val response =
-            apiHandler.safeApiCall { service.getBaseUrl(chapterJson.data.id) }) {
+            apiHandler.safeApiCall { service.getBaseUrl(chapterJson.data?.id ?: "") }) {
             is NetworkResult.Success -> response.data
             is NetworkResult.Failure -> return State.Error(response.exception)
         }
