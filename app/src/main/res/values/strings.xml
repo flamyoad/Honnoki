@@ -71,5 +71,6 @@
     <string name="genre_webtoons">Webtoons</string>
     <string name="genre_yaoi">Yaoi</string>
     <string name="genre_yuri">Yuri</string>
+    <string name="title_activity_download_picker">DownloadPickerActivity</string>
 
 </resources>

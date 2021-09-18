@@ -1,4 +1,4 @@
-package com.flamyoad.honnoki.ui.overview.ui.theme
+package com.flamyoad.honnoki.ui.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle

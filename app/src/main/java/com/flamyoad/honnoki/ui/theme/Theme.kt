@@ -1,10 +1,11 @@
-package com.flamyoad.honnoki.ui.overview.ui.theme
+package com.flamyoad.honnoki.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import com.google.android.material.composethemeadapter.MdcTheme
 
 private val DarkColorPalette = darkColors(
     primary = Purple200,

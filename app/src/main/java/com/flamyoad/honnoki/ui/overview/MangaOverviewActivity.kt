@@ -219,6 +219,11 @@ class MangaOverviewActivity : AppCompatActivity() {
             it.showContextMenu()
         }
 
+        binding.btnDownload.setOnClickListener {
+            val intent = Intent(this, DownloadPickerActivity::class.java)
+            startActivity(intent)
+        }
+
         binding.swipeRefreshLayout.setOnRefreshListener {
             viewModel.loadMangaOverview(intent.getStringExtra(MANGA_URL) ?: "")
             binding.swipeRefreshLayout.isRefreshing = false
