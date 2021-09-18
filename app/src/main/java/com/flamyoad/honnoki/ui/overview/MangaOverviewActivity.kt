@@ -13,7 +13,6 @@ import android.text.style.ClickableSpan
 import android.view.ContextMenu
 import android.view.MenuItem
 import android.view.View
-import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.set
 import androidx.core.text.toSpannable
@@ -35,6 +34,7 @@ import com.flamyoad.honnoki.data.entities.MangaOverview
 import com.flamyoad.honnoki.databinding.ActivityMangaOverviewBinding
 import com.flamyoad.honnoki.dialog.BookmarkDialog
 import com.flamyoad.honnoki.source.model.Source
+import com.flamyoad.honnoki.ui.download.DownloadPickerActivity
 import com.flamyoad.honnoki.ui.lookup.MangaLookupActivity
 import com.flamyoad.honnoki.ui.lookup.model.LookupType
 import com.flamyoad.honnoki.ui.overview.adapter.MangaOverviewFragmentAdapter
@@ -217,6 +217,19 @@ class MangaOverviewActivity : AppCompatActivity() {
         registerForContextMenu(binding.btnMore)
         binding.btnMore.setOnClickListener {
             it.showContextMenu()
+        }
+
+        binding.btnDownload.setOnClickListener {
+            viewModel.overview.let {
+                if (it == MangaOverview.empty()) return@setOnClickListener
+                DownloadPickerActivity.startActivity(
+                    this,
+                    it.id ?: return@setOnClickListener,
+                    it.mainTitle,
+                    it.coverImage,
+                    viewModel.selectedLanguage().value
+                )
+            }
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {

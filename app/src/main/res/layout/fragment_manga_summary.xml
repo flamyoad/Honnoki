@@ -11,7 +11,7 @@
     android:background="?attr/colorBackgroundFloating">
 
     <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
-        android:id="@+id/contentList"
+        android:id="@+id/listChapter"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:fastScrollPopupBgColor="@color/colorAccent"

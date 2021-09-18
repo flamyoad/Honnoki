@@ -1,5 +1,6 @@
 package com.flamyoad.honnoki.common.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -54,5 +55,7 @@ abstract class BaseAdapter<T: Any, VB: ViewBinding>
         notifyDataSetChanged()
     }
 
-    inner class BaseViewHolder(val binding: VB): RecyclerView.ViewHolder(binding.root)
+    inner class BaseViewHolder(val binding: VB): RecyclerView.ViewHolder(binding.root) {
+        val context: Context get() = binding.root.context
+    }
 }
