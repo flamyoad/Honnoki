@@ -8,11 +8,9 @@ import com.flamyoad.honnoki.databinding.DownloadPickerActionItemsBinding
 
 class DownloadActionItemsAdapter(
     private val sortList: () -> Unit,
-    private val changeListType: () -> Unit,
     private val selectAll: () -> Unit,
     private val unselectAll: () -> Unit,
 ) : BaseAdapter<Int, DownloadPickerActionItemsBinding>() {
-
 
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> DownloadPickerActionItemsBinding
         get() = DownloadPickerActionItemsBinding::inflate
@@ -21,7 +19,6 @@ class DownloadActionItemsAdapter(
         super.onCreate(holder, binding)
         with(binding) {
             btnSort.setOnClickListener { sortList.invoke() }
-            btnListType.setOnClickListener { changeListType.invoke() }
             btnSelectAll.setOnClickListener { selectAll.invoke() }
             btnUnselectAll.setOnClickListener { unselectAll.invoke() }
         }

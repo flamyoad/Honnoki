@@ -13,12 +13,14 @@ import com.flamyoad.honnoki.ui.overview.model.LanguageFilter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 
-class DownloadPickerViewModel(private val db: AppDatabase): ViewModel() {
+class DownloadPickerViewModel(private val db: AppDatabase) : ViewModel() {
     private val mangaOverviewId = MutableStateFlow(-1L)
 
     private val chapterListSortType = MutableStateFlow(ChapterListSort.DESC)
 
     private val selectedLanguage = MutableStateFlow(LanguageFilter.english())
+
+    private var previousSelectedChapter: DownloadChapter? = null
 
     private val selectedChapters = MutableStateFlow<List<DownloadChapter>>(emptyList())
     fun selectedChapters() = selectedChapters.asStateFlow()
@@ -88,6 +90,7 @@ class DownloadPickerViewModel(private val db: AppDatabase): ViewModel() {
 
     fun selectLanguageLocale(languageLocale: String) {
         selectedLanguage.value = LanguageFilter(locale = languageLocale, isSelected = false)
+        previousSelectedChapter = null
     }
 
     fun onChapterPress(chapter: DownloadChapter) {
@@ -95,10 +98,48 @@ class DownloadPickerViewModel(private val db: AppDatabase): ViewModel() {
         if (chapter.isSelected) {
             val index = list.indexOfFirst { it.id == chapter.id }
             list.removeAt(index)
+            previousSelectedChapter = null
         } else {
             list.add(chapter)
+            previousSelectedChapter = chapter
         }
         selectedChapters.value = list
+    }
+
+    fun onChapterLongPress(chapter: DownloadChapter) {
+        if (previousSelectedChapter == null) {
+            onChapterPress(chapter)
+            return
+        }
+        chapterList.value.let {
+            if (it is State.Success) {
+                val chapterRange = findChapterRange(chapter, previousSelectedChapter!!, it.value)
+
+                val newList = selectedChapters.value.toMutableList().apply {
+                    addAll(chapterRange)
+                }
+                selectedChapters.value = newList.distinctBy { it.id }
+            }
+        }
+    }
+
+    fun findChapterRange(
+        currentChapter: DownloadChapter,
+        previousChapter: DownloadChapter,
+        listOfChapters: List<DownloadChapter>
+    ): List<DownloadChapter> {
+        val currentChapterIndex =
+            listOfChapters.indexOfFirst { it.id == currentChapter.id }
+        val previousChapterIndex =
+            listOfChapters.indexOfFirst { it.id == previousChapter.id }
+
+        return if (currentChapterIndex < previousChapterIndex) {
+            listOfChapters.subList(currentChapterIndex, previousChapterIndex)
+        } else if (currentChapterIndex > previousChapterIndex) {
+            listOfChapters.subList(previousChapterIndex + 1, currentChapterIndex + 1)
+        } else {
+            listOf(currentChapter)
+        }
     }
 
     fun selectAllChapters() {
@@ -106,14 +147,14 @@ class DownloadPickerViewModel(private val db: AppDatabase): ViewModel() {
             if (it is State.Success) {
                 val newList = selectedChapters.value.toMutableList().apply {
                     addAll(it.value)
-                    distinct()
                 }
-                selectedChapters.value = newList
+                selectedChapters.value = newList.distinctBy { it.id }
             }
         }
     }
 
     fun unselectAllChapters() {
         selectedChapters.value = emptyList()
+        previousSelectedChapter = null
     }
 }

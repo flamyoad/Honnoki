@@ -41,7 +41,6 @@ class DownloadPickerActivity : AppCompatActivity() {
     private val actionItemsAdapter by lazy {
         DownloadActionItemsAdapter(
             viewModel::toggleChapterListSort,
-            {},
             viewModel::selectAllChapters,
             viewModel::unselectAllChapters,
         )
@@ -54,7 +53,9 @@ class DownloadPickerActivity : AppCompatActivity() {
 
     private val concatAdapter by lazy { ConcatAdapter(actionItemsAdapter) }
 
-    private val chapterListAdapter by lazy { DownloadChapterGridAdapter(viewModel::onChapterPress) }
+    private val chapterListAdapter by lazy {
+        DownloadChapterGridAdapter(viewModel::onChapterPress, viewModel::onChapterLongPress)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,6 +103,8 @@ class DownloadPickerActivity : AppCompatActivity() {
         if (languageLocale.isNullOrBlank().not()) {
             concatAdapter.addAdapter(languageFilterAdapter)
         }
+
+        actionItemsAdapter.setItem(0)
     }
 
 
@@ -145,7 +148,7 @@ class DownloadPickerActivity : AppCompatActivity() {
             title: String,
             coverImageUrl: String,
             languageLocale: LanguageFilter,
-            ) {
+        ) {
             val intent = Intent(context, DownloadPickerActivity::class.java).apply {
                 putExtra(OVERVIEW_ID, overviewId)
                 putExtra(TITLE, title)

@@ -10,7 +10,10 @@ import com.flamyoad.honnoki.databinding.ChapterListItemBinding
 import com.flamyoad.honnoki.ui.download.model.DownloadChapter
 import com.flamyoad.honnoki.utils.ColorUtils
 
-class DownloadChapterGridAdapter(private val onChapterClick: (DownloadChapter) -> Unit) :
+class DownloadChapterGridAdapter(
+    private val onChapterClick: (DownloadChapter) -> Unit,
+    private val onChapterLongClick: (DownloadChapter) -> Unit,
+) :
     BaseListAdapter<DownloadChapter, ChapterListItemBinding>(COMPARATOR) {
 
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> ChapterListItemBinding
@@ -32,6 +35,11 @@ class DownloadChapterGridAdapter(private val onChapterClick: (DownloadChapter) -
     override fun onItemClick(item: DownloadChapter?) {
         super.onItemClick(item)
         onChapterClick.invoke(item ?: return)
+    }
+
+    override fun onItemLongClick(item: DownloadChapter?) {
+        super.onItemLongClick(item)
+        onChapterLongClick.invoke(item ?: return)
     }
 
     companion object {
