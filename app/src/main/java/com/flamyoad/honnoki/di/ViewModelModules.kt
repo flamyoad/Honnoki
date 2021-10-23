@@ -60,7 +60,7 @@ val viewModelModules = module {
 
     viewModel { OptionsViewModel(get(), get(), get(), get(named(KoinConstants.APP_SCOPE))) }
 
-    viewModel { DownloadPickerViewModel(get()) }
+    viewModel { DownloadPickerViewModel(get(), get(), get(named(KoinConstants.APP_SCOPE))) }
 
     // Dialogs
     viewModel { AddBookmarkGroupDialogViewModel(androidApplication(), get()) }

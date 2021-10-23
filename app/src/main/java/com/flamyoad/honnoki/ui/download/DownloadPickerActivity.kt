@@ -16,7 +16,6 @@ import com.flamyoad.honnoki.common.State
 import com.flamyoad.honnoki.databinding.ActivityDownloadPickerBinding
 import com.flamyoad.honnoki.ui.download.adapter.DownloadActionItemsAdapter
 import com.flamyoad.honnoki.ui.download.adapter.DownloadChapterGridAdapter
-import com.flamyoad.honnoki.ui.overview.adapter.ChapterListHeaderAdapter
 import com.flamyoad.honnoki.ui.overview.adapter.LanguageFilterAdapter
 import com.flamyoad.honnoki.ui.overview.model.LanguageFilter
 import kotlinx.coroutines.flow.collectLatest
@@ -105,6 +104,11 @@ class DownloadPickerActivity : AppCompatActivity() {
         }
 
         actionItemsAdapter.setItem(0)
+
+        binding.btnDownload.setOnClickListener {
+            viewModel.downloadChapters()
+            finish()
+        }
     }
 
 

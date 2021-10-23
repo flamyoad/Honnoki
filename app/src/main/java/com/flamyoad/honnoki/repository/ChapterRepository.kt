@@ -1,5 +1,6 @@
 package com.flamyoad.honnoki.repository
 
+import android.content.Context
 import androidx.room.withTransaction
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.entities.Chapter
@@ -8,7 +9,6 @@ import com.flamyoad.honnoki.data.entities.MangaOverview
 class ChapterRepository(private val db: AppDatabase) {
 
     private val chapterDao get() = db.chapterDao()
-    private val overviewDao get() = db.mangaOverviewDao()
 
     suspend fun markChapterAsRead(chapter: Chapter) {
         if (chapter.hasBeenRead) return

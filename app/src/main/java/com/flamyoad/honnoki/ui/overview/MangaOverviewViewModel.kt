@@ -30,7 +30,11 @@ class MangaOverviewViewModel(
     val mangaOverview = mangaOverviewId
         .filter { it != -1L }
         .flatMapLatest { db.mangaOverviewDao().getById(it) }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), MangaOverview.empty())
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(),
+            MangaOverview.empty()
+        )
 
     val overview get() = mangaOverview.value
 
@@ -69,21 +73,29 @@ class MangaOverviewViewModel(
     val chapterList: StateFlow<State<List<ReaderChapter>>> = mangaOverviewId
         .onStart { flowOf(State.Loading) }
         .combine(chapterListSortType) { id, sortType -> Pair(id, sortType) }
-        .combine(selectedLanguage) { (id, sortType), lang -> Triple(id, sortType, lang) }
+        .combine(selectedLanguage) { (id, sortType), lang ->
+            Triple(
+                id,
+                sortType,
+                lang
+            )
+        }
         .flatMapLatest { (id, sortType, lang) ->
             when (sortType) {
                 ChapterListSort.ASC -> {
                     if (lang == LanguageFilter.empty()) {
                         db.chapterDao().getAscByOverviewId(id)
                     } else {
-                        db.chapterDao().getAscByOverviewIdFromLanguage(id, lang.locale)
+                        db.chapterDao()
+                            .getAscByOverviewIdFromLanguage(id, lang.locale)
                     }
                 }
                 ChapterListSort.DESC -> {
                     if (lang == LanguageFilter.empty()) {
                         db.chapterDao().getDescByOverviewId(id)
                     } else {
-                        db.chapterDao().getDescByOverviewIdFromLanguage(id, lang.locale)
+                        db.chapterDao()
+                            .getDescByOverviewIdFromLanguage(id, lang.locale)
                     }
                 }
             }
@@ -100,7 +112,11 @@ class MangaOverviewViewModel(
             }
         }
         .flowOn(Dispatchers.Default)
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), State.Loading)
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(),
+            State.Loading
+        )
 
     val hasBeenBookmarked = mangaOverviewId
         .flatMapLatest { db.mangaOverviewDao().hasBeenBookmarked(it) }
@@ -125,7 +141,8 @@ class MangaOverviewViewModel(
             // Otherwise, load manga overview from network
             when (val overview = baseSource.getMangaOverview(url)) {
                 is State.Success -> {
-                    val overviewId = db.mangaOverviewDao().insert(overview.value)
+                    val overviewId =
+                        db.mangaOverviewDao().insert(overview.value)
                     mangaOverviewId.value = overviewId
 
                     refreshAuthors(url, mangaOverviewId.value)

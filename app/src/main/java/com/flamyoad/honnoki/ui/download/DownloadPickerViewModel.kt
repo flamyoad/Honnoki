@@ -6,14 +6,23 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.flamyoad.honnoki.common.State
 import com.flamyoad.honnoki.data.db.AppDatabase
+import com.flamyoad.honnoki.data.mapper.mapToDb
 import com.flamyoad.honnoki.data.mapper.mapToDownloadChapters
+import com.flamyoad.honnoki.repository.ChapterRepository
+import com.flamyoad.honnoki.repository.download.DownloadRepository
 import com.flamyoad.honnoki.ui.download.model.DownloadChapter
 import com.flamyoad.honnoki.ui.overview.model.ChapterListSort
 import com.flamyoad.honnoki.ui.overview.model.LanguageFilter
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
-class DownloadPickerViewModel(private val db: AppDatabase) : ViewModel() {
+class DownloadPickerViewModel(
+    private val db: AppDatabase,
+    private val downloadRepository: DownloadRepository,
+    private val applicationScope: CoroutineScope
+) : ViewModel() {
     private val mangaOverviewId = MutableStateFlow(-1L)
 
     private val chapterListSortType = MutableStateFlow(ChapterListSort.DESC)
@@ -156,5 +165,11 @@ class DownloadPickerViewModel(private val db: AppDatabase) : ViewModel() {
     fun unselectAllChapters() {
         selectedChapters.value = emptyList()
         previousSelectedChapter = null
+    }
+
+    fun downloadChapters() {
+        applicationScope.launch {
+            downloadRepository.downloadChapters(selectedChapters.value.mapToDb())
+        }
     }
 }

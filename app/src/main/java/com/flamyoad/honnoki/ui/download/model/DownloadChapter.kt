@@ -10,4 +10,5 @@ data class DownloadChapter(
     val hasBeenDownloaded: Boolean,
     val translatedLanguage: String,
     val isSelected: Boolean,
+    val mangaOverviewId: Long,
 )

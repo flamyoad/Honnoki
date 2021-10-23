@@ -10,7 +10,10 @@ interface PageDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertAll(pageList: List<Page>)
 
+    @Query("SELECT * FROM page WHERE chapterId = :chapterId")
+    suspend fun getPages(chapterId: Long): List<Page>
+
     @Transaction
     @Query("SELECT * FROM page WHERE chapterId = :chapterId")
-    fun getAllFromChapter(chapterId: Long): List<PageWithChapterInfo>
+    fun getPagesWithChapterInfo(chapterId: Long): List<PageWithChapterInfo>
 }
