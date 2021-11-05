@@ -12,6 +12,7 @@
         <entry key="app/src/main/res/drawable/bookmark_dialog_item_char_bg.xml" value="0.17407407407407408" />
         <entry key="app/src/main/res/drawable/ic_baseline_sort_by_alpha_24.xml" value="0.19074074074074074" />
         <entry key="app/src/main/res/layout/activity_download_picker.xml" value="0.22604166666666667" />
+        <entry key="app/src/main/res/layout/activity_manga_overview.xml" value="0.11388888888888889" />
         <entry key="app/src/main/res/layout/chapter_list_empty_indicator.xml" value="0.22604166666666667" />
         <entry key="app/src/main/res/layout/chapter_list_item.xml" value="0.15" />
         <entry key="app/src/main/res/layout/chapter_list_item_complex.xml" value="0.375" />
