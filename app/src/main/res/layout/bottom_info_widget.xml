@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/parentCardView"
+    style="@style/cutCornerTopLeftBottomRight"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/contentLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#5A5757"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/txtCurrentPageMini"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:lines="1"
+            android:paddingHorizontal="6dp"
+            android:paddingVertical="2dp"
+            android:textColor="@android:color/white"
+            tools:text="100/200" />
+
+        <TextView
+            android:id="@+id/txtCurrentChapterMini"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:lines="1"
+            android:maxLength="20"
+            android:paddingVertical="2dp"
+            android:paddingEnd="4dp"
+            android:textColor="@color/subLightTextColor"
+            tools:text="Chapter 134" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

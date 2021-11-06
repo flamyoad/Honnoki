@@ -120,7 +120,7 @@ class ReaderActivity : AppCompatActivity() {
             }
 
             if (viewModel.extraSpaceAtBottomIndicator) {
-                binding.bottomRightInfoViewContent.updatePadding(right = 32)
+                bottomInfoWidget.updatePadding(right = 32)
             }
 
             seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -161,7 +161,7 @@ class ReaderActivity : AppCompatActivity() {
             viewModel.currentPageIndicator
                 .flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
                 .debounce(50)
-                .collectLatest { binding.txtCurrentPageMini.text = it }
+                .collectLatest { binding.bottomInfoWidget.currentPage = it }
         }
 
         lifecycleScope.launchWhenResumed {
@@ -187,15 +187,7 @@ class ReaderActivity : AppCompatActivity() {
                 .flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
                 .collectLatest {
                     binding.txtToolbarChapterTitle.text = it.title
-                    binding.txtCurrentChapterMini.text = it.title
-                    binding.bottomRightInfoView.apply {
-                        invalidate()
-                        requestLayout()
-                    }
-                    binding.txtCurrentChapterMini.apply {
-                        invalidate()
-                        requestLayout()
-                    }
+                    binding.bottomInfoWidget.currentChapter = it.title
                     viewModel.markChapterAsRead(it)
                 }
         }
@@ -204,7 +196,7 @@ class ReaderActivity : AppCompatActivity() {
     // https://stackoverflow.com/questions/4503039/layout-animation-not-working-on-first-run
     // Reason is because the view is not initially inflated when View.GONE is set. Use View.INVISIBLE instead.
     private fun toggleSidekickVisibility(isVisible: Boolean) {
-        binding.bottomRightInfoView.isVisible = !isVisible
+        binding.bottomInfoWidget.isVisible = !isVisible
 
         val visibility = when (isVisible) {
             true -> View.VISIBLE
