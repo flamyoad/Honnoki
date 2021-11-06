@@ -1,9 +1,8 @@
 package com.flamyoad.honnoki.di
 
-import com.flamyoad.honnoki.repository.BookmarkRepository
-import com.flamyoad.honnoki.repository.ChapterRepository
-import com.flamyoad.honnoki.repository.OverviewRepository
-import com.flamyoad.honnoki.repository.ReadHistoryRepository
+import com.flamyoad.honnoki.repository.*
+import com.flamyoad.honnoki.repository.download.DownloadRepository
+import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 
 val repositoryModules = module {
@@ -11,4 +10,6 @@ val repositoryModules = module {
     single { ChapterRepository(get()) }
     single { OverviewRepository(get()) }
     single { ReadHistoryRepository(get()) }
+    single { DownloadRepository(get(), get(), androidApplication()) }
+    single { PageRepository(get()) }
 }

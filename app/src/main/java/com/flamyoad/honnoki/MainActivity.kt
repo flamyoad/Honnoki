@@ -1,6 +1,9 @@
 package com.flamyoad.honnoki
 
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
@@ -8,7 +11,6 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.paging.ExperimentalPagingApi
 import com.flamyoad.honnoki.databinding.ActivityMainBinding
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flowOn
 import java.lang.IllegalArgumentException
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -27,6 +29,7 @@ class MainActivity : AppCompatActivity() {
     private var _binding: ActivityMainBinding? = null
     private val binding get() = requireNotNull(_binding)
 
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
@@ -53,6 +56,7 @@ class MainActivity : AppCompatActivity() {
                 binding.bottomNavigation.isVisible = enabled.not()
             }
         }
+        1+1
     }
 
     override fun onBackPressed() {
@@ -63,7 +67,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Pop fragment in the nav backstack if there is any
-        val currentNavFragment = supportFragmentManager.fragments.first { it.isVisible } as NavHostFragment
+        val currentNavFragment =
+            supportFragmentManager.fragments.first { it.isVisible } as NavHostFragment
         if (currentNavFragment.navController.backQueue.size > 2) {
             currentNavFragment.navController.navigateUp()
         } else {

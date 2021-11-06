@@ -29,6 +29,12 @@
         <item quantity="other">%d chapters</item>
     </plurals>
 
+    <string name="download_list_no_items">Select a chapter</string>
+    <plurals name="download_list_total">
+        <item quantity="one">Download %d chapter</item>
+        <item quantity="other">Download %d chapters</item>
+    </plurals>
+
     <string name="genre_all">All</string>
 
     <string name="genre_action">Action</string>

@@ -5,15 +5,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.databinding.ChapterListSorterItemBinding
-import com.flamyoad.honnoki.ui.overview.model.ReaderChapter
 
 class ChapterListHeaderAdapter(
     private val sortList: () -> Unit,
-    private val changeListType: () -> Unit
+    private val changeListType: () -> Unit,
 ) :
     RecyclerView.Adapter<ChapterListHeaderAdapter.SorterViewHolder>() {
 
-    private var chapterList: List<ReaderChapter> = emptyList()
+    private var totalChapters: Int = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SorterViewHolder {
         val binding =
@@ -23,20 +22,18 @@ class ChapterListHeaderAdapter(
         binding.btnSort.setOnClickListener {
             sortList.invoke()
         }
-
         binding.btnListType.setOnClickListener {
             changeListType.invoke()
         }
-
         return holder
     }
 
     override fun onBindViewHolder(holder: SorterViewHolder, position: Int) {
-        holder.bind(chapterList)
+        holder.bind(totalChapters)
     }
 
-    fun setItem(chapterList: List<ReaderChapter>) {
-        this.chapterList = chapterList
+    fun setItem(totalChapters: Int) {
+        this.totalChapters = totalChapters
         notifyDataSetChanged()
     }
 
@@ -44,15 +41,15 @@ class ChapterListHeaderAdapter(
 
     inner class SorterViewHolder(val binding: ChapterListSorterItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(chapterList: List<ReaderChapter>) {
+        fun bind(totalChapters: Int) {
             val resources = binding.root.context.resources
-            binding.txtTotalChapters.text = if (chapterList.isEmpty()) {
+            binding.txtTotalChapters.text = if (totalChapters == 0) {
                 resources.getString(R.string.chapter_list_no_items)
             } else {
                 resources.getQuantityString(
                     R.plurals.chapter_list_total,
-                    chapterList.size,
-                    chapterList.size
+                    totalChapters,
+                    totalChapters
                 )
             }
         }

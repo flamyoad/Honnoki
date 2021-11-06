@@ -3,7 +3,7 @@ package com.flamyoad.honnoki
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.runner.AndroidJUnit4
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.db.dao.MangaDao
 import com.flamyoad.honnoki.data.entities.Manga
@@ -52,6 +52,6 @@ class RoomUniqueConstraintTest {
             Manga(title = "One Piece", source = Source.SENMANGA, type = MangaType.RECENTLY)
         )
         mangaDao.insertAll(listOfUniques)
-        Assert.assertSame(mangaDao.getAll().size, 4)
+        Assert.assertEquals(mangaDao.getAll().size, 4)
     }
 }

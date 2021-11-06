@@ -1,5 +1,7 @@
 package com.flamyoad.honnoki.ui.reader
 
+import android.os.SystemClock
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
@@ -8,11 +10,12 @@ import com.flamyoad.honnoki.common.State
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.entities.Chapter
 import com.flamyoad.honnoki.data.entities.Page
+import com.flamyoad.honnoki.data.entities.PageWithChapterInfo
 import com.flamyoad.honnoki.data.preference.ReaderPreference
 import com.flamyoad.honnoki.repository.ChapterRepository
 import com.flamyoad.honnoki.repository.OverviewRepository
+import com.flamyoad.honnoki.repository.PageRepository
 import com.flamyoad.honnoki.source.BaseSource
-import com.flamyoad.honnoki.ui.overview.model.LanguageFilter
 import com.flamyoad.honnoki.ui.reader.model.LoadType
 import com.flamyoad.honnoki.ui.reader.model.ReaderPage
 import kotlinx.coroutines.*
@@ -24,6 +27,7 @@ class ReaderViewModel(
     private val db: AppDatabase,
     private val chapterRepo: ChapterRepository,
     private val overviewRepo: OverviewRepository,
+    private val pageRepo: PageRepository,
     private val applicationScope: CoroutineScope,
     private val baseSource: BaseSource,
     private val readerPrefs: ReaderPreference
@@ -142,7 +146,7 @@ class ReaderViewModel(
             db.pageDao().insertAll(pagesFromNetwork)
         }
 
-        val pagesFromDb = db.pageDao().getAllFromChapter(chapterId)
+        val pagesFromDb = db.pageDao().getPagesWithChapterInfo(chapterId)
 
         val existingList = pageList.value.toMutableList()
 

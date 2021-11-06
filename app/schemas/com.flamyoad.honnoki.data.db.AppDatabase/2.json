@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "14e62c579c672a8419c627bb2026dd8e",
+    "identityHash": "19dee5ac7f926cf5b1efe5dc53f0ced3",
     "entities": [
       {
         "tableName": "manga",
@@ -319,20 +319,13 @@
         },
         "indices": [
           {
-            "name": "index_page_chapterId",
-            "unique": false,
-            "columnNames": [
-              "chapterId"
-            ],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_page_chapterId` ON `${TABLE_NAME}` (`chapterId`)"
-          },
-          {
-            "name": "index_page_link",
+            "name": "index_page_chapterId_number",
             "unique": true,
             "columnNames": [
-              "link"
+              "chapterId",
+              "number"
             ],
-            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_page_link` ON `${TABLE_NAME}` (`link`)"
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_page_chapterId_number` ON `${TABLE_NAME}` (`chapterId`, `number`)"
           }
         ],
         "foreignKeys": [
@@ -702,7 +695,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '14e62c579c672a8419c627bb2026dd8e')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '19dee5ac7f926cf5b1efe5dc53f0ced3')"
     ]
   }
 }

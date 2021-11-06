@@ -3,6 +3,7 @@ package com.flamyoad.honnoki.di
 import androidx.paging.ExperimentalPagingApi
 import com.flamyoad.honnoki.MainViewModel
 import com.flamyoad.honnoki.dialog.*
+import com.flamyoad.honnoki.ui.download.DownloadPickerViewModel
 import com.flamyoad.honnoki.ui.home.mangalist.MangaListViewModel
 import com.flamyoad.honnoki.ui.home.HomeViewModel
 import com.flamyoad.honnoki.ui.home.dialog.GenrePickerViewModel
@@ -47,6 +48,7 @@ val viewModelModules = module {
             get(),
             get(),
             get(),
+            get(),
             get(named(KoinConstants.APP_SCOPE)),
             get(named(source)),
             get()
@@ -58,6 +60,8 @@ val viewModelModules = module {
     viewModel { SimpleSearchViewModel(androidApplication(), get()) }
 
     viewModel { OptionsViewModel(get(), get(), get(), get(named(KoinConstants.APP_SCOPE))) }
+
+    viewModel { DownloadPickerViewModel(get(), get(), get(named(KoinConstants.APP_SCOPE))) }
 
     // Dialogs
     viewModel { AddBookmarkGroupDialogViewModel(androidApplication(), get()) }

@@ -141,7 +141,7 @@ class MangaSummaryFragment : Fragment() {
             }
         }
 
-        with(binding.contentList) {
+        with(binding.listChapter) {
             adapter = concatAdapter
             layoutManager = gridLayoutManager
             itemAnimator = FadeInAnimator()
@@ -182,7 +182,7 @@ class MangaSummaryFragment : Fragment() {
                                     ChapterListDisplayMode.LIST -> addAdapter(chapterListAdapter)
                                 }
                             }
-                            chapterListHeaderAdapter.setItem(it.value)
+                            chapterListHeaderAdapter.setItem(it.value.size)
                             chapterGridAdapter.submitList(it.value)
                             chapterListAdapter.submitList(it.value)
                         }

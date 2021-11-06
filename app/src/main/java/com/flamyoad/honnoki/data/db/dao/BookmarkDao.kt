@@ -17,6 +17,9 @@ interface BookmarkDao {
     @Delete
     fun delete(bookmarks: List<Bookmark>)
 
+    @Query("SELECT * FROM bookmark WHERE id IN (:bookmarkIds)")
+    suspend fun getAllFrom(bookmarkIds: List<Long>): List<Bookmark>
+
     @Query("SELECT * FROM bookmark WHERE bookmarkGroupId = :bookmarkGroupId")
     fun getAllFrom(bookmarkGroupId: Long): Flow<List<Bookmark>>
 
@@ -31,10 +34,20 @@ interface BookmarkDao {
     @Query("DELETE FROM bookmark WHERE mangaOverviewId = :overviewId")
     suspend fun deleteAllFrom(overviewId: Long): Int
 
-    @Query("""
+    @Query(
+        """
+        SELECT EXISTS(SELECT * FROM bookmark 
+        WHERE bookmarkGroupId = :bookmarkGroupId AND  mangaOverviewId = :overviewId)
+    """
+    )
+    suspend fun alreadyExistsInGroup(bookmarkGroupId: Long, overviewId: Long): Boolean
+
+    @Query(
+        """
         UPDATE bookmark
         SET bookmarkGroupId = :bookmarkGroupId
-        WHERE id IN (:bookmarkIds)
-    """)
-    suspend fun updateBookmarkGroup(bookmarkIds: List<Long>, bookmarkGroupId: Long)
+        WHERE id = :bookmarkId
+    """
+    )
+    suspend fun updateBookmarkGroup(bookmarkId: Long, bookmarkGroupId: Long)
 }

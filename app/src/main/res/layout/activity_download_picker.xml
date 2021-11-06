@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinatorLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.download.DownloadPickerActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/coverImage"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:alpha="0.25"
+                android:scaleType="centerCrop"
+                tools:src="@drawable/rinze_chibi" />
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+        </FrameLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="?attr/colorBackgroundFloating"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/listOptions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
+            android:id="@+id/listChapter"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            app:fastScrollPopupBackgroundSize="88dp"
+            app:fastScrollPopupBgColor="@color/colorAccent"
+            app:fastScrollPopupPosition="adjacent"
+            app:fastScrollPopupTextColor="@android:color/primary_text_dark"
+            app:fastScrollPopupTextSize="56sp"
+            app:fastScrollThumbColor="@color/colorAccent"
+            app:fastScrollTrackColor="#1f000000"
+            tools:listitem="@layout/chapter_list_item"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/btnDownload"
+                style="@style/appcompat_button"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginHorizontal="22dp"
+                android:layout_marginVertical="14dp"
+                android:textColor="@color/white"
+                tools:text="Download" />
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
