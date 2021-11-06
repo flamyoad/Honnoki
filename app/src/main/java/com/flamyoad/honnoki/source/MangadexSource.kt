@@ -9,6 +9,7 @@ import com.flamyoad.honnoki.api.MangadexApi
 import com.flamyoad.honnoki.data.GenreConstants
 import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.common.State
+import com.flamyoad.honnoki.data.DynamicGenre
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.paging.LookupResultMediator
@@ -101,7 +102,12 @@ class MangadexSource(db: AppDatabase, context: Context, private val api: Mangade
                 LookupType.GENRE
             ),
             pagingSourceFactory = { db.lookupDao().getAll() }
-        ).flow    }
+        ).flow
+    }
+
+    override suspend fun getDynamicGenres(): State<List<DynamicGenre>> {
+        return api.getAvailableGenres()
+    }
 
     companion object {
         const val PAGINATION_SIZE = 50

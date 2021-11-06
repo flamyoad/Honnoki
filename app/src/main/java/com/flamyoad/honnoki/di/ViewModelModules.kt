@@ -27,11 +27,28 @@ val viewModelModules = module {
 
     viewModel { HomeViewModel(get()) }
 
-    viewModel { (source: String) -> MangaListViewModel(get(), get(named(source))) }
+    viewModel { (source: String) ->
+        MangaListViewModel(
+            get(),
+            get(named(source))
+        )
+    }
 
-    viewModel { BookmarkViewModel(get(), get(), get(named(KoinConstants.APP_SCOPE))) }
+    viewModel {
+        BookmarkViewModel(
+            get(),
+            get(),
+            get(named(KoinConstants.APP_SCOPE))
+        )
+    }
 
-    viewModel { ReadHistoryViewModel(get(), get(), get(named(KoinConstants.APP_SCOPE))) }
+    viewModel {
+        ReadHistoryViewModel(
+            get(),
+            get(),
+            get(named(KoinConstants.APP_SCOPE))
+        )
+    }
 
     viewModel { (params: String, source: String, lookupType: LookupType) ->
         MangaLookupViewModel(
@@ -41,7 +58,13 @@ val viewModelModules = module {
         )
     }
 
-    viewModel { (source: String) -> MangaOverviewViewModel(get(), get(named(source)), get()) }
+    viewModel { (source: String) ->
+        MangaOverviewViewModel(
+            get(),
+            get(named(source)),
+            get()
+        )
+    }
 
     viewModel { (source: String) ->
         ReaderViewModel(
@@ -51,7 +74,6 @@ val viewModelModules = module {
             get(),
             get(named(KoinConstants.APP_SCOPE)),
             get(named(source)),
-            get()
         )
     }
 
@@ -59,15 +81,44 @@ val viewModelModules = module {
 
     viewModel { SimpleSearchViewModel(androidApplication(), get()) }
 
-    viewModel { OptionsViewModel(get(), get(), get(), get(named(KoinConstants.APP_SCOPE))) }
+    viewModel {
+        OptionsViewModel(
+            get(),
+            get(),
+            get(),
+            get(named(KoinConstants.APP_SCOPE))
+        )
+    }
 
-    viewModel { DownloadPickerViewModel(get(), get(), get(named(KoinConstants.APP_SCOPE))) }
+    viewModel {
+        DownloadPickerViewModel(
+            get(),
+            get(),
+            get(named(KoinConstants.APP_SCOPE))
+        )
+    }
 
     // Dialogs
     viewModel { AddBookmarkGroupDialogViewModel(androidApplication(), get()) }
     viewModel { BookmarkDialogViewModel(androidApplication(), get()) }
     viewModel { ChangeBookmarkGroupNameViewModel(androidApplication(), get()) }
-    viewModel { DeleteBookmarkGroupDialogViewModel(androidApplication(), get()) }
-    viewModel { MoveBookmarkDialogViewModel(get(), get(), get(named(KoinConstants.APP_SCOPE))) }
-    viewModel { GenrePickerViewModel() }
+    viewModel {
+        DeleteBookmarkGroupDialogViewModel(
+            androidApplication(),
+            get()
+        )
+    }
+    viewModel {
+        MoveBookmarkDialogViewModel(
+            get(),
+            get(),
+            get(named(KoinConstants.APP_SCOPE))
+        )
+    }
+    viewModel { (source: String) ->
+        GenrePickerViewModel(
+            get(named(source)),
+            androidApplication()
+        )
+    }
 }

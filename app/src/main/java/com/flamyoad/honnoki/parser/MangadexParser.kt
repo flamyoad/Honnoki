@@ -4,6 +4,7 @@ import com.flamyoad.honnoki.api.dto.mangadex.*
 import com.flamyoad.honnoki.api.dto.mangadex.relationships.RelArtist
 import com.flamyoad.honnoki.api.dto.mangadex.relationships.RelAuthor
 import com.flamyoad.honnoki.api.dto.mangadex.relationships.RelCoverImage
+import com.flamyoad.honnoki.data.DynamicGenre
 import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.parser.model.MangadexQualityMode
@@ -17,7 +18,10 @@ import java.time.format.DateTimeFormatter
 
 class MangadexParser {
 
-    suspend fun parseHomeMangas(json: MDResultList, type: MangaType): List<Manga> =
+    suspend fun parseHomeMangas(
+        json: MDResultList,
+        type: MangaType
+    ): List<Manga> =
         withContext(Dispatchers.Default) {
             val mangas = json.data?.map { it ->
                 val mangaId = it.id ?: "";
@@ -25,7 +29,8 @@ class MangadexParser {
                 /*  If it is null (cannot be casted to RelCoverImage),
                  *  means it does not have cover image... Lol ask MangaDex
                  */
-                val coverImage = it.relationships?.firstOrNull { rel -> rel.type == "cover_art" }
+                val coverImage =
+                    it.relationships?.firstOrNull { rel -> rel.type == "cover_art" }
                 val coverImageUrl = if (coverImage is RelCoverImage) {
                     constructCoverImageUrl(
                         mangaId,
@@ -51,7 +56,8 @@ class MangadexParser {
 
     suspend fun parseForMangaOverview(json: MDEntity): MangaOverview =
         withContext(Dispatchers.Default) {
-            val mangaId = json.data?.id ?: return@withContext MangaOverview.empty()
+            val mangaId =
+                json.data?.id ?: return@withContext MangaOverview.empty()
 
             val attributes = json.data.attributes
 
@@ -139,7 +145,10 @@ class MangadexParser {
             }
         }
 
-    suspend fun parseForChapters(json: MDChapterList, currentOffset: Int): List<Chapter> =
+    suspend fun parseForChapters(
+        json: MDChapterList,
+        currentOffset: Int
+    ): List<Chapter> =
         withContext(Dispatchers.Default) {
             val chapterList = json.data.mapIndexed { index, it ->
                 val attr = it.attributes
@@ -216,7 +225,8 @@ class MangadexParser {
             /*  If it is null (cannot be casted to RelCoverImage),
              *  means it does not have cover image... Lol ask MangaDex
              */
-            val coverImage = it.relationships?.firstOrNull { rel -> rel.type == "cover_art" }
+            val coverImage =
+                it.relationships?.firstOrNull { rel -> rel.type == "cover_art" }
             val coverImageUrl = if (coverImage is RelCoverImage) {
                 constructCoverImageUrl(
                     mangaId,
@@ -239,6 +249,19 @@ class MangadexParser {
         }
         return searchResult ?: emptyList()
     }
+
+    suspend fun parseForDynamicGenres(json: MDTagList): List<DynamicGenre> =
+        withContext(Dispatchers.Default) {
+            val genres = json.data
+                ?.filter { it.attributes?.group == "genre" }
+                ?.map {
+                    DynamicGenre(
+                        id = it.id ?: "",
+                        name = it.attributes?.name?.en ?: "",
+                    )
+                }
+            return@withContext genres ?: emptyList()
+        }
 
     private fun constructCoverImageUrl(
         mangaId: String,

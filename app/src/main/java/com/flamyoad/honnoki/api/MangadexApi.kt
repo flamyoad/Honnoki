@@ -3,6 +3,7 @@ package com.flamyoad.honnoki.api
 import com.flamyoad.honnoki.api.handler.ApiRequestHandler
 import com.flamyoad.honnoki.api.handler.NetworkResult
 import com.flamyoad.honnoki.common.State
+import com.flamyoad.honnoki.data.DynamicGenre
 import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.network.MangadexService
 import com.flamyoad.honnoki.parser.MangadexParser
@@ -173,6 +174,13 @@ class MangadexApi(
                 )
             },
             parseData = { parser.parseForSearchResult(it) }
+        )
+    }
+
+    override suspend fun getAvailableGenres(): State<List<DynamicGenre>> {
+        return processApiData(
+            apiCall = { service.getAllTags() },
+            parseData = { parser.parseForDynamicGenres(it) }
         )
     }
 

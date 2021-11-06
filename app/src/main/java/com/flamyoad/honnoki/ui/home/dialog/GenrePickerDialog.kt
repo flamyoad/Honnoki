@@ -6,19 +6,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.GridLayoutManager
 import com.flamyoad.honnoki.api.DM5Api
 import com.flamyoad.honnoki.api.MangakalotApi
 import com.flamyoad.honnoki.api.ReadMangaApi
 import com.flamyoad.honnoki.api.SenMangaApi
-import com.flamyoad.honnoki.data.GenreConstants
+import com.flamyoad.honnoki.common.State
+import com.flamyoad.honnoki.data.DynamicGenre
 import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.databinding.MangaGenreDialogPickerBinding
 import com.flamyoad.honnoki.ui.lookup.MangaLookupActivity
 import com.flamyoad.honnoki.ui.lookup.model.LookupType
-import com.flamyoad.honnoki.utils.extensions.toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.kennyc.view.MultiStateView
+import kotlinx.coroutines.flow.collectLatest
+import org.koin.core.parameter.parametersOf
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @ExperimentalPagingApi
@@ -27,14 +31,19 @@ class GenrePickerDialog : DialogFragment() {
     private var _binding: MangaGenreDialogPickerBinding? = null
     private val binding get() = requireNotNull(_binding)
 
-    private val viewModel: GenrePickerViewModel by viewModel()
+    private val sourceName by lazy { arguments?.getString(SOURCE) }
+
+    private val viewModel: GenrePickerViewModel by viewModel {
+        parametersOf(sourceName)
+    }
 
     private val source: Source by lazy {
-        Source.valueOf(requireNotNull(arguments?.getString(SOURCE)))
+        Source.valueOf(requireNotNull(sourceName))
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        _binding = MangaGenreDialogPickerBinding.inflate(layoutInflater, null, false)
+        _binding =
+            MangaGenreDialogPickerBinding.inflate(layoutInflater, null, false)
 
         val builder = MaterialAlertDialogBuilder(requireContext()).apply {
             setView(binding.root)
@@ -63,22 +72,47 @@ class GenrePickerDialog : DialogFragment() {
             layoutManager = gridLayoutManager
         }
 
-        genreAdapter.submitList(viewModel.genreList)
+        lifecycleScope.launchWhenResumed {
+            viewModel.dynamicGenres().collectLatest {
+                when (it) {
+                    is State.Success -> {
+                        binding.multiStateView.viewState =
+                            MultiStateView.ViewState.CONTENT
+                        genreAdapter.submitList(it.value)
+                    }
+                    is State.Error -> {
+                        binding.multiStateView.viewState =
+                            MultiStateView.ViewState.ERROR
+                    }
+                    is State.Loading -> {
+                        binding.multiStateView.viewState =
+                            MultiStateView.ViewState.LOADING
+                    }
+                }
+            }
+        }
     }
 
-    private fun openLookupActivity(genre: GenreConstants) {
+    private fun openLookupActivity(genre: DynamicGenre) {
         val params = when (source) {
-            Source.DM5 -> DM5Api.getDm5GenreUrl(genre)
-            Source.MANGAKALOT -> MangakalotApi.getMangakalotGenreUrl(genre)
-            Source.SENMANGA -> SenMangaApi.getSenmangaGenreUrl(genre)
-            Source.READMANGA -> ReadMangaApi.getReadMngGenreUrl(genre)
+            Source.DM5 -> DM5Api.getDm5GenreUrl(genre.constantValue ?: return)
+            Source.MANGAKALOT -> MangakalotApi.getMangakalotGenreUrl(
+                genre.constantValue ?: return
+            )
+            Source.SENMANGA -> SenMangaApi.getSenmangaGenreUrl(
+                genre.constantValue ?: return
+            )
+            Source.READMANGA -> ReadMangaApi.getReadMngGenreUrl(
+                genre.constantValue ?: return
+            )
+            Source.MANGADEX -> genre.id
             else -> throw NotImplementedError("")
         }
 
         MangaLookupActivity.startActivity(
             context = requireContext(),
             params = params,
-            name = genre.toReadableName(requireContext()),
+            name = genre.name,
             source = source,
             lookupType = LookupType.GENRE
         )

@@ -4,6 +4,7 @@ import com.flamyoad.honnoki.BuildConfig
 import com.flamyoad.honnoki.api.handler.ApiRequestHandler
 import com.flamyoad.honnoki.api.handler.NetworkResult
 import com.flamyoad.honnoki.common.State
+import com.flamyoad.honnoki.data.DynamicGenre
 import com.flamyoad.honnoki.data.entities.Manga
 import com.flamyoad.honnoki.data.entities.SearchResult
 import com.flamyoad.honnoki.data.GenreConstants
@@ -66,6 +67,10 @@ abstract class BaseApi(val apiHandler: ApiRequestHandler) {
     }
 
     open suspend fun searchMangaByAuthor(param: String, index: Int): State<List<SearchResult>> {
+        return State.Success(emptyList())
+    }
+
+    open suspend fun getAvailableGenres(): State<List<DynamicGenre>> {
         return State.Success(emptyList())
     }
 }

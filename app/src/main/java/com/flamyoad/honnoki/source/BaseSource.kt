@@ -6,6 +6,7 @@ import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.GenreConstants
 import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.common.State
+import com.flamyoad.honnoki.data.DynamicGenre
 import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.source.model.TabType
 import kotlinx.coroutines.flow.Flow
@@ -69,6 +70,10 @@ abstract class BaseSource(val db: AppDatabase, val context: Context) {
     }
 
     open suspend fun getImages(urlPath: String): State<List<Page>> {
+        return State.Error()
+    }
+
+    open suspend fun getDynamicGenres(): State<List<DynamicGenre>> {
         return State.Error()
     }
 }

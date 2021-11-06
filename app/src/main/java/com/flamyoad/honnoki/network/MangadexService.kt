@@ -101,6 +101,13 @@ interface MangadexService {
     ): MDResultList
 
     /**
+     * Get list of available tags etc Genre, Themes.
+     * It's consumed by official MDex Client in its Filter in search page
+     */
+    @GET("manga/tag")
+    suspend fun getAllTags(): MDTagList
+
+    /**
      * Retrieves the base url to an assigned MangaDex@Home server for your client and chapter
      */
     @GET("at-home/server/{chapterId}")

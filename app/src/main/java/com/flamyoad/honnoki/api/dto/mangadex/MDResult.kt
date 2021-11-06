@@ -6,20 +6,11 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class MDResult(
-//    @Json(name = "result") val result: String?,
-//    @Json(name = "data") val data: MDResultData?,
     val id: String?,
     val type: String?,
     val attributes: MDResultAttributes?,
     val relationships: List<BaseRelationship>?,
 )
-
-//@JsonClass(generateAdapter = true)
-//data class MDResultData(
-//    @Json(name = "id") val id: String?,
-//    @Json(name = "type") val type: String?,
-//    @Json(name = "attributes") val attributes: MDResultAttributes?
-//)
 
 @JsonClass(generateAdapter = true)
 data class MDResultAttributes(

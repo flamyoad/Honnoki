@@ -4,37 +4,36 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import com.flamyoad.honnoki.common.adapter.BaseListAdapter
-import com.flamyoad.honnoki.data.GenreConstants
+import com.flamyoad.honnoki.data.DynamicGenre
 import com.flamyoad.honnoki.databinding.MangaGenrePickerListItemBinding
 
-class MangaGenreAdapter(private val onGenreClick: (GenreConstants) -> Unit) :
-    BaseListAdapter<GenreConstants, MangaGenrePickerListItemBinding>(COMPARATOR) {
+class MangaGenreAdapter(private val onGenreClick: (DynamicGenre) -> Unit) :
+    BaseListAdapter<DynamicGenre, MangaGenrePickerListItemBinding>(COMPARATOR) {
 
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> MangaGenrePickerListItemBinding
         get() = MangaGenrePickerListItemBinding::inflate
 
-    override fun onBind(holder: BaseViewHolder, item: GenreConstants) {
-        val name = item.toReadableName(holder.itemView.context)
-        holder.binding.txtGenre.text = name
+    override fun onBind(holder: BaseViewHolder, item: DynamicGenre) {
+        holder.binding.txtGenre.text = item.name
     }
 
-    override fun onItemClick(item: GenreConstants?) {
+    override fun onItemClick(item: DynamicGenre?) {
         super.onItemClick(item)
         onGenreClick.invoke(item ?: return)
     }
 
     companion object {
-        val COMPARATOR = object : DiffUtil.ItemCallback<GenreConstants>() {
+        val COMPARATOR = object : DiffUtil.ItemCallback<DynamicGenre>() {
             override fun areItemsTheSame(
-                oldItem: GenreConstants,
-                newItem: GenreConstants
+                oldItem: DynamicGenre,
+                newItem: DynamicGenre
             ): Boolean {
                 return oldItem == newItem
             }
 
             override fun areContentsTheSame(
-                oldItem: GenreConstants,
-                newItem: GenreConstants
+                oldItem: DynamicGenre,
+                newItem: DynamicGenre
             ): Boolean {
                 return oldItem == newItem
             }

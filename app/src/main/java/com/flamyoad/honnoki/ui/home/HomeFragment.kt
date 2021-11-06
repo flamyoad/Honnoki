@@ -69,11 +69,6 @@ class HomeFragment : Fragment(), KoinComponent, SourceSwitcherDialog.Listener {
 
         binding.btnGenre.setOnClickListener {
             val source = viewModel.getSource() ?: return@setOnClickListener
-            if (source == Source.MANGADEX) {
-                toast("MangaDex does not support searching by genre")
-                return@setOnClickListener
-            }
-
             val dialog = GenrePickerDialog.newInstance(source)
             dialog.show(childFragmentManager, GenrePickerDialog.TAG)
         }

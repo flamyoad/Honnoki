@@ -27,7 +27,6 @@ class ReaderViewModel(
     private val db: AppDatabase,
     private val chapterRepo: ChapterRepository,
     private val overviewRepo: OverviewRepository,
-    private val pageRepo: PageRepository,
     private val applicationScope: CoroutineScope,
     private val baseSource: BaseSource,
     private val readerPrefs: ReaderPreference
