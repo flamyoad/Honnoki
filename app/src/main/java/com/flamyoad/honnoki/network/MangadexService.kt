@@ -65,6 +65,18 @@ interface MangadexService {
         @Query("includes[]") includes: String = "cover_art",
     ): MDResultList
 
+    /**
+     * https://api.mangadex.org/manga?limit=32&offset=0&includes[]=cover_art&includes[]=author&includes[]=artist&contentRating[]=safe&contentRating[]=suggestive&contentRating[]=erotica&order[latestUploadedChapter]=desc&includedTags[]=423e2eae-a7a2-4a8b-ac03-a8351462d71d
+     */
+    @GET("manga")
+    suspend fun getMangaByGenre(
+        @Query("offset") offset: Int,
+        @Query("limit") limit: Int,
+        @Query("includedTags[]") genreId: String,
+        @Query("order[latestUploadedChapter]") orderLatestUploadedChapter: String,
+        @Query("includes[]") includes: String = "cover_art",
+    ): MDResultList
+
     @GET("chapter")
     suspend fun getChapterList(
         @Query("manga") mangaId: String,

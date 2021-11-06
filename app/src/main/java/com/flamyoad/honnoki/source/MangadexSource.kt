@@ -91,6 +91,18 @@ class MangadexSource(db: AppDatabase, context: Context, private val api: Mangade
         ).flow
     }
 
+    override fun getMangaByGenres(params: String): Flow<PagingData<LookupResult>> {
+        return Pager(
+            config = PagingConfig(pageSize = PAGINATION_SIZE, enablePlaceholders = false),
+            remoteMediator = LookupResultMediator(
+                api,
+                db,
+                params,
+                LookupType.GENRE
+            ),
+            pagingSourceFactory = { db.lookupDao().getAll() }
+        ).flow    }
+
     companion object {
         const val PAGINATION_SIZE = 50
     }

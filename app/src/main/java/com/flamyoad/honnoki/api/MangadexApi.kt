@@ -139,7 +139,10 @@ class MangadexApi(
         return State.Success(imageList)
     }
 
-    override suspend fun searchMangaByAuthor(param: String, index: Int): State<List<SearchResult>> {
+    override suspend fun searchMangaByAuthor(
+        param: String,
+        index: Int
+    ): State<List<SearchResult>> {
         val offset = index * PAGINATION_SIZE
         return processApiData(
             apiCall = {
@@ -148,6 +151,24 @@ class MangadexApi(
                     PAGINATION_SIZE,
                     authorId = param,
                     artistId = param,
+                    orderLatestUploadedChapter = ORDER_DESC
+                )
+            },
+            parseData = { parser.parseForSearchResult(it) }
+        )
+    }
+
+    override suspend fun searchMangaByGenre(
+        param: String,
+        index: Int
+    ): State<List<SearchResult>> {
+        val offset = index * PAGINATION_SIZE
+        return processApiData(
+            apiCall = {
+                service.getMangaByGenre(
+                    offset,
+                    PAGINATION_SIZE,
+                    genreId = param,
                     orderLatestUploadedChapter = ORDER_DESC
                 )
             },
