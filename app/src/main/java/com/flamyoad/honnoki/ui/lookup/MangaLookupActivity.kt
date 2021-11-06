@@ -21,6 +21,7 @@ import com.flamyoad.honnoki.ui.lookup.adapter.MangaLookupAdapter
 import com.flamyoad.honnoki.ui.lookup.model.LookupType
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import com.flamyoad.honnoki.ui.search.adapter.SearchResultEndOfListAdapter
+import com.flamyoad.honnoki.utils.extensions.findViewFromError
 import com.kennyc.view.MultiStateView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
@@ -97,6 +98,10 @@ class MangaLookupActivity : AppCompatActivity() {
         with(binding) {
             txtToolbarPrimary.text = "${lookupType.readableName}: $paramsName"
             txtToolbarSecondary.text = Source.valueOf(sourceName).title
+
+            binding.multiStateView.findViewFromError(R.id.btnRetry)?.let {
+                it.setOnClickListener { lookupAdapter.retry() }
+            }
         }
     }
 
