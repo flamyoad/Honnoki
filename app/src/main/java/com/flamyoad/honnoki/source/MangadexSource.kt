@@ -11,10 +11,13 @@ import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.common.State
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.entities.*
+import com.flamyoad.honnoki.paging.LookupResultMediator
 import com.flamyoad.honnoki.paging.MangaMediator
 import com.flamyoad.honnoki.paging.SimpleSearchResultMediator
 import com.flamyoad.honnoki.source.model.TabType
+import com.flamyoad.honnoki.ui.lookup.model.LookupType
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 
 @ExperimentalPagingApi
 class MangadexSource(db: AppDatabase, context: Context, private val api: MangadexApi) :
@@ -73,6 +76,19 @@ class MangadexSource(db: AppDatabase, context: Context, private val api: Mangade
 
     override suspend fun getImages(urlPath: String): State<List<Page>> {
         return api.searchForImageList(urlPath)
+    }
+
+    override fun getMangaByAuthors(params: String): Flow<PagingData<LookupResult>> {
+        return Pager(
+            config = PagingConfig(pageSize = PAGINATION_SIZE, enablePlaceholders = false),
+            remoteMediator = LookupResultMediator(
+                api,
+                db,
+                params,
+                LookupType.AUTHOR
+            ),
+            pagingSourceFactory = { db.lookupDao().getAll() }
+        ).flow
     }
 
     companion object {
