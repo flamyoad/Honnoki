@@ -4,6 +4,8 @@ import android.content.Context
 import com.flamyoad.honnoki.BuildConfig
 import com.flamyoad.honnoki.api.dto.mangadex.MDDescription
 import com.flamyoad.honnoki.api.dto.mangadex.MDLinks
+import com.flamyoad.honnoki.api.dto.mangadex.MDResult
+import com.flamyoad.honnoki.api.dto.mangadex.MDTag
 import com.flamyoad.honnoki.api.dto.mangadex.jsonadapter.DefaultOnDataMismatchAdapter
 import com.flamyoad.honnoki.api.dto.mangadex.relationships.*
 import com.flamyoad.honnoki.network.*
@@ -200,6 +202,7 @@ fun provideMangadexService(httpClient: OkHttpClient): MangadexService {
         )
         .add(DefaultOnDataMismatchAdapter.newFactory(MDDescription::class.java, MDDescription(null)))
         .add(DefaultOnDataMismatchAdapter.newFactory(MDLinks::class.java, MDLinks(null, null)))
+        .add(DefaultOnDataMismatchAdapter.newFactory(MDResult::class.java, MDResult(null, null, null, emptyList())))
         .build()
 
     val retrofit = Retrofit.Builder()
