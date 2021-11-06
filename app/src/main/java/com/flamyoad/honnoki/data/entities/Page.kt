@@ -1,15 +1,14 @@
 package com.flamyoad.honnoki.data.entities
 
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
+import androidx.annotation.NonNull
+import androidx.room.*
 
 @Entity(
     tableName = "page",
     indices = [
-        Index("chapterId"),
-        Index("link", unique = true)
+//        Index("chapterId"),
+//        Index("link", unique = true)
+        Index(value = ["chapterId", "number"], unique = true)
     ],
     foreignKeys = [ForeignKey(
         entity = Chapter::class,

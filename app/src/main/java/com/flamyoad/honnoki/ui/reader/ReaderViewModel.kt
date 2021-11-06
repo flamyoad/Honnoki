@@ -14,6 +14,7 @@ import com.flamyoad.honnoki.data.entities.PageWithChapterInfo
 import com.flamyoad.honnoki.data.preference.ReaderPreference
 import com.flamyoad.honnoki.repository.ChapterRepository
 import com.flamyoad.honnoki.repository.OverviewRepository
+import com.flamyoad.honnoki.repository.PageRepository
 import com.flamyoad.honnoki.source.BaseSource
 import com.flamyoad.honnoki.ui.reader.model.LoadType
 import com.flamyoad.honnoki.ui.reader.model.ReaderPage
@@ -26,6 +27,7 @@ class ReaderViewModel(
     private val db: AppDatabase,
     private val chapterRepo: ChapterRepository,
     private val overviewRepo: OverviewRepository,
+    private val pageRepo: PageRepository,
     private val applicationScope: CoroutineScope,
     private val baseSource: BaseSource,
     private val readerPrefs: ReaderPreference

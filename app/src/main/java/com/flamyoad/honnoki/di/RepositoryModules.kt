@@ -11,4 +11,5 @@ val repositoryModules = module {
     single { OverviewRepository(get()) }
     single { ReadHistoryRepository(get()) }
     single { DownloadRepository(get(), get(), androidApplication()) }
+    single { PageRepository(get()) }
 }
