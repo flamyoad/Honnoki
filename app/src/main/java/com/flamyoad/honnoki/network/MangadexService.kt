@@ -48,8 +48,34 @@ interface MangadexService {
         @Path("mangaId") mangaId: String,
         @Query("includes[]") includes1: String = "author",
         @Query("includes[]") includes2: String = "artist",
-        @Query("includes[]") includes3: String = "cover_art"
+        @Query("includes[]") includes3: String = "cover_art",
     ): MDEntity
+
+    /**
+     * https://api.mangadex.org/manga?limit=32&offset=0&includes[]=cover_art&includes[]=author&includes[]=artist&contentRating[]=safe&contentRating[]=suggestive&contentRating[]=erotica&order[latestUploadedChapter]=desc&includedTags[]=423e2eae-a7a2-4a8b-ac03-a8351462d71d
+     * authors[] and artists[] generally share the same value
+     */
+    @GET("manga")
+    suspend fun getMangaByAuthor(
+        @Query("offset") offset: Int,
+        @Query("limit") limit: Int,
+        @Query("authors[]") authorId: String,
+        @Query("artists[]") artistId: String,
+        @Query("order[latestUploadedChapter]") orderLatestUploadedChapter: String,
+        @Query("includes[]") includes: String = "cover_art",
+    ): MDResultList
+
+    /**
+     * https://api.mangadex.org/manga?limit=32&offset=0&includes[]=cover_art&includes[]=author&includes[]=artist&contentRating[]=safe&contentRating[]=suggestive&contentRating[]=erotica&order[latestUploadedChapter]=desc&includedTags[]=423e2eae-a7a2-4a8b-ac03-a8351462d71d
+     */
+    @GET("manga")
+    suspend fun getMangaByGenre(
+        @Query("offset") offset: Int,
+        @Query("limit") limit: Int,
+        @Query("includedTags[]") genreId: String,
+        @Query("order[latestUploadedChapter]") orderLatestUploadedChapter: String,
+        @Query("includes[]") includes: String = "cover_art",
+    ): MDResultList
 
     @GET("chapter")
     suspend fun getChapterList(
@@ -73,6 +99,13 @@ interface MangadexService {
         @Query("includes[]") includes2: String = "artist",
         @Query("includes[]") includes3: String = "cover_art"
     ): MDResultList
+
+    /**
+     * Get list of available tags etc Genre, Themes.
+     * It's consumed by official MDex Client in its Filter in search page
+     */
+    @GET("manga/tag")
+    suspend fun getAllTags(): MDTagList
 
     /**
      * Retrieves the base url to an assigned MangaDex@Home server for your client and chapter

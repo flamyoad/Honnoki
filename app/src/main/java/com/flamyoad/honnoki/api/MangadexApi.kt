@@ -3,10 +3,10 @@ package com.flamyoad.honnoki.api
 import com.flamyoad.honnoki.api.handler.ApiRequestHandler
 import com.flamyoad.honnoki.api.handler.NetworkResult
 import com.flamyoad.honnoki.common.State
+import com.flamyoad.honnoki.data.DynamicGenre
 import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.network.MangadexService
 import com.flamyoad.honnoki.parser.MangadexParser
-import com.flamyoad.honnoki.utils.extensions.stringSuspending
 
 class MangadexApi(
     private val service: MangadexService,
@@ -20,7 +20,13 @@ class MangadexApi(
     override suspend fun searchForLatestManga(index: Int): State<List<Manga>> {
         val offset = index * PAGINATION_SIZE
         return processApiData(
-            apiCall = { service.getRecentlyAddedManga(offset, PAGINATION_SIZE, ORDER_DESC) },
+            apiCall = {
+                service.getRecentlyAddedManga(
+                    offset,
+                    PAGINATION_SIZE,
+                    ORDER_DESC
+                )
+            },
             parseData = { parser.parseHomeMangas(it, MangaType.RECENTLY) }
         )
     }
@@ -33,10 +39,19 @@ class MangadexApi(
         )
     }
 
-    override suspend fun searchByKeyword(keyword: String, index: Int): State<List<SearchResult>> {
+    override suspend fun searchByKeyword(
+        keyword: String,
+        index: Int
+    ): State<List<SearchResult>> {
         val offset = PAGINATION_SIZE * (index)
         return processApiData(
-            apiCall = { service.searchByKeyword(keyword, offset, PAGINATION_SIZE) },
+            apiCall = {
+                service.searchByKeyword(
+                    keyword,
+                    offset,
+                    PAGINATION_SIZE
+                )
+            },
             parseData = { parser.parseForSearchResult(it) }
         )
     }
@@ -77,7 +92,13 @@ class MangadexApi(
 
         do {
             val result = processApiData(
-                apiCall = { service.getChapterList(mangaId, limit = CHAPTER_MAX_LIMIT, offset = offset) },
+                apiCall = {
+                    service.getChapterList(
+                        mangaId,
+                        limit = CHAPTER_MAX_LIMIT,
+                        offset = offset
+                    )
+                },
                 parseData = {
                     offset = it.offset + CHAPTER_MAX_LIMIT
                     total = it.total
@@ -99,19 +120,68 @@ class MangadexApi(
      */
     suspend fun searchForImageList(chapterId: String): State<List<Page>> {
         val chapterJson =
-            when (val response = apiHandler.safeApiCall { service.getPages(chapterId) }) {
+            when (val response =
+                apiHandler.safeApiCall { service.getPages(chapterId) }) {
                 is NetworkResult.Success -> response.data
                 is NetworkResult.Failure -> return State.Error(response.exception)
             }
 
         val baseUrlJson = when (val response =
-            apiHandler.safeApiCall { service.getBaseUrl(chapterJson.data?.id ?: "") }) {
+            apiHandler.safeApiCall {
+                service.getBaseUrl(
+                    chapterJson.data?.id ?: ""
+                )
+            }) {
             is NetworkResult.Success -> response.data
             is NetworkResult.Failure -> return State.Error(response.exception)
         }
 
         val imageList = parser.parseForImageList(chapterJson, baseUrlJson)
         return State.Success(imageList)
+    }
+
+    override suspend fun searchMangaByAuthor(
+        param: String,
+        index: Int
+    ): State<List<SearchResult>> {
+        val offset = index * PAGINATION_SIZE
+        return processApiData(
+            apiCall = {
+                service.getMangaByAuthor(
+                    offset,
+                    PAGINATION_SIZE,
+                    authorId = param,
+                    artistId = param,
+                    orderLatestUploadedChapter = ORDER_DESC
+                )
+            },
+            parseData = { parser.parseForSearchResult(it) }
+        )
+    }
+
+    override suspend fun searchMangaByGenre(
+        param: String,
+        index: Int
+    ): State<List<SearchResult>> {
+        val offset = index * PAGINATION_SIZE
+        return processApiData(
+            apiCall = {
+                service.getMangaByGenre(
+                    offset,
+                    PAGINATION_SIZE,
+                    genreId = param,
+                    orderLatestUploadedChapter = ORDER_DESC
+                )
+            },
+            parseData = { parser.parseForSearchResult(it) }
+        )
+    }
+
+    override suspend fun getAvailableGenres(): State<List<DynamicGenre>> {
+        return processApiData(
+            apiCall = { service.getAllTags() },
+            parseData = { parser.parseForDynamicGenres(it) }
+        )
     }
 
     companion object {

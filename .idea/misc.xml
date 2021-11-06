@@ -12,6 +12,7 @@
         <entry key="app/src/main/res/drawable/bookmark_dialog_item_char_bg.xml" value="0.17407407407407408" />
         <entry key="app/src/main/res/drawable/ic_baseline_sort_by_alpha_24.xml" value="0.19074074074074074" />
         <entry key="app/src/main/res/layout/activity_download_picker.xml" value="0.22604166666666667" />
+        <entry key="app/src/main/res/layout/activity_manga_lookup.xml" value="0.1037037037037037" />
         <entry key="app/src/main/res/layout/activity_manga_overview.xml" value="0.11388888888888889" />
         <entry key="app/src/main/res/layout/activity_reader.xml" value="0.125" />
         <entry key="app/src/main/res/layout/bottom_info_widget.xml" value="0.22604166666666667" />
@@ -22,6 +23,7 @@
         <entry key="app/src/main/res/layout/chapter_list_sorter_item.xml" value="0.335" />
         <entry key="app/src/main/res/layout/download_list_item.xml" value="0.335" />
         <entry key="app/src/main/res/layout/download_picker_action_items.xml" value="0.22604166666666667" />
+        <entry key="app/src/main/res/layout/error_layout_nestedscrollview.xml" value="0.1037037037037037" />
         <entry key="app/src/main/res/layout/fragment_detailed_manga_list.xml" value="0.15092592592592594" />
         <entry key="app/src/main/res/layout/fragment_download.xml" value="0.14722222222222223" />
         <entry key="app/src/main/res/layout/fragment_manga_summary.xml" value="0.14351851851851852" />
@@ -30,6 +32,7 @@
         <entry key="app/src/main/res/layout/language_filter_content_item.xml" value="0.25" />
         <entry key="app/src/main/res/layout/language_filter_list.xml" value="0.22604166666666667" />
         <entry key="app/src/main/res/layout/layout_loading_state.xml" value="0.14074074074074075" />
+        <entry key="app/src/main/res/layout/manga_genre_dialog_picker.xml" value="0.1037037037037037" />
         <entry key="app/src/main/res/layout/manga_summary_list_header.xml" value="0.15" />
       </map>
     </option>
