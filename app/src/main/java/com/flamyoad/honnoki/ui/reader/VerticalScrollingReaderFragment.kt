@@ -192,32 +192,6 @@ class VerticalScrollingReaderFragment : BaseReaderFragment() {
         )
     }
 
-    private fun scrollToStartingPageNumber() {
-//        if (initialScrollDone) return
-//
-//        lifecycleScope.launch {
-//            val overviewId = requireActivity().intent.getLongExtra(
-//                ReaderActivity.OVERVIEW_ID,
-//                -1
-//            )
-//            val currentChapterId = requireActivity().intent.getLongExtra(
-//                ReaderActivity.CHAPTER_ID,
-//                -1
-//            )
-//            val overview =
-//                viewModel.getMangaOverview(overviewId) ?: return@launch
-//
-//            if (currentChapterId == overview.lastReadChapterId) {
-//                linearLayoutManager.scrollToPositionWithOffset(
-//                    overview.lastReadPageNumber - 1,
-//                    0
-//                )
-//            }
-//        }
-//
-//        initialScrollDone = true
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         _binding = null

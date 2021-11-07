@@ -32,8 +32,6 @@ abstract class BaseReaderFragment : Fragment(), VolumeButtonScroller.Listener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initializeReader()
-
         lifecycleScope.launchWhenResumed {
             parentViewModel.pageList().collectLatest {
                 onPagesLoaded(it)
