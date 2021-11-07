@@ -1,22 +1,29 @@
 package com.flamyoad.honnoki.ui.reader
 
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnLayout
 import androidx.paging.ExperimentalPagingApi
-import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
 import com.flamyoad.honnoki.data.entities.Chapter
-import com.flamyoad.honnoki.databinding.FragmentVerticalSwipeReaderBinding
+import com.flamyoad.honnoki.databinding.FragmentSwipeReaderBinding
 import com.flamyoad.honnoki.ui.reader.adapter.VerticalSwipeImageAdapter
 import com.flamyoad.honnoki.ui.reader.model.ReaderPage
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+enum class SwipeDirection : Parcelable {
+    HORIZONTAL,
+    VERTICAL
+}
 
 @ExperimentalPagingApi
-class VerticalSwipeReaderFragment : BaseReaderFragment() {
+class SwipeReaderFragment : BaseReaderFragment() {
 
-    private var _binding: FragmentVerticalSwipeReaderBinding? = null
+    private var _binding: FragmentSwipeReaderBinding? = null
     private val binding get() = requireNotNull(_binding)
 
     private val imageAdapter by lazy {
@@ -55,7 +62,7 @@ class VerticalSwipeReaderFragment : BaseReaderFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentVerticalSwipeReaderBinding.inflate(
+        _binding = FragmentSwipeReaderBinding.inflate(
             layoutInflater,
             container,
             false
@@ -65,9 +72,17 @@ class VerticalSwipeReaderFragment : BaseReaderFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val viewPagerOrientation =
+            arguments?.getParcelable<SwipeDirection>(SWIPE_DIRECTION)?.let {
+                when (it) {
+                    SwipeDirection.HORIZONTAL -> ViewPager2.ORIENTATION_HORIZONTAL
+                    SwipeDirection.VERTICAL -> ViewPager2.ORIENTATION_VERTICAL
+                }
+            } ?: ViewPager2.ORIENTATION_VERTICAL
+
         with(binding.viewPager) {
             adapter = imageAdapter
-            orientation = ViewPager2.ORIENTATION_VERTICAL
+            orientation = viewPagerOrientation
             registerOnPageChangeCallback(viewPagerCallback)
             offscreenPageLimit = 1
             doOnLayout {
@@ -124,7 +139,9 @@ class VerticalSwipeReaderFragment : BaseReaderFragment() {
     companion object {
         const val TAG = "Vertical Swipe Reader Fragment"
 
+        private const val SWIPE_DIRECTION = "swipe_direction"
+
         @JvmStatic
-        fun newInstance() = VerticalSwipeReaderFragment()
+        fun newInstance(swipeDirection: SwipeDirection) = SwipeReaderFragment()
     }
 }

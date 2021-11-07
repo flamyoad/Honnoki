@@ -4,5 +4,5 @@
     android:id="@+id/viewPager"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.reader.VerticalSwipeReaderFragment" />
+    tools:context=".ui.reader.SwipeReaderFragment" />
 

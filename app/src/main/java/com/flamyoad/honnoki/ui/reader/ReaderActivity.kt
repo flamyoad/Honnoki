@@ -6,8 +6,6 @@ import android.os.Bundle
 import android.view.*
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
-import androidx.core.view.updatePadding
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -50,7 +48,7 @@ class ReaderActivity : AppCompatActivity() {
         // Helps to survive process death by checking whether the initial id is -1
         if (viewModel.overviewId == -1L) {
 //            val frameFragment = VerticalScrollingReaderFragment.newInstance()
-            val frameFragment = VerticalSwipeReaderFragment.newInstance()
+            val frameFragment = SwipeReaderFragment.newInstance(SwipeDirection.HORIZONTAL)
             supportFragmentManager.beginTransaction()
                 .replace(
                     R.id.container,
