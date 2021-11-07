@@ -9,6 +9,7 @@ import androidx.room.withTransaction
 import com.flamyoad.honnoki.common.State
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.entities.Chapter
+import com.flamyoad.honnoki.data.entities.MangaOverview
 import com.flamyoad.honnoki.data.entities.Page
 import com.flamyoad.honnoki.data.entities.PageWithChapterInfo
 import com.flamyoad.honnoki.data.preference.ReaderPreference
@@ -55,11 +56,6 @@ class ReaderViewModel(
 
     private val currentChapterShown = MutableStateFlow(Chapter.empty())
     fun currentChapterShown() = currentChapterShown.asStateFlow()
-//        .onEach {
-//            if (it != Chapter.empty()) {
-//                chapterRepo.markChapterAsRead(it)
-//            }
-//        }
 
     val currentChapter get() = currentChapterShown.value
 
@@ -290,5 +286,9 @@ class ReaderViewModel(
     fun goToLastPage() {
         val lastPage = totalPageNumber.value
         pageNumberScrolledBySeekbar.tryEmit(lastPage)
+    }
+
+    suspend fun getMangaOverview(overviewId: Long): MangaOverview? {
+        return db.mangaOverviewDao().getByIdBlocking(overviewId)
     }
 }

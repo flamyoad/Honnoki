@@ -18,6 +18,7 @@ class RecyclerViewItemArrivalDetector(private val onItemsArrived: () -> Unit)
 
     override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
         super.onItemRangeInserted(positionStart, itemCount)
+        println("RecyclerViewItemArrivalDetector itemCount" + itemCount)
         if (itemCount > 0) {
             onItemsArrived.invoke()
         }
