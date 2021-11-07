@@ -31,7 +31,9 @@ class ReaderActivity : AppCompatActivity() {
     private var _binding: ActivityReaderBinding? = null
     val binding get() = requireNotNull(_binding)
 
-    private val source: String by lazy { intent.getStringExtra(MANGA_SOURCE) ?: "" }
+    private val source: String by lazy {
+        intent.getStringExtra(MANGA_SOURCE) ?: ""
+    }
 
     private val viewModel: ReaderViewModel by viewModel { parametersOf(source) }
 
@@ -47,9 +49,14 @@ class ReaderActivity : AppCompatActivity() {
 
         // Helps to survive process death by checking whether the initial id is -1
         if (viewModel.overviewId == -1L) {
-            val frameFragment = VerticalScrollingReaderFragment.newInstance()
+//            val frameFragment = VerticalScrollingReaderFragment.newInstance()
+            val frameFragment = VerticalSwipeReaderFragment.newInstance()
             supportFragmentManager.beginTransaction()
-                .replace(R.id.container, frameFragment, VerticalScrollingReaderFragment.TAG)
+                .replace(
+                    R.id.container,
+                    frameFragment,
+                    VerticalScrollingReaderFragment.TAG
+                )
                 .commitNow()
         }
         val listener =
@@ -63,9 +70,17 @@ class ReaderActivity : AppCompatActivity() {
 
         val chapterIdPickedByUser = intent.getLongExtra(CHAPTER_ID, -1)
         if (savedInstanceState == null) {
-            viewModel.fetchChapterImages(chapterIdPickedByUser, LoadType.INITIAL)
+            viewModel.fetchChapterImages(
+                chapterIdPickedByUser,
+                LoadType.INITIAL
+            )
         } else {
-            viewModel.restoreLastReadChapter(intent.getLongExtra(OVERVIEW_ID, -1), chapterIdPickedByUser)
+            viewModel.restoreLastReadChapter(
+                intent.getLongExtra(
+                    OVERVIEW_ID,
+                    -1
+                ), chapterIdPickedByUser
+            )
         }
     }
 
@@ -123,7 +138,8 @@ class ReaderActivity : AppCompatActivity() {
                 bottomInfoWidget.updatePadding(right = 32)
             }
 
-            seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            seekbar.setOnSeekBarChangeListener(object :
+                SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(
                     seekBar: SeekBar?,
                     progress: Int,
@@ -148,7 +164,9 @@ class ReaderActivity : AppCompatActivity() {
         lifecycleScope.launchWhenResumed {
             viewModel.mangaOverview
                 .flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
-                .collectLatest { binding.txtToolbarMangaTitle.text = it.mainTitle }
+                .collectLatest {
+                    binding.txtToolbarMangaTitle.text = it.mainTitle
+                }
         }
 
         lifecycleScope.launchWhenResumed {
@@ -202,8 +220,14 @@ class ReaderActivity : AppCompatActivity() {
             true -> View.VISIBLE
             false -> View.INVISIBLE
         }
-        TransitionManager.beginDelayedTransition(binding.appBarLayout, Slide(Gravity.TOP))
-        TransitionManager.beginDelayedTransition(binding.seekbarLayout, Slide(Gravity.BOTTOM))
+        TransitionManager.beginDelayedTransition(
+            binding.appBarLayout,
+            Slide(Gravity.TOP)
+        )
+        TransitionManager.beginDelayedTransition(
+            binding.seekbarLayout,
+            Slide(Gravity.BOTTOM)
+        )
         binding.appBarLayout.visibility = visibility
         binding.seekbarLayout.visibility = visibility
     }

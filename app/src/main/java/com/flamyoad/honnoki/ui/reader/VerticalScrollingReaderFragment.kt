@@ -144,9 +144,6 @@ class VerticalScrollingReaderFragment : BaseReaderFragment() {
     }
 
     override fun scrollTo(zeroIndexed: Int) {
-        var list = readerAdapter.currentList
-        println("list:" + list)
-        println("zeroIndexed" + zeroIndexed)
         linearLayoutManager.scrollToPositionWithOffset(
             zeroIndexed,
             0
