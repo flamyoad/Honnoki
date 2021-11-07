@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--10 inch tablet-->
+<resources>
+    <integer name="manga_grid_spancount">7</integer>
+</resources>
