@@ -5,9 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
+    android:background="?attr/colorSurface"
     android:clickable="true"
     android:focusable="true"
-    android:background="?attr/colorSurface"
     android:foreground="?android:attr/selectableItemBackground"
     app:cardCornerRadius="12dp"
     app:cardElevation="8dp"
@@ -28,7 +28,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@drawable/arisa_lewd" />
+            tools:srcCompat="@drawable/aya" />
 
         <TextView
             android:id="@+id/txtTitle"

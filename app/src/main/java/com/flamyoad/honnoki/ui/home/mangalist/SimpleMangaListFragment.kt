@@ -11,6 +11,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.data.entities.Manga
 import com.flamyoad.honnoki.databinding.FragmentSimpleMangaListBinding
 import com.flamyoad.honnoki.source.model.Source
@@ -18,13 +19,13 @@ import com.flamyoad.honnoki.source.model.TabType
 import com.flamyoad.honnoki.ui.home.HomeViewModel
 import com.flamyoad.honnoki.ui.home.adapter.*
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
+import com.flamyoad.honnoki.utils.extensions.getInteger
 import com.flamyoad.honnoki.utils.ui.onItemsArrived
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import java.lang.RuntimeException
 
 private const val GRID_SPANCOUNT = 3
 
@@ -42,7 +43,12 @@ class SimpleMangaListFragment : Fragment() {
 
     private val mangaAdapter by lazy { VerticalMangaListAdapter(this::openManga) }
     private val initialLoadIndicatorAdapter by lazy { LoadIndicatorAdapter() }
-    private val gridLayoutManager by lazy { GridLayoutManager(requireContext(), 3) }
+    private val gridLayoutManager by lazy {
+        GridLayoutManager(
+            requireContext(),
+            getInteger(R.integer.manga_grid_spancount)
+        )
+    }
 
     override fun onResume() {
         super.onResume()
@@ -58,7 +64,11 @@ class SimpleMangaListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        _binding = FragmentSimpleMangaListBinding.inflate(layoutInflater, container, false)
+        _binding = FragmentSimpleMangaListBinding.inflate(
+            layoutInflater,
+            container,
+            false
+        )
         return binding.root
     }
 
@@ -71,7 +81,8 @@ class SimpleMangaListFragment : Fragment() {
 
     private fun initMangaList() {
         mangaAdapter.apply {
-            stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+            stateRestorationPolicy =
+                RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         }
 
         val loadingFooter = MangaLoadStateAdapter(
@@ -80,26 +91,33 @@ class SimpleMangaListFragment : Fragment() {
 
         val concatAdapter = mangaAdapter.withLoadStateFooter(loadingFooter)
 
-        gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-            override fun getSpanSize(position: Int): Int {
-                val mangaCount = mangaAdapter.itemCount
-                return if (mangaCount > 0 && position in 0 until mangaCount) {
-                    1
-                } else {
-                    GRID_SPANCOUNT
+        gridLayoutManager.spanSizeLookup =
+            object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    val mangaCount = mangaAdapter.itemCount
+                    return if (mangaCount > 0 && position in 0 until mangaCount) {
+                        1
+                    } else {
+                        GRID_SPANCOUNT
+                    }
                 }
             }
-        }
 
         mangaAdapter.onItemsArrived {
             concatAdapter.removeAdapter(initialLoadIndicatorAdapter)
         }
 
         // Listener to determine whether to shrink or expand FAB (Shrink after 1st item in list is no longer visible)
-        binding.listManga.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+        binding.listManga.addOnScrollListener(object :
+            RecyclerView.OnScrollListener() {
+            override fun onScrolled(
+                recyclerView: RecyclerView,
+                dx: Int,
+                dy: Int
+            ) {
                 super.onScrolled(recyclerView, dx, dy)
-                val firstVisiblePosition = gridLayoutManager.findFirstVisibleItemPosition()
+                val firstVisiblePosition =
+                    gridLayoutManager.findFirstVisibleItemPosition()
                 if (firstVisiblePosition != 0) {
                     parentViewModel.setShouldShrinkFab(true)
                 } else {

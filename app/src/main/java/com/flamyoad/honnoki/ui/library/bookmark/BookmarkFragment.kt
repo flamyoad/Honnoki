@@ -28,6 +28,7 @@ import com.flamyoad.honnoki.dialog.MoveBookmarkDialog
 import com.flamyoad.honnoki.ui.library.bookmark.adapter.BookmarkAdapter
 import com.flamyoad.honnoki.ui.library.bookmark.adapter.BookmarkGroupAdapter
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
+import com.flamyoad.honnoki.utils.extensions.getInteger
 import com.flamyoad.honnoki.utils.ui.willConsumeHorizontalScrolls
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -53,7 +54,8 @@ class BookmarkFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentBookmarkBinding.inflate(layoutInflater, container, false)
+        _binding =
+            FragmentBookmarkBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 
@@ -64,7 +66,8 @@ class BookmarkFragment : Fragment() {
         initBookmarkItems()
 
         // Restore the dialog fragment callback on screen rotation, if exists
-        val moveBookmarkDialog = childFragmentManager.findFragmentByTag(MoveBookmarkDialog.TAG)
+        val moveBookmarkDialog =
+            childFragmentManager.findFragmentByTag(MoveBookmarkDialog.TAG)
         moveBookmarkDialog?.let { setMoveBookmarkDialogCallback(it as MoveBookmarkDialog) }
     }
 
@@ -87,7 +90,9 @@ class BookmarkFragment : Fragment() {
 
         val dialog: DialogFragment =
             when (item.title) {
-                MENU_CHANGE_GROUP_NAME -> ChangeBookmarkGroupNameDialog.newInstance(selectedGroupId)
+                MENU_CHANGE_GROUP_NAME -> ChangeBookmarkGroupNameDialog.newInstance(
+                    selectedGroupId
+                )
                 MENU_DELETE_GROUP -> DeleteBookmarkGroupDialog.newInstance(
                     selectedGroupId,
                     selectedGroupName
@@ -126,8 +131,14 @@ class BookmarkFragment : Fragment() {
                     if (it.isEmpty()) {
                         mainViewModel.setActionMode(false)
                     } else {
-                        binding.btnMoveTo.text = resources.getString(R.string.bookmark_actionmode_btn_moveto, it.size)
-                        binding.btnDelete.text = resources.getString(R.string.bookmark_actionmode_btn_delete, it.size)
+                        binding.btnMoveTo.text = resources.getString(
+                            R.string.bookmark_actionmode_btn_moveto,
+                            it.size
+                        )
+                        binding.btnDelete.text = resources.getString(
+                            R.string.bookmark_actionmode_btn_delete,
+                            it.size
+                        )
                     }
                 }
         }
@@ -146,8 +157,16 @@ class BookmarkFragment : Fragment() {
     }
 
     private fun initBookmarkGroups() {
-        val groupAdapter = BookmarkGroupAdapter(coverCache, viewModel::selectBookmarkGroup, this::openAddNewBookmarkDialog)
-        val groupLayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        val groupAdapter = BookmarkGroupAdapter(
+            coverCache,
+            viewModel::selectBookmarkGroup,
+            this::openAddNewBookmarkDialog
+        )
+        val groupLayoutManager = LinearLayoutManager(
+            requireContext(),
+            LinearLayoutManager.HORIZONTAL,
+            false
+        )
 
         with(binding.listGroups) {
             adapter = groupAdapter
@@ -161,8 +180,15 @@ class BookmarkFragment : Fragment() {
     }
 
     private fun initBookmarkItems() {
-        val bookmarkAdapter = BookmarkAdapter(coverCache, this::onBookmarkClick, this::enterActionMode)
-        val bookmarkLayoutManager = GridLayoutManager(requireContext(), 3)
+        val bookmarkAdapter = BookmarkAdapter(
+            coverCache,
+            this::onBookmarkClick,
+            this::enterActionMode
+        )
+        val bookmarkLayoutManager = GridLayoutManager(
+            requireContext(),
+            getInteger(R.integer.manga_grid_spancount)
+        )
 
         with(binding.listItems) {
             adapter = bookmarkAdapter

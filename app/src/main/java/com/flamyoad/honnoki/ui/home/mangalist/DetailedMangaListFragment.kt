@@ -15,22 +15,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.data.entities.Manga
 import com.flamyoad.honnoki.databinding.FragmentDetailedMangaListBinding
-import com.flamyoad.honnoki.databinding.FragmentSimpleMangaListBinding
 import com.flamyoad.honnoki.source.model.Source
-import com.flamyoad.honnoki.source.model.TabType
 import com.flamyoad.honnoki.ui.home.HomeViewModel
 import com.flamyoad.honnoki.ui.home.adapter.*
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
-import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
+import com.flamyoad.honnoki.utils.extensions.getInteger
 import com.flamyoad.honnoki.utils.ui.onItemsArrived
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import okhttp3.internal.addHeaderLenient
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-
-private const val GRID_SPANCOUNT = 3
 
 @ExperimentalPagingApi
 class DetailedMangaListFragment : Fragment() {
@@ -54,7 +49,13 @@ class DetailedMangaListFragment : Fragment() {
     private lateinit var trendingMangaAdapter: HorizontalMangaAdapter
     private lateinit var recentMangaAdapter: VerticalMangaListAdapter
 
-    private val gridLayoutManager by lazy { GridLayoutManager(requireContext(), GRID_SPANCOUNT) }
+    private val gridSpanCount by lazy {
+        getInteger(R.integer.manga_grid_spancount)
+    }
+
+    private val gridLayoutManager by lazy {
+        GridLayoutManager(requireContext(), gridSpanCount)
+    }
 
     override fun onResume() {
         super.onResume()
@@ -69,7 +70,11 @@ class DetailedMangaListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentDetailedMangaListBinding.inflate(layoutInflater, container, false)
+        _binding = FragmentDetailedMangaListBinding.inflate(
+            layoutInflater,
+            container,
+            false
+        )
         return binding.root
     }
 
@@ -89,10 +94,16 @@ class DetailedMangaListFragment : Fragment() {
 
     private fun initUi() {
         // Listener to determine whether to shrink or expand FAB (Shrink after 1st item in list is no longer visible)
-        binding.listManga.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+        binding.listManga.addOnScrollListener(object :
+            RecyclerView.OnScrollListener() {
+            override fun onScrolled(
+                recyclerView: RecyclerView,
+                dx: Int,
+                dy: Int
+            ) {
                 super.onScrolled(recyclerView, dx, dy)
-                val firstVisiblePosition = gridLayoutManager.findFirstVisibleItemPosition()
+                val firstVisiblePosition =
+                    gridLayoutManager.findFirstVisibleItemPosition()
                 if (firstVisiblePosition != 0) {
                     parentViewModel.setShouldShrinkFab(true)
                 } else {
@@ -140,19 +151,20 @@ class DetailedMangaListFragment : Fragment() {
             addAdapter(4, recentMangaLoadingAdapter)
         }
 
-        gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-            override fun getSpanSize(position: Int): Int {
-                if (position in 0 until 3) {
-                    return GRID_SPANCOUNT
-                }
-                val mangaCount = recentMangaAdapter.itemCount + 3
-                return if (mangaCount > 0 && position in 3 until mangaCount)  {
-                    1
-                } else {
-                    GRID_SPANCOUNT
+        gridLayoutManager.spanSizeLookup =
+            object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    if (position in 0 until 3) {
+                        return gridSpanCount
+                    }
+                    val mangaCount = recentMangaAdapter.itemCount + 3
+                    return if (mangaCount > 0 && position in 3 until mangaCount) {
+                        1
+                    } else {
+                        gridSpanCount
+                    }
                 }
             }
-        }
 
         with(binding.listManga) {
             adapter = concatAdapter
@@ -165,10 +177,15 @@ class DetailedMangaListFragment : Fragment() {
         trendingMangaAdapter = HorizontalMangaAdapter(
             requireContext(),
             this::openManga,
-            onItemsLoaded = { concatAdapter.removeAdapter(trendingMangaLoadingAdapter) }
+            onItemsLoaded = {
+                concatAdapter.removeAdapter(
+                    trendingMangaLoadingAdapter
+                )
+            }
         )
 
-        trendingMangaAdapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+        trendingMangaAdapter.stateRestorationPolicy =
+            RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
 
         trendingMangaAdapter.onItemsArrived {
             concatAdapter.removeAdapter(trendingMangaLoadingAdapter)
@@ -184,7 +201,8 @@ class DetailedMangaListFragment : Fragment() {
 
         recentMangaAdapter.apply {
             withLoadStateFooter(MangaLoadStateAdapter { this.retry() })
-            stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+            stateRestorationPolicy =
+                RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         }
     }
 

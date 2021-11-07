@@ -29,7 +29,6 @@ class MainActivity : AppCompatActivity() {
     private var _binding: ActivityMainBinding? = null
     private val binding get() = requireNotNull(_binding)
 
-    @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
@@ -56,7 +55,6 @@ class MainActivity : AppCompatActivity() {
                 binding.bottomNavigation.isVisible = enabled.not()
             }
         }
-        1+1
     }
 
     override fun onBackPressed() {

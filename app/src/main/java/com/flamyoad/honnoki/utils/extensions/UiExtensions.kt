@@ -50,3 +50,7 @@ fun validateSnackbarLength(length: Int): Int {
         Toast.LENGTH_SHORT
     }
 }
+
+fun Context.getInteger(id: Int): Int = resources.getInteger(id)
+
+fun Fragment.getInteger(id: Int): Int = requireContext().getInteger(id)

@@ -29,11 +29,16 @@
         <entry key="app/src/main/res/layout/fragment_manga_summary.xml" value="0.14351851851851852" />
         <entry key="app/src/main/res/layout/fragment_more_options.xml" value="0.22604166666666667" />
         <entry key="app/src/main/res/layout/fragment_simple_manga_list.xml" value="0.15092592592592594" />
+        <entry key="app/src/main/res/layout/horizontal_manga_list_item.xml" value="0.22604166666666667" />
         <entry key="app/src/main/res/layout/language_filter_content_item.xml" value="0.25" />
         <entry key="app/src/main/res/layout/language_filter_list.xml" value="0.22604166666666667" />
         <entry key="app/src/main/res/layout/layout_loading_state.xml" value="0.14074074074074075" />
         <entry key="app/src/main/res/layout/manga_genre_dialog_picker.xml" value="0.1037037037037037" />
+        <entry key="app/src/main/res/layout/manga_list_item_classic.xml" value="0.19478260869565217" />
+        <entry key="app/src/main/res/layout/manga_list_loading_indicator.xml" value="0.22604166666666667" />
+        <entry key="app/src/main/res/layout/manga_recent_list.xml" value="0.23236514522821577" />
         <entry key="app/src/main/res/layout/manga_summary_list_header.xml" value="0.15" />
+        <entry key="app/src/main/res/layout/vertical_manga_list_item.xml" value="0.1" />
       </map>
     </option>
   </component>

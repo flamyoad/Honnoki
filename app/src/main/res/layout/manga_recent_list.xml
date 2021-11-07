@@ -11,6 +11,6 @@
         android:layout_height="match_parent"
         tools:listitem="@layout/vertical_manga_list_item"
         tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        tools:spanCount="3"/>
+        tools:spanCount="@integer/manga_grid_spancount"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -22,6 +22,7 @@ import com.flamyoad.honnoki.ui.lookup.model.LookupType
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import com.flamyoad.honnoki.ui.search.adapter.SearchResultEndOfListAdapter
 import com.flamyoad.honnoki.utils.extensions.findViewFromError
+import com.flamyoad.honnoki.utils.extensions.getInteger
 import com.kennyc.view.MultiStateView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
@@ -39,19 +40,25 @@ class MangaLookupActivity : AppCompatActivity() {
     /**
      * Parameter of the API. It could be an API parameter or full website URL depending on the source
      */
-    private val params: String by lazy { intent.getStringExtra(API_PARAMS) ?: "" }
+    private val params: String by lazy {
+        intent.getStringExtra(API_PARAMS) ?: ""
+    }
 
     /**
      * Value could be author's name or genre's name depending on the lookup type.
      * Basically it's just a dumb string being shown in the toolbar and it is not being used
      * in ViewModel
      */
-    private val paramsName: String by lazy { intent.getStringExtra(PARAMS_NAME) ?: "" }
+    private val paramsName: String by lazy {
+        intent.getStringExtra(PARAMS_NAME) ?: ""
+    }
 
     /**
      * String value of the Source enum. Used as constructor parameter when injecting ViewModel
      */
-    private val sourceName: String by lazy { intent.getStringExtra(SOURCE_NAME) ?: "" }
+    private val sourceName: String by lazy {
+        intent.getStringExtra(SOURCE_NAME) ?: ""
+    }
 
     /**
      * Lookup types include Genre, Author. Future possibilities might include Groups etc.
@@ -106,7 +113,9 @@ class MangaLookupActivity : AppCompatActivity() {
     }
 
     private fun initRecyclerView() {
-        val gridLayoutManager = GridLayoutManager(this, 3)
+        val gridLayoutManager = GridLayoutManager(
+            this, getInteger(R.integer.manga_grid_spancount)
+        )
         with(binding.listManga) {
             adapter = lookupAdapter
             layoutManager = gridLayoutManager
