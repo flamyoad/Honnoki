@@ -17,7 +17,7 @@ import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.ui.reader.model.ReaderPage
 import com.flamyoad.honnoki.utils.ui.MangaImageViewTarget
 
-class ReaderImageAdapter(
+class ScrollingImageAdapter(
     private val source: Source,
     private val quality: MangadexQualityMode
 ) : ListAdapter<ReaderPage, RecyclerView.ViewHolder>(PAGE_COMPARATOR) {

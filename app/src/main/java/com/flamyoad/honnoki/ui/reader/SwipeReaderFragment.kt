@@ -10,7 +10,7 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.viewpager2.widget.ViewPager2
 import com.flamyoad.honnoki.data.entities.Chapter
 import com.flamyoad.honnoki.databinding.FragmentSwipeReaderBinding
-import com.flamyoad.honnoki.ui.reader.adapter.VerticalSwipeImageAdapter
+import com.flamyoad.honnoki.ui.reader.adapter.SwipeImageAdapter
 import com.flamyoad.honnoki.ui.reader.model.ReaderPage
 import kotlinx.parcelize.Parcelize
 
@@ -27,7 +27,7 @@ class SwipeReaderFragment : BaseReaderFragment() {
     private val binding get() = requireNotNull(_binding)
 
     private val imageAdapter by lazy {
-        VerticalSwipeImageAdapter(
+        SwipeImageAdapter(
             parentViewModel.source,
             parentViewModel.mangadexQualityMode,
             this

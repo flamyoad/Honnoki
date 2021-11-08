@@ -7,7 +7,7 @@ import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.ui.reader.ImageFragment
 import com.flamyoad.honnoki.ui.reader.model.ReaderPage
 
-class VerticalSwipeImageAdapter(
+class SwipeImageAdapter(
     private val source: Source,
     private val mangadexImageQuality: MangadexQualityMode,
     fragment: Fragment,

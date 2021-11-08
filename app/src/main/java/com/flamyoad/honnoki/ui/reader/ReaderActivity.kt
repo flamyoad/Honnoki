@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
-import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
@@ -47,8 +46,8 @@ class ReaderActivity : AppCompatActivity() {
 
         // Helps to survive process death by checking whether the initial id is -1
         if (viewModel.overviewId == -1L) {
-//            val frameFragment = VerticalScrollingReaderFragment.newInstance()
-            val frameFragment = SwipeReaderFragment.newInstance(SwipeDirection.HORIZONTAL)
+            val frameFragment = VerticalScrollingReaderFragment.newInstance()
+//            val frameFragment = SwipeReaderFragment.newInstance(SwipeDirection.HORIZONTAL)
             supportFragmentManager.beginTransaction()
                 .replace(
                     R.id.container,
@@ -124,37 +123,19 @@ class ReaderActivity : AppCompatActivity() {
                 viewModel.setSideKickVisibility(true)
             }
 
-            btnToFirstPage.setOnClickListener {
-                viewModel.goToFirstPage()
-            }
-
-            btnToLastPage.setOnClickListener {
-                viewModel.goToLastPage()
-            }
-
             if (viewModel.extraSpaceAtBottomIndicator) {
                 bottomInfoWidget.updatePadding(right = 32)
             }
 
-            seekbar.setOnSeekBarChangeListener(object :
-                SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(
-                    seekBar: SeekBar?,
-                    progress: Int,
-                    fromUser: Boolean
-                ) {
-                    if (fromUser) {
-                        viewModel.setCurrentPageNumber(progress + 1)
-                    }
-                }
-
-                override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-                override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                    // User has stopped moving. Move to the image selected
-                    val progress = seekBar?.progress ?: return
-                    viewModel.setSeekbarScrolledPosition(progress + 1)
-                }
-            })
+            readerSeekbar.onLeftButtonClick = { viewModel.goToFirstPage() }
+            readerSeekbar.onRightButtonClick = { viewModel.goToLastPage() }
+            readerSeekbar.onUserProgressChanged = { progress ->
+                viewModel.setCurrentPageNumber(progress + 1)
+            }
+            readerSeekbar.onStopTrackingTouch = {
+                // User has stopped moving. Move to the image selected
+                viewModel.setSeekbarScrolledPosition(readerSeekbar.current + 1)
+            }
         }
     }
 
@@ -183,19 +164,19 @@ class ReaderActivity : AppCompatActivity() {
         lifecycleScope.launchWhenResumed {
             viewModel.currentPageIndicator
                 .flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
-                .collectLatest { binding.txtSeekbarCurrentPage.text = it }
+                .collectLatest { binding.readerSeekbar.text = it }
         }
 
         lifecycleScope.launchWhenResumed {
             viewModel.totalPageNumber
                 .flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
-                .collectLatest { binding.seekbar.max = it - 1 }
+                .collectLatest { binding.readerSeekbar.max = it - 1 }
         }
 
         lifecycleScope.launchWhenResumed {
             viewModel.currentPageNumber()
                 .flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
-                .collectLatest { binding.seekbar.progress = it }
+                .collectLatest { binding.readerSeekbar.current = it }
         }
 
         lifecycleScope.launchWhenResumed {
@@ -223,11 +204,11 @@ class ReaderActivity : AppCompatActivity() {
             Slide(Gravity.TOP)
         )
         TransitionManager.beginDelayedTransition(
-            binding.seekbarLayout,
+            binding.readerSeekbar,
             Slide(Gravity.BOTTOM)
         )
         binding.appBarLayout.visibility = visibility
-        binding.seekbarLayout.visibility = visibility
+        binding.readerSeekbar.visibility = visibility
     }
 
     override fun onDestroy() {

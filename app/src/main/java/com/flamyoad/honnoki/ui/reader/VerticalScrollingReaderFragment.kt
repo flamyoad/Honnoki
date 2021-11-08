@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.*
 import com.flamyoad.honnoki.data.entities.Chapter
 import com.flamyoad.honnoki.databinding.FragmentVerticalScrollingReaderBinding
 import com.flamyoad.honnoki.ui.reader.adapter.FailedToLoadNextChapterAdapter
-import com.flamyoad.honnoki.ui.reader.adapter.ReaderImageAdapter
+import com.flamyoad.honnoki.ui.reader.adapter.ScrollingImageAdapter
 import com.flamyoad.honnoki.ui.reader.adapter.ReaderLoadingAdapter
 import com.flamyoad.honnoki.ui.reader.model.ReaderPage
 import com.flamyoad.honnoki.utils.ui.onItemsArrived
@@ -31,7 +31,7 @@ class VerticalScrollingReaderFragment : BaseReaderFragment() {
         FailedToLoadNextChapterAdapter(parentViewModel::loadNextChapter)
     }
     private val readerAdapter by lazy {
-        ReaderImageAdapter(
+        ScrollingImageAdapter(
             parentViewModel.source,
             parentViewModel.mangadexQualityMode
         )
