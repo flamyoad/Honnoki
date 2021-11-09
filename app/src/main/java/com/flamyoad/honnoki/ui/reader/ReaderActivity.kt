@@ -119,6 +119,8 @@ class ReaderActivity : AppCompatActivity() {
 
     private fun initUi() {
         with(binding) {
+            appBarLayout.outlineProvider = null
+
             bottomSheetOpener.setOnClickListener {
                 viewModel.setSideKickVisibility(true)
             }
