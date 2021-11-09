@@ -59,19 +59,33 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <com.flamyoad.honnoki.ui.reader.widgets.ReaderSeekbar
-        android:id="@+id/readerSeekbar"
+    <LinearLayout
+        android:id="@+id/bottomMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:translationZ="4dp"
-        tools:visibility="visible" />
+        android:orientation="vertical"
+        android:background="@color/translucent_black"
+        android:translationZ="4dp">
+
+        <com.flamyoad.honnoki.ui.reader.widgets.ReaderSeekbar
+            android:id="@+id/readerSeekbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom" />
+
+        <com.flamyoad.honnoki.ui.reader.widgets.BottomActionMenu
+            android:id="@+id/bottomActionMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
 
     <com.flamyoad.honnoki.ui.reader.widgets.BottomInfoWidget
         android:id="@+id/bottomInfoWidget"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"/>
+        android:layout_gravity="bottom|end" />
 
     <View
         android:id="@+id/bottomSheetOpener"

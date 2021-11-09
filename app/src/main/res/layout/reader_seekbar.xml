@@ -6,9 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"
-    android:background="@color/translucent_black"
     android:orientation="horizontal"
-    tools:visibility="visible">
+    tools:background="@color/translucent_black">
 
     <ImageButton
         android:id="@+id/btnToFirstPage"
@@ -16,7 +15,8 @@
         android:layout_height="match_parent"
         android:background="?attr/selectableItemBackground"
         android:paddingHorizontal="12dp"
-        android:paddingVertical="20dp"
+        android:paddingTop="14dp"
+        android:paddingBottom="10dp"
         android:src="@drawable/ic_baseline_skip_previous_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -28,6 +28,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:lines="1"
+        android:paddingTop="2dp"
         android:textColor="@android:color/white"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@id/btnToFirstPage"
@@ -43,6 +44,7 @@
         android:layout_marginRight="16dp"
         android:layout_weight="1"
         android:maxHeight="6dp"
+        android:paddingTop="4dp"
         android:progressDrawable="@drawable/seekbar_style"
         android:splitTrack="false"
         android:thumb="@drawable/seekbar_thumb"
@@ -57,7 +59,8 @@
         android:layout_height="match_parent"
         android:background="?attr/selectableItemBackground"
         android:paddingHorizontal="12dp"
-        android:paddingVertical="20dp"
+        android:paddingTop="14dp"
+        android:paddingBottom="10dp"
         android:src="@drawable/ic_baseline_skip_next_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

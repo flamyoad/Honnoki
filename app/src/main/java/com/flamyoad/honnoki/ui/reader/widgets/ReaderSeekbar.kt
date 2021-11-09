@@ -77,7 +77,6 @@ class ReaderSeekbar @JvmOverloads constructor(
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
                 onStopTrackingTouch?.invoke()
             }
-
         })
     }
 }

@@ -204,11 +204,11 @@ class ReaderActivity : AppCompatActivity() {
             Slide(Gravity.TOP)
         )
         TransitionManager.beginDelayedTransition(
-            binding.readerSeekbar,
+            binding.bottomMenu,
             Slide(Gravity.BOTTOM)
         )
         binding.appBarLayout.visibility = visibility
-        binding.readerSeekbar.visibility = visibility
+        binding.bottomMenu.visibility = visibility
     }
 
     override fun onDestroy() {
