@@ -47,7 +47,8 @@ class ReaderActivity : AppCompatActivity() {
         // Helps to survive process death by checking whether the initial id is -1
         if (viewModel.overviewId == -1L) {
             val frameFragment = VerticalScrollingReaderFragment.newInstance()
-//            val frameFragment = SwipeReaderFragment.newInstance(SwipeDirection.HORIZONTAL)
+//            val frameFragment =
+//                SwipeReaderFragment.newInstance(SwipeDirection.HORIZONTAL)
             supportFragmentManager.beginTransaction()
                 .replace(
                     R.id.container,
@@ -129,14 +130,15 @@ class ReaderActivity : AppCompatActivity() {
                 bottomInfoWidget.updatePadding(right = 32)
             }
 
-            readerSeekbar.onLeftButtonClick = { viewModel.goToFirstPage() }
-            readerSeekbar.onRightButtonClick = { viewModel.goToLastPage() }
-            readerSeekbar.onUserProgressChanged = { progress ->
-                viewModel.setCurrentPageNumber(progress + 1)
-            }
-            readerSeekbar.onStopTrackingTouch = {
-                // User has stopped moving. Move to the image selected
-                viewModel.setSeekbarScrolledPosition(readerSeekbar.current + 1)
+            readerSeekbar.apply {
+                onLeftButtonClick = { viewModel.goToFirstPage() }
+                onRightButtonClick = { viewModel.goToLastPage() }
+                onUserProgressChanged = { progress ->
+                    viewModel.setCurrentPageNumber(progress + 1)
+                }
+                onStopTrackingTouch = {
+                    viewModel.setSeekbarScrolledPosition(readerSeekbar.current + 1)
+                }
             }
         }
     }

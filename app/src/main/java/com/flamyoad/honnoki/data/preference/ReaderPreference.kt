@@ -1,5 +1,6 @@
 package com.flamyoad.honnoki.data.preference
 
+import android.content.res.Configuration
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -15,33 +16,44 @@ import kotlinx.coroutines.flow.Flow
 class ReaderPreference(private val dataStore: DataStore<Preferences>) {
     private val VOLUME_UP_ACTION = stringPreferencesKey("volume_up_action")
     private val VOLUME_DOWN_ACTION = stringPreferencesKey("volume_down_action")
-    private val MANGADEX_QUALITY_MODE = stringPreferencesKey("mangadex_quality_mode")
-    private val EXTRA_SPACE_AT_BOTTOM_INDICATOR = booleanPreferencesKey("extra_space_at_bottom_indicator")
+    private val MANGADEX_QUALITY_MODE =
+        stringPreferencesKey("mangadex_quality_mode")
+    private val EXTRA_SPACE_AT_BOTTOM_INDICATOR =
+        booleanPreferencesKey("extra_space_at_bottom_indicator")
     private val SHOW_ADS = booleanPreferencesKey("show_ads")
+    private val ORIENTATION = stringPreferencesKey("orientation")
 
     fun shouldShowAds(source: Source): Boolean {
         return false
     }
 
-    val mangadexQualityMode = dataStore.getConvertedValue(MANGADEX_QUALITY_MODE) {
-        MangadexQualityMode.valueOf(it ?: MangadexQualityMode.DATA.toString())
-    }
+    val mangadexQualityMode =
+        dataStore.getConvertedValue(MANGADEX_QUALITY_MODE) {
+            MangadexQualityMode.valueOf(
+                it ?: MangadexQualityMode.DATA.toString()
+            )
+        }
 
-    val extraSpaceAtBottomIndicator = dataStore.getValue(EXTRA_SPACE_AT_BOTTOM_INDICATOR, false)
+    val extraSpaceAtBottomIndicator =
+        dataStore.getValue(EXTRA_SPACE_AT_BOTTOM_INDICATOR, false)
 
-    suspend fun editVolumeUpAction(scrollDir: PageScrollDirection) = dataStore.edit {
-        it[VOLUME_UP_ACTION] = scrollDir.toString()
-    }
+    suspend fun editVolumeUpAction(scrollDir: PageScrollDirection) =
+        dataStore.edit {
+            it[VOLUME_UP_ACTION] = scrollDir.toString()
+        }
 
-    suspend fun editVolumeDownAction(scrollDir: PageScrollDirection) = dataStore.edit {
-        it[VOLUME_DOWN_ACTION] = scrollDir.toString()
-    }
+    suspend fun editVolumeDownAction(scrollDir: PageScrollDirection) =
+        dataStore.edit {
+            it[VOLUME_DOWN_ACTION] = scrollDir.toString()
+        }
 
-    suspend fun editMangadexQualityMode(mode: MangadexQualityMode) = dataStore.edit {
-        it[MANGADEX_QUALITY_MODE] = mode.toString()
-    }
+    suspend fun editMangadexQualityMode(mode: MangadexQualityMode) =
+        dataStore.edit {
+            it[MANGADEX_QUALITY_MODE] = mode.toString()
+        }
 
-    suspend fun editExtraSpaceAtBottomIndicator(isEnabled: Boolean) = dataStore.edit {
-        it[EXTRA_SPACE_AT_BOTTOM_INDICATOR] = isEnabled
-    }
+    suspend fun editExtraSpaceAtBottomIndicator(isEnabled: Boolean) =
+        dataStore.edit {
+            it[EXTRA_SPACE_AT_BOTTOM_INDICATOR] = isEnabled
+        }
 }

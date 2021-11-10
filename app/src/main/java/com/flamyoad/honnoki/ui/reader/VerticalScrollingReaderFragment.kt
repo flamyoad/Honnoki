@@ -101,7 +101,7 @@ class VerticalScrollingReaderFragment : BaseReaderFragment() {
                     }
                     // Prefetch when scrolled to the last item
                     val reachedEndOfList =
-                        firstVisibleItemPosition >= readerAdapter.itemCount - 1
+                        linearLayoutManager.findLastVisibleItemPosition() >= readerAdapter.itemCount - 1
                     if (reachedEndOfList) {
                         parentViewModel.loadNextChapter()
                     }
