@@ -103,7 +103,7 @@ class MangakalotApi(
             apiCall = {
                 service.searchByKeywordAndGenres(
                     genre = genreString,
-                    keyword = keyword,
+                    keyword = keyword.replace("'", ""),
                     index = index
                 )
             },
