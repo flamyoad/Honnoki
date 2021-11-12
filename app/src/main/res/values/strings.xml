@@ -83,4 +83,8 @@
     <string name="reader_viewmode_vertical">Vertical</string>
     <string name="reader_viewmode_continuous_scrolling">Continuous Scrolling</string>
 
+    <string name="reader_orientation">Orientation</string>
+    <string name="reader_orientation_default">System Default</string>
+    <string name="reader_orientation_portrait">Portrait</string>
+    <string name="reader_orientation_landscape">Landscape</string>
 </resources>

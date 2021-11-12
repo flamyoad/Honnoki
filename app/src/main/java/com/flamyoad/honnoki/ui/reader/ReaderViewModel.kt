@@ -20,6 +20,7 @@ import com.flamyoad.honnoki.repository.OverviewRepository
 import com.flamyoad.honnoki.repository.PageRepository
 import com.flamyoad.honnoki.source.BaseSource
 import com.flamyoad.honnoki.ui.reader.model.LoadType
+import com.flamyoad.honnoki.ui.reader.model.ReaderOrientation
 import com.flamyoad.honnoki.ui.reader.model.ReaderPage
 import com.flamyoad.honnoki.ui.reader.model.ReaderViewMode
 import kotlinx.coroutines.*
@@ -320,9 +321,18 @@ class ReaderViewModel(
 
     fun getViewModeBlocking() = runBlocking { readerPrefs.viewMode.first() }
 
+    fun getOrientationBlocking() =
+        runBlocking { readerPrefs.orientation.first() }
+
     fun editViewMode(viewMode: ReaderViewMode) {
         applicationScope.launch(Dispatchers.IO) {
             readerPrefs.editReaderViewMode(viewMode)
+        }
+    }
+
+    fun editOrientation(orientation: ReaderOrientation) {
+        applicationScope.launch(Dispatchers.IO) {
+            readerPrefs.editReaderOrientation(orientation)
         }
     }
 }

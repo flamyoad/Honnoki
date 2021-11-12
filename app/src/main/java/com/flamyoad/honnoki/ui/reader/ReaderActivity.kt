@@ -2,6 +2,7 @@ package com.flamyoad.honnoki.ui.reader
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
@@ -19,6 +20,7 @@ import com.flamyoad.honnoki.data.entities.Chapter
 import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.databinding.ActivityReaderBinding
 import com.flamyoad.honnoki.ui.reader.model.LoadType
+import com.flamyoad.honnoki.ui.reader.model.ReaderOrientation
 import com.flamyoad.honnoki.ui.reader.model.ReaderViewMode
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
@@ -48,8 +50,16 @@ class ReaderActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
-        initUi()
-        observeUi()
+        viewModel.orientation.observe(this) {
+            if (it == null) return@observe
+            requestedOrientation = when (it) {
+                ReaderOrientation.FREE -> ActivityInfo.SCREEN_ORIENTATION_USER
+                ReaderOrientation.PORTRAIT -> ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                ReaderOrientation.LANDSCAPE -> ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            }
+            initUi()
+            observeUi()
+        }
 
         viewModel.fetchChapterList(intent.getLongExtra(OVERVIEW_ID, -1))
 
@@ -114,8 +124,6 @@ class ReaderActivity : AppCompatActivity() {
         with(binding) {
             appBarLayout.outlineProvider = null
 
-//            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-
             bottomSheetOpener.setOnClickListener {
                 viewModel.setSideKickVisibility(true)
             }
@@ -129,6 +137,7 @@ class ReaderActivity : AppCompatActivity() {
             bottomActionMenu.apply {
                 onChapterListClick = { showChapterListDialog() }
                 onViewModeClick = { showViewModeDialog() }
+                onOrientationClick = { showOrientationDialog() }
             }
 
             readerSeekbar.apply {
@@ -262,6 +271,23 @@ class ReaderActivity : AppCompatActivity() {
                 waitForPositiveButton = true,
             ) { dialog, index, text ->
                 viewModel.editViewMode(viewModes[index])
+            }
+        }
+    }
+
+    private fun showOrientationDialog() {
+        val orientations = ReaderOrientation.values()
+        val choices = orientations.map { getString(it.stringId) }
+        val currentIndex =
+            orientations.indexOfFirst { it == viewModel.getOrientationBlocking() }
+        MaterialDialog(this).show {
+            title(text = context.getString(R.string.reader_orientation))
+            listItemsSingleChoice(
+                items = choices,
+                initialSelection = currentIndex,
+                waitForPositiveButton = true,
+            ) { dialog, index, text ->
+                viewModel.editOrientation(orientations[index])
             }
         }
     }

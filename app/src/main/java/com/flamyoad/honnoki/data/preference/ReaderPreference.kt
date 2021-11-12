@@ -76,4 +76,10 @@ class ReaderPreference(private val dataStore: DataStore<Preferences>) {
         dataStore.edit {
             it[VIEW_MODE] = viewMode.toString()
         }
+
+    suspend fun editReaderOrientation(orientation: ReaderOrientation) {
+        dataStore.edit {
+            it[ORIENTATION] = orientation.toString()
+        }
+    }
 }
