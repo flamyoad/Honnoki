@@ -19,6 +19,7 @@ import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.data.entities.Chapter
 import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.databinding.ActivityReaderBinding
+import com.flamyoad.honnoki.dialog.BookmarkDialog
 import com.flamyoad.honnoki.ui.reader.model.LoadType
 import com.flamyoad.honnoki.ui.reader.model.ReaderOrientation
 import com.flamyoad.honnoki.ui.reader.model.ReaderViewMode
@@ -138,6 +139,7 @@ class ReaderActivity : AppCompatActivity() {
                 onChapterListClick = { showChapterListDialog() }
                 onViewModeClick = { showViewModeDialog() }
                 onOrientationClick = { showOrientationDialog() }
+                onBookmarkClick = { showBookmarkDialog() }
             }
 
             readerSeekbar.apply {
@@ -290,6 +292,14 @@ class ReaderActivity : AppCompatActivity() {
                 viewModel.editOrientation(orientations[index])
             }
         }
+    }
+
+    private fun showBookmarkDialog() {
+        val overviewId = viewModel.overviewId
+        if (overviewId == -1L) return
+
+        val dialog = BookmarkDialog.newInstance(overviewId)
+        dialog.show(supportFragmentManager, "bookmark_dialog")
     }
 
     companion object {
