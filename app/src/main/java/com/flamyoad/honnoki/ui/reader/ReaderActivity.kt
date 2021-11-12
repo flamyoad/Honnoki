@@ -53,7 +53,7 @@ class ReaderActivity : AppCompatActivity() {
         viewModel.orientation.observe(this) {
             if (it == null) return@observe
             requestedOrientation = when (it) {
-                ReaderOrientation.FREE -> ActivityInfo.SCREEN_ORIENTATION_USER
+                ReaderOrientation.FREE -> ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
                 ReaderOrientation.PORTRAIT -> ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                 ReaderOrientation.LANDSCAPE -> ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
             }
