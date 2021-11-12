@@ -7,6 +7,8 @@ import android.widget.TextView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.flamyoad.honnoki.R
+import com.flamyoad.honnoki.ui.reader.ReaderViewModel
+import com.flamyoad.honnoki.ui.reader.model.ReaderViewMode
 
 class BottomActionMenu @JvmOverloads constructor(
     context: Context,
@@ -31,29 +33,9 @@ class BottomActionMenu @JvmOverloads constructor(
         btnOrientation = findViewById(R.id.btnOrientation)
         btnBookmark = findViewById(R.id.btnBookmark)
 
-        onViewModeClick = { showViewModeDialog() }
-
         btnChapters.setOnClickListener { onChapterListClick?.invoke() }
         btnViewMode.setOnClickListener { onViewModeClick?.invoke() }
         btnOrientation.setOnClickListener { onOrientationClick?.invoke() }
         btnBookmark.setOnClickListener { onBookmarkClick?.invoke() }
-    }
-
-    private fun showViewModeDialog() {
-        val choices = listOf(
-            "Horizontal",
-            "Vertical",
-            "Continuous Scrolling",
-        )
-        MaterialDialog(context).show {
-            title(text = "Orientation")
-            listItemsSingleChoice(
-                items = choices,
-                initialSelection = 0,
-                waitForPositiveButton = true,
-            ) { dialog, index, text ->
-
-            }
-        }
     }
 }

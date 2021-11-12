@@ -5,17 +5,21 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.transition.Slide
 import androidx.transition.TransitionManager
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.data.entities.Chapter
 import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.databinding.ActivityReaderBinding
 import com.flamyoad.honnoki.ui.reader.model.LoadType
+import com.flamyoad.honnoki.ui.reader.model.ReaderViewMode
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import org.koin.android.ext.android.getKoin
@@ -43,23 +47,6 @@ class ReaderActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-
-        // Helps to survive process death by checking whether the initial id is -1
-        if (viewModel.overviewId == -1L) {
-            val frameFragment = VerticalScrollingReaderFragment.newInstance()
-//            val frameFragment =
-//                SwipeReaderFragment.newInstance(SwipeDirection.HORIZONTAL)
-            supportFragmentManager.beginTransaction()
-                .replace(
-                    R.id.container,
-                    frameFragment,
-                    VerticalScrollingReaderFragment.TAG
-                )
-                .commitNow()
-        }
-        val listener =
-            supportFragmentManager.findFragmentById(R.id.container) as VolumeButtonScroller.Listener
-        volumeButtonScroller = VolumeButtonScroller(listener, getKoin().get())
 
         initUi()
         observeUi()
@@ -94,6 +81,11 @@ class ReaderActivity : AppCompatActivity() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
+
     override fun dispatchKeyEvent(event: KeyEvent?): Boolean {
         volumeButtonScroller?.let {
             val shouldSwallowKeyEvent = it.sendKeyEvent(event)
@@ -122,12 +114,21 @@ class ReaderActivity : AppCompatActivity() {
         with(binding) {
             appBarLayout.outlineProvider = null
 
+//            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+
             bottomSheetOpener.setOnClickListener {
                 viewModel.setSideKickVisibility(true)
             }
 
-            if (viewModel.extraSpaceAtBottomIndicator) {
-                bottomInfoWidget.updatePadding(right = 32)
+            bottomInfoWidget.apply {
+                if (viewModel.extraSpaceAtBottomIndicator) {
+                    updatePadding(right = 32)
+                }
+            }
+
+            bottomActionMenu.apply {
+                onChapterListClick = { showChapterListDialog() }
+                onViewModeClick = { showViewModeDialog() }
             }
 
             readerSeekbar.apply {
@@ -192,6 +193,34 @@ class ReaderActivity : AppCompatActivity() {
                     viewModel.markChapterAsRead(it)
                 }
         }
+
+        viewModel.viewMode.observe(this) {
+            initReaderScreen(it)
+        }
+    }
+
+    private fun initReaderScreen(viewMode: ReaderViewMode) {
+        val frameFragment = when (viewMode) {
+            ReaderViewMode.HORIZONTAL ->
+                SwipeReaderFragment.newInstance(
+                    SwipeDirection.HORIZONTAL
+                )
+            ReaderViewMode.VERTICAL ->
+                SwipeReaderFragment.newInstance(
+                    SwipeDirection.VERTICAL
+                )
+            ReaderViewMode.CONTINUOUS_SCROLLING -> VerticalScrollingReaderFragment.newInstance()
+        }
+        supportFragmentManager.beginTransaction()
+            .replace(
+                R.id.container,
+                frameFragment,
+                VerticalScrollingReaderFragment.TAG
+            ).commitNow()
+
+        val listener =
+            supportFragmentManager.findFragmentById(R.id.container) as VolumeButtonScroller.Listener
+        volumeButtonScroller = VolumeButtonScroller(listener, getKoin().get())
     }
 
     // https://stackoverflow.com/questions/4503039/layout-animation-not-working-on-first-run
@@ -215,9 +244,26 @@ class ReaderActivity : AppCompatActivity() {
         binding.bottomMenu.visibility = visibility
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
+    private fun showChapterListDialog() {
+        binding.drawerLayout.openDrawer(GravityCompat.END)
+        toggleSidekickVisibility(false)
+    }
+
+    private fun showViewModeDialog() {
+        val viewModes = ReaderViewMode.values()
+        val choices = viewModes.map { getString(it.stringId) }
+        val currentIndex =
+            viewModes.indexOfFirst { it == viewModel.getViewModeBlocking() }
+        MaterialDialog(this).show {
+            title(text = context.getString(R.string.reader_viewmode))
+            listItemsSingleChoice(
+                items = choices,
+                initialSelection = currentIndex,
+                waitForPositiveButton = true,
+            ) { dialog, index, text ->
+                viewModel.editViewMode(viewModes[index])
+            }
+        }
     }
 
     companion object {

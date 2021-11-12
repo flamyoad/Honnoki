@@ -3,9 +3,11 @@ package com.flamyoad.honnoki.ui.reader
 import android.os.SystemClock
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.room.withTransaction
+import com.flamyoad.honnoki.common.BaseViewModel
 import com.flamyoad.honnoki.common.State
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.entities.Chapter
@@ -19,6 +21,7 @@ import com.flamyoad.honnoki.repository.PageRepository
 import com.flamyoad.honnoki.source.BaseSource
 import com.flamyoad.honnoki.ui.reader.model.LoadType
 import com.flamyoad.honnoki.ui.reader.model.ReaderPage
+import com.flamyoad.honnoki.ui.reader.model.ReaderViewMode
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.util.concurrent.ConcurrentHashMap
@@ -31,13 +34,17 @@ class ReaderViewModel(
     private val applicationScope: CoroutineScope,
     private val baseSource: BaseSource,
     private val readerPrefs: ReaderPreference
-) : ViewModel() {
+) : BaseViewModel() {
 
     val source get() = baseSource.getSourceType()
 
     val mangadexQualityMode get() = runBlocking { readerPrefs.mangadexQualityMode.first() }
 
     val extraSpaceAtBottomIndicator get() = runBlocking { readerPrefs.extraSpaceAtBottomIndicator.first() }
+
+    val viewMode = readerPrefs.viewMode.asLiveData()
+
+    val orientation = readerPrefs.orientation.asLiveData()
 
     val overviewId get() = mangaOverviewId.value
 
@@ -69,16 +76,18 @@ class ReaderViewModel(
         .flowOn(Dispatchers.IO)
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), 0)
 
-    val currentPageIndicator = currentPageNumber.combine(totalPageNumber) { current, total ->
-        "$current / $total"
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), "")
+    val currentPageIndicator =
+        currentPageNumber.combine(totalPageNumber) { current, total ->
+            "$current / $total"
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), "")
 
     private val pageNumberScrolledBySeekbar = MutableSharedFlow<Int>(
         replay = 0,
         extraBufferCapacity = 1
     )
 
-    fun pageNumberScrolledBySeekbar() = pageNumberScrolledBySeekbar.asSharedFlow()
+    fun pageNumberScrolledBySeekbar() =
+        pageNumberScrolledBySeekbar.asSharedFlow()
 
     private val pageList = MutableStateFlow<List<ReaderPage>>(emptyList())
     fun pageList() = pageList.asStateFlow()
@@ -89,12 +98,14 @@ class ReaderViewModel(
     private val failedToLoadNextChapter = MutableStateFlow(false)
     fun failedToLoadNextChapter() = failedToLoadNextChapter.asStateFlow()
 
-    private val shouldShowAds = readerPrefs.shouldShowAds(baseSource.getSourceType())
+    private val shouldShowAds =
+        readerPrefs.shouldShowAds(baseSource.getSourceType())
 
     private var loadPrevChapterJob: Job? = null
     private var loadNextChapterJob: Job? = null
 
-    private val loadCompletionStatusByChapterId = ConcurrentHashMap<Long, Boolean>()
+    private val loadCompletionStatusByChapterId =
+        ConcurrentHashMap<Long, Boolean>()
 
     var selectedLanguage: String? = null
 
@@ -117,7 +128,11 @@ class ReaderViewModel(
             }
 
             when (val result = baseSource.getImages(chapter.link)) {
-                is State.Success -> processChapterImages(chapter, result.value, loadType)
+                is State.Success -> processChapterImages(
+                    chapter,
+                    result.value,
+                    loadType
+                )
                 is State.Error -> failedToLoadNextChapter.value = true
             }
 
@@ -131,7 +146,8 @@ class ReaderViewModel(
         pages: List<Page>,
         loadType: LoadType
     ) {
-        val chapterId = chapter.id ?: throw IllegalArgumentException("Chapter id is null")
+        val chapterId =
+            chapter.id ?: throw IllegalArgumentException("Chapter id is null")
 
         val pagesFromNetwork = pages.map {
             it.copy(chapterId = chapterId)
@@ -154,7 +170,8 @@ class ReaderViewModel(
                 }
             }
             LoadType.PREV -> {
-                val list = pagesFromDb.map { ReaderPage.Value(it) } as MutableList<ReaderPage>
+                val list =
+                    pagesFromDb.map { ReaderPage.Value(it) } as MutableList<ReaderPage>
                 existingList.addAll(0, list)
                 if (shouldShowAds) {
                     list.add(ReaderPage.Ads(chapterId))
@@ -222,9 +239,14 @@ class ReaderViewModel(
             val lang = selectedLanguage
             val prevChapter = if (lang != null) {
                 db.chapterDao()
-                    .getPreviousChapterFromLanguage(overviewId, currentChapterNumber, lang)
+                    .getPreviousChapterFromLanguage(
+                        overviewId,
+                        currentChapterNumber,
+                        lang
+                    )
             } else {
-                db.chapterDao().getPreviousChapter(overviewId, currentChapterNumber)
+                db.chapterDao()
+                    .getPreviousChapter(overviewId, currentChapterNumber)
             }
 
             val chapterId = prevChapter?.id ?: return@launch
@@ -247,7 +269,11 @@ class ReaderViewModel(
 
             val lang = selectedLanguage
             val nextChapter = if (lang != null) {
-                db.chapterDao().getNextChapterFromLanguage(overviewId, currentChapterNumber, lang)
+                db.chapterDao().getNextChapterFromLanguage(
+                    overviewId,
+                    currentChapterNumber,
+                    lang
+                )
             } else {
                 db.chapterDao().getNextChapter(overviewId, currentChapterNumber)
             }
@@ -290,5 +316,13 @@ class ReaderViewModel(
 
     suspend fun getMangaOverview(overviewId: Long): MangaOverview? {
         return db.mangaOverviewDao().getByIdBlocking(overviewId)
+    }
+
+    fun getViewModeBlocking() = runBlocking { readerPrefs.viewMode.first() }
+
+    fun editViewMode(viewMode: ReaderViewMode) {
+        applicationScope.launch(Dispatchers.IO) {
+            readerPrefs.editReaderViewMode(viewMode)
+        }
     }
 }

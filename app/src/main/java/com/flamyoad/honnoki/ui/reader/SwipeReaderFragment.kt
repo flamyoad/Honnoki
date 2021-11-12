@@ -5,6 +5,7 @@ import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.view.doOnLayout
 import androidx.paging.ExperimentalPagingApi
 import androidx.viewpager2.widget.ViewPager2
@@ -142,6 +143,12 @@ class SwipeReaderFragment : BaseReaderFragment() {
         private const val SWIPE_DIRECTION = "swipe_direction"
 
         @JvmStatic
-        fun newInstance(swipeDirection: SwipeDirection) = SwipeReaderFragment()
+        fun newInstance(swipeDirection: SwipeDirection): SwipeReaderFragment {
+            return SwipeReaderFragment().apply {
+                arguments = bundleOf(
+                    SWIPE_DIRECTION to swipeDirection
+                )
+            }
+        }
     }
 }

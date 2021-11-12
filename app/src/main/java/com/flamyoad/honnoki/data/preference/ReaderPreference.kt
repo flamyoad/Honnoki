@@ -9,6 +9,8 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import com.flamyoad.honnoki.parser.model.MangadexQualityMode
 import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.ui.reader.model.PageScrollDirection
+import com.flamyoad.honnoki.ui.reader.model.ReaderOrientation
+import com.flamyoad.honnoki.ui.reader.model.ReaderViewMode
 import com.flamyoad.honnoki.utils.extensions.getConvertedValue
 import com.flamyoad.honnoki.utils.extensions.getValue
 import kotlinx.coroutines.flow.Flow
@@ -21,6 +23,7 @@ class ReaderPreference(private val dataStore: DataStore<Preferences>) {
     private val EXTRA_SPACE_AT_BOTTOM_INDICATOR =
         booleanPreferencesKey("extra_space_at_bottom_indicator")
     private val SHOW_ADS = booleanPreferencesKey("show_ads")
+    private val VIEW_MODE = stringPreferencesKey("view_mode")
     private val ORIENTATION = stringPreferencesKey("orientation")
 
     fun shouldShowAds(source: Source): Boolean {
@@ -36,6 +39,18 @@ class ReaderPreference(private val dataStore: DataStore<Preferences>) {
 
     val extraSpaceAtBottomIndicator =
         dataStore.getValue(EXTRA_SPACE_AT_BOTTOM_INDICATOR, false)
+
+    val viewMode = dataStore.getConvertedValue(VIEW_MODE) {
+        ReaderViewMode.valueOf(
+            it ?: ReaderViewMode.CONTINUOUS_SCROLLING.toString()
+        )
+    }
+
+    val orientation = dataStore.getConvertedValue(ORIENTATION) {
+        ReaderOrientation.valueOf(
+            it ?: ReaderOrientation.FREE.toString()
+        )
+    }
 
     suspend fun editVolumeUpAction(scrollDir: PageScrollDirection) =
         dataStore.edit {
@@ -55,5 +70,10 @@ class ReaderPreference(private val dataStore: DataStore<Preferences>) {
     suspend fun editExtraSpaceAtBottomIndicator(isEnabled: Boolean) =
         dataStore.edit {
             it[EXTRA_SPACE_AT_BOTTOM_INDICATOR] = isEnabled
+        }
+
+    suspend fun editReaderViewMode(viewMode: ReaderViewMode) =
+        dataStore.edit {
+            it[VIEW_MODE] = viewMode.toString()
         }
 }
