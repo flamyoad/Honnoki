@@ -104,6 +104,7 @@ class ReaderViewModel(
 
     private var loadPrevChapterJob: Job? = null
     private var loadNextChapterJob: Job? = null
+    private var saveLastReadPageJob: Job? = null
 
     private val loadCompletionStatusByChapterId =
         ConcurrentHashMap<Long, Boolean>()
@@ -223,7 +224,8 @@ class ReaderViewModel(
 
     fun saveLastReadPage(pageNumber: Int) {
         val overviewId = mangaOverviewId.value
-        applicationScope.launch(Dispatchers.IO) {
+        saveLastReadPageJob?.cancel()
+        saveLastReadPageJob = applicationScope.launch(Dispatchers.IO) {
             overviewRepo.updateLastReadPage(pageNumber, overviewId)
         }
     }

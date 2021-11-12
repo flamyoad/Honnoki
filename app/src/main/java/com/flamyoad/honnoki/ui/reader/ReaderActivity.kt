@@ -196,6 +196,12 @@ class ReaderActivity : AppCompatActivity() {
         }
 
         lifecycleScope.launchWhenResumed {
+            viewModel.currentPageNumber()
+                .debounce(500)
+                .collectLatest { viewModel.saveLastReadPage(it) }
+        }
+
+        lifecycleScope.launchWhenResumed {
             viewModel.currentChapterShown()
                 .flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
                 .collectLatest {
