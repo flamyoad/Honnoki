@@ -108,6 +108,10 @@ abstract class BaseReaderFragment : Fragment(), VolumeButtonScroller.Listener {
 
     abstract fun onPagesLoaded(pages: List<ReaderPage>)
 
+    abstract fun onLoadingPreviousChapter(isLoading: Boolean)
+
+    abstract fun onFailedToLoadPreviousChapter(hasFailed: Boolean)
+
     abstract fun onLoadingNextChapter(isLoading: Boolean)
 
     abstract fun onFailedToLoadNextChapter(hasFailed: Boolean)

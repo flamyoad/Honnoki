@@ -154,6 +154,10 @@ class VerticalScrollingReaderFragment : BaseReaderFragment() {
         readerAdapter.submitList(pages)
     }
 
+    override fun onLoadingPreviousChapter(isLoading: Boolean) {}
+
+    override fun onFailedToLoadPreviousChapter(hasFailed: Boolean) {}
+
     override fun onLoadingNextChapter(isLoading: Boolean) {
         when (isLoading) {
             true -> concatAdapter.addAdapter(loadingAdapter)

@@ -100,6 +100,14 @@ class SwipeReaderFragment : BaseReaderFragment() {
         imageAdapter.setList(pages)
     }
 
+    override fun onLoadingPreviousChapter(isLoading: Boolean) {
+
+    }
+
+    override fun onFailedToLoadPreviousChapter(hasFailed: Boolean) {
+
+    }
+
     override fun onLoadingNextChapter(isLoading: Boolean) {
 
     }

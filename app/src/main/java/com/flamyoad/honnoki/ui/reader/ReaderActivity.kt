@@ -186,7 +186,12 @@ class ReaderActivity : AppCompatActivity() {
         lifecycleScope.launchWhenResumed {
             viewModel.totalPageNumber
                 .flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
-                .collectLatest { binding.readerSeekbar.max = it - 1 }
+                .collectLatest {
+                    // Seekbar max must be set first before progress value!!
+                    binding.readerSeekbar.max = it - 1
+                    binding.readerSeekbar.current =
+                        viewModel.currentPageNumber().value
+                }
         }
 
         lifecycleScope.launchWhenResumed {
