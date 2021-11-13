@@ -11,6 +11,7 @@ import com.flamyoad.honnoki.ui.library.bookmark.BookmarkViewModel
 import com.flamyoad.honnoki.ui.library.history.ReadHistoryViewModel
 import com.flamyoad.honnoki.ui.lookup.MangaLookupViewModel
 import com.flamyoad.honnoki.ui.lookup.model.LookupType
+import com.flamyoad.honnoki.ui.onboarding.OnboardingViewModel
 import com.flamyoad.honnoki.ui.options.OptionsViewModel
 import com.flamyoad.honnoki.ui.overview.MangaOverviewViewModel
 import com.flamyoad.honnoki.ui.reader.VerticalScrollingReaderViewModel
@@ -119,6 +120,13 @@ val viewModelModules = module {
         GenrePickerViewModel(
             get(named(source)),
             androidApplication()
+        )
+    }
+
+    viewModel {
+        OnboardingViewModel(
+            get(),
+            get(named(KoinConstants.APP_SCOPE))
         )
     }
 }

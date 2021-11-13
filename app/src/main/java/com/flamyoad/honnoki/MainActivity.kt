@@ -1,21 +1,20 @@
 package com.flamyoad.honnoki
 
-import android.os.Build
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
-import android.os.Environment
-import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.paging.ExperimentalPagingApi
+import com.flamyoad.honnoki.common.BaseActivity
 import com.flamyoad.honnoki.databinding.ActivityMainBinding
 import kotlinx.coroutines.flow.collectLatest
 import java.lang.IllegalArgumentException
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @ExperimentalPagingApi
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     private val viewModel: MainViewModel by viewModel()
 
@@ -106,5 +105,12 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+
+    companion object {
+        fun startActivity(context: Context) {
+            val intent = Intent(context, MainActivity::class.java)
+            context.startActivity(intent)
+        }
     }
 }

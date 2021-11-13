@@ -37,6 +37,7 @@ class MyApplication : Application() {
             apiModules,
             cacheModules,
             dbModules,
+            navigatorModules,
             networkModules,
             sourceModules,
             repositoryModules,

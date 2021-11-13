@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.stateIn
 open class BaseViewModel : ViewModel() {
 
     // Can use Flow.toLiveData() if want
-    protected fun <T> Flow<T>.toStateFlow(
+    fun <T> Flow<T>.toStateFlow(
         initialValue: T,
         sharingStarted: SharingStarted = SharingStarted.WhileSubscribed(),
     ) = stateIn(viewModelScope, sharingStarted, initialValue)

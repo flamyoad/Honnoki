@@ -29,7 +29,6 @@ import com.flamyoad.honnoki.ui.library.bookmark.adapter.BookmarkAdapter
 import com.flamyoad.honnoki.ui.library.bookmark.adapter.BookmarkGroupAdapter
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import com.flamyoad.honnoki.utils.extensions.getInteger
-import com.flamyoad.honnoki.utils.ui.willConsumeHorizontalScrolls
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.android.ext.android.inject
