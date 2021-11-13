@@ -43,7 +43,7 @@ class OptionsViewModel(
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     fun setNightMode(enabled: Boolean) {
-        viewModelScope.launch {
+        applicationScope.launch {
             uiPrefs.setNightMode(enabled)
         }
     }

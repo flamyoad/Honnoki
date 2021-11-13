@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import com.flamyoad.honnoki.MainViewModel
 
 import com.flamyoad.honnoki.databinding.FragmentLibraryBinding
+import com.flamyoad.honnoki.utils.ui.DepthPageTransformer
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
