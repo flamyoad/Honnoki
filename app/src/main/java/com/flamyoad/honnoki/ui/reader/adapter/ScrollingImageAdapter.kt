@@ -17,26 +17,38 @@ import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.ui.reader.model.ReaderPage
 import com.flamyoad.honnoki.utils.ui.MangaImageViewTarget
 
-class ReaderImageAdapter(
+class ScrollingImageAdapter(
     private val source: Source,
     private val quality: MangadexQualityMode
 ) : ListAdapter<ReaderPage, RecyclerView.ViewHolder>(PAGE_COMPARATOR) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): RecyclerView.ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             ITEM -> {
-                val binding = ReaderImageListItemBinding.inflate(layoutInflater, parent, false)
+                val binding = ReaderImageListItemBinding.inflate(
+                    layoutInflater,
+                    parent,
+                    false
+                )
                 val holder = ItemViewHolder(binding)
                 binding.btnRetry.setOnClickListener {
-                    val item = getItem(holder.bindingAdapterPosition) as ReaderPage.Value
+                    val item =
+                        getItem(holder.bindingAdapterPosition) as ReaderPage.Value
                     holder.loadImage(item.page)
                 }
                 holder
             }
 
             ADS -> {
-                val binding = ReaderImageListAdsBinding.inflate(layoutInflater, parent, false)
+                val binding = ReaderImageListAdsBinding.inflate(
+                    layoutInflater,
+                    parent,
+                    false
+                )
                 val holder = AdsViewHolder(binding)
                 holder
             }
@@ -45,7 +57,10 @@ class ReaderImageAdapter(
         }
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        position: Int
+    ) {
         val item = getItem(position)
 
         when (holder) {
@@ -83,13 +98,16 @@ class ReaderImageAdapter(
 
                 txtPageNumber.text = page.number.toString()
 
-                imageView.setOnImageEventListener(object :
-                    SubsamplingScaleImageView.DefaultOnImageEventListener() {
-                    override fun onReady() {
-                        super.onReady()
-                        statusContainer.isVisible = false
-                    }
-                })
+                imageView.apply {
+                    maxScale = 10f // Removes black strip around small image
+                    setOnImageEventListener(object :
+                        SubsamplingScaleImageView.DefaultOnImageEventListener() {
+                        override fun onReady() {
+                            super.onReady()
+                            statusContainer.isVisible = false
+                        }
+                    })
+                }
 
                 Glide.with(root)
                     .download(getImageUrl(page))
@@ -123,7 +141,10 @@ class ReaderImageAdapter(
         const val ADS = 1
 
         val PAGE_COMPARATOR = object : DiffUtil.ItemCallback<ReaderPage>() {
-            override fun areItemsTheSame(oldItem: ReaderPage, newItem: ReaderPage): Boolean {
+            override fun areItemsTheSame(
+                oldItem: ReaderPage,
+                newItem: ReaderPage
+            ): Boolean {
                 if (oldItem is ReaderPage.Value && newItem is ReaderPage.Value) {
                     return oldItem.page.id == newItem.page.id
                 }
@@ -133,7 +154,10 @@ class ReaderImageAdapter(
                 return false
             }
 
-            override fun areContentsTheSame(oldItem: ReaderPage, newItem: ReaderPage): Boolean {
+            override fun areContentsTheSame(
+                oldItem: ReaderPage,
+                newItem: ReaderPage
+            ): Boolean {
                 if (oldItem is ReaderPage.Value && newItem is ReaderPage.Value) {
                     return oldItem.pageWithChapterInfo == newItem.pageWithChapterInfo
                 }

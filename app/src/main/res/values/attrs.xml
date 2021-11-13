@@ -11,15 +11,17 @@
     </declare-styleable>
 
     <declare-styleable name="BottomInfoWidget">
-        <attr name="currentChapter" format="string"/>
-        <attr name="currentPage" format="string"/>
+        <attr name="currentChapter" format="string" />
+        <attr name="currentPage" format="string" />
         <attr name="networkCondition" format="enum">
-            <enum name="wifi" value="0"/>
-            <enum name="offline" value="1"/>
-            <enum name="data_2g" value="2"/>
-            <enum name="data_3g" value="3"/>
-            <enum name="data_4g" value="4"/>
-            <enum name="data_5g" value="5"/>
+            <enum name="wifi" value="0" />
+            <enum name="offline" value="1" />
+            <enum name="data_2g" value="2" />
+            <enum name="data_3g" value="3" />
+            <enum name="data_4g" value="4" />
+            <enum name="data_5g" value="5" />
         </attr>
     </declare-styleable>
+
+    <declare-styleable name="ReaderSeekbar"></declare-styleable>
 </resources>

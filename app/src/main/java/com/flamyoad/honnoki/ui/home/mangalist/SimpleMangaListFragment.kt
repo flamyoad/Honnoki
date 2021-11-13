@@ -27,8 +27,6 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-private const val GRID_SPANCOUNT = 3
-
 @ExperimentalPagingApi
 class SimpleMangaListFragment : Fragment() {
     private var _binding: FragmentSimpleMangaListBinding? = null
@@ -41,12 +39,16 @@ class SimpleMangaListFragment : Fragment() {
         parametersOf(sourceName)
     }
 
+    private val gridSpanCount by lazy {
+        getInteger(R.integer.manga_grid_spancount)
+    }
+
     private val mangaAdapter by lazy { VerticalMangaListAdapter(this::openManga) }
     private val initialLoadIndicatorAdapter by lazy { LoadIndicatorAdapter() }
     private val gridLayoutManager by lazy {
         GridLayoutManager(
             requireContext(),
-            getInteger(R.integer.manga_grid_spancount)
+            gridSpanCount
         )
     }
 
@@ -98,7 +100,7 @@ class SimpleMangaListFragment : Fragment() {
                     return if (mangaCount > 0 && position in 0 until mangaCount) {
                         1
                     } else {
-                        GRID_SPANCOUNT
+                        gridSpanCount
                     }
                 }
             }

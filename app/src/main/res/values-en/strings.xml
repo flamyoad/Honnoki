@@ -64,4 +64,15 @@
     <string name="genre_webtoons">Webtoons</string>
     <string name="genre_yaoi">Yaoi</string>
     <string name="genre_yuri">Yuri</string>
+
+    <string name="reader_viewmode">Viewing Mode</string>
+    <string name="reader_viewmode_horizontal">Horizontal</string>
+    <string name="reader_viewmode_vertical">Vertical</string>
+    <string name="reader_viewmode_continuous_scrolling">Continuous Scrolling</string>
+
+    <string name="reader_orientation">Orientation</string>
+    <string name="reader_orientation_default">System Default</string>
+    <string name="reader_orientation_portrait">Portrait</string>
+    <string name="reader_orientation_landscape">Landscape</string>
+
 </resources>

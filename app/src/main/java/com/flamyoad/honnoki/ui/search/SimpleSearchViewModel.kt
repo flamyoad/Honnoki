@@ -1,6 +1,7 @@
 package com.flamyoad.honnoki.ui.search
 
 import android.app.Application
+import android.text.Html
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
@@ -78,7 +79,7 @@ class SimpleSearchViewModel(
 
     fun submitQuery(query: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            searchQuery.emit(query)
+            searchQuery.emit(query.trim())
         }
     }
 

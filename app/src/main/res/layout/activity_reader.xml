@@ -54,72 +54,52 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/container"
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/drawerLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/navigationView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="end">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/listChapters"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#E3E3E3"/>
+
+        </com.google.android.material.navigation.NavigationView>
+
+    </androidx.drawerlayout.widget.DrawerLayout>
 
     <LinearLayout
-        android:id="@+id/seekbarLayout"
+        android:id="@+id/bottomMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        android:orientation="vertical"
         android:background="@color/translucent_black"
-        android:orientation="horizontal"
-        android:translationZ="4dp"
-        tools:visibility="visible">
+        android:translationZ="4dp">
 
-        <ImageButton
-            android:id="@+id/btnToFirstPage"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingHorizontal="12dp"
-            android:paddingVertical="20dp"
-            android:background="?attr/selectableItemBackground"
-            android:src="@drawable/ic_baseline_skip_previous_24"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <com.flamyoad.honnoki.ui.reader.widgets.ReaderSeekbar
+            android:id="@+id/readerSeekbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom" />
 
-        <TextView
-            android:id="@+id/txtSeekbarCurrentPage"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:textColor="@android:color/white"
-            android:textSize="16sp"
-            android:lines="1"
-            app:layout_constraintBottom_toBottomOf="@id/btnToFirstPage"
-            app:layout_constraintStart_toEndOf="@id/btnToFirstPage"
-            app:layout_constraintTop_toTopOf="@id/btnToFirstPage"
-            app:layout_constraintEnd_toStartOf="@id/seekbar"
-            tools:text="1/80" />
-
-        <SeekBar
-            android:id="@+id/seekbar"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_marginRight="16dp"
-            android:maxHeight="6dp"
-            android:progressDrawable="@drawable/seekbar_style"
-            android:splitTrack="false"
-            android:thumb="@drawable/seekbar_thumb"
-            app:layout_constraintBottom_toBottomOf="@id/txtSeekbarCurrentPage"
-            app:layout_constraintEnd_toStartOf="@id/btnToLastPage"
-            app:layout_constraintTop_toTopOf="@id/txtSeekbarCurrentPage"
-            tools:progress="30" />
-
-        <ImageButton
-            android:id="@+id/btnToLastPage"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="?attr/selectableItemBackground"
-            android:paddingHorizontal="12dp"
-            android:paddingVertical="20dp"
-            android:src="@drawable/ic_baseline_skip_next_24"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <com.flamyoad.honnoki.ui.reader.widgets.BottomActionMenu
+            android:id="@+id/bottomActionMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 
@@ -127,13 +107,13 @@
         android:id="@+id/bottomInfoWidget"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"/>
+        android:layout_gravity="bottom|end" />
 
     <View
         android:id="@+id/bottomSheetOpener"
-        android:layout_width="50dp"
+        android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_gravity="bottom|center_horizontal"
+        android:layout_gravity="bottom"
         tools:visibility="invisible" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

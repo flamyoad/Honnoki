@@ -29,6 +29,7 @@ import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import com.flamyoad.honnoki.ui.search.adapter.GenrePickerAdapter
 import com.flamyoad.honnoki.ui.search.adapter.SearchResultEndOfListAdapter
 import com.flamyoad.honnoki.ui.search.adapter.SourcePickerAdapter
+import com.flamyoad.honnoki.utils.extensions.findViewFromError
 import com.flamyoad.honnoki.utils.extensions.viewLifecycleLazy
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
@@ -42,7 +43,11 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class SimpleSearchFragment : Fragment() {
     private val viewModel: SimpleSearchViewModel by viewModel()
 
-    private val binding by viewLifecycleLazy { FragmentSimpleSearchBinding.bind(requireView()) }
+    private val binding by viewLifecycleLazy {
+        FragmentSimpleSearchBinding.bind(
+            requireView()
+        )
+    }
 
     private val genreAdapter by lazy { GenrePickerAdapter(viewModel::selectGenre) }
     private val sourceAdapter by lazy { SourcePickerAdapter(viewModel::selectSource) }
@@ -53,7 +58,11 @@ class SimpleSearchFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_simple_search, container, false)
+        return inflater.inflate(
+            R.layout.fragment_simple_search,
+            container,
+            false
+        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -78,12 +87,16 @@ class SimpleSearchFragment : Fragment() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putParcelable(SELECTED_SOURCE, viewModel.selectedSource().value)
+        outState.putParcelable(
+            SELECTED_SOURCE,
+            viewModel.selectedSource().value
+        )
         outState.putParcelable(SELECTED_GENRE, viewModel.selectedGenre().value)
     }
 
     private fun initUi() {
-        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        binding.searchView.setOnQueryTextListener(object :
+            SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return true
             }
@@ -103,9 +116,15 @@ class SimpleSearchFragment : Fragment() {
 
         binding.fab.setOnClickListener {
             binding.searchView.requestFocus()
-            val imm = context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as? InputMethodManager
+            val imm =
+                context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as? InputMethodManager
             imm?.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
         }
+
+        binding.listSearchResultView.findViewFromError(R.id.btnRetry)
+            ?.setOnClickListener {
+                searchResultAdapter.retry()
+            }
     }
 
     private fun initSearchResultList() {
@@ -121,8 +140,12 @@ class SimpleSearchFragment : Fragment() {
         }
 
         // Scroll to top automatically when new result arrives.
-        searchResultAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+        searchResultAdapter.registerAdapterDataObserver(object :
+            RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeInserted(
+                positionStart: Int,
+                itemCount: Int
+            ) {
                 super.onItemRangeInserted(positionStart, itemCount)
                 // (itemCount != 0)     makes sure no calls are made on empty list
                 // (positionStart != 0) makes sure scrollToPosition(0) is only called on first load,
@@ -135,19 +158,29 @@ class SimpleSearchFragment : Fragment() {
 
         searchResultAdapter.addLoadStateListener {
             when (it.mediator?.refresh) {
-                is LoadState.Error -> binding.listSearchResultView.viewState = MultiStateView.ViewState.ERROR
-                is LoadState.Loading -> binding.listSearchResultView.viewState = MultiStateView.ViewState.LOADING
-                is LoadState.NotLoading -> binding.listSearchResultView.viewState = MultiStateView.ViewState.CONTENT
+                is LoadState.Error -> binding.listSearchResultView.viewState =
+                    MultiStateView.ViewState.ERROR
+                is LoadState.Loading -> binding.listSearchResultView.viewState =
+                    MultiStateView.ViewState.LOADING
+                is LoadState.NotLoading -> binding.listSearchResultView.viewState =
+                    MultiStateView.ViewState.CONTENT
             }
             when (it.mediator?.append) {
-                is LoadState.NotLoading -> concatAdapter.addAdapter(searchResultEndOfListAdapter)
+                is LoadState.NotLoading -> concatAdapter.addAdapter(
+                    searchResultEndOfListAdapter
+                )
             }
         }
     }
 
     private fun initGenreList() {
         val gridLayoutManager =
-            GridLayoutManager(requireContext(), 3, GridLayoutManager.HORIZONTAL, false)
+            GridLayoutManager(
+                requireContext(),
+                3,
+                GridLayoutManager.HORIZONTAL,
+                false
+            )
 
         with(binding.selectLayout.listGenres) {
             adapter = genreAdapter
@@ -168,7 +201,8 @@ class SimpleSearchFragment : Fragment() {
     }
 
     private fun observeUi() {
-        binding.listSearchResultView.viewState = MultiStateView.ViewState.CONTENT
+        binding.listSearchResultView.viewState =
+            MultiStateView.ViewState.CONTENT
 
         lifecycleScope.launchWhenResumed {
             viewModel.searchResult
@@ -191,7 +225,9 @@ class SimpleSearchFragment : Fragment() {
         lifecycleScope.launchWhenResumed {
             viewModel.selectedSource()
                 .flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
-                .collectLatest { binding.selectLayout.txtSource.text = it.title }
+                .collectLatest {
+                    binding.selectLayout.txtSource.text = it.title
+                }
         }
     }
 
