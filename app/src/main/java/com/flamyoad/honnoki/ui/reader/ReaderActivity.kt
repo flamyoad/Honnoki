@@ -273,7 +273,7 @@ class ReaderActivity : AppCompatActivity() {
     }
 
     private fun showChapterListDialog() {
-        binding.drawerLayout.openDrawer(GravityCompat.END)
+//        binding.drawerLayout.openDrawer(GravityCompat.END)
         toggleSidekickVisibility(false)
     }
 
