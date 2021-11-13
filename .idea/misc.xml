@@ -13,7 +13,7 @@
         <entry key="app/src/main/res/drawable/ic_baseline_sort_by_alpha_24.xml" value="0.19074074074074074" />
         <entry key="app/src/main/res/layout/activity_download_picker.xml" value="0.22604166666666667" />
         <entry key="app/src/main/res/layout/activity_manga_lookup.xml" value="0.1037037037037037" />
-        <entry key="app/src/main/res/layout/activity_manga_overview.xml" value="0.11388888888888889" />
+        <entry key="app/src/main/res/layout/activity_manga_overview.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_reader.xml" value="0.1" />
         <entry key="app/src/main/res/layout/bottom_action_menu.xml" value="0.335" />
         <entry key="app/src/main/res/layout/bottom_info_widget.xml" value="0.22604166666666667" />

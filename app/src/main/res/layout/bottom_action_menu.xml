@@ -22,6 +22,7 @@
         android:maxWidth="50dp"
         android:padding="6dp"
         android:text="Chapters"
+        android:visibility="gone"
         android:textColor="@color/white"
         app:drawableTopCompat="@drawable/ic_baseline_format_list_bulleted_24_white" />
 

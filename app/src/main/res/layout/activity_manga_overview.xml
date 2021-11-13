@@ -57,7 +57,9 @@
                         android:paddingHorizontal="12dp"
                         android:src="@drawable/ic_file_download_white_24dp"
                         app:layout_constraintEnd_toStartOf="@+id/btnMore"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:visibility="gone"
+                        tools:visibility="visible"/>
 
                     <ImageButton
                         android:id="@+id/btnMore"
