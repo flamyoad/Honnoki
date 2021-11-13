@@ -143,9 +143,20 @@ class VerticalScrollingReaderFragment : BaseReaderFragment() {
         }
     }
 
-    override fun scrollTo(zeroIndexed: Int) {
+    override fun scrollTo(pageNumber: Int, chapterId: Long) {
+        val adapterItems = readerAdapter.currentList
+
+        val pagePositionInList =
+            adapterItems.indexOfFirst {
+                if (it is ReaderPage.Value)
+                    it.chapter.id == chapterId && it.page.number == pageNumber
+                else {
+                    false
+                }
+            }
+
         linearLayoutManager.scrollToPositionWithOffset(
-            zeroIndexed,
+            pagePositionInList,
             0
         )
     }

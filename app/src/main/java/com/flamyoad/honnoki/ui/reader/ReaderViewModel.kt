@@ -88,9 +88,6 @@ class ReaderViewModel(
     private val pageList = MutableStateFlow<List<ReaderPage>>(emptyList())
     fun pageList() = pageList.asStateFlow()
 
-//    private val isLoadingPrevChapter = MutableStateFlow(false)
-//    fun isLoadingPrevChapter() = isLoadingPrevChapter.asStateFlow()
-
     private val isLoadingNextChapter = MutableStateFlow(false)
     fun isLoadingNextChapter() = isLoadingNextChapter.asStateFlow()
 

@@ -105,8 +105,18 @@ class SwipeReaderFragment : BaseReaderFragment() {
         }
     }
 
-    override fun scrollTo(zeroIndexed: Int) {
-        binding.viewPager.setCurrentItem(zeroIndexed, false)
+    override fun scrollTo(pageNumber: Int, chapterId: Long) {
+        val adapterItems = imageAdapter.pageList
+
+        val pagePositionInList =
+            adapterItems.indexOfFirst {
+                if (it is ReaderPage.Value)
+                    it.chapter.id == chapterId && it.page.number == pageNumber
+                else {
+                    false
+                }
+            }
+        binding.viewPager.setCurrentItem(pagePositionInList, false)
     }
 
     override fun onPagesLoaded(pages: List<ReaderPage>) {

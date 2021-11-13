@@ -216,6 +216,12 @@ class ReaderActivity : AppCompatActivity() {
                 }
         }
 
+        lifecycleScope.launchWhenResumed {
+            viewModel.currentChapterShown()
+                .debounce(500)
+                .collectLatest { viewModel.saveLastReadChapter(it) }
+        }
+
         viewModel.viewMode.observe(this) {
             initReaderScreen(it)
         }

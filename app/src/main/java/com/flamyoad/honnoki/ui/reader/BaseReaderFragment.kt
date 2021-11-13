@@ -78,16 +78,21 @@ abstract class BaseReaderFragment : Fragment(), VolumeButtonScroller.Listener {
                 ReaderActivity.OVERVIEW_ID,
                 -1
             )
-            val currentChapterId = requireActivity().intent.getLongExtra(
-                ReaderActivity.CHAPTER_ID,
-                -1
-            )
             val overview =
                 parentViewModel.getMangaOverview(overviewId) ?: return@launch
 
-            if (currentChapterId == overview.lastReadChapterId) {
-                scrollTo(overview.lastReadPageNumber - 1)
+            val chapterId = overview.lastReadChapterId.let {
+                if (it == -1L) {
+                    requireActivity().intent.getLongExtra(
+                        ReaderActivity.CHAPTER_ID,
+                        -1
+                    )
+                } else {
+                    it
+                }
             }
+
+            scrollTo(overview.lastReadPageNumber, chapterId)
         }
 
         initialScrollDone = true
@@ -104,7 +109,7 @@ abstract class BaseReaderFragment : Fragment(), VolumeButtonScroller.Listener {
         parentViewModel.setSideKickVisibility(false)
     }
 
-    abstract fun scrollTo(zeroIndexed: Int)
+    abstract fun scrollTo(pageNumber: Int, chapterId: Long)
 
     abstract fun onPagesLoaded(pages: List<ReaderPage>)
 
