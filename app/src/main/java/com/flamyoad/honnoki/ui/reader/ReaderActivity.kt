@@ -58,9 +58,9 @@ class ReaderActivity : AppCompatActivity() {
                 ReaderOrientation.PORTRAIT -> ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                 ReaderOrientation.LANDSCAPE -> ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
             }
-            initUi()
-            observeUi()
         }
+        initUi()
+        observeUi()
 
         viewModel.fetchChapterList(intent.getLongExtra(OVERVIEW_ID, -1))
 
