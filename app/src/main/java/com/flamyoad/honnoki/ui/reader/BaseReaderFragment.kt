@@ -74,19 +74,13 @@ abstract class BaseReaderFragment : Fragment(), VolumeButtonScroller.Listener {
         if (initialScrollDone) return
 
         lifecycleScope.launch {
-            val overviewId = requireActivity().intent.getLongExtra(
-                ReaderActivity.OVERVIEW_ID,
-                -1
-            )
             val overview =
-                parentViewModel.getMangaOverview(overviewId) ?: return@launch
+                parentViewModel.getMangaOverview(getOverviewId())
+                    ?: return@launch
 
             val chapterId = overview.lastReadChapterId.let {
                 if (it == -1L) {
-                    requireActivity().intent.getLongExtra(
-                        ReaderActivity.CHAPTER_ID,
-                        -1
-                    )
+                    getInitialChapterId()
                 } else {
                     it
                 }
@@ -131,6 +125,10 @@ abstract class BaseReaderFragment : Fragment(), VolumeButtonScroller.Listener {
     abstract override fun onPrevPage()
 
     abstract override fun scrollByFixedDistance(distance: Int)
+
+    abstract fun getInitialChapterId(): Long
+
+    abstract fun getOverviewId(): Long
 
     companion object {
         private const val INITIAL_SCROLL_DONE = "initial_scroll_done"

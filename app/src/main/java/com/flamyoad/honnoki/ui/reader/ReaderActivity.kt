@@ -228,16 +228,26 @@ class ReaderActivity : AppCompatActivity() {
     }
 
     private fun initReaderScreen(viewMode: ReaderViewMode) {
+        val overviewId = intent.getLongExtra(OVERVIEW_ID, -1)
+        val chapterId = intent.getLongExtra(CHAPTER_ID, -1)
+
         val frameFragment = when (viewMode) {
             ReaderViewMode.HORIZONTAL ->
                 SwipeReaderFragment.newInstance(
-                    SwipeDirection.HORIZONTAL
+                    SwipeDirection.HORIZONTAL,
+                    overviewId,
+                    chapterId
                 )
             ReaderViewMode.VERTICAL ->
                 SwipeReaderFragment.newInstance(
-                    SwipeDirection.VERTICAL
+                    SwipeDirection.VERTICAL,
+                    overviewId,
+                    chapterId
                 )
-            ReaderViewMode.CONTINUOUS_SCROLLING -> VerticalScrollingReaderFragment.newInstance()
+            ReaderViewMode.CONTINUOUS_SCROLLING -> VerticalScrollingReaderFragment.newInstance(
+                overviewId,
+                chapterId
+            )
         }
         supportFragmentManager.beginTransaction()
             .replace(
