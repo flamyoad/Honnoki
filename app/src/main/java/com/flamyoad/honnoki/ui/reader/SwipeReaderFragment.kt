@@ -1,5 +1,6 @@
 package com.flamyoad.honnoki.ui.reader
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
@@ -105,6 +106,10 @@ class SwipeReaderFragment : BaseReaderFragment() {
         }
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+    }
+
     override fun scrollTo(pageNumber: Int, chapterId: Long) {
         val adapterItems = imageAdapter.pageList
 
@@ -179,16 +184,32 @@ class SwipeReaderFragment : BaseReaderFragment() {
         TODO("Not yet implemented")
     }
 
+    override fun getInitialChapterId(): Long {
+        return arguments?.getLong(CHAPTER_ID) ?: -1
+    }
+
+    override fun getOverviewId(): Long {
+        return arguments?.getLong(OVERVIEW_ID) ?: -1
+    }
+
     companion object {
         const val TAG = "Vertical Swipe Reader Fragment"
 
         private const val SWIPE_DIRECTION = "swipe_direction"
+        private const val CHAPTER_ID = "chapter_id"
+        private const val OVERVIEW_ID = "overview_id"
 
         @JvmStatic
-        fun newInstance(swipeDirection: SwipeDirection): SwipeReaderFragment {
+        fun newInstance(
+            swipeDirection: SwipeDirection,
+            overviewId: Long,
+            chapterId: Long
+        ): SwipeReaderFragment {
             return SwipeReaderFragment().apply {
                 arguments = bundleOf(
-                    SWIPE_DIRECTION to swipeDirection
+                    SWIPE_DIRECTION to swipeDirection,
+                    OVERVIEW_ID to overviewId,
+                    CHAPTER_ID to chapterId
                 )
             }
         }

@@ -1,5 +1,6 @@
 package com.flamyoad.honnoki.ui.reader
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -224,11 +225,27 @@ class VerticalScrollingReaderFragment : BaseReaderFragment() {
         TODO("Not yet implemented")
     }
 
+    override fun getInitialChapterId(): Long {
+        return arguments?.getLong(CHAPTER_ID) ?: -1
+    }
+
+    override fun getOverviewId(): Long {
+        return arguments?.getLong(OVERVIEW_ID) ?: -1
+    }
+
     companion object {
         const val TAG = "vertical_scrolling_reader_fragment"
+        private const val CHAPTER_ID = "chapter_id"
+        private const val OVERVIEW_ID = "overview_id"
 
         @JvmStatic
-        fun newInstance() = VerticalScrollingReaderFragment()
+        fun newInstance(overviewId: Long, chapterId: Long) =
+            VerticalScrollingReaderFragment().apply {
+                arguments = Bundle().apply {
+                    putLong(OVERVIEW_ID, overviewId)
+                    putLong(CHAPTER_ID, chapterId)
+                }
+            }
     }
 }
 
