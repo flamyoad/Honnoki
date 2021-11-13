@@ -49,6 +49,14 @@ class SwipeReaderFragment : BaseReaderFragment() {
                 )
                 val currentPage = imageAdapter.pageList[position]
                 onPageScroll(currentPage, position)
+
+                if (position == imageAdapter.itemCount - 1) {
+                    parentViewModel.loadNextChapter()
+                }
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {
+                super.onPageScrollStateChanged(state)
             }
 
             // For page indicator
@@ -101,26 +109,44 @@ class SwipeReaderFragment : BaseReaderFragment() {
     }
 
     override fun onLoadingPreviousChapter(isLoading: Boolean) {
-
+        if (isLoading) {
+            binding.topIndicator.showLoading()
+        } else {
+            binding.topIndicator.hide()
+        }
     }
 
     override fun onFailedToLoadPreviousChapter(hasFailed: Boolean) {
-
+        binding.topIndicator.showError { parentViewModel.loadPreviousChapter() }
     }
 
     override fun onLoadingNextChapter(isLoading: Boolean) {
-
+        if (isLoading) {
+            binding.topIndicator.showLoading()
+        } else {
+            binding.topIndicator.hide()
+        }
     }
 
     override fun onFailedToLoadNextChapter(hasFailed: Boolean) {
-
+        binding.topIndicator.showError { parentViewModel.loadNextChapter() }
     }
 
     override fun onSeekbarPositionChanged(
         position: Int,
         currentChapter: Chapter
     ) {
-        binding.viewPager.setCurrentItem(position, false)
+        val adapterItems = imageAdapter.pageList
+
+        val pagePositionInList =
+            adapterItems.indexOfFirst {
+                if (it is ReaderPage.Value)
+                    it.chapter == currentChapter && it.page.number == position
+                else {
+                    false
+                }
+            }
+        binding.viewPager.setCurrentItem(pagePositionInList, false)
     }
 
     override fun onNextPage() {

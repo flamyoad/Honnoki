@@ -32,10 +32,13 @@
         <entry key="app/src/main/res/layout/fragment_more_options.xml" value="0.22604166666666667" />
         <entry key="app/src/main/res/layout/fragment_simple_manga_list.xml" value="0.15092592592592594" />
         <entry key="app/src/main/res/layout/fragment_simple_search.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_swipe_reader.xml" value="0.19035087719298247" />
+        <entry key="app/src/main/res/layout/fragment_vertical_scrolling_reader.xml" value="0.19035087719298247" />
         <entry key="app/src/main/res/layout/fragment_vertical_swipe_reader.xml" value="0.19035087719298247" />
         <entry key="app/src/main/res/layout/horizontal_manga_list_item.xml" value="0.22604166666666667" />
         <entry key="app/src/main/res/layout/language_filter_content_item.xml" value="0.25" />
         <entry key="app/src/main/res/layout/language_filter_list.xml" value="0.22604166666666667" />
+        <entry key="app/src/main/res/layout/layout_fail_load_next_chapter.xml" value="0.19035087719298247" />
         <entry key="app/src/main/res/layout/layout_loading_state.xml" value="0.14074074074074075" />
         <entry key="app/src/main/res/layout/manga_genre_dialog_picker.xml" value="0.1037037037037037" />
         <entry key="app/src/main/res/layout/manga_list_item_classic.xml" value="0.19478260869565217" />
@@ -43,8 +46,10 @@
         <entry key="app/src/main/res/layout/manga_recent_list.xml" value="0.23236514522821577" />
         <entry key="app/src/main/res/layout/manga_summary_list_header.xml" value="0.15" />
         <entry key="app/src/main/res/layout/reader_image_list_item.xml" value="0.1037037037037037" />
+        <entry key="app/src/main/res/layout/reader_image_list_loading.xml" value="0.1" />
         <entry key="app/src/main/res/layout/reader_seekbar.xml" value="0.375" />
         <entry key="app/src/main/res/layout/simple_search_source_selector.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/swipe_reader_top_indicator.xml" value="0.283987915407855" />
         <entry key="app/src/main/res/layout/vertical_manga_list_item.xml" value="0.1" />
       </map>
     </option>
