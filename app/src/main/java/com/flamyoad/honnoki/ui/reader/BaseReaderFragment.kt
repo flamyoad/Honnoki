@@ -39,7 +39,7 @@ abstract class BaseReaderFragment : Fragment(), VolumeButtonScroller.Listener {
         }
 
         lifecycleScope.launchWhenResumed {
-            parentViewModel.showBottomLoadingIndicator().collectLatest {
+            parentViewModel.isLoadingNextChapter().collectLatest {
                 onLoadingNextChapter(it)
             }
         }

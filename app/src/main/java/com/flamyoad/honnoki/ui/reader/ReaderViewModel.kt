@@ -1,8 +1,5 @@
 package com.flamyoad.honnoki.ui.reader
 
-import android.os.SystemClock
-import android.util.Log
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
@@ -13,11 +10,9 @@ import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.entities.Chapter
 import com.flamyoad.honnoki.data.entities.MangaOverview
 import com.flamyoad.honnoki.data.entities.Page
-import com.flamyoad.honnoki.data.entities.PageWithChapterInfo
 import com.flamyoad.honnoki.data.preference.ReaderPreference
 import com.flamyoad.honnoki.repository.ChapterRepository
 import com.flamyoad.honnoki.repository.OverviewRepository
-import com.flamyoad.honnoki.repository.PageRepository
 import com.flamyoad.honnoki.source.BaseSource
 import com.flamyoad.honnoki.ui.reader.model.LoadType
 import com.flamyoad.honnoki.ui.reader.model.ReaderOrientation
@@ -93,8 +88,11 @@ class ReaderViewModel(
     private val pageList = MutableStateFlow<List<ReaderPage>>(emptyList())
     fun pageList() = pageList.asStateFlow()
 
-    private val showBottomLoadingIndicator = MutableStateFlow(false)
-    fun showBottomLoadingIndicator() = showBottomLoadingIndicator.asStateFlow()
+//    private val isLoadingPrevChapter = MutableStateFlow(false)
+//    fun isLoadingPrevChapter() = isLoadingPrevChapter.asStateFlow()
+
+    private val isLoadingNextChapter = MutableStateFlow(false)
+    fun isLoadingNextChapter() = isLoadingNextChapter.asStateFlow()
 
     private val failedToLoadNextChapter = MutableStateFlow(false)
     fun failedToLoadNextChapter() = failedToLoadNextChapter.asStateFlow()
@@ -126,7 +124,7 @@ class ReaderViewModel(
             }
 
             if (loadType == LoadType.NEXT) {
-                showBottomLoadingIndicator.value = true
+                isLoadingNextChapter.value = true
             }
 
             when (val result = baseSource.getImages(chapter.link)) {
@@ -139,7 +137,7 @@ class ReaderViewModel(
             }
 
             // Hides the loading indicator regardless success or failed to load next chapter
-            showBottomLoadingIndicator.value = false
+            isLoadingNextChapter.value = false
         }
     }
 

@@ -98,6 +98,11 @@ class SwipeReaderFragment : BaseReaderFragment() {
                 initializeReader()
             }
         }
+
+        binding.smartRefreshLayout.setOnRefreshListener {
+            parentViewModel.loadPreviousChapter()
+            it.finishRefresh(true)
+        }
     }
 
     override fun scrollTo(zeroIndexed: Int) {
@@ -105,20 +110,13 @@ class SwipeReaderFragment : BaseReaderFragment() {
     }
 
     override fun onPagesLoaded(pages: List<ReaderPage>) {
+        parentViewModel.currentScrollPosition
         imageAdapter.setList(pages)
     }
 
-    override fun onLoadingPreviousChapter(isLoading: Boolean) {
-        if (isLoading) {
-            binding.topIndicator.showLoading()
-        } else {
-            binding.topIndicator.hide()
-        }
-    }
+    override fun onLoadingPreviousChapter(isLoading: Boolean) {}
 
-    override fun onFailedToLoadPreviousChapter(hasFailed: Boolean) {
-        binding.topIndicator.showError { parentViewModel.loadPreviousChapter() }
-    }
+    override fun onFailedToLoadPreviousChapter(hasFailed: Boolean) {}
 
     override fun onLoadingNextChapter(isLoading: Boolean) {
         if (isLoading) {

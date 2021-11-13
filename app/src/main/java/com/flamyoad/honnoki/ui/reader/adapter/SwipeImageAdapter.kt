@@ -22,6 +22,14 @@ class SwipeImageAdapter(
         notifyDataSetChanged()
     }
 
+    override fun getItemId(position: Int): Long {
+        return pageList[position].id
+    }
+
+    override fun containsItem(itemId: Long): Boolean {
+        return pageList.any { it.id == itemId }
+    }
+
     override fun getItemCount(): Int = pageList.size
 
     override fun createFragment(position: Int): Fragment {
