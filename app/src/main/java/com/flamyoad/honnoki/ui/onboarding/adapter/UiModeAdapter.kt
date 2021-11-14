@@ -25,6 +25,7 @@ class UiModeAdapter(val listener: Listener) :
             txtTitle.text = item.uiMode.getString(context)
             Glide.with(this.root)
                 .load(item.uiMode.getDrawable(context))
+                .dontAnimate()
                 .into(imageView)
         }
     }
@@ -50,7 +51,6 @@ class UiModeAdapter(val listener: Listener) :
                 ): Boolean {
                     return oldItem == newItem
                 }
-
             }
     }
 }

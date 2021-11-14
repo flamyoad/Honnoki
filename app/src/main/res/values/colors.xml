@@ -47,4 +47,6 @@
     <color name="secondaryPink">#F05A66</color>
     <color name="sea_blue">#09203f</color>
 
+    <color name="onboarding_dot_color">@color/colorPrimary</color>
+
 </resources>

@@ -12,6 +12,7 @@
         <entry key="app/src/main/res/drawable/bookmark_dialog_item_char_bg.xml" value="0.17407407407407408" />
         <entry key="app/src/main/res/drawable/ic_baseline_sort_by_alpha_24.xml" value="0.19074074074074074" />
         <entry key="app/src/main/res/layout/activity_download_picker.xml" value="0.22604166666666667" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_manga_lookup.xml" value="0.1037037037037037" />
         <entry key="app/src/main/res/layout/activity_manga_overview.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_onboarding.xml" value="0.16019417475728157" />
@@ -50,7 +51,8 @@
         <entry key="app/src/main/res/layout/manga_list_loading_indicator.xml" value="0.22604166666666667" />
         <entry key="app/src/main/res/layout/manga_recent_list.xml" value="0.23236514522821577" />
         <entry key="app/src/main/res/layout/manga_summary_list_header.xml" value="0.15" />
-        <entry key="app/src/main/res/layout/onboarding_ui_mode_item.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/onboarding_ui_mode_item.xml" value="0.10153846153846154" />
+        <entry key="app/src/main/res/layout/read_history_list_header.xml" value="0.19035087719298247" />
         <entry key="app/src/main/res/layout/reader_image_list_item.xml" value="0.1037037037037037" />
         <entry key="app/src/main/res/layout/reader_image_list_loading.xml" value="0.1" />
         <entry key="app/src/main/res/layout/reader_seekbar.xml" value="0.375" />

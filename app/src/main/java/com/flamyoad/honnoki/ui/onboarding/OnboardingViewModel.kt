@@ -1,12 +1,10 @@
 package com.flamyoad.honnoki.ui.onboarding
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.flamyoad.honnoki.common.BaseViewModel
 import com.flamyoad.honnoki.data.UiMode
 import com.flamyoad.honnoki.repository.theme.ThemeRepository
-import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.ui.onboarding.model.SelectedUiMode
-import com.flamyoad.honnoki.ui.options.model.SourceOption
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -15,10 +13,14 @@ import kotlinx.coroutines.launch
 class OnboardingViewModel(
     private val themeRepository: ThemeRepository,
     private val applicationScope: CoroutineScope
-) : ViewModel() {
+) : BaseViewModel() {
 
-    private val selectedUiMode: MutableStateFlow<UiMode> =
-        MutableStateFlow(UiMode.SYSTEM_DEFAULT)
+    private val selectedUiMode: SharedFlow<UiMode?> =
+        themeRepository.getUiMode().toStateFlow(null)
+
+    fun selectedUiMode() = selectedUiMode
+        .distinctUntilChanged()
+        .toSharedFlow()
 
     val uiModeList: StateFlow<List<SelectedUiMode>> = selectedUiMode
         .map { uiMode ->
@@ -33,7 +35,9 @@ class OnboardingViewModel(
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     fun selectUiMode(value: SelectedUiMode) {
-        selectedUiMode.value = value.uiMode
+        applicationScope.launch {
+            themeRepository.setUiMode(value.uiMode)
+        }
     }
 
     fun setOnboardingCompleted() {

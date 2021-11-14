@@ -23,6 +23,8 @@ class MyApplication : Application() {
 
     val applicationScope = MainScope()
 
+    var hasCompletedEntryPoint: Boolean = false
+
     @OptIn(ExperimentalPagingApi::class)
     override fun onCreate() {
         super.onCreate()

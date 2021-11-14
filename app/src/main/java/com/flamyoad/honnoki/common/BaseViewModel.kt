@@ -16,7 +16,7 @@ open class BaseViewModel : ViewModel() {
     ) = stateIn(viewModelScope, sharingStarted, initialValue)
 
     fun <T> Flow<T>.toSharedFlow(
+        replay: Int = 0,
         sharingStarted: SharingStarted = SharingStarted.WhileSubscribed(),
-        replay: Int,
     ) = shareIn(viewModelScope, sharingStarted, replay)
 }
