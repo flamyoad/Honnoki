@@ -14,39 +14,28 @@ import kotlinx.coroutines.flow.collectLatest
 import java.lang.IllegalArgumentException
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+enum class NavigationFragmentType {
+    HOME,
+    SEARCH,
+    LIBRARY,
+    MORE
+}
+
 @ExperimentalPagingApi
 class MainActivity : BaseActivity() {
 
     private val viewModel: MainViewModel by viewModel()
 
-    private enum class NavigationFragmentType {
-        HOME,
-        SEARCH,
-        LIBRARY,
-        MORE
-    }
-
     private var _binding: ActivityMainBinding? = null
     private val binding get() = requireNotNull(_binding)
-
-    private var currentFragment: NavigationFragmentType? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //
-        currentFragment = tryOrNull {
-            NavigationFragmentType.valueOf(
-                savedInstanceState?.getString(CURRENT_FRAGMENT) ?: ""
-            )
-        }
-
-        if (savedInstanceState == null || currentFragment == null) {
+        if (savedInstanceState == null) {
             showFragment(NavigationFragmentType.HOME)
-        } else {
-            showFragment(currentFragment!!)
         }
 
         binding.bottomNavigation.setOnNavigationItemSelectedListener {
@@ -113,23 +102,6 @@ class MainActivity : BaseActivity() {
         }
 
         transaction.commit()
-    }
-
-    override fun recreate() {
-        super.recreate()
-        finish()
-        overridePendingTransition(R.anim.anime_fade_in,
-            R.anim.anime_fade_out);
-        startActivity(getIntent());
-        overridePendingTransition(R.anim.anime_fade_in,
-            R.anim.anime_fade_out);
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        val currentFragment =
-            supportFragmentManager.fragments.first { it.isVisible }
-        outState.putString(CURRENT_FRAGMENT, currentFragment.tag)
     }
 
     override fun onDestroy() {

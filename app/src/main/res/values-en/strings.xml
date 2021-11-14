@@ -75,4 +75,7 @@
     <string name="reader_orientation_portrait">Portrait</string>
     <string name="reader_orientation_landscape">Landscape</string>
 
+    <string name="ui_mode_system_default">System Default</string>
+    <string name="ui_mode_light">Light mode</string>
+    <string name="ui_mode_dark">Dark mode</string>
 </resources>

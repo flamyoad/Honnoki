@@ -11,7 +11,7 @@ class ThemeRepositoryImpl(private val uiPreference: UiPreference) :
     override fun getUiMode(): UiMode = runBlocking {
         val nightModeEnabled = uiPreference.nightModeEnabled.firstOrNull()
         return@runBlocking if (nightModeEnabled == true) {
-            UiMode.NIGHT
+            UiMode.DARK
         } else {
             UiMode.LIGHT
         }
@@ -24,7 +24,7 @@ class ThemeRepositoryImpl(private val uiPreference: UiPreference) :
 
     override suspend fun setUiMode(uiMode: UiMode) {
         val nightModeEnabled = when (uiMode) {
-            UiMode.NIGHT -> true
+            UiMode.DARK -> true
             UiMode.LIGHT -> false
             UiMode.SYSTEM_DEFAULT -> false
         }

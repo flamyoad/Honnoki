@@ -27,7 +27,7 @@
             android:layout_height="100dp"
             android:background="@color/subLightTextColor"
             android:scaleType="centerCrop"
-            tools:src="@drawable/arisa_lewd"
+            tools:src="@drawable/aya"
             android:translationZ="3dp"
             app:shapeAppearanceOverlay="@style/roundedCorners4dp"
             app:strokeColor="@color/subLightTextColor"

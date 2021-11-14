@@ -29,7 +29,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:shapeAppearanceOverlay="@style/rounded12top18bottom"
-            tools:srcCompat="@drawable/arisa_lewd" />
+            tools:srcCompat="@drawable/aya" />
 
         <TextView
             android:id="@+id/txtTitle"

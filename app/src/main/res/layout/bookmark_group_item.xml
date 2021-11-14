@@ -24,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/arisa_lewd"
+            android:src="@drawable/aya"
             app:shapeAppearance="@style/circle" />
 
     </com.google.android.material.card.MaterialCardView>

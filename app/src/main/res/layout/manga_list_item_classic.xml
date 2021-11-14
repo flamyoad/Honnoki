@@ -27,7 +27,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@drawable/arisa_lewd" />
+            tools:srcCompat="@drawable/aya" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
