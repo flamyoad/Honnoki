@@ -2,6 +2,7 @@ package com.flamyoad.honnoki.ui.options
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.flamyoad.honnoki.common.BaseViewModel
 import com.flamyoad.honnoki.data.preference.ReaderPreference
 import com.flamyoad.honnoki.data.preference.SourcePreference
 import com.flamyoad.honnoki.data.preference.UiPreference
@@ -18,29 +19,45 @@ class OptionsViewModel(
     private val sourcePrefs: SourcePreference,
     private val readerPrefs: ReaderPreference,
     private val applicationScope: CoroutineScope
-) : ViewModel() {
+) : BaseViewModel() {
 
-    val nightModeEnabled = uiPrefs.nightModeEnabled
-        .shareIn(viewModelScope, SharingStarted.WhileSubscribed(), 1)
+    val nightModeEnabled: SharedFlow<Boolean> =
+        uiPrefs.nightModeEnabled.toSharedFlow(replay = 0)
 
     val preferredSource: Flow<Source> = sourcePrefs.homeSource
 
     val preferredMangadexQuality = readerPrefs.mangadexQualityMode
 
-    val showExtraSpaceAtBottomIndicator = readerPrefs.extraSpaceAtBottomIndicator
+    val showExtraSpaceAtBottomIndicator =
+        readerPrefs.extraSpaceAtBottomIndicator
 
     val sourceOptionList: StateFlow<List<SourceOption>> = preferredSource
         .map { selectedSource ->
             Source.values()
                 .filter { it.isEnabled }
-                .map { SourceOption(source = it, isSelected = it == selectedSource) }
+                .map {
+                    SourceOption(
+                        source = it,
+                        isSelected = it == selectedSource
+                    )
+                }
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
-    val mangadexQualityOptionList: StateFlow<List<MangadexQualityModeOption>> = preferredMangadexQuality
-        .map { selectedQuality ->
-            MangadexQualityMode.values()
-                .map { MangadexQualityModeOption(mode = it, isSelected = it == selectedQuality ) }
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    val mangadexQualityOptionList: StateFlow<List<MangadexQualityModeOption>> =
+        preferredMangadexQuality
+            .map { selectedQuality ->
+                MangadexQualityMode.values()
+                    .map {
+                        MangadexQualityModeOption(
+                            mode = it,
+                            isSelected = it == selectedQuality
+                        )
+                    }
+            }.stateIn(
+                viewModelScope,
+                SharingStarted.WhileSubscribed(),
+                emptyList()
+            )
 
     fun setNightMode(enabled: Boolean) {
         applicationScope.launch {
