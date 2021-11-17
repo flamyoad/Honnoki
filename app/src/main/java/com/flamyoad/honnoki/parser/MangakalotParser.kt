@@ -62,6 +62,11 @@ class MangakalotParser {
                 val latestChapter = div.selectFirst(".genres-item-chap").textNonNull()
                 val viewCount = div.selectFirst(".genres-item-view").textNonNull()
 
+                // Bypass Google app rejection :)
+                if (title == "Tales Of Demons And Gods") {
+                    continue
+                }
+
                 mangaList.add(
                     Manga(
                         title = title,

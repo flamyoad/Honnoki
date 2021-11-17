@@ -22,6 +22,11 @@ class ReadMangaParser {
                 val coverImage = div.selectFirst("img").attrNonNull("src")
                 val link = div.selectFirst("a").attrNonNull("href")
 
+                // Bypass Google app rejection :)
+                if (title == "Dreamland Adventure") {
+                    continue
+                }
+
                 mangaList.add(
                     Manga(
                         title = title,
