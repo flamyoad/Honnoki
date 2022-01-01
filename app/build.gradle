@@ -27,6 +27,9 @@ android {
         versionCode 11
         versionName "1.0.10"
 
+        // base Application name
+        resValue 'string', 'app_name', 'Honnoki'
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         javaCompileOptions {
@@ -39,9 +42,12 @@ android {
 
     buildTypes {
         debug {
+            resValue 'string', 'app_name', '(D) Honnoki'
+            applicationIdSuffix = ".debug"
             manifestPlaceholders = [crashlyticsCollectionEnabled:"false"]
         }
         release {
+            resValue 'string', 'app_name', 'Honnoki'
             manifestPlaceholders = [crashlyticsCollectionEnabled:"true"]
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
