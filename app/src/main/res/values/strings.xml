@@ -1,5 +1,6 @@
 <resources>
-    <string name="app_name" translatable="false">Honnoki</string>
+<!--    <string name="app_name" translatable="false">Honnoki</string>-->
+    <string name="app_name_debug" translatable="false">(D) Honnoki</string>
     <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
     <string name="manga_title" translatable="false">Ore no Imouto ga Konna ni Kawaii Wake ga Nai - Ayase IF Ore no Imouto ga Konna ni Kawaii Wake ga Nai - Ayase IF</string>
     <string name="manga_chap_title" translatable="false">CHAPTER 143</string>

@@ -97,7 +97,7 @@ class DownloadPickerViewModel(
         }
     }
 
-    fun selectLanguageLocale(languageLocale: String) {
+    fun selectLanguageLocale(languageLocale: String) {  
         selectedLanguage.value = LanguageFilter(locale = languageLocale, isSelected = false)
         previousSelectedChapter = null
     }
