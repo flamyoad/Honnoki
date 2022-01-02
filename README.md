@@ -1,7 +1,7 @@
 # Honnoki ほんの木
 
 <div>
-  <a href="https://play.google.com/store/apps/details?id=com.flamyoad.honnoki" target="_blank">
+  <a href="https://play.google.com/store/apps/details?id=com.flamyoad.honnoki&hl=en&gl=US" target="_blank">
  <img src="https://raw.githubusercontent.com/flamyoad/TsukiViewer/master/play-store-button.png" width=200 height=60>
 </a>
 
