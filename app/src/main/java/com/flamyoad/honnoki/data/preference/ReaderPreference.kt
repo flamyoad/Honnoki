@@ -1,11 +1,7 @@
 package com.flamyoad.honnoki.data.preference
 
-import android.content.res.Configuration
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.*
 import com.flamyoad.honnoki.parser.model.MangadexQualityMode
 import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.ui.reader.model.PageScrollDirection
@@ -13,7 +9,6 @@ import com.flamyoad.honnoki.ui.reader.model.ReaderOrientation
 import com.flamyoad.honnoki.ui.reader.model.ReaderViewMode
 import com.flamyoad.honnoki.utils.extensions.getConvertedValue
 import com.flamyoad.honnoki.utils.extensions.getValue
-import kotlinx.coroutines.flow.Flow
 
 class ReaderPreference(private val dataStore: DataStore<Preferences>) {
     private val VOLUME_UP_ACTION = stringPreferencesKey("volume_up_action")
@@ -25,6 +20,9 @@ class ReaderPreference(private val dataStore: DataStore<Preferences>) {
     private val SHOW_ADS = booleanPreferencesKey("show_ads")
     private val VIEW_MODE = stringPreferencesKey("view_mode")
     private val ORIENTATION = stringPreferencesKey("orientation")
+    private val SCREEN_BRIGHTNESS = floatPreferencesKey("screen_brightness")
+    private val USE_SYSTEM_BRIGHTNESS =
+        booleanPreferencesKey("use_system_brightness")
 
     fun shouldShowAds(source: Source): Boolean {
         return false
@@ -52,34 +50,33 @@ class ReaderPreference(private val dataStore: DataStore<Preferences>) {
         )
     }
 
+    val screenBrightness =
+        dataStore.getValue(SCREEN_BRIGHTNESS, defaultValueIfNull = 0.5f)
+
+    val useSystemBrightness =
+        dataStore.getValue(USE_SYSTEM_BRIGHTNESS, defaultValueIfNull = true)
+
     suspend fun editVolumeUpAction(scrollDir: PageScrollDirection) =
-        dataStore.edit {
-            it[VOLUME_UP_ACTION] = scrollDir.toString()
-        }
+        dataStore.edit { it[VOLUME_UP_ACTION] = scrollDir.toString() }
 
     suspend fun editVolumeDownAction(scrollDir: PageScrollDirection) =
-        dataStore.edit {
-            it[VOLUME_DOWN_ACTION] = scrollDir.toString()
-        }
+        dataStore.edit { it[VOLUME_DOWN_ACTION] = scrollDir.toString() }
 
     suspend fun editMangadexQualityMode(mode: MangadexQualityMode) =
-        dataStore.edit {
-            it[MANGADEX_QUALITY_MODE] = mode.toString()
-        }
+        dataStore.edit { it[MANGADEX_QUALITY_MODE] = mode.toString() }
 
     suspend fun editExtraSpaceAtBottomIndicator(isEnabled: Boolean) =
-        dataStore.edit {
-            it[EXTRA_SPACE_AT_BOTTOM_INDICATOR] = isEnabled
-        }
+        dataStore.edit { it[EXTRA_SPACE_AT_BOTTOM_INDICATOR] = isEnabled }
 
     suspend fun editReaderViewMode(viewMode: ReaderViewMode) =
-        dataStore.edit {
-            it[VIEW_MODE] = viewMode.toString()
-        }
+        dataStore.edit { it[VIEW_MODE] = viewMode.toString() }
 
-    suspend fun editReaderOrientation(orientation: ReaderOrientation) {
-        dataStore.edit {
-            it[ORIENTATION] = orientation.toString()
-        }
-    }
+    suspend fun editReaderOrientation(orientation: ReaderOrientation) =
+        dataStore.edit { it[ORIENTATION] = orientation.toString() }
+
+    suspend fun editScreenBrightness(brightness: Float) =
+        dataStore.edit { it[SCREEN_BRIGHTNESS] = brightness }
+
+    suspend fun editUseSystemBrightness(value: Boolean) =
+        dataStore.edit { it[USE_SYSTEM_BRIGHTNESS] = value }
 }

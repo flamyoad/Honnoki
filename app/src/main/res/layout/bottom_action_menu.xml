@@ -61,6 +61,24 @@
         app:drawableTopCompat="@drawable/ic_baseline_screen_rotation_24_white" />
 
     <TextView
+        android:id="@+id/btnBrightness"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:drawablePadding="6dp"
+        android:ellipsize="end"
+        android:focusable="true"
+        android:gravity="center"
+        android:lines="1"
+        android:maxWidth="50dp"
+        android:padding="6dp"
+        android:text="Brightness"
+        android:textColor="@color/white"
+        app:drawableTopCompat="@drawable/ic_baseline_wb_sunny_24_white" />
+
+    <TextView
         android:id="@+id/btnBookmark"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
