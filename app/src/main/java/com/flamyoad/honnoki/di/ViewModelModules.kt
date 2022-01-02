@@ -74,6 +74,7 @@ val viewModelModules = module {
             get(named(KoinConstants.APP_SCOPE)),
             get(named(source)),
             get(),
+            get(),
         )
     }
 
@@ -121,4 +122,6 @@ val viewModelModules = module {
             androidApplication()
         )
     }
+
+    viewModel { ScreenBrightnessViewModel(get()) }
 }

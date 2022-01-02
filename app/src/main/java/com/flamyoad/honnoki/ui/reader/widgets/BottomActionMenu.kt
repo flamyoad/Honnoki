@@ -19,11 +19,13 @@ class BottomActionMenu @JvmOverloads constructor(
     private val btnChapters: TextView
     private val btnViewMode: TextView
     private val btnOrientation: TextView
+    private val btnBrightness: TextView
     private val btnBookmark: TextView
 
     var onChapterListClick: (() -> Unit)? = null
     var onViewModeClick: (() -> Unit)? = null
     var onOrientationClick: (() -> Unit)? = null
+    var onBrightnessClick: (() -> Unit)? = null
     var onBookmarkClick: (() -> Unit)? = null
 
     init {
@@ -31,11 +33,13 @@ class BottomActionMenu @JvmOverloads constructor(
         btnChapters = findViewById(R.id.btnChapters)
         btnViewMode = findViewById(R.id.btnViewMode)
         btnOrientation = findViewById(R.id.btnOrientation)
+        btnBrightness = findViewById(R.id.btnBrightness)
         btnBookmark = findViewById(R.id.btnBookmark)
 
         btnChapters.setOnClickListener { onChapterListClick?.invoke() }
         btnViewMode.setOnClickListener { onViewModeClick?.invoke() }
         btnOrientation.setOnClickListener { onOrientationClick?.invoke() }
+        btnBrightness.setOnClickListener { onBrightnessClick?.invoke() }
         btnBookmark.setOnClickListener { onBookmarkClick?.invoke() }
     }
 }

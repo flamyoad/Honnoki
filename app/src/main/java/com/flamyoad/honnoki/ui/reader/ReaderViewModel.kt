@@ -13,6 +13,7 @@ import com.flamyoad.honnoki.data.entities.Page
 import com.flamyoad.honnoki.data.preference.ReaderPreference
 import com.flamyoad.honnoki.repository.ChapterRepository
 import com.flamyoad.honnoki.repository.OverviewRepository
+import com.flamyoad.honnoki.repository.system.BrightnessRepository
 import com.flamyoad.honnoki.source.BaseSource
 import com.flamyoad.honnoki.ui.reader.model.LoadType
 import com.flamyoad.honnoki.ui.reader.model.ReaderOrientation
@@ -29,7 +30,8 @@ class ReaderViewModel(
     private val overviewRepo: OverviewRepository,
     private val applicationScope: CoroutineScope,
     private val baseSource: BaseSource,
-    private val readerPrefs: ReaderPreference
+    private val readerPrefs: ReaderPreference,
+    private val brightnessRepo: BrightnessRepository
 ) : BaseViewModel() {
 
     val source get() = baseSource.getSourceType()
@@ -41,6 +43,8 @@ class ReaderViewModel(
     val viewMode = readerPrefs.viewMode.asLiveData()
 
     val orientation = readerPrefs.orientation.asLiveData()
+
+    val screenBrightness = brightnessRepo.getBrightness().asLiveData()
 
     val overviewId get() = mangaOverviewId.value
 

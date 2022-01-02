@@ -4,9 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.GravityCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -20,6 +20,7 @@ import com.flamyoad.honnoki.data.entities.Chapter
 import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.databinding.ActivityReaderBinding
 import com.flamyoad.honnoki.dialog.BookmarkDialog
+import com.flamyoad.honnoki.dialog.ScreenBrightnessDialog
 import com.flamyoad.honnoki.ui.reader.model.LoadType
 import com.flamyoad.honnoki.ui.reader.model.ReaderOrientation
 import com.flamyoad.honnoki.ui.reader.model.ReaderViewMode
@@ -139,6 +140,7 @@ class ReaderActivity : AppCompatActivity() {
                 onChapterListClick = { showChapterListDialog() }
                 onViewModeClick = { showViewModeDialog() }
                 onOrientationClick = { showOrientationDialog() }
+                onBrightnessClick = { showBrightnessDialog()}
                 onBookmarkClick = { showBookmarkDialog() }
             }
 
@@ -224,6 +226,12 @@ class ReaderActivity : AppCompatActivity() {
 
         viewModel.viewMode.observe(this) {
             initReaderScreen(it)
+        }
+
+        viewModel.screenBrightness.observe(this) {
+            val layoutParams = window.attributes
+            layoutParams.screenBrightness = it
+            window.attributes = layoutParams
         }
     }
 
@@ -319,6 +327,10 @@ class ReaderActivity : AppCompatActivity() {
                 viewModel.editOrientation(orientations[index])
             }
         }
+    }
+
+    private fun showBrightnessDialog() {
+        ScreenBrightnessDialog.show(supportFragmentManager)
     }
 
     private fun showBookmarkDialog() {
