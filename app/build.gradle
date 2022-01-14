@@ -25,7 +25,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 11
-        versionName "1.0.10"
+        versionName "1.0.12"
 
         // base Application name
         resValue 'string', 'app_name', 'Honnoki'
@@ -44,6 +44,7 @@ android {
         debug {
             resValue 'string', 'app_name', '(D) Honnoki'
             applicationIdSuffix = ".debug"
+            versionNameSuffix = "(D)"
             manifestPlaceholders = [crashlyticsCollectionEnabled:"false"]
         }
         release {
