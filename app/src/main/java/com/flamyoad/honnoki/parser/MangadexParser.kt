@@ -54,6 +54,7 @@ class MangadexParser {
             return@withContext mangas ?: emptyList()
         }
 
+    // why is MDResult(id=null, type=null, attributes=null, reltionships=[])
     suspend fun parseForMangaOverview(json: MDEntity): MangaOverview =
         withContext(Dispatchers.Default) {
             val mangaId =

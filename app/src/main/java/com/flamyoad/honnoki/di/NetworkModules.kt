@@ -216,7 +216,7 @@ fun provideMangadexService(httpClient: OkHttpClient): MangadexService {
 fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
     val httpLoggingInterceptor = HttpLoggingInterceptor()
     if (BuildConfig.DEBUG)
-        httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BASIC
+        httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
     else
         httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.NONE
 
