@@ -6,8 +6,6 @@ import androidx.room.*
 @Entity(
     tableName = "page",
     indices = [
-//        Index("chapterId"),
-//        Index("link", unique = true)
         Index(value = ["chapterId", "number"], unique = true)
     ],
     foreignKeys = [ForeignKey(
