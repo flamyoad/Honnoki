@@ -192,14 +192,10 @@ class MangadexParser {
     ): List<Page> =
         withContext(Dispatchers.Default) {
             val baseUrl = baseUrlJson.baseUrl
-            val chapter = chapterJson.data
-            val chapterHash = chapter?.attributes?.hash ?: ""
+            val chapter = baseUrlJson.chapter
+            val chapterHash = chapter.hash ?: ""
 
-            if (chapter?.attributes?.data == null) {
-                return@withContext emptyList()
-            }
-
-            return@withContext chapter.attributes.data.mapIndexed { index, fileName ->
+            return@withContext chapter.data.mapIndexed { index, fileName ->
                 Page(
                     number = index + 1,
                     link = constructPageUrl(
