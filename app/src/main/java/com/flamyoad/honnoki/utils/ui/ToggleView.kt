@@ -90,15 +90,13 @@ class ToggleView @JvmOverloads constructor(
     }
 
     override fun onSaveInstanceState(): Parcelable? {
-        val superState = super.onSaveInstanceState()
-        return when (superState) {
+        return when (val superState = super.onSaveInstanceState()) {
             null -> superState
             else -> ToggleSaveState(superState, this.toggleState)
         }
     }
 
     override fun onRestoreInstanceState(state: Parcelable?) {
-        super.onRestoreInstanceState(state)
         when (state) {
             is ToggleSaveState -> {
                 super.onRestoreInstanceState(state.superState)
