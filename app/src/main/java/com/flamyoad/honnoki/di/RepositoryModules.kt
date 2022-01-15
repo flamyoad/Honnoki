@@ -1,7 +1,9 @@
 package com.flamyoad.honnoki.di
 
 import com.flamyoad.honnoki.repository.*
-import com.flamyoad.honnoki.repository.download.DownloadRepository
+import com.flamyoad.honnoki.repository.chapter.ChapterRepository
+import com.flamyoad.honnoki.repository.chapter.ChapterRepositoryImpl
+import com.flamyoad.honnoki.repository.download.DownloadRepositoryImpl
 import com.flamyoad.honnoki.repository.system.BrightnessRepository
 import com.flamyoad.honnoki.repository.system.BrightnessRepositoryImpl
 import com.flamyoad.honnoki.repository.system.SystemInfoRepository
@@ -12,16 +14,20 @@ import org.koin.dsl.module
 
 val repositoryModules = module {
     single { BookmarkRepository(get()) }
-    single { ChapterRepository(get()) }
+
+    single<ChapterRepository> { ChapterRepositoryImpl(get()) }
+
     single { OverviewRepository(get()) }
+
     single { ReadHistoryRepository(get()) }
-    single { DownloadRepository(get(), get(), androidApplication()) }
-    single { PageRepository(get()) }
+
+    single { DownloadRepositoryImpl(get(), get(), androidApplication()) }
+
     single<SystemInfoRepository> { SystemInfoRepositoryImpl(androidApplication()) }
+
     single<BrightnessRepository> {
         BrightnessRepositoryImpl(
-            get(),
-            get(named(KoinConstants.APP_SCOPE))
+            get(), get(named(KoinConstants.APP_SCOPE))
         )
     }
 }

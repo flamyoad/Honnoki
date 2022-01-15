@@ -75,4 +75,7 @@
     <string name="reader_orientation_portrait">Portrait</string>
     <string name="reader_orientation_landscape">Landscape</string>
 
+    <string name="download_channel_notification">Honnoki</string>
+    <string name="download_channel_description">Downloader</string>
+
 </resources>

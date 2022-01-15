@@ -8,8 +8,7 @@ import com.flamyoad.honnoki.common.State
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.mapper.mapToDb
 import com.flamyoad.honnoki.data.mapper.mapToDownloadChapters
-import com.flamyoad.honnoki.repository.ChapterRepository
-import com.flamyoad.honnoki.repository.download.DownloadRepository
+import com.flamyoad.honnoki.repository.download.DownloadRepositoryImpl
 import com.flamyoad.honnoki.ui.download.model.DownloadChapter
 import com.flamyoad.honnoki.ui.overview.model.ChapterListSort
 import com.flamyoad.honnoki.ui.overview.model.LanguageFilter
@@ -20,7 +19,7 @@ import kotlinx.coroutines.launch
 
 class DownloadPickerViewModel(
     private val db: AppDatabase,
-    private val downloadRepository: DownloadRepository,
+    private val downloadRepository: DownloadRepositoryImpl,
     private val applicationScope: CoroutineScope
 ) : ViewModel() {
     private val mangaOverviewId = MutableStateFlow(-1L)

@@ -3,15 +3,12 @@ package com.flamyoad.honnoki.viewmodel.download
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
 import com.flamyoad.honnoki.data.db.AppDatabase
-import com.flamyoad.honnoki.repository.download.DownloadRepository
+import com.flamyoad.honnoki.repository.download.DownloadRepositoryImpl
 import com.flamyoad.honnoki.rules.MainCoroutineRule
 import com.flamyoad.honnoki.ui.download.DownloadPickerViewModel
 import com.flamyoad.honnoki.ui.download.model.DownloadChapter
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.TestCoroutineScope
-import kotlinx.coroutines.test.setMain
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -30,7 +27,7 @@ class DownloadPickerViewModelTest {
     private lateinit var db: AppDatabase
 
     @Mock
-    private lateinit var downloadRepository: DownloadRepository
+    private lateinit var downloadRepository: DownloadRepositoryImpl
 
     private lateinit var viewModel: DownloadPickerViewModel
 

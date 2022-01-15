@@ -12,6 +12,9 @@
         </intent>
     </queries>
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+
     <application
         android:name=".MyApplication"
         android:allowBackup="true"

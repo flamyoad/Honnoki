@@ -11,7 +11,7 @@ import com.flamyoad.honnoki.data.entities.Chapter
 import com.flamyoad.honnoki.data.entities.MangaOverview
 import com.flamyoad.honnoki.data.entities.Page
 import com.flamyoad.honnoki.data.preference.ReaderPreference
-import com.flamyoad.honnoki.repository.ChapterRepository
+import com.flamyoad.honnoki.repository.chapter.ChapterRepositoryImpl
 import com.flamyoad.honnoki.repository.OverviewRepository
 import com.flamyoad.honnoki.repository.system.BrightnessRepository
 import com.flamyoad.honnoki.source.BaseSource
@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap
 @ExperimentalPagingApi
 class ReaderViewModel(
     private val db: AppDatabase,
-    private val chapterRepo: ChapterRepository,
+    private val chapterRepo: ChapterRepositoryImpl,
     private val overviewRepo: OverviewRepository,
     private val applicationScope: CoroutineScope,
     private val baseSource: BaseSource,

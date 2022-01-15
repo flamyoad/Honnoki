@@ -10,6 +10,8 @@ import androidx.work.*
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.entities.Chapter
+import com.flamyoad.honnoki.repository.chapter.ChapterRepository
+import com.flamyoad.honnoki.source.BaseSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
@@ -22,41 +24,54 @@ import org.koin.core.component.inject
 import org.koin.core.qualifier.named
 import java.io.File
 
-class DownloadWorker(context: Context, parameters: WorkerParameters) :
+class DownloadWorker(
+    private val context: Context,
+    parameters: WorkerParameters
+) :
     CoroutineWorker(context, parameters), KoinComponent {
 
     private val db: AppDatabase by inject()
-
-    private val okHttpClient: OkHttpClient by inject(named(inputData.getString(SOURCE) ?: ""))
-
-    private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as
-            NotificationManager
+    private val chapterRepo: ChapterRepository by inject()
+    private val baseSource: BaseSource by inject(named(getSourceParam()))
+    private val okHttpClient: OkHttpClient by inject(named(getSourceParam()))
+    private val notificationManager =
+        context.getSystemService(Context.NOTIFICATION_SERVICE) as
+                NotificationManager
 
     override suspend fun doWork(): Result {
-        val chapterIdList = inputData.getLongArray(CHAPTER_ID_LIST) ?: return Result.failure()
-        val downloadRootDir = inputData.getString(DOWNLOAD_DIR_PATH) ?: return Result.failure()
+        val chapterId = inputData.getLong(CHAPTER_ID, -1)
+        if (chapterId == -1L) {
+            return Result.failure()
+        }
+        val downloadRootDir =
+            inputData.getString(DOWNLOAD_DIR_PATH) ?: return Result.failure()
 
-        for (id in chapterIdList) {
-            val chapter = db.chapterDao().get(id) ?: continue
-            val overview =
-                db.mangaOverviewDao().getByIdBlocking(chapter.mangaOverviewId) ?: continue
-            // todo: refactor this method which extracts folder path
-            val chapterDir = downloadRootDir + "/" + overview.mainTitle + "/" + chapter.title
+        val chapter = db.chapterDao().get(chapterId) ?: return Result.failure()
+        val overview =
+            db.mangaOverviewDao().getByIdBlocking(chapter.mangaOverviewId)
+                ?: return Result.failure()
+        // todo: refactor this method which extracts folder path
+        val chapterDir =
+            downloadRootDir + "/" + overview.mainTitle + "/" + chapter.title
 
-            //todo: If user has not entered the reader before, page is always []. Fix!!
-            val pages = db.pageDao().getPages(id)
-            for (page in pages) {
-                download(
-                    page.link,
-                    dirPath = chapterDir,
-                    fileName = page.number.toString() + ".jpg"
-                )
-            }
+        chapterRepo.fetchChapterImages(chapter, baseSource)
+
+        val pages = db.pageDao().getPages(chapterId)
+        for (page in pages) {
+            download(
+                page.link,
+                dirPath = chapterDir,
+                fileName = page.number.toString() + ".jpg"
+            )
         }
         return Result.success()
     }
 
-    private suspend fun download(imageUrl: String, dirPath: String, fileName: String) {
+    private suspend fun download(
+        imageUrl: String,
+        dirPath: String,
+        fileName: String
+    ) {
         withContext(Dispatchers.IO) {
             // Calls setForegroundInfo() periodically when it needs to update
             // the ongoing Notification
@@ -85,37 +100,36 @@ class DownloadWorker(context: Context, parameters: WorkerParameters) :
 
         // This PendingIntent can be used to cancel the worker
         val intent = WorkManager.getInstance(applicationContext)
-            .createCancelPendingIntent(getId())
+            .createCancelPendingIntent(id)
 
         // Create a Notification channel if necessary
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createChannel()
         }
 
-        val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
-            .setContentTitle(title)
-            .setTicker(title)
-            .setContentText(progress)
-            .setSmallIcon(R.drawable.aya)
-            .setSilent(true) // Disables ringing sound
-            .setOngoing(true)
-            // Add the cancel action to the notification which can
-            // be used to cancel the worker
-            .addAction(android.R.drawable.ic_delete, cancel, intent)
-            .build()
+        val notification =
+            NotificationCompat.Builder(applicationContext, CHANNEL_ID)
+                .setContentTitle(title)
+                .setTicker(title)
+                .setContentText(progress)
+                .setSmallIcon(R.drawable.aya)
+                .setSilent(true) // Disables ringing sound
+                .setOngoing(true)
+                // Add the cancel action to the notification which can
+                // be used to cancel the worker
+                .addAction(android.R.drawable.ic_delete, cancel, intent)
+                .build()
 
         return ForegroundInfo(NOTIFICATION_ID, notification)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createChannel() {
-//        val name = getString(R.string.channel_name)
-//        val descriptionText = getString(R.string.channel_description)
-
-        val name = "Downloader notification channel"
+        val name = context.getString(R.string.download_channel_notification)
         val importance = NotificationManager.IMPORTANCE_DEFAULT
         val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
-            description = "Downloader"
+            description =
+                context.getString(R.string.download_channel_description)
         }
         // Register the channel with the system; you can't change the importance
         // or other notification behaviors after this
@@ -126,11 +140,13 @@ class DownloadWorker(context: Context, parameters: WorkerParameters) :
         File(dir).also { it.mkdirs() }
     }
 
+    private fun getSourceParam(): String = inputData.getString(SOURCE) ?: ""
+
     companion object {
         private const val CHANNEL_ID = "honnoki.download"
         private const val NOTIFICATION_ID = 100
 
-        private const val CHAPTER_ID_LIST = "chapter_id_list"
+        private const val CHAPTER_ID = "chapter_id"
         private const val DOWNLOAD_DIR_PATH = "download_dir_path"
         private const val SOURCE = "source"
 
@@ -138,15 +154,12 @@ class DownloadWorker(context: Context, parameters: WorkerParameters) :
         // Array<Long> is mapped to Java's boxed Long[]
         // cannot use toTypedArray() because it creates Array<Long>
         fun createRequiredData(
-            chapters: List<Chapter>,
+            chapter: Chapter,
             downloadDirPath: String,
             source: String
         ): Data {
-            val chapterIdArray = LongArray(chapters.size) { index ->
-                chapters[index].id ?: -1
-            }
             return Data.Builder().apply {
-                putLongArray(CHAPTER_ID_LIST, chapterIdArray)
+                putLong(CHAPTER_ID, chapter.id ?: -1)
                 putString(DOWNLOAD_DIR_PATH, downloadDirPath)
                 putString(SOURCE, source)
             }.build()
