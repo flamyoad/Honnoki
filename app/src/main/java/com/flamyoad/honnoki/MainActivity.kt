@@ -103,7 +103,6 @@ class MainActivity : AppCompatActivity() {
             }
             transaction.show(fragment)
         }
-
         transaction.commit()
     }
 

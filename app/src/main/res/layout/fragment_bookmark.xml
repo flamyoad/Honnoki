@@ -54,21 +54,26 @@
                         app:viewGone="@{vm.isSearching() == false}"
                         tools:text="Kotowifey" />
 
-                    <EditText
+                    <androidx.appcompat.widget.SearchView
+                        android:id="@+id/searchView"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        app:viewGone="@{vm.isSearching() == true}" />
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:layoutDirection="rtl"
+                        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
                 </FrameLayout>
 
-                <ImageButton
-                    android:id="@+id/btnSearch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:onClick="@{() -> vm.toggleSearch()}"
-                    android:paddingHorizontal="12dp"
-                    tools:srcCompat="@drawable/ic_search_white_24dp" />
+                <!--                <ImageButton-->
+                <!--                    android:id="@+id/btnSearch"-->
+                <!--                    android:layout_width="wrap_content"-->
+                <!--                    android:layout_height="match_parent"-->
+                <!--                    android:background="?attr/selectableItemBackgroundBorderless"-->
+                <!--                    android:onClick="@{() -> vm.toggleSearch()}"-->
+                <!--                    android:paddingHorizontal="12dp"-->
+                <!--                    app:toggleSearchLogo="@{vm.isSearching()}"-->
+                <!--                    tools:srcCompat="@drawable/ic_search_white_24dp" />-->
 
                 <ImageButton
                     android:id="@+id/btnContextMenu"
