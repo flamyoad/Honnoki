@@ -1,113 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/coordinatorLayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <data>
+
+        <variable
+            name="vm"
+            type="com.flamyoad.honnoki.ui.library.bookmark.BookmarkViewModel" />
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinatorLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimarySurface">
+        android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/listGroups"
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimaryLight"
-            app:layout_scrollFlags="scroll|enterAlwaysCollapsed"/>
+            android:background="?attr/colorPrimarySurface">
 
-        <LinearLayout
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/listGroups"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimaryLight"
+                app:layout_scrollFlags="scroll|enterAlwaysCollapsed" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="?android:selectableItemBackground"
+                android:clickable="true"
+                android:orientation="horizontal">
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/header"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:lines="1"
+                        android:paddingVertical="10dp"
+                        android:paddingStart="32dp"
+                        android:paddingEnd="8dp"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
+                        app:viewGone="@{vm.isSearching() == false}"
+                        tools:text="Kotowifey" />
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:viewGone="@{vm.isSearching() == true}" />
+
+                </FrameLayout>
+
+                <ImageButton
+                    android:id="@+id/btnSearch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:onClick="@{() -> vm.toggleSearch()}"
+                    android:paddingHorizontal="12dp"
+                    tools:srcCompat="@drawable/ic_search_white_24dp" />
+
+                <ImageButton
+                    android:id="@+id/btnContextMenu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:paddingHorizontal="12dp"
+                    app:srcCompat="@drawable/ic_list_white_24dp" />
+
+            </LinearLayout>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
+            android:id="@+id/listItems"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="?android:selectableItemBackground"
-            android:clickable="true"
-            android:orientation="horizontal">
+            android:background="?android:attr/colorBackground"
+            app:fastScrollPopupBgColor="@color/colorAccent"
+            app:fastScrollPopupTextColor="@android:color/primary_text_dark"
+            app:fastScrollThumbColor="@color/colorAccent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-            <TextView
-                android:id="@+id/header"
+        <LinearLayout
+            android:id="@+id/actionModeBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:padding="8dp"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnMoveTo"
+                style="@style/Widget.MaterialComponents.Button.TextButton.Dialog.Flush"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ellipsize="end"
-                android:gravity="center"
-                android:lines="1"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="10dp"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                tools:text="Kotowifey" />
-
-            <ImageButton
-                android:id="@+id/btnContextMenu"
-                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:background="@null"
-                android:paddingHorizontal="12dp"
-                app:srcCompat="@drawable/ic_list_white_24dp" />
+                android:layout_weight="1"
+                android:insetLeft="0dp"
+                android:insetRight="0dp"
+                android:letterSpacing="0"
+                android:text="Move To"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                app:backgroundTint="@color/flower_petal_medium"
+                app:icon="@drawable/ic_baseline_snippet_folder_24"
+                app:iconGravity="top"
+                app:iconPadding="4dp"
+                app:iconTint="@color/white"
+                app:shapeAppearanceOverlay="@style/bookmark_actionmode_btn_left" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDelete"
+                style="@style/Widget.MaterialComponents.Button.TextButton.Dialog.Flush"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:insetLeft="0dp"
+                android:insetRight="0dp"
+                android:letterSpacing="0"
+                android:text="Delete"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                app:backgroundTint="@color/colorPrimary"
+                app:icon="@drawable/ic_baseline_delete_24"
+                app:iconGravity="top"
+                app:iconPadding="4dp"
+                app:iconTint="@color/white"
+                app:shapeAppearanceOverlay="@style/bookmark_actionmode_btn_right" />
 
         </LinearLayout>
 
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
-        android:id="@+id/listItems"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="?android:attr/colorBackground"
-        app:fastScrollPopupBgColor="@color/colorAccent"
-        app:fastScrollPopupTextColor="@android:color/primary_text_dark"
-        app:fastScrollThumbColor="@color/colorAccent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-    <LinearLayout
-        android:id="@+id/actionModeBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:padding="8dp"
-        android:visibility="gone"
-        tools:visibility="visible">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnMoveTo"
-            style="@style/Widget.MaterialComponents.Button.TextButton.Dialog.Flush"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:insetLeft="0dp"
-            android:insetRight="0dp"
-            android:letterSpacing="0"
-            android:text="Move To"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            app:backgroundTint="@color/flower_petal_medium"
-            app:icon="@drawable/ic_baseline_snippet_folder_24"
-            app:iconGravity="top"
-            app:iconPadding="4dp"
-            app:iconTint="@color/white"
-            app:shapeAppearanceOverlay="@style/bookmark_actionmode_btn_left" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnDelete"
-            style="@style/Widget.MaterialComponents.Button.TextButton.Dialog.Flush"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:insetLeft="0dp"
-            android:insetRight="0dp"
-            android:letterSpacing="0"
-            android:text="Delete"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            app:backgroundTint="@color/colorPrimary"
-            app:icon="@drawable/ic_baseline_delete_24"
-            app:iconGravity="top"
-            app:iconPadding="4dp"
-            app:iconTint="@color/white"
-            app:shapeAppearanceOverlay="@style/bookmark_actionmode_btn_right" />
-
-    </LinearLayout>
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

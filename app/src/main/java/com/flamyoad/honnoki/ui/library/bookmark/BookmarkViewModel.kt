@@ -48,6 +48,9 @@ class BookmarkViewModel(
         }
         .asLiveData()
 
+    private val isSearching = MutableStateFlow(false)
+    fun isSearching() = isSearching.asStateFlow()
+
     init {
         initializeBookmarkGroups()
     }
@@ -94,5 +97,9 @@ class BookmarkViewModel(
 
     fun selectBookmarkGroup(bookmarkGroup: BookmarkGroup) {
         selectedBookmarkGroupId.value = bookmarkGroup.id ?: -1
+    }
+
+    fun toggleSearch() {
+        isSearching.value = !isSearching.value
     }
 }

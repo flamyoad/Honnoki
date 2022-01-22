@@ -2,6 +2,7 @@ package com.flamyoad.honnoki.ui.library.bookmark
 
 import android.os.Bundle
 import android.view.*
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
@@ -56,6 +57,7 @@ class BookmarkFragment : Fragment() {
     ): View {
         _binding =
             FragmentBookmarkBinding.inflate(layoutInflater, container, false)
+        binding.lifecycleOwner = this
         return binding.root
     }
 
@@ -234,7 +236,7 @@ class BookmarkFragment : Fragment() {
         val btmSlide = Slide(Gravity.BOTTOM).apply {
             addTarget(binding.actionModeBar)
         }
-        TransitionManager.beginDelayedTransition(binding.root, btmSlide)
+        TransitionManager.beginDelayedTransition(binding.coordinatorLayout, btmSlide)
         binding.actionModeBar.visibility = View.VISIBLE
     }
 
