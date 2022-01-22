@@ -1,19 +1,20 @@
 package com.flamyoad.honnoki.ui.overview.adapter
 
+import android.animation.LayoutTransition
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.flamyoad.honnoki.databinding.MangaSummaryItemBinding
+import com.flamyoad.honnoki.common.State
 import com.flamyoad.honnoki.data.entities.Genre
 import com.flamyoad.honnoki.data.entities.MangaOverview
-import com.flamyoad.honnoki.common.State
+import com.flamyoad.honnoki.databinding.MangaSummaryItemBinding
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.kennyc.view.MultiStateView
 
-class MangaSummaryAdapter(onGenreClick: (Genre) -> Unit)
-    : RecyclerView.Adapter<MangaSummaryAdapter.SummaryViewHolder>() {
+class MangaSummaryAdapter(onGenreClick: (Genre) -> Unit) :
+    RecyclerView.Adapter<MangaSummaryAdapter.SummaryViewHolder>() {
 
     private var mangaOverviewState: State<MangaOverview> = State.Loading
 
@@ -21,12 +22,17 @@ class MangaSummaryAdapter(onGenreClick: (Genre) -> Unit)
 
     private val genreListAdapter = GenreListAdapter(onGenreClick)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SummaryViewHolder {
-        val binding = MangaSummaryItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): SummaryViewHolder {
+        val binding = MangaSummaryItemBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
         val holder = SummaryViewHolder(binding)
-
         holder.setupGenreRecyclerView()
-
         return holder
     }
 
@@ -46,7 +52,8 @@ class MangaSummaryAdapter(onGenreClick: (Genre) -> Unit)
         notifyDataSetChanged()
     }
 
-    inner class SummaryViewHolder(val binding: MangaSummaryItemBinding): RecyclerView.ViewHolder(binding.root) {
+    inner class SummaryViewHolder(val binding: MangaSummaryItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun setupGenreRecyclerView() {
             val context = binding.root.context
             val flexLayoutManager = FlexboxLayoutManager(context).apply {
@@ -63,22 +70,41 @@ class MangaSummaryAdapter(onGenreClick: (Genre) -> Unit)
 
         fun bind() {
             when (val overview = mangaOverviewState) {
-                is State.Success -> { binding.expandableTextView.text = overview.value.summary }
-                is State.Error -> { binding.multiStateView.viewState = MultiStateView.ViewState.ERROR }
-                is State.Loading -> { binding.multiStateView.viewState = MultiStateView.ViewState.LOADING }
+                is State.Success -> {
+                    binding.expandableTextView.text = overview.value.summary
+                }
+                is State.Error -> {
+                    binding.multiStateView.viewState =
+                        MultiStateView.ViewState.ERROR
+                }
+                is State.Loading -> {
+                    binding.multiStateView.viewState =
+                        MultiStateView.ViewState.LOADING
+                }
             }
 
             when (val genreState = genreListState) {
-                is State.Success -> { genreListAdapter.setList(genreState.value) }
-                is State.Error -> { binding.multiStateView.viewState = MultiStateView.ViewState.ERROR }
-                is State.Loading -> { binding.multiStateView.viewState = MultiStateView.ViewState.LOADING }
+                is State.Success -> {
+                    genreListAdapter.setList(genreState.value)
+                }
+                is State.Error -> {
+                    binding.multiStateView.viewState =
+                        MultiStateView.ViewState.ERROR
+                }
+                is State.Loading -> {
+                    binding.multiStateView.viewState =
+                        MultiStateView.ViewState.LOADING
+                }
             }
 
-            val hasCompletedLoading = mangaOverviewState is State.Success && genreListState is State.Success
+            val hasCompletedLoading =
+                mangaOverviewState is State.Success && genreListState is State.Success
             if (hasCompletedLoading) {
-                binding.multiStateView.viewState = MultiStateView.ViewState.CONTENT
+                binding.multiStateView.viewState =
+                    MultiStateView.ViewState.CONTENT
             } else {
-                binding.multiStateView.viewState = MultiStateView.ViewState.LOADING
+                binding.multiStateView.viewState =
+                    MultiStateView.ViewState.LOADING
             }
         }
     }

@@ -1,30 +1,27 @@
 package com.flamyoad.honnoki
 
-import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.paging.ExperimentalPagingApi
+import com.flamyoad.honnoki.common.BaseBottomNavigationFragment
 import com.flamyoad.honnoki.databinding.ActivityMainBinding
 import kotlinx.coroutines.flow.collectLatest
-import java.lang.IllegalArgumentException
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @ExperimentalPagingApi
 class MainActivity : AppCompatActivity() {
 
-    private val viewModel: MainViewModel by viewModel()
-
-    private enum class NavigationFragmentType {
+    enum class NavigationFragmentType {
         HOME,
         SEARCH,
         LIBRARY,
         MORE
     }
+
+    private val viewModel: MainViewModel by viewModel()
 
     private var _binding: ActivityMainBinding? = null
     private val binding get() = requireNotNull(_binding)
@@ -89,7 +86,8 @@ class MainActivity : AppCompatActivity() {
         NavigationFragmentType.values()
             .filter { it != type }
             .forEach { it ->
-                supportFragmentManager.findFragmentByTag(it.name)?.let { transaction.hide(it) }
+                supportFragmentManager.findFragmentByTag(it.name)
+                    ?.let { transaction.hide(it) }
             }
 
         var fragment = supportFragmentManager.findFragmentByTag(type.name)
@@ -97,6 +95,12 @@ class MainActivity : AppCompatActivity() {
             fragment = instantiateFragment(type)
             transaction.add(R.id.fragmentContainerView, fragment, type.name)
         } else {
+            if (fragment.isVisible) {
+                (fragment as NavHostFragment).childFragmentManager.fragments.firstOrNull()
+                    ?.let {
+                        (it as? BaseBottomNavigationFragment)?.onBottomNavigationItemReclick()
+                    }
+            }
             transaction.show(fragment)
         }
 

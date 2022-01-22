@@ -32,7 +32,9 @@ class ExpandableTextView : AppCompatTextView, View.OnClickListener {
     override fun onTextChanged(text: CharSequence, start: Int, lengthBefore: Int, lengthAfter: Int) {
         post {
             // No need to do anything if text does not exceed line limit
-            if (lineCount < LINE_LIMIT) return@post
+            if (lineCount < LINE_LIMIT) {
+                return@post
+            }
 
             val uiMode = context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)
             val downArrow = when (uiMode) {

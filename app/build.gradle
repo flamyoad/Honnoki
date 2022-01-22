@@ -38,6 +38,10 @@ android {
                                       "$projectDir/schemas".toString()]
             }
         }
+
+        buildFeatures {
+            dataBinding true
+        }
     }
 
     buildTypes {

@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.paging.ExperimentalPagingApi
 import com.flamyoad.honnoki.MainViewModel
+import com.flamyoad.honnoki.common.BaseBottomNavigationFragment
 
 import com.flamyoad.honnoki.databinding.FragmentLibraryBinding
 import com.flamyoad.honnoki.utils.ui.DepthPageTransformer
@@ -14,7 +16,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.lang.IllegalArgumentException
 
-class LibraryFragment : Fragment() {
+class LibraryFragment : BaseBottomNavigationFragment() {
 
     private var _binding: FragmentLibraryBinding? = null
     val binding get() = requireNotNull(_binding)
