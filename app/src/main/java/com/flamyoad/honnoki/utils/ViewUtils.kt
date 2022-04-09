@@ -6,6 +6,8 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.flamyoad.honnoki.R
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 
 object ViewUtils {
     fun getLoadingIndicator(context: Context): Drawable {
@@ -36,5 +38,17 @@ object ViewUtils {
 
     fun isNightModeEnabled(context: Context): Boolean {
         return getUiMode(context) == Configuration.UI_MODE_NIGHT_YES
+    }
+
+    fun View.showKeyboard() {
+        this.isFocusableInTouchMode = true
+        this.requestFocus()
+        val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
+    }
+
+    fun View.hideKeyboard() {
+        val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(windowToken, 0)
     }
 }

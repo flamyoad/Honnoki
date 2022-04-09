@@ -13,8 +13,8 @@ import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
-import org.koin.core.component.inject
 import org.koin.core.context.startKoin
+import org.koin.core.logger.Level
 import timber.log.Timber
 
 class MyApplication : Application() {
@@ -46,7 +46,10 @@ class MyApplication : Application() {
         )
 
         startKoin {
-            androidLogger()
+            // https://github.com/InsertKoinIO/koin/issues/1188
+            // Bug caused by Koin using API which was removed in Kotlin 1.6.0
+            // Wait for Koin 3.2.0 to be released then can remove this
+            androidLogger(if (BuildConfig.DEBUG) Level.ERROR else Level.NONE)
             androidContext(this@MyApplication)
             modules(appModules)
         }

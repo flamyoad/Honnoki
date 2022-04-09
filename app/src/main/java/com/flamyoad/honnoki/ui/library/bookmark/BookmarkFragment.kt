@@ -1,7 +1,10 @@
 package com.flamyoad.honnoki.ui.library.bookmark
 
+import android.content.Context
 import android.os.Bundle
 import android.view.*
+import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
@@ -30,7 +33,6 @@ import com.flamyoad.honnoki.ui.library.bookmark.adapter.BookmarkGroupAdapter
 import com.flamyoad.honnoki.ui.overview.MangaOverviewActivity
 import com.flamyoad.honnoki.utils.extensions.getInteger
 import com.flamyoad.honnoki.utils.ui.willConsumeHorizontalScrolls
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -56,6 +58,8 @@ class BookmarkFragment : Fragment() {
     ): View {
         _binding =
             FragmentBookmarkBinding.inflate(layoutInflater, container, false)
+        binding.lifecycleOwner = this
+        binding.vm = viewModel
         return binding.root
     }
 
@@ -112,17 +116,27 @@ class BookmarkFragment : Fragment() {
 
     private fun initUi() {
         registerForContextMenu(binding.btnContextMenu)
-        binding.btnContextMenu.setOnClickListener {
-            it.showContextMenu()
+        binding.btnContextMenu.setOnClickListener { it.showContextMenu() }
+        binding.btnMoveTo.setOnClickListener { openMoveBookmarkDialog() }
+        binding.btnDelete.setOnClickListener { openDeleteBookmarkDialog() }
+        binding.searchView.setOnSearchClickListener { viewModel.toggleSearch() }
+
+        binding.searchView.setOnCloseListener {
+            viewModel.toggleSearch()
+            return@setOnCloseListener false
         }
 
-        binding.btnMoveTo.setOnClickListener {
-            openMoveBookmarkDialog()
-        }
+        binding.searchView.setOnQueryTextListener(object :
+            SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return true
+            }
 
-        binding.btnDelete.setOnClickListener {
-            openDeleteBookmarkDialog()
-        }
+            override fun onQueryTextChange(newText: String?): Boolean {
+                viewModel.setSearchQuery(newText ?: "")
+                return true
+            }
+        })
 
         lifecycleScope.launchWhenResumed {
             viewModel.tickedItems()
@@ -234,7 +248,10 @@ class BookmarkFragment : Fragment() {
         val btmSlide = Slide(Gravity.BOTTOM).apply {
             addTarget(binding.actionModeBar)
         }
-        TransitionManager.beginDelayedTransition(binding.root, btmSlide)
+        TransitionManager.beginDelayedTransition(
+            binding.coordinatorLayout,
+            btmSlide
+        )
         binding.actionModeBar.visibility = View.VISIBLE
     }
 

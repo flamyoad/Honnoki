@@ -1,14 +1,9 @@
 package com.flamyoad.honnoki.ui.home
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.data.preference.SourcePreference
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class HomeViewModel(private val sourcePref: SourcePreference) : ViewModel() {

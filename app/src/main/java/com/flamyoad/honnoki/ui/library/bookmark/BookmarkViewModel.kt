@@ -1,5 +1,6 @@
 package com.flamyoad.honnoki.ui.library.bookmark
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.*
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.entities.Bookmark
@@ -36,6 +37,11 @@ class BookmarkViewModel(
 
     val bookmarkGroupName get() = selectedBookmarkGroup.value?.name
 
+    private val isSearching = MutableStateFlow(false)
+    fun isSearching() = isSearching.asStateFlow()
+
+    private val searchQuery = MutableStateFlow("")
+
     private val tickedItems = MutableStateFlow<List<Bookmark>>(emptyList())
     fun tickedItems() = tickedItems.asStateFlow()
 
@@ -43,9 +49,18 @@ class BookmarkViewModel(
         .onEach { flowOf(emptyList<BookmarkWithOverview>()) }
         .filter { it != BookmarkGroup.empty() }
         .flatMapLatest { db.bookmarkDao().getAllWithOverviewFrom(it?.id ?: -1L) }
+        .flowOn(Dispatchers.IO)
+        .combine(searchQuery) { bookmarks, query ->
+            if (query.isBlank()) {
+                bookmarks
+            } else {
+                bookmarks.filter { it.overview.mainTitle.contains(query) }
+            }
+        }
         .combine(tickedItems) { fromDb, tickedBookmarks ->
             fromDb.map { it.copy(isSelected = it.bookmark in tickedBookmarks) }
         }
+        .flowOn(Dispatchers.Default)
         .asLiveData()
 
     init {
@@ -94,5 +109,14 @@ class BookmarkViewModel(
 
     fun selectBookmarkGroup(bookmarkGroup: BookmarkGroup) {
         selectedBookmarkGroupId.value = bookmarkGroup.id ?: -1
+    }
+
+    fun toggleSearch() {
+        searchQuery.value = ""
+        isSearching.value = !isSearching.value
+    }
+
+    fun setSearchQuery(query: String) {
+        searchQuery.value = query
     }
 }

@@ -12,9 +12,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.paging.ExperimentalPagingApi
 import com.bumptech.glide.Glide
 import com.flamyoad.honnoki.BuildConfig
 import com.flamyoad.honnoki.R
+import com.flamyoad.honnoki.common.BaseBottomNavigationFragment
 import com.flamyoad.honnoki.databinding.FragmentMoreOptionsBinding
 import com.flamyoad.honnoki.parser.model.MangadexQualityMode
 import com.github.venom.Venom
@@ -23,7 +25,7 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class OptionsFragment : Fragment() {
+class OptionsFragment : BaseBottomNavigationFragment() {
 
     private var _binding: FragmentMoreOptionsBinding? = null
     val binding get() = requireNotNull(_binding)

@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.ExperimentalPagingApi
 import com.flamyoad.honnoki.R
+import com.flamyoad.honnoki.common.BaseBottomNavigationFragment
 import com.flamyoad.honnoki.databinding.FragmentHomeBinding
 import com.flamyoad.honnoki.dialog.SourceSwitcherDialog
 import com.flamyoad.honnoki.source.BaseSource
@@ -29,7 +30,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.qualifier.named
 
 @ExperimentalPagingApi
-class HomeFragment : Fragment(), KoinComponent, SourceSwitcherDialog.Listener {
+class HomeFragment : BaseBottomNavigationFragment(), KoinComponent, SourceSwitcherDialog.Listener {
     private val binding by viewLifecycleLazy { FragmentHomeBinding.bind(requireView()) }
 
     private val viewModel: HomeViewModel by sharedViewModel()
@@ -37,10 +38,6 @@ class HomeFragment : Fragment(), KoinComponent, SourceSwitcherDialog.Listener {
     private val viewPagerAdapter by lazy { MangaListFragmentAdapter(this) }
 
     private var tabLayoutMediator: TabLayoutMediator? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,6 +51,14 @@ class HomeFragment : Fragment(), KoinComponent, SourceSwitcherDialog.Listener {
         super.onViewCreated(view, savedInstanceState)
         initUi()
         observeUi()
+    }
+
+    override fun onBottomNavigationItemReclick() {
+        super.onBottomNavigationItemReclick()
+        val currentItem = binding.viewPager.currentItem
+        if (currentItem != 0) {
+            binding.viewPager.currentItem = 0
+        }
     }
 
     private fun initUi() {

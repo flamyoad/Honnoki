@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 import com.flamyoad.honnoki.R
+import com.flamyoad.honnoki.common.BaseBottomNavigationFragment
 import com.flamyoad.honnoki.data.GenreConstants
 import com.flamyoad.honnoki.ui.search.adapter.SimpleSearchResultAdapter
 import com.flamyoad.honnoki.databinding.FragmentSimpleSearchBinding
@@ -40,7 +41,7 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @ExperimentalPagingApi
-class SimpleSearchFragment : Fragment() {
+class SimpleSearchFragment : BaseBottomNavigationFragment() {
     private val viewModel: SimpleSearchViewModel by viewModel()
 
     private val binding by viewLifecycleLazy {
