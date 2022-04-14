@@ -7,6 +7,7 @@ import com.flamyoad.honnoki.common.State
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.mapper.mapToDomain
 import com.flamyoad.honnoki.data.entities.*
+import com.flamyoad.honnoki.repository.chapter.ChapterRepository
 import com.flamyoad.honnoki.repository.chapter.ChapterRepositoryImpl
 import com.flamyoad.honnoki.source.BaseSource
 import com.flamyoad.honnoki.ui.overview.model.ChapterListSort
@@ -20,7 +21,7 @@ import kotlinx.coroutines.flow.*
 class MangaOverviewViewModel(
     private val db: AppDatabase,
     private val baseSource: BaseSource,
-    private val chapterRepo: ChapterRepositoryImpl
+    private val chapterRepo: ChapterRepository
 ) : ViewModel() {
 
     private var loadingJob: Job? = null

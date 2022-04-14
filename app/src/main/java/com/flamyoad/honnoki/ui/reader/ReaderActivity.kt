@@ -15,8 +15,10 @@ import androidx.transition.Slide
 import androidx.transition.TransitionManager
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
+import com.flamyoad.honnoki.MainActivity
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.data.entities.Chapter
+import com.flamyoad.honnoki.data.entities.MangaOverview
 import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.databinding.ActivityReaderBinding
 import com.flamyoad.honnoki.dialog.BookmarkDialog
@@ -26,6 +28,7 @@ import com.flamyoad.honnoki.ui.reader.model.ReaderOrientation
 import com.flamyoad.honnoki.ui.reader.model.ReaderViewMode
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.getKoin
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -46,6 +49,7 @@ class ReaderActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         _binding = ActivityReaderBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
@@ -140,7 +144,7 @@ class ReaderActivity : AppCompatActivity() {
                 onChapterListClick = { showChapterListDialog() }
                 onViewModeClick = { showViewModeDialog() }
                 onOrientationClick = { showOrientationDialog() }
-                onBrightnessClick = { showBrightnessDialog()}
+                onBrightnessClick = { showBrightnessDialog() }
                 onBookmarkClick = { showBookmarkDialog() }
             }
 
