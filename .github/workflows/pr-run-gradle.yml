@@ -1,0 +1,26 @@
+name: Run Gradle on PRs
+on:
+  pull_request:
+    types: [ opened, synchronize, reopened ]
+jobs:
+  gradle:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Create Firebase Google Services JSON from Github Secret
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: touch ./app/google-services.json && echo $GOOGLE_SERVICES_JSON > ./app/google-services.json
+      - uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 11
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
+      - name: Execute Gradle build
+        run: ./gradlew build
