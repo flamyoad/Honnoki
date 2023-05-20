@@ -28,6 +28,7 @@ data class MDChapterAttributes(
     @Json(name = "chapter") val chapter: String?,
     @Json(name = "title") val title: String?,
     @Json(name = "translatedLanguage") val translatedLanguage: String?,
+    @Json(name = "hash") val hash: String?,
     @Json(name = "publishAt") val publishAt: String?,
     @Json(name = "createdAt") val createdAt: String?,
     @Json(name = "updatedAt") val updatedAt: String?,

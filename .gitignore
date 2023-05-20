@@ -5,6 +5,7 @@ build/
 captures
 
 /local.properties
+<<<<<<< HEAD
 
 # IntelliJ .idea folder
 .idea/workspace.xml
@@ -22,6 +23,16 @@ gradle.xml
 *.iml
 
 # General
+=======
+/.idea/gradle.xml
+/.idea/misc.xml
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+>>>>>>> 150aff6 ((fix) api schema migration (list & images) (#41))
 .DS_Store
 .externalNativeBuild
 
