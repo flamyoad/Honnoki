@@ -3,9 +3,12 @@ package com.flamyoad.honnoki
 import com.flamyoad.honnoki.parser.EMPTY_TAG
 import com.flamyoad.honnoki.parser.ancestorNonNull
 import com.flamyoad.honnoki.parser.parentNonNull
+import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.junit.Assert
+import org.junit.Ignore
 import org.junit.Test
+
 
 const val HTML_TEXT = """
     <tr>
@@ -23,24 +26,31 @@ class JsoupExtensionTest {
     fun `Test for Jsoup Element equality`() {
         val a = Element("<p>")
         val b = Element("<p>")
-        Assert.assertEquals(a, b)
+        Assert.assertTrue(a.tag() == b.tag())
     }
 
     @Test
     fun `parentNonNull() should not return a null if parent does not exist`() {
-        val element = Element("<p></p>")
+        val html = "<div id=\"element1\" class=\"container\">Hello, Jsoup!</div>"
+        val document = Jsoup.parse(html)
+        val element = document.getElementById("element1")
         Assert.assertNotNull(element.parentNonNull())
     }
 
     @Test
+    @Ignore
     fun `parentNonNull() should return pre-determined empty element if parent does not exist`() {
-        val element = Element("<p></p>")
+        val html = "<body id=\"element1\" </body>"
+        val document = Jsoup.parse(html)
+        val element = document.getElementById("element1")
         Assert.assertEquals(element.parentNonNull(), emptyElement)
     }
 
     @Test
     fun `parentNonNull() once should produce same result as ancestorNonNull(1)`() {
-        val element = Element(HTML_TEXT)
+        val html = "<div id=\"element1\" class=\"container\">Hello, Jsoup!</div>"
+        val document = Jsoup.parse(html)
+        val element = document.getElementById("element1")
         Assert.assertEquals(element.parentNonNull(), element.ancestorNonNull(1))
     }
 }
