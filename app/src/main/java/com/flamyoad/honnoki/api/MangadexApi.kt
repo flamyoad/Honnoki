@@ -136,7 +136,7 @@ class MangadexApi(
             is NetworkResult.Failure -> return State.Error(response.exception)
         }
 
-        val imageList = parser.parseForImageList(chapterJson, baseUrlJson)
+        val imageList = parser.parseForImageList(baseUrlJson)
         return State.Success(imageList)
     }
 
