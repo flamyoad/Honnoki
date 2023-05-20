@@ -14,7 +14,7 @@ data class RelArtist(
 data class RelArtistAttr(
     @Json(name = "name") val name : String?,
     @Json(name = "imageUrl") val imageUrl : String?,
-    @Json(name = "biography") val biography : List<String>,
+    @Json(name = "biography") val biography : MDBiography?,
     @Json(name = "createdAt") val createdAt : String?,
     @Json(name = "updatedAt") val updatedAt : String?,
     @Json(name = "version") val version : Int?

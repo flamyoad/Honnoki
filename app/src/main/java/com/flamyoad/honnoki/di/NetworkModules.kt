@@ -190,7 +190,7 @@ fun provideMangadexHttpClient(
 }
 
 fun provideMangadexService(httpClient: OkHttpClient): MangadexService {
-    val moshi = Moshi.Builder()
+    val moshiBuilder = Moshi.Builder()
         .add(
             PolymorphicJsonAdapterFactory.of(BaseRelationship::class.java, "type")
                 .withSubtype(RelAuthor::class.java, "author")
@@ -199,16 +199,19 @@ fun provideMangadexService(httpClient: OkHttpClient): MangadexService {
                 .withSubtype(RelScanlationGroup::class.java, "scanlation_group")
                 .withSubtype(RelManga::class.java, "manga")
                 .withSubtype(RelUser::class.java, "user")
+                .withSubtype(RelCreator::class.java, "creator")
         )
         .add(DefaultOnDataMismatchAdapter.newFactory(MDDescription::class.java, MDDescription(null)))
         .add(DefaultOnDataMismatchAdapter.newFactory(MDLinks::class.java, MDLinks(null, null)))
-        .add(DefaultOnDataMismatchAdapter.newFactory(MDResult::class.java, MDResult(null, null, null, emptyList())))
-        .build()
+
+    if (BuildConfig.DEBUG) {
+        moshiBuilder.add(DefaultOnDataMismatchAdapter.newFactory(MDResult::class.java, MDResult(null, null, null, emptyList())))
+    }
 
     val retrofit = Retrofit.Builder()
         .baseUrl(MangadexService.BASE_URL)
         .client(httpClient)
-        .addConverterFactory(MoshiConverterFactory.create(moshi))
+        .addConverterFactory(MoshiConverterFactory.create(moshiBuilder.build()))
         .build()
     return retrofit.create(MangadexService::class.java)
 }

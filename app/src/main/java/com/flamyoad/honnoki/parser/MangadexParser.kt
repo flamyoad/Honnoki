@@ -187,19 +187,13 @@ class MangadexParser {
         }
 
     suspend fun parseForImageList(
-        chapterJson: MDChapter,
         baseUrlJson: MDBaseUrl
     ): List<Page> =
         withContext(Dispatchers.Default) {
             val baseUrl = baseUrlJson.baseUrl
-            val chapter = chapterJson.data
-            val chapterHash = chapter?.attributes?.hash ?: ""
+            val chapterHash = baseUrlJson.chapter.hash ?: ""
 
-            if (chapter?.attributes?.data == null) {
-                return@withContext emptyList()
-            }
-
-            return@withContext chapter.attributes.data.mapIndexed { index, fileName ->
+            return@withContext baseUrlJson.chapter.data.mapIndexed { index, fileName ->
                 Page(
                     number = index + 1,
                     link = constructPageUrl(
