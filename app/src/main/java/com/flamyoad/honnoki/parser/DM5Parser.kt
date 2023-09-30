@@ -1,5 +1,6 @@
 package com.flamyoad.honnoki.parser
 
+import com.flamyoad.honnoki.common.Dispatcher
 import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.network.DM5Service
@@ -14,11 +15,12 @@ import java.time.LocalDateTime
 // Manga https://www.dm5.com/manhua-nvpengyou-jiewoyixia/
 class DM5Parser(
     private val jsonAdapter: DM5JsonAdapter,
-    private val deObfuscator: DM5Deobfuscator
+    private val deObfuscator: DM5Deobfuscator,
+    private val dispatcher: Dispatcher
 ) {
 
     suspend fun parseForRecentMangas(html: String?): List<Manga> =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             if (html.isNullOrBlank())
                 return@withContext emptyList()
 
@@ -40,7 +42,7 @@ class DM5Parser(
 
     // Weekly trending
     suspend fun parseForTrendingManga(html: String?): List<Manga> =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             val document = Jsoup.parse(html)
             val mangaDivs =
                 document.select("body > section.box.container.pb40.overflow-Show.js_top_container > div > ul:nth-child(2) > li")
@@ -79,7 +81,7 @@ class DM5Parser(
         }
 
     suspend fun parseForMangaOverview(html: String?, link: String): MangaOverview =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             if (html.isNullOrBlank()) {
                 return@withContext MangaOverview.empty()
             }
@@ -118,7 +120,7 @@ class DM5Parser(
         }
 
     suspend fun parseForAuthors(html: String?): List<Author> =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             if (html.isNullOrBlank()) {
                 return@withContext emptyList()
             }
@@ -139,7 +141,7 @@ class DM5Parser(
         }
 
     suspend fun parseForGenres(html: String?): List<Genre> =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             if (html.isNullOrBlank()) {
                 return@withContext emptyList()
             }
@@ -163,7 +165,7 @@ class DM5Parser(
         }
 
     suspend fun parseForChapterList(html: String?): List<Chapter> =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             if (html.isNullOrBlank()) {
                 return@withContext emptyList()
             }
@@ -206,7 +208,7 @@ class DM5Parser(
         }
 
     suspend fun parseForImageList(html: String?): List<Page> =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             if (html.isNullOrBlank()) {
                 return@withContext emptyList()
             }
@@ -281,7 +283,7 @@ class DM5Parser(
 
     // https://www.dm5.com/manhua-yiquanchaoren/
     suspend fun parseForMangaFromGenrePage(html: String?): List<SearchResult> =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             if (html.isNullOrBlank()) {
                 return@withContext emptyList()
             }

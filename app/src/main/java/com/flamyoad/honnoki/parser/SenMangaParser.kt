@@ -1,5 +1,6 @@
 package com.flamyoad.honnoki.parser
 
+import com.flamyoad.honnoki.common.Dispatcher
 import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.parser.json.senmanga.SenmangaJsonAdapter
@@ -11,11 +12,12 @@ import java.lang.NullPointerException
 import java.time.LocalDateTime
 
 class SenMangaParser(
-    private val jsonAdapter: SenmangaJsonAdapter
+    private val jsonAdapter: SenmangaJsonAdapter,
+    private val dispatcher: Dispatcher
 ) {
 
     suspend fun parseForRecentMangas(html: String?): List<Manga> =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             if (html == null) return@withContext emptyList()
 
             val document = Jsoup.parse(html)
@@ -44,7 +46,7 @@ class SenMangaParser(
         }
 
     suspend fun parseForTrendingMangas(html: String?): List<Manga> =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             if (html == null) return@withContext emptyList()
 
             val document = Jsoup.parse(html)
@@ -74,7 +76,7 @@ class SenMangaParser(
         }
 
     suspend fun parseForMangaOverview(html: String?, link: String): MangaOverview =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             if (html.isNullOrBlank()) {
                 return@withContext MangaOverview.empty()
             }
@@ -111,7 +113,7 @@ class SenMangaParser(
         }
 
     suspend fun parseForChapterList(html: String?): List<Chapter> =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             if (html.isNullOrBlank()) {
                 return@withContext emptyList()
             }

@@ -4,6 +4,7 @@ import com.flamyoad.honnoki.api.dto.mangadex.*
 import com.flamyoad.honnoki.api.dto.mangadex.relationships.RelArtist
 import com.flamyoad.honnoki.api.dto.mangadex.relationships.RelAuthor
 import com.flamyoad.honnoki.api.dto.mangadex.relationships.RelCoverImage
+import com.flamyoad.honnoki.common.Dispatcher
 import com.flamyoad.honnoki.data.DynamicGenre
 import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.parser.model.MangadexQualityMode
@@ -16,13 +17,15 @@ import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 
-class MangadexParser {
+class MangadexParser(
+    private val dispatcher: Dispatcher
+) {
 
     suspend fun parseHomeMangas(
         json: MDResultList,
         type: MangaType
     ): List<Manga> =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             val mangas = json.data?.map { it ->
                 val mangaId = it.id ?: "";
 
@@ -55,7 +58,7 @@ class MangadexParser {
         }
 
     suspend fun parseForMangaOverview(json: MDEntity): MangaOverview =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             val mangaId =
                 json.data?.id ?: return@withContext MangaOverview.empty()
 
@@ -95,7 +98,7 @@ class MangadexParser {
         }
 
     suspend fun parseForAuthors(json: MDResult?): List<Author> =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             if (json?.id == null) return@withContext emptyList()
 
             val artistAttr = json.relationships
@@ -128,7 +131,7 @@ class MangadexParser {
         }
 
     suspend fun parseForGenres(json: MDEntity): List<Genre> =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             if (json.data?.id == null) return@withContext emptyList()
 
             val attributes = json.data.attributes
@@ -150,7 +153,7 @@ class MangadexParser {
         json: MDChapterList,
         currentOffset: Int
     ): List<Chapter> =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             val chapterList = json.data.mapIndexed { index, it ->
                 val attr = it.attributes
 
@@ -190,7 +193,7 @@ class MangadexParser {
     suspend fun parseForImageList(
         baseUrlJson: MDBaseUrl
     ): List<Page> =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             val baseUrl = baseUrlJson.baseUrl
             val chapterHash = baseUrlJson.chapter.hash ?: ""
 
@@ -246,7 +249,7 @@ class MangadexParser {
     }
 
     suspend fun parseForDynamicGenres(json: MDTagList): List<DynamicGenre> =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             val genres = json.data
                 ?.filter { it.attributes?.group == "genre" }
                 ?.map {
