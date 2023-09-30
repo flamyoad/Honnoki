@@ -5,9 +5,9 @@ import com.flamyoad.honnoki.api.dto.mangadex.relationships.RelArtist
 import com.flamyoad.honnoki.api.dto.mangadex.relationships.RelAuthor
 import com.flamyoad.honnoki.api.dto.mangadex.relationships.RelCoverImage
 import com.flamyoad.honnoki.data.DynamicGenre
-import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.parser.model.MangadexQualityMode
+import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.utils.extensions.capitalizeWithLocale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -70,9 +70,10 @@ class MangadexParser {
                 CoverImageQuality.WIDTH_512PX
             )
 
-            val alternativeTitle = attributes?.altTitles?.joinToString {
-                it?.en ?: ""
-            } ?: ""
+            val alternativeTitle = attributes?.altTitles
+                ?.mapNotNull { it?.en }
+                ?.joinToString { it }
+                ?: ""
 
             val summary = attributes?.description?.en ?: ""
 
