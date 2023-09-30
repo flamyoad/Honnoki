@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
 import com.flamyoad.honnoki.data.preference.DownloadPreference
+import com.flamyoad.honnoki.data.preference.DownloadPreferenceImpl
 import com.flamyoad.honnoki.data.preference.ReaderPreference
 import com.flamyoad.honnoki.data.preference.SourcePreference
 import com.flamyoad.honnoki.data.preference.UiPreference
@@ -17,7 +18,7 @@ val preferenceModules = module {
     single { SourcePreference(get()) }
     single { UiPreference(get()) }
     single { ReaderPreference(get()) }
-    single { DownloadPreference(get()) }
+    single<DownloadPreference> { DownloadPreferenceImpl(get(), get()) }
 }
 
 fun provideDataStore(context: Context): DataStore<Preferences> {

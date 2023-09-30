@@ -86,7 +86,8 @@ val viewModelModules = module {
             get(),
             get(),
             get(),
-            get(named(KoinConstants.APP_SCOPE))
+            get(),
+            get(named(KoinConstants.APP_SCOPE)),
         )
     }
 

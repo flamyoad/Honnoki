@@ -75,4 +75,7 @@
     <string name="reader_orientation_portrait">Portrait</string>
     <string name="reader_orientation_landscape">Landscape</string>
 
+    <string name="download_over_network">Download over network</string>
+    <string name="download_over_any_network">Any network</string>
+    <string name="download_over_wifi">Over Wi-Fi only</string>
 </resources>

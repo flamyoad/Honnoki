@@ -16,12 +16,12 @@ import com.bumptech.glide.Glide
 import com.flamyoad.honnoki.BuildConfig
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.databinding.FragmentMoreOptionsBinding
+import com.flamyoad.honnoki.download.model.NetworkType
 import com.flamyoad.honnoki.parser.model.MangadexQualityMode
 import com.github.venom.Venom
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class OptionsFragment : Fragment() {
 
@@ -106,6 +106,15 @@ class OptionsFragment : Fragment() {
                             MangadexQualityMode.DATA -> "Original"
                             MangadexQualityMode.DATA_SAVER -> "Compressed"
                         }
+                    }
+                }
+                launch {
+                    viewModel.preferredNetworkType.collectLatest {
+                        val stringRes = when (it) {
+                            NetworkType.ANY_NETWORK -> R.string.download_over_any_network
+                            NetworkType.WIFI_ONLY -> R.string.download_over_wifi
+                        }
+                        binding.txtDownloadNetworkType.text = requireContext().getString(stringRes)
                     }
                 }
             }
