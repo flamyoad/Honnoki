@@ -1,5 +1,6 @@
 package com.flamyoad.honnoki.parser
 
+import com.flamyoad.honnoki.common.Dispatcher
 import com.flamyoad.honnoki.source.model.Source
 import com.flamyoad.honnoki.data.entities.*
 import kotlinx.coroutines.Dispatchers
@@ -8,10 +9,12 @@ import org.jsoup.Jsoup
 import java.lang.NullPointerException
 import java.time.LocalDateTime
 
-class MangakalotParser {
+class MangakalotParser(
+    private val dispatcher: Dispatcher
+) {
 
     suspend fun parseForRecentMangas(html: String?): List<Manga> =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             if (html.isNullOrBlank()) return@withContext emptyList()
 
             val document = Jsoup.parse(html)
@@ -45,7 +48,7 @@ class MangakalotParser {
         }
 
     suspend fun parseForTrendingManga(html: String?): List<Manga> =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             if (html.isNullOrBlank()) return@withContext emptyList()
 
             val document = Jsoup.parse(html)
@@ -84,7 +87,7 @@ class MangakalotParser {
 
     // Not working now because its run inside a JS file
     suspend fun parseForTopManga(html: String?): List<Manga> =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             if (html.isNullOrBlank()) return@withContext emptyList()
 
             val document = Jsoup.parse(html)
@@ -116,7 +119,7 @@ class MangakalotParser {
         }
 
     suspend fun parseForNewManga(html: String?): List<Manga> =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             if (html.isNullOrBlank()) return@withContext emptyList()
 
             val document = Jsoup.parse(html)
@@ -150,7 +153,7 @@ class MangakalotParser {
         }
 
     suspend fun parseForMangaOverview(html: String?, link: String): MangaOverview =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             if (html.isNullOrBlank()) {
                 return@withContext MangaOverview.empty()
             }
@@ -193,7 +196,7 @@ class MangakalotParser {
         }
 
     suspend fun parseForAuthors(html: String?): List<Author> =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             if (html.isNullOrBlank()) {
                 return@withContext emptyList()
             }
@@ -218,7 +221,7 @@ class MangakalotParser {
         }
 
     suspend fun parseForGenres(html: String?): List<Genre> =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             if (html.isNullOrBlank()) {
                 return@withContext emptyList()
             }
@@ -242,7 +245,7 @@ class MangakalotParser {
         }
 
     suspend fun parseForChapterList(html: String?): List<Chapter> =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             if (html.isNullOrBlank()) {
                 return@withContext emptyList()
             }
@@ -267,7 +270,7 @@ class MangakalotParser {
         }
 
     suspend fun parseForImageList(html: String?): List<Page> =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             if (html.isNullOrBlank()) {
                 return@withContext emptyList()
             }
@@ -285,7 +288,7 @@ class MangakalotParser {
         }
 
     suspend fun parseForSearchByKeyword(html: String?, index: Int): List<SearchResult> =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             if (html.isNullOrBlank()) {
                 return@withContext emptyList()
             }
@@ -322,7 +325,7 @@ class MangakalotParser {
         }
 
     suspend fun parseForSearchByKeywordAndGenre(html: String?, index: Int): List<SearchResult> =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             if (html.isNullOrBlank()) {
                 return@withContext emptyList()
             }

@@ -1,5 +1,6 @@
 package com.flamyoad.honnoki.parser
 
+import com.flamyoad.honnoki.common.Dispatcher
 import com.flamyoad.honnoki.data.entities.*
 import com.flamyoad.honnoki.source.model.Source
 import kotlinx.coroutines.Dispatchers
@@ -7,9 +8,12 @@ import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import java.time.LocalDateTime
 
-class ReadMangaParser {
+class ReadMangaParser(
+    private val dispatcher: Dispatcher
+) {
+    
     suspend fun parseForRecentMangas(html: String?): List<Manga> =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             if (html == null) return@withContext emptyList()
 
             val document = Jsoup.parse(html)
@@ -43,7 +47,7 @@ class ReadMangaParser {
         }
 
     suspend fun parseForTrendingMangas(html: String?): List<Manga> =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             if (html == null) return@withContext emptyList()
 
             val document = Jsoup.parse(html)
@@ -72,7 +76,7 @@ class ReadMangaParser {
         }
 
     suspend fun parseForMangaOverview(html: String?, link: String): MangaOverview =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             if (html.isNullOrBlank()) {
                 return@withContext MangaOverview.empty()
             }
@@ -108,7 +112,7 @@ class ReadMangaParser {
         }
 
     suspend fun parseForGenres(html: String?): List<Genre> =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             if (html.isNullOrBlank()) {
                 return@withContext emptyList()
             }
@@ -123,7 +127,7 @@ class ReadMangaParser {
         }
 
     suspend fun parseForAuthors(html: String?): List<Author> =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             if (html.isNullOrBlank()) {
                 return@withContext emptyList()
             }
@@ -141,7 +145,7 @@ class ReadMangaParser {
         }
 
     suspend fun parseForChapterList(html: String?): List<Chapter> =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             if (html.isNullOrBlank()) {
                 return@withContext emptyList()
             }
@@ -166,7 +170,7 @@ class ReadMangaParser {
         }
 
     suspend fun parseForPageList(html: String?): List<Page> =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             if (html.isNullOrBlank()) {
                 return@withContext emptyList()
             }
@@ -183,7 +187,7 @@ class ReadMangaParser {
         }
 
     suspend fun parseForSearchByKeyword(html: String?): List<SearchResult> =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             if (html.isNullOrBlank()) {
                 return@withContext emptyList()
             }
@@ -203,7 +207,7 @@ class ReadMangaParser {
         }
 
     suspend fun parseForSearchByAuthor(html: String?): List<SearchResult> =
-        withContext(Dispatchers.Default) {
+        withContext(dispatcher.computation()) {
             if (html.isNullOrBlank()) {
                 return@withContext emptyList()
             }
