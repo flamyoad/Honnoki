@@ -130,7 +130,10 @@ class ReaderViewModel(
                     result.value,
                     loadType
                 )
-                is State.Error -> failedToLoadNextChapter.value = true
+                is State.Error -> {
+                    failedToLoadNextChapter.value = true
+                }
+                else -> {}
             }
 
             // Hides the loading indicator regardless success or failed to load next chapter

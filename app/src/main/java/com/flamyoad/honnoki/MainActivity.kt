@@ -57,6 +57,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         // Remove action mode in Bookmark screen before exiting app
         if (viewModel.actionModeEnabled().value) {

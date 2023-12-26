@@ -33,7 +33,8 @@
         <activity android:name=".ui.search.result.AdvancedSearchResultActivity" />
         <activity android:name=".ui.reader.ReaderActivity" />
         <activity android:name=".ui.overview.MangaOverviewActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

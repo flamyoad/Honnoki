@@ -139,6 +139,7 @@ class MangaLookupActivity : AppCompatActivity() {
                     MultiStateView.ViewState.LOADING
                 is LoadState.NotLoading -> binding.multiStateView.viewState =
                     MultiStateView.ViewState.CONTENT
+                else -> {}
             }
         }
     }

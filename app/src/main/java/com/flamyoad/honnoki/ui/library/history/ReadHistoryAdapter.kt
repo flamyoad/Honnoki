@@ -67,6 +67,7 @@ class ReadHistoryAdapter(
             is ViewReadHistory.Item -> {
                 (holder as ItemViewHolder).bind(item.history)
             }
+            else -> {}
         }
     }
 

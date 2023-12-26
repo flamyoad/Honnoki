@@ -164,11 +164,13 @@ class SimpleSearchFragment : Fragment() {
                     MultiStateView.ViewState.LOADING
                 is LoadState.NotLoading -> binding.listSearchResultView.viewState =
                     MultiStateView.ViewState.CONTENT
+                else -> {}
             }
             when (it.mediator?.append) {
                 is LoadState.NotLoading -> concatAdapter.addAdapter(
                     searchResultEndOfListAdapter
                 )
+                else -> {}
             }
         }
     }

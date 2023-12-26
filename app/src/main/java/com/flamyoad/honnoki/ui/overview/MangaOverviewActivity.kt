@@ -171,8 +171,8 @@ class MangaOverviewActivity : AppCompatActivity() {
                             showToolbarArea(ToolbarState.COLLAPSED)
                             swipeRefreshLayout.isEnabled = false
                         }
-                        State.IDLE -> {
-                        }
+                        State.IDLE -> {}
+                        else -> {}
                     }
                 }
             }
