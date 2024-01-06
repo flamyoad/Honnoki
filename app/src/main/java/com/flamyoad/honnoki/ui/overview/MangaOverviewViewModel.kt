@@ -149,6 +149,7 @@ class MangaOverviewViewModel(
                     refreshGenres(url, mangaOverviewId.value)
                     refreshChapterList(url, mangaOverviewId.value)
                 }
+                else -> {}
             }
         }
     }
@@ -163,6 +164,7 @@ class MangaOverviewViewModel(
                     db.genreDao().insertAll(genreListWithId)
                 }
             }
+            else -> {}
         }
     }
 
@@ -176,6 +178,7 @@ class MangaOverviewViewModel(
                     db.authorDao().insertAll(authorListWithId)
                 }
             }
+            else -> {}
         }
     }
 
@@ -193,6 +196,7 @@ class MangaOverviewViewModel(
                     }
                 }
             }
+            else -> {}
         }
     }
 

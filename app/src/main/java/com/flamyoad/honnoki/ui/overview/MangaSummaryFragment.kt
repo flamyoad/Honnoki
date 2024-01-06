@@ -186,6 +186,7 @@ class MangaSummaryFragment : Fragment() {
                             chapterGridAdapter.submitList(it.value)
                             chapterListAdapter.submitList(it.value)
                         }
+                        else -> {}
                     }
                 }
             }
