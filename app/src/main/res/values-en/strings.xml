@@ -84,4 +84,6 @@
     <string name="mangadex_quality_screen_title">Mangadex Quality</string>
     <string name="mangadex_quality_option_original">Original</string>
     <string name="mangadex_quality_option_compressed">Compressed</string>
+
+    <string name="preferred_source_screen_title">Preferred source</string>
 </resources>
