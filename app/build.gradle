@@ -172,6 +172,9 @@ dependencies {
     // Preferences DataStore (SharedPreferences like APIs)
     implementation "androidx.datastore:datastore-preferences:$datastore_version"
 
+    def androidx_browser_version = '1.5.0'
+    implementation "androidx.browser:browser:$androidx_browser_version"
+
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:28.2.1')
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
