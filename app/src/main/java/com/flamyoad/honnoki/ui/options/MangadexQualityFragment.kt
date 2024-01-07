@@ -5,62 +5,137 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.absolutePadding
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.findNavController
-import androidx.navigation.ui.setupWithNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.flamyoad.honnoki.R
-import com.flamyoad.honnoki.databinding.FragmentMangadexQualityBinding
-import com.flamyoad.honnoki.ui.options.adapter.MangadexQualityModeAdapter
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import com.flamyoad.honnoki.parser.model.MangadexQualityMode
+import com.flamyoad.honnoki.ui.theme.HonnokiAppTheme
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class MangadexQualityFragment : Fragment() {
 
-    private var _binding: FragmentMangadexQualityBinding? = null
-    private val binding get() = requireNotNull(_binding)
-
-    private val viewModel: OptionsViewModel by sharedViewModel()
+    private val viewModel: OptionsViewModel by activityViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentMangadexQualityBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        with (binding.toolbarLayout.toolbar) {
-            setupWithNavController(findNavController())
-        }
-        initList()
-    }
-
-    private fun initList() {
-        val listAdapter = MangadexQualityModeAdapter(viewModel::setMangadexQuality)
-        val linearLayoutManager = LinearLayoutManager(requireContext())
-        with (binding.listQuality) {
-            adapter = listAdapter
-            layoutManager = linearLayoutManager
-        }
-
-        lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                viewModel.mangadexQualityOptionList.collectLatest {
-                    listAdapter.setList(it)
+        return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                HonnokiAppTheme {
+                    MangadexQualityScreen(
+                        isBackArrowVisible = findNavController().previousBackStackEntry != null,
+                        onBackArrowPressed = { findNavController().navigateUp() },
+                        onCheckboxSelected = viewModel::setMangadexQuality,
+                        viewModel = viewModel
+                    )
                 }
             }
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun MangadexQualityScreen(
+        isBackArrowVisible: Boolean,
+        onBackArrowPressed: () -> Unit,
+        onCheckboxSelected: (MangadexQualityMode) -> Unit,
+        viewModel: OptionsViewModel
+    ) {
+        val qualityList by viewModel.mangadexQualityOptionList.collectAsStateWithLifecycle()
+
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(stringResource(R.string.mangadex_quality_screen_title))
+                    },
+                    navigationIcon = {
+                        if (isBackArrowVisible) {
+                            IconButton(onClick = onBackArrowPressed) {
+                                Icon(
+                                    imageVector = Icons.Filled.ArrowBack,
+                                    contentDescription = stringResource(id = R.string.back)
+                                )
+                            }
+                        }
+                    }
+                )
+            }
+        ) { innerPadding ->
+            Surface(modifier = Modifier.padding(innerPadding)) {
+                Column(
+                    modifier = Modifier
+                        .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 0.dp)
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    qualityList.forEach { quality ->
+                        MangadexQualitySwitch(
+                            checkboxText = when (quality.mode) {
+                                MangadexQualityMode.DATA -> stringResource(R.string.mangadex_quality_option_original)
+                                MangadexQualityMode.DATA_SAVER -> stringResource(R.string.mangadex_quality_option_compressed)
+                            },
+                            isChecked = quality.isSelected,
+                            onCheckedChange = {
+                                onCheckboxSelected(quality.mode)
+                            }
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun MangadexQualitySwitch(
+        modifier: Modifier = Modifier,
+        checkboxText: String,
+        isChecked: Boolean,
+        onCheckedChange: (Boolean) -> Unit
+    ) {
+        return Row(
+            modifier = modifier,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = checkboxText)
+            Spacer(Modifier.size(12.dp))
+            Switch(
+                checked = isChecked,
+                onCheckedChange = onCheckedChange
+            )
+        }
     }
 
     companion object {

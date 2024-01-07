@@ -1,4 +1,6 @@
 <resources>
+    <string name="back">Back</string>
+
     <string name="app_name" translatable="false">Honnoki</string>
     <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
     <string name="manga_title" translatable="false">Ore no Imouto ga Konna ni Kawaii Wake ga Nai - Ayase IF Ore no Imouto ga Konna ni Kawaii Wake ga Nai - Ayase IF</string>
@@ -91,4 +93,8 @@
     <string name="download_over_network">Download over network</string>
     <string name="download_over_any_network">Over any network</string>
     <string name="download_over_wifi">Over Wi-Fi only</string>
+
+    <string name="mangadex_quality_screen_title">Mangadex Quality</string>
+    <string name="mangadex_quality_option_original">Original</string>
+    <string name="mangadex_quality_option_compressed">Compressed</string>
 </resources>
