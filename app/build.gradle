@@ -151,18 +151,19 @@ dependencies {
     def work_version = "2.8.0"
     implementation "androidx.work:work-runtime-ktx:$work_version" // Kotlin + coroutines
 
-    def nav_version = "2.4.0-alpha03"
+    def nav_version = "2.7.6"
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
     androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
 
-    def koin_version = '3.0.2'
+    def koin_version = '3.3.3'
+    def koin_compose_version = '3.3.0'
     // Koin main features for Android (Scope,ViewModel ...)
     implementation "io.insert-koin:koin-android:$koin_version"
-    // Koin Android - experimental builder extensions
-    implementation "io.insert-koin:koin-android-ext:$koin_version"
     // Koin for Jetpack WorkManager
     implementation "io.insert-koin:koin-androidx-workmanager:$koin_version"
+    // Koin for Jetpack Compose
+    implementation "io.insert-koin:koin-androidx-compose:$koin_compose_version"
 
     def datastore_version = '1.0.0-beta01'
     // Typed DataStore (Typed API surface, such as Proto)
