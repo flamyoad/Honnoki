@@ -66,11 +66,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Pop fragment in the nav backstack if there is any
-        val currentNavFragment =
-            supportFragmentManager.fragments.first { it.isVisible } as NavHostFragment
-        if (currentNavFragment.navController.backQueue.size > 2) {
-            currentNavFragment.navController.navigateUp()
-        } else {
+        val currentNavFragment = supportFragmentManager.fragments.first { it.isVisible } as NavHostFragment
+        val hasPoppedBackstack = currentNavFragment.navController.popBackStack()
+        if (!hasPoppedBackstack) {
             super.onBackPressed()
         }
     }
