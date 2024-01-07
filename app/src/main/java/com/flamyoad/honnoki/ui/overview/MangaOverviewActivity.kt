@@ -14,6 +14,7 @@ import android.view.ContextMenu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.text.set
 import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
@@ -58,6 +59,7 @@ import java.io.File
 @ExperimentalCoroutinesApi
 @ExperimentalPagingApi
 class MangaOverviewActivity : AppCompatActivity() {
+
     private var _binding: ActivityMangaOverviewBinding? = null
     val binding get() = requireNotNull(_binding)
 
@@ -384,10 +386,9 @@ class MangaOverviewActivity : AppCompatActivity() {
         } else {
             Uri.parse(overview.link)
         }
-        val intent = Intent(Intent.ACTION_VIEW, uri)
-        if (intent.resolveActivity(packageManager) != null) {
-            startActivity(intent)
-        }
+        val intent = CustomTabsIntent.Builder()
+            .build()
+        intent.launchUrl(this, uri)
     }
 
     private fun startReading() {
