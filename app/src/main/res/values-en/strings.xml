@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="back">Back</string>
+
     <string name="bookmark_actionmode_btn_moveto">
         Move To (%d)
     </string>
@@ -78,4 +80,8 @@
     <string name="download_over_network">Download over network</string>
     <string name="download_over_any_network">Any network</string>
     <string name="download_over_wifi">Over Wi-Fi only</string>
+
+    <string name="mangadex_quality_screen_title">Mangadex Quality</string>
+    <string name="mangadex_quality_option_original">Original</string>
+    <string name="mangadex_quality_option_compressed">Compressed</string>
 </resources>
