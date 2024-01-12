@@ -5,6 +5,7 @@ import androidx.work.*
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.entities.Chapter
 import com.flamyoad.honnoki.data.preference.DownloadPreference
+import com.flamyoad.honnoki.download.DownloadJob
 import com.flamyoad.honnoki.utils.extensions.tryOrNull
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -48,7 +49,8 @@ class DownloadRepository(
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
-        val workRequest = OneTimeWorkRequestBuilder<DownloadWorker>()
+//        val workRequest = OneTimeWorkRequestBuilder<DownloadWorker>()
+          val workRequest = OneTimeWorkRequestBuilder<DownloadJob>()
             .setInputData(data)
             .setConstraints(constraints)
             .build()
