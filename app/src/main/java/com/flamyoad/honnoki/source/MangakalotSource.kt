@@ -1,7 +1,6 @@
 package com.flamyoad.honnoki.source
 
 import android.content.Context
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -18,7 +17,6 @@ import com.flamyoad.honnoki.source.model.TabType
 import com.flamyoad.honnoki.ui.lookup.model.LookupType
 import kotlinx.coroutines.flow.Flow
 
-@ExperimentalPagingApi
 class MangakalotSource(db: AppDatabase, context: Context, private val api: MangakalotApi) :
     BaseSource(db, context) {
 

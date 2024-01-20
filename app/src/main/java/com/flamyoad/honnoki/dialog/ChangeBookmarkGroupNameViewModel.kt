@@ -3,14 +3,12 @@ package com.flamyoad.honnoki.dialog
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.asLiveData
-import androidx.paging.ExperimentalPagingApi
 import com.flamyoad.honnoki.MyApplication
 import com.flamyoad.honnoki.data.db.AppDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-@ExperimentalPagingApi
 class ChangeBookmarkGroupNameViewModel(application: Application, private val db: AppDatabase) : AndroidViewModel(application) {
     private val applicationScope = (application as MyApplication).applicationScope
 

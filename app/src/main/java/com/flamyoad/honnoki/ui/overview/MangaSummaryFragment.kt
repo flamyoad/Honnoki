@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import com.flamyoad.honnoki.source.model.Source
@@ -23,15 +22,12 @@ import com.flamyoad.honnoki.ui.overview.model.ChapterListDisplayMode
 import com.flamyoad.honnoki.ui.overview.model.ReaderChapter
 import com.flamyoad.honnoki.ui.reader.ReaderActivity
 import jp.wasabeef.recyclerview.animators.FadeInAnimator
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.parameter.parametersOf
 import java.lang.IllegalArgumentException
 
-@ExperimentalCoroutinesApi
-@ExperimentalPagingApi
 class MangaSummaryFragment : Fragment() {
 
     var displayMode = ChapterListDisplayMode.GRID

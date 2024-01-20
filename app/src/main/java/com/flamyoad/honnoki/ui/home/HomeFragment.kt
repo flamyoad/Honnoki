@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.paging.ExperimentalPagingApi
 import com.flamyoad.honnoki.R
 import com.flamyoad.honnoki.databinding.FragmentHomeBinding
 import com.flamyoad.honnoki.dialog.SourceSwitcherDialog
@@ -28,7 +27,6 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.component.KoinComponent
 import org.koin.core.qualifier.named
 
-@ExperimentalPagingApi
 class HomeFragment : Fragment(), KoinComponent, SourceSwitcherDialog.Listener {
     private val binding by viewLifecycleLazy { FragmentHomeBinding.bind(requireView()) }
 

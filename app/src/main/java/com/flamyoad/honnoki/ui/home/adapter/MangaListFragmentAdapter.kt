@@ -1,7 +1,6 @@
 package com.flamyoad.honnoki.ui.home.adapter
 
 import androidx.fragment.app.Fragment
-import androidx.paging.ExperimentalPagingApi
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.flamyoad.honnoki.source.BaseSource
 import com.flamyoad.honnoki.source.model.TabType
@@ -33,7 +32,6 @@ class MangaListFragmentAdapter(val fragment: Fragment) :
         return containsItem
     }
 
-    @ExperimentalPagingApi
     override fun createFragment(position: Int): Fragment {
         val tab = tabs[position]
 

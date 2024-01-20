@@ -1,6 +1,5 @@
 package com.flamyoad.honnoki.paging
 
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
@@ -21,7 +20,6 @@ import com.squareup.moshi.JsonDataException
 import retrofit2.HttpException
 import java.io.IOException
 
-@ExperimentalPagingApi
 class MangaMediator(
     private val api: BaseApi,
     private val db: AppDatabase,

@@ -10,7 +10,6 @@ import androidx.core.view.GravityCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.paging.ExperimentalPagingApi
 import androidx.transition.Slide
 import androidx.transition.TransitionManager
 import com.afollestad.materialdialogs.MaterialDialog
@@ -29,7 +28,6 @@ import org.koin.android.ext.android.getKoin
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-@ExperimentalPagingApi
 class ReaderActivity : AppCompatActivity() {
 
     private var _binding: ActivityReaderBinding? = null

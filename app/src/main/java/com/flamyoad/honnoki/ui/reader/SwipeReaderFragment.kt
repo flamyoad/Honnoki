@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.core.view.doOnLayout
-import androidx.paging.ExperimentalPagingApi
 import androidx.viewpager2.widget.ViewPager2
 import com.flamyoad.honnoki.data.entities.Chapter
 import com.flamyoad.honnoki.databinding.FragmentSwipeReaderBinding
@@ -22,7 +21,6 @@ enum class SwipeDirection : Parcelable {
     VERTICAL
 }
 
-@ExperimentalPagingApi
 class SwipeReaderFragment : BaseReaderFragment() {
 
     private var _binding: FragmentSwipeReaderBinding? = null

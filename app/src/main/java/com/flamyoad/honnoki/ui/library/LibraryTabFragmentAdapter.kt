@@ -1,7 +1,6 @@
 package com.flamyoad.honnoki.ui.library
 
 import androidx.fragment.app.Fragment
-import androidx.paging.ExperimentalPagingApi
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.flamyoad.honnoki.ui.library.bookmark.BookmarkFragment
 import com.flamyoad.honnoki.ui.library.downloads.DownloadFragment
@@ -14,7 +13,6 @@ class LibraryTabFragmentAdapter(fragment: Fragment) :
         return 2
     }
 
-    @ExperimentalPagingApi
     override fun createFragment(position: Int): Fragment {
         return when (position) {
             0 -> BookmarkFragment.newInstance()

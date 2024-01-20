@@ -2,7 +2,6 @@ package com.flamyoad.honnoki
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.paging.ExperimentalPagingApi
 import com.flamyoad.honnoki.data.preference.UiPreference
 import com.flamyoad.honnoki.di.*
 import com.github.venom.Venom
@@ -24,7 +23,6 @@ class MyApplication : Application() {
 
     val applicationScope = MainScope()
 
-    @OptIn(ExperimentalPagingApi::class)
     override fun onCreate() {
         super.onCreate()
 

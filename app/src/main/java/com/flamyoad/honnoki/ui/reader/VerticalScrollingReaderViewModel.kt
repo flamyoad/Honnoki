@@ -1,13 +1,11 @@
 package com.flamyoad.honnoki.ui.reader
 
 import androidx.lifecycle.ViewModel
-import androidx.paging.ExperimentalPagingApi
 import com.flamyoad.honnoki.data.db.AppDatabase
 import com.flamyoad.honnoki.data.entities.MangaOverview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-@ExperimentalPagingApi
 class VerticalScrollingReaderViewModel(
     private val db: AppDatabase
 ) : ViewModel() {

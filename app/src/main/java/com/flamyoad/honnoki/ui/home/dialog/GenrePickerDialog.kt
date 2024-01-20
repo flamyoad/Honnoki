@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
-import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.GridLayoutManager
 import com.flamyoad.honnoki.api.DM5Api
 import com.flamyoad.honnoki.api.MangakalotApi
@@ -25,7 +24,6 @@ import kotlinx.coroutines.flow.collectLatest
 import org.koin.core.parameter.parametersOf
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-@ExperimentalPagingApi
 class GenrePickerDialog : DialogFragment() {
 
     private var _binding: MangaGenreDialogPickerBinding? = null

@@ -1,7 +1,6 @@
 package com.flamyoad.honnoki.source
 
 import android.content.Context
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -15,7 +14,6 @@ import com.flamyoad.honnoki.source.model.TabType
 import kotlinx.coroutines.flow.Flow
 import java.io.IOException
 
-@ExperimentalPagingApi
 class MangaTownSource(db: AppDatabase, context: Context, private val api: MangaTownApi) :
     BaseSource(db, context) {
 

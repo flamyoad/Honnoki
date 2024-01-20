@@ -1,7 +1,6 @@
 package com.flamyoad.honnoki.ui.home.mangalist
 
 import androidx.lifecycle.*
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.flamyoad.honnoki.data.db.AppDatabase
@@ -11,7 +10,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 
-@ExperimentalPagingApi
 class MangaListViewModel(val db: AppDatabase, val mangaSource: BaseSource) : ViewModel() {
 
     fun getRecentManga(): Flow<PagingData<Manga>> = mangaSource.getRecentManga()
