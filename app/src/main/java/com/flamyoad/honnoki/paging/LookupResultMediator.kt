@@ -1,6 +1,5 @@
 package com.flamyoad.honnoki.paging
 
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
@@ -16,7 +15,6 @@ import com.flamyoad.honnoki.ui.lookup.model.LookupType
 import com.flamyoad.honnoki.api.handler.ApiException.Code
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 
-@ExperimentalPagingApi
 class LookupResultMediator(
     private val api: BaseApi,
     private val db: AppDatabase,

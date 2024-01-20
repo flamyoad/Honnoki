@@ -8,7 +8,6 @@ import com.flamyoad.honnoki.rules.MainCoroutineRule
 import com.flamyoad.honnoki.ui.download.DownloadPickerViewModel
 import com.flamyoad.honnoki.ui.download.model.DownloadChapter
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.test.setMain
@@ -19,7 +18,6 @@ import org.junit.Test
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 
-@ExperimentalCoroutinesApi
 @RunWith(MockitoJUnitRunner::class)
 class DownloadPickerViewModelTest {
 

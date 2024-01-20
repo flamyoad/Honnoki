@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
-import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.*
 import com.flamyoad.honnoki.data.entities.Chapter
 import com.flamyoad.honnoki.databinding.FragmentVerticalScrollingReaderBinding
@@ -18,7 +17,6 @@ import com.flamyoad.honnoki.utils.ui.onItemsArrived
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-@ExperimentalPagingApi
 class VerticalScrollingReaderFragment : BaseReaderFragment() {
 
     private var _binding: FragmentVerticalScrollingReaderBinding? = null

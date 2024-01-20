@@ -1,6 +1,5 @@
 package com.flamyoad.honnoki.di
 
-import androidx.paging.ExperimentalPagingApi
 import com.flamyoad.honnoki.MainViewModel
 import com.flamyoad.honnoki.dialog.*
 import com.flamyoad.honnoki.ui.download.DownloadPickerViewModel
@@ -21,7 +20,6 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-@ExperimentalPagingApi
 val viewModelModules = module {
     viewModel { MainViewModel() }
 

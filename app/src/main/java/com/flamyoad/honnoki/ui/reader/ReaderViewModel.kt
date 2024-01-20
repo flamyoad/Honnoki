@@ -2,7 +2,6 @@ package com.flamyoad.honnoki.ui.reader
 
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import androidx.paging.ExperimentalPagingApi
 import androidx.room.withTransaction
 import com.flamyoad.honnoki.common.BaseViewModel
 import com.flamyoad.honnoki.common.State
@@ -22,7 +21,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.util.concurrent.ConcurrentHashMap
 
-@ExperimentalPagingApi
 class ReaderViewModel(
     private val db: AppDatabase,
     private val chapterRepo: ChapterRepository,

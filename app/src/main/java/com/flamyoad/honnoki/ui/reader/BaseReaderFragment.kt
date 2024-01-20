@@ -4,14 +4,12 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.paging.ExperimentalPagingApi
 import com.flamyoad.honnoki.data.entities.Chapter
 import com.flamyoad.honnoki.ui.reader.model.ReaderPage
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-@ExperimentalPagingApi
 abstract class BaseReaderFragment : Fragment(), VolumeButtonScroller.Listener {
 
     val parentViewModel: ReaderViewModel by sharedViewModel()

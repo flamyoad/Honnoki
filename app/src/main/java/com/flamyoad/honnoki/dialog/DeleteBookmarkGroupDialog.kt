@@ -8,11 +8,9 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
-import androidx.paging.ExperimentalPagingApi
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-@ExperimentalPagingApi
 class DeleteBookmarkGroupDialog : DialogFragment() {
 
     private val viewModel: DeleteBookmarkGroupDialogViewModel by viewModel()

@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.paging.ExperimentalPagingApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.flamyoad.honnoki.cache.CoverCache
 import com.flamyoad.honnoki.data.entities.ReadHistory
@@ -21,7 +20,6 @@ import kotlinx.coroutines.flow.collectLatest
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-@ExperimentalPagingApi
 class ReadHistoryFragment : Fragment() {
 
     private var _binding: FragmentReadHistoryBinding? = null

@@ -4,7 +4,6 @@ import android.app.Application
 import android.text.Html
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.flamyoad.honnoki.data.db.AppDatabase
@@ -20,7 +19,6 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.qualifier.named
 
-@ExperimentalPagingApi
 class SimpleSearchViewModel(
     private val app: Application,
     private val db: AppDatabase,
