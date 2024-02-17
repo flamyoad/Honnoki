@@ -23,8 +23,9 @@ class MangadexApi(
             apiCall = {
                 service.getRecentlyAddedManga(
                     offset,
-                    PAGINATION_SIZE,
-                    ORDER_DESC
+                    limit = PAGINATION_SIZE,
+                    order = ORDER_DESC,
+                    includes = listOf(AUTHOR, ARTIST, COVER_ART)
                 )
             },
             parseData = { parser.parseHomeMangas(it, MangaType.RECENTLY) }
@@ -34,7 +35,13 @@ class MangadexApi(
     override suspend fun searchForTrendingManga(index: Int): State<List<Manga>> {
         val offset = index * PAGINATION_SIZE
         return processApiData(
-            apiCall = { service.getTopManga(offset, PAGINATION_SIZE) },
+            apiCall = {
+                service.getTopManga(
+                    offset,
+                    limit = PAGINATION_SIZE,
+                    includes = listOf(COVER_ART)
+                )
+            },
             parseData = { parser.parseHomeMangas(it, MangaType.TRENDING) }
         )
     }
@@ -58,14 +65,24 @@ class MangadexApi(
 
     suspend fun searchForMangaOverview(mangaId: String): State<MangaOverview> {
         return processApiData(
-            apiCall = { service.getMangaDetails(mangaId) },
+            apiCall = {
+                service.getMangaDetails(
+                    mangaId,
+                    includes = listOf(AUTHOR, ARTIST, COVER_ART)
+                )
+            },
             parseData = { parser.parseForMangaOverview(it) }
         )
     }
 
     suspend fun searchForGenres(mangaId: String): State<List<Genre>> {
         return processApiData(
-            apiCall = { service.getMangaDetails(mangaId) },
+            apiCall = {
+                service.getMangaDetails(
+                    mangaId,
+                    includes = listOf(AUTHOR, ARTIST, COVER_ART)
+                )
+            },
             parseData = { parser.parseForGenres(it) }
         )
     }
@@ -76,7 +93,12 @@ class MangadexApi(
      */
     suspend fun searchForAuthors(mangaId: String): State<List<Author>> {
         return processApiData(
-            apiCall = { service.getMangaDetails(mangaId) },
+            apiCall = {
+                service.getMangaDetails(
+                    mangaId,
+                    includes = listOf(AUTHOR, ARTIST, COVER_ART)
+                )
+            },
             parseData = { parser.parseForAuthors(it.data) }
         )
     }
@@ -152,7 +174,8 @@ class MangadexApi(
                     PAGINATION_SIZE,
                     authorId = param,
                     artistId = param,
-                    orderLatestUploadedChapter = ORDER_DESC
+                    orderLatestUploadedChapter = ORDER_DESC,
+                    includes = listOf(COVER_ART)
                 )
             },
             parseData = { parser.parseForSearchResult(it) }
@@ -170,7 +193,8 @@ class MangadexApi(
                     offset,
                     PAGINATION_SIZE,
                     genreId = param,
-                    orderLatestUploadedChapter = ORDER_DESC
+                    orderLatestUploadedChapter = ORDER_DESC,
+                    includes = listOf(COVER_ART)
                 )
             },
             parseData = { parser.parseForSearchResult(it) }
@@ -190,6 +214,8 @@ class MangadexApi(
         const val ORDER_ASC = "asc"
         const val RESULT_OK = "ok"
         const val COVER_ART = "cover_art"
+        const val AUTHOR = "author"
+        const val ARTIST = "artist"
 
         // Limit must be <= 100 when calling the chapter endpoint
         const val CHAPTER_MAX_LIMIT = 100

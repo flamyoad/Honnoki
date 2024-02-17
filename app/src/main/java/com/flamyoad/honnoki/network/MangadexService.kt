@@ -26,9 +26,7 @@ interface MangadexService {
         @Query("offset") offset: Int,
         @Query("limit") limit: Int,
         @Query("order[createdAt]") order: String,
-        @Query("includes[]") includes1: String = "author",
-        @Query("includes[]") includes2: String = "artist",
-        @Query("includes[]") includes3: String = "cover_art",
+        @Query("includes[]") includes: List<String>
     ): MDResultList
 
     /**
@@ -39,16 +37,14 @@ interface MangadexService {
     suspend fun getTopManga(
         @Query("offset") offset: Int,
         @Query("limit") limit: Int,
-        @Query("includes[]") includes3: String = "cover_art",
+        @Query("includes[]") includes: List<String>
     ): MDResultList
 
     @GET("manga/{mangaId}")
     @Headers(CACHE_CONTROL_MAX_AGE_60)
     suspend fun getMangaDetails(
         @Path("mangaId") mangaId: String,
-        @Query("includes[]") includes1: String = "author",
-        @Query("includes[]") includes2: String = "artist",
-        @Query("includes[]") includes3: String = "cover_art",
+        @Query("includes[]") includes: List<String>
     ): MDEntity
 
     /**
@@ -62,7 +58,7 @@ interface MangadexService {
         @Query("authors[]") authorId: String,
         @Query("artists[]") artistId: String,
         @Query("order[latestUploadedChapter]") orderLatestUploadedChapter: String,
-        @Query("includes[]") includes: String = "cover_art",
+        @Query("includes[]") includes: List<String>
     ): MDResultList
 
     /**
@@ -74,7 +70,7 @@ interface MangadexService {
         @Query("limit") limit: Int,
         @Query("includedTags[]") genreId: String,
         @Query("order[latestUploadedChapter]") orderLatestUploadedChapter: String,
-        @Query("includes[]") includes: String = "cover_art",
+        @Query("includes[]") includes: List<String>
     ): MDResultList
 
     @GET("chapter")
