@@ -5,13 +5,13 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:7.4.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.gms:google-services:4.3.10'
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.7.1'
+        classpath 'com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:1.8.21-1.0.11'
 
         def nav_version = '2.4.1'
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
