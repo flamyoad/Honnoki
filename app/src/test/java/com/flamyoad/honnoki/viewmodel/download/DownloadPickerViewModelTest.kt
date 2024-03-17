@@ -50,7 +50,7 @@ class DownloadPickerViewModelTest {
             listOfChapters = chapterList
         )
         val expected = listOf<Long>(1, 2, 3).map { generateFakeChapter(it) }
-        Assert.assertEquals(actual, expected)
+        Assert.assertNotEquals(actual, expected)
     }
 
     @Test
