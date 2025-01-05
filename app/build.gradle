@@ -196,22 +196,23 @@ dependencies {
 
     implementation 'org.jsoup:jsoup:1.13.1'
 
-    implementation 'gun0912.ted:tedpermission:2.2.3'
+    implementation 'io.github.ParkSangGwon:tedpermission:3.4.2'
 
     implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
 
-    implementation 'com.github.florent37:shapeofview:1.4.7'
+    implementation 'io.github.florent37:shapeofview:1.4.7'
 
     implementation 'androidx.palette:palette-ktx:1.0.0'
 
-    implementation 'com.google.android:flexbox:2.0.1'
+    implementation 'com.google.android.flexbox:flexbox:3.0.0'
 
     implementation 'com.github.Kennyc1012:MultiStateView:2.2.0'
 
     implementation 'com.simplecityapps:recyclerview-fastscroll:2.0.1'
 
-    implementation 'com.scwang.smart:refresh-layout-kernel:2.0.3'
-    implementation 'com.scwang.smart:refresh-header-classics:2.0.3'
+    implementation 'io.github.scwang90:refresh-layout-kernel:2.1.1'
+    implementation 'io.github.scwang90:refresh-header-classics:2.1.1'
+    implementation 'io.github.scwang90:refresh-footer-classics:2.1.1'
 
     implementation 'jp.wasabeef:recyclerview-animators:4.0.2'
 
